@@ -88,6 +88,10 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Treni veloci / alta velocita' sulla stessa infrastruttura: linee che fermano solo nelle citta' principali,
       binari di transito nelle stazioni minori, binario ad alta velocita' e curve ampie dove serve, sorpassi dei treni
       lenti; avviso a Claude se la capacita' non basta (proposta: binari dedicati all'AV).
+- [ ] Attesa fuori stazione con piu' treni sulla stessa linea (soprattutto merci avanti/indietro): segnale d'ingresso
+      prima della stazione, binari d'attesa lunghi quanto il treno e fuori dalla linea principale (non bloccano altri
+      treni ne' scambi/incroci), numero di binari di carico/scarico in base ai treni in circolo, eventuale anello di
+      ritorno al capolinea; il collaudo controlla code ai segnali e treni fermi sulla linea.
 - [ ] Potenziare cio' che esiste quando il traffico cresce: binari e marciapiedi in piu' nelle stazioni, fermate
       piu' grandi, strade allargate, scali e porti ampliati (le arterie fatte a inizio partita devono poter crescere).
 
