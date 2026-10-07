@@ -11,6 +11,9 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
   veicoli, con un bacino di passeggeri/merci reale. Se non funziona, l'azione lo dice e prova a correggere.
 - Uso principale: early game = mappa appena creata (anno 2300, rete vuota), per costruire le arterie e le linee
   principali da zero. Il caso piu' importante e' quindi la mappa vuota del 2300, con i veicoli del 2300.
+- Claude non gioca da solo: agisce solo sulle direttive di Nicolo'. Le correzioni trovate dal collaudo vengono
+  proposte e fatte solo dopo conferma.
+- Deve funzionare in tutte le epoche (dal 1900 al 2300) e convivere con le mod esterne usate da Nicolo'.
 
 ## Gia' fatto
 - [x] Bus, tram (anche elettrici), fermate, linee, acquisto veicoli.
