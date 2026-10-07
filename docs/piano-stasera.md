@@ -39,8 +39,9 @@ Ogni sonda: `python dev/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev/
 Per ogni prova che costruisce: controllare anche che FUNZIONI (veicoli in movimento, passeggeri/merci trasportati
 dopo qualche mese di gioco), non solo che la costruzione esista.
 
-## 3b. Early game
-- [ ] Nuova partita di prova nel 1850 (stesse mod): ripetere p2, p4, p5 con veicoli a vapore e carrozze.
+## 3b. Early game (mappa appena creata)
+- [ ] Nuova partita di prova nel 2300 su mappa appena creata, senza nulla costruito (stesse mod): ripetere p2, p4, p5
+      partendo da zero (prime arterie e linee principali).
 
 ## 4. Versione 14
 - [ ] `python dev/build_script.py --bozza`, backup della v13, installazione, ricarica della partita.

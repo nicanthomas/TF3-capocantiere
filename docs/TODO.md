@@ -9,8 +9,8 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
   tipo, scali merci, porti, aeroporti, eliporti, strade, autostrade, binari, segnali).
 - Ogni cosa piazzata deve FUNZIONARE, non essere solo un costo fisso: collegata alla rete, servita da una linea con
   veicoli, con un bacino di passeggeri/merci reale. Se non funziona, l'azione lo dice e prova a correggere.
-- Uso principale: early game (dal 1850), per costruire le arterie e le linee principali. Quindi i veicoli d'epoca
-  (vapore, carrozze a cavalli, niente elettrico) sono il caso piu' importante, non il 2300.
+- Uso principale: early game = mappa appena creata (anno 2300, rete vuota), per costruire le arterie e le linee
+  principali da zero. Il caso piu' importante e' quindi la mappa vuota del 2300, con i veicoli del 2300.
 
 ## Gia' fatto
 - [x] Bus, tram (anche elettrici), fermate, linee, acquisto veicoli.
@@ -78,7 +78,7 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Log per azione nella cartella capocantiere.
 - [x] Test automatici del middleware senza gioco (`middleware/test_middleware.py`).
 - [ ] Test automatici in gioco su CC_test.
-- [ ] Prove in early game (1850-1900: vapore, cavalli, solo diesel/vapore) come caso principale.
+- [ ] Prove su una mappa nuova appena creata (2300, nessuna infrastruttura) come caso principale.
 - [ ] Prove nelle epoche intermedie (1950, 1990) e su altre mappe.
 - [ ] Filtro veicoli delle mod (parti di treni bloccati, modelli incompleti).
 - [ ] Avviso se cambia la build di TF3.
