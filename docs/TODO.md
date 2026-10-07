@@ -23,7 +23,7 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [x] Epoche: provato nel 1900; costruito nel 2300 (standard + catenaria, tram elettrico, bus, merci).
 
 ## Fase 0 - Prossima sessione
-- [ ] Chiave API nuova: `setx ANTHROPIC_API_KEY "..."`, `pip install anthropic`; revocare la chiave vecchia (utente).
+- [ ] Chiave API nuova: `setx ANTHROPIC_API_KEY "..."`, revoca della vecchia (Nicolo'); `pip install anthropic` (io, dopo conferma).
 - [ ] Verifica nel 2300 (`autosave_CC_test_2300-04-15`): veicoli in movimento su ferrovia a 2 binari con
       2 treni elettrici, tram elettrico, bus, merci.
 - [ ] Installare sul PC il middleware aggiornato (backup prima) e lanciare `verifica_installazione.py`.

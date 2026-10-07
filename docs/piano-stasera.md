@@ -3,8 +3,16 @@
 Partita: `CC_test`, salvataggio `autosave_CC_test_2300-04-15` (mod v13 installata). Dopo ogni prova: gioco in pausa.
 Regole: scrivo solo in `mods` e `capocantiere`, backup prima di sovrascrivere, niente cancellazioni.
 
+## Chi fa cosa
+Regola: tutto cio' che posso fare io lo faccio io. Nicolo' fa solo cio' che richiede lui di persona:
+- accendere il PC, aprire l'app di Claude e approvare le richieste di accesso;
+- chiave API (creazione, `setx`, revoca della vecchia): la chiave non deve mai passare da me;
+- confermare le scritture fuori da `mods`/`capocantiere`: installazione di `anthropic` (cartella di Python),
+  nuovi salvataggi (cartella dei salvataggi), mod scaricate dal Workshop (cartelle di Steam).
+
 ## 0. Prima di tutto
-- [ ] (tu) Chiave API nuova: `setx ANTHROPIC_API_KEY "..."`, `pip install anthropic`; revocare la vecchia.
+- [ ] (Nicolo') Chiave API nuova: `setx ANTHROPIC_API_KEY "..."`; revocare la vecchia.
+- [ ] (io, dopo conferma) `pip install anthropic`.
 - [ ] Spostare `actions_241_*` e `actions_242_*` in `capocantiere\vecchi` PRIMA di caricare il salvataggio
       (altrimenti la mod potrebbe eseguirli).
 - [ ] Backup del middleware installato in `capocantiere\backup\middleware_v7`, poi copia di quello nuovo
@@ -19,7 +27,8 @@ Regole: scrivo solo in `mods` e `capocantiere`, backup prima di sovrascrivere, n
 ## 2. Sonde (sola lettura, nessun rischio)
 Ogni sonda: `python dev/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev/sonde/sN_*.lua`, poi leggere il results.
 - [ ] s1 API (salvataggio, comandi linee), s2 costruzioni, s3 moduli, s4 veicoli (aerei/elicotteri/navi), s5 strade.
-- [ ] Costruire a mano: scalo merci ferroviario, campo d'aviazione o aeroporto, eliporto, porto + deposito navale.
+- [ ] (io, col mouse nel gioco) Costruire a mano: scalo merci ferroviario, campo d'aviazione o aeroporto, eliporto,
+      porto + deposito navale. Se il controllo del computer non basta: Nicolo'.
 - [ ] s6 copia costruzioni -> `CC.TEMPLATES` / `CC.CARGO_STATION_TEMPLATE` in `dev/bozza`.
 - [ ] s7 linee e bacini.
 
@@ -40,12 +49,14 @@ Per ogni prova che costruisce: controllare anche che FUNZIONI (veicoli in movime
 dopo qualche mese di gioco), non solo che la costruzione esista.
 
 ## 3b. Early game (mappa appena creata)
-- [ ] Nuova partita di prova nel 2300 su mappa appena creata, senza nulla costruito (stesse mod): ripetere p2, p4, p5
+- [ ] (io, dopo conferma per la cartella dei salvataggi) Nuova partita di prova nel 2300 su mappa appena creata, senza nulla costruito (stesse mod): ripetere p2, p4, p5
       partendo da zero (prime arterie e linee principali).
 
 ## 3c. Salvataggio di terzi e mod esterne (se disponibili)
-- [ ] Caricare il salvataggio dell'altro giocatore (installando prima le sue mod), sonde s6/s7, salvare i risultati.
-- [ ] Leggere le mod esterne (mods + Workshop, sola lettura).
+- [ ] (io) Cercare sul Workshop/web un salvataggio di TF3 con una rete gia' costruita e proporlo a Nicolo';
+      scaricarlo (e le sue mod) solo dopo conferma.
+- [ ] (io) Caricarlo, sonde s6/s7, salvare i risultati.
+- [ ] (io) Elenco delle mod installate letto dalla cartella mods + Workshop (sola lettura), lettura della loro logica.
 
 ## 4. Versione 14
 - [ ] `python dev/build_script.py --bozza`, backup della v13, installazione, ricarica della partita.
