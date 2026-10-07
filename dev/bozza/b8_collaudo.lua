@@ -15,9 +15,14 @@ function CC.vehicleState(v)
 	if not tv then return "?" end
 	local s = tv.state
 	local name = tostring(s)
+	-- VERIFICATO (sonde s9 e p22): l'enum ha i nomi dentro __index (IN_DEPOT 0, EN_ROUTE 1, AT_TERMINAL 2, GOING_TO_DEPOT 3)
+	local names = { [0] = "IN_DEPOT", [1] = "EN_ROUTE", [2] = "AT_TERMINAL", [3] = "GOING_TO_DEPOT" }
 	pcall(function()
-		for k, val in pairs(api.type.enum.TransportVehicleState) do if val == s then name = k end end
+		local E = api.type.enum.TransportVehicleState
+		local function scan(t) for k, val in pairs(t) do if type(val) == "table" then scan(val) elseif val == s then names[s] = k end end end
+		scan(E)
 	end)
+	if type(s) == "number" and names[s] then name = names[s] end
 	return name
 end
 

@@ -234,8 +234,19 @@ SIM_ACTIONS.build_air_or_water_line = function(a)
 		local okR, msg = CC.ensureRoadAccess(info.construction, 400)
 		log[#log + 1] = (CC.nameOf(t) or "?") .. ": costruito; strada d'accesso: " .. tostring(msg)
 	end
-	-- deposito: quello incluso nella costruzione (aeroporti) o uno schema a parte (deposito navale)
-	local depot = depots[1]
+	-- deposito: quello incluso nella costruzione (aeroporti) o uno schema a parte (deposito navale).
+	-- VERIFICATO (prova p20): l'hangar di un campo d'aviazione puo' restare senza uscita verso le piste; si sceglie un
+	-- deposito che raggiunge davvero le fermate (modi aereo/elicottero/nave).
+	local MOD = { 9, 10, 11, 12, 13 }
+	local depot
+	for _, d in ipairs(depots) do
+		local okP = false
+		for _, n in ipairs(CC.groupNodes(groups[1])) do
+			if CC.hasPath(CC.depotNodes(d), n, MOD) then okP = true; break end
+		end
+		if okP then depot = d; break end
+		log[#log + 1] = "deposito " .. tostring(d) .. " senza percorso verso le fermate: scartato"
+	end
 	if not depot and CC.TEMPLATES.water_depot and tpl.kind == "water" then
 		local ok, info = CC.buildTemplateNear("water_depot", a.town_ids[1], "Cantiere navale")
 		if ok then depot = info.depots[1] else log[#log + 1] = "deposito navale: " .. tostring(info) end

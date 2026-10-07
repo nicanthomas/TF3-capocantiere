@@ -51,3 +51,12 @@ Lezioni:
   (`CC.railDepotByBranch`, usato anche da `build_depot`). DA PROVARE.
 - p4 con gli scali bloccati: errore chiaro, nessuna costruzione, nessun crash.
 - p19 elicotteri Afforte-Abriola: eliporto + piazzola, elicottero H225, collaudo ok.
+
+## Quinta serie (stessa partita, nessun crash)
+- p10 deposito bus: ok. p20 linea aerea Serrano-Abriola (12 km) con campi d'aviazione e Superjet (aereo piccolo, modo
+  11): costruita, ma l'aereo non si assegnava. Sonde s18/s19: tra i terminali il percorso c'e'; l'hangar del campo di
+  Serrano non ha uscita verso le piste, quello di Abriola si'. Comprato l'aereo nell'hangar di Abriola (p22):
+  assegnato, in volo, collaudo ok. Correzione: si sceglie un deposito/hangar che raggiunge davvero le fermate.
+- p12 anello ripetuto: deposito di nuovo rifiutato, anche sulla diramazione ("Costruzione non consentita" per i primi
+  raccordi). Ora il registro riporta il motivo esatto del gioco (`CC.errText`). Da riprovare.
+- Stato dei veicoli nel collaudo: l'enum ha i nomi dentro `__index`; ora il collaudo scrive EN_ROUTE ecc.

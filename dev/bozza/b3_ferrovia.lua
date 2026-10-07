@@ -144,6 +144,24 @@ function CC.linkStations(stations, log, builtEdges, built, loco, opts)
 	return CC.finishRailLink(stations, used, log, built, loco, { builtEdges = builtEdges })
 end
 
+-- Testo di un errore di proposta con i dettagli del gioco (D.detail: tabella o testo).
+function CC.errText(D)
+	if type(D) ~= "table" then return tostring(D) end
+	local t = tostring(D.error)
+	local det = D.detail
+	if type(det) == "table" then
+		local parts = {}
+		local function add(x)
+			if type(x) == "table" then for _, y in pairs(x) do add(y) end else parts[#parts + 1] = tostring(x) end
+		end
+		add(det)
+		if #parts > 0 then t = t .. " (" .. table.concat(parts, "; ") .. ")" end
+	elseif det then
+		t = t .. " (" .. tostring(det) .. ")"
+	end
+	return t
+end
+
 -- Deposito ferroviario su una diramazione corta dal binario del giocatore piu' vicino a p (entro 700 m): serve quando
 -- non ci sono estremi liberi (anello chiuso, stazioni passanti). La diramazione resta anche se il deposito e' rifiutato
 -- (pulizia prudente). DA VERIFICARE in gioco.
@@ -161,7 +179,7 @@ function CC.railDepotByBranch(p, name, builtEdges, log)
 				log[#log + 1] = "deposito su una diramazione del binario (nessun estremo libero)"
 				return true, D
 			end
-			log[#log + 1] = "deposito sulla diramazione: " .. tostring(D.error)
+			log[#log + 1] = "deposito sulla diramazione: " .. CC.errText(D)
 			return false, D
 		end
 		log[#log + 1] = "diramazione per il deposito: " .. tostring(B.error)
@@ -178,14 +196,14 @@ function CC.finishRailLink(stations, used, log, built, loco, opts)
 	local depot
 	if opts.depotEnd then
 		local okD, D = CC.buildRailDepotAtEnd(opts.depotEnd, opts.depotName or "Deposito ferroviario")
-		if okD then depot = D.depot; built[#built + 1] = D.construction else log[#log + 1] = "deposito: " .. tostring(D.error) end
+		if okD then depot = D.depot; built[#built + 1] = D.construction else log[#log + 1] = "deposito: " .. CC.errText(D) end
 	end
 	for _, si in ipairs({ 1, #stations }) do
 		for _, e in ipairs(stations[si].ends) do
 			if not used[e.node] and not depot then
 				local okD, D = CC.buildRailDepotAtEnd(e, "Deposito " .. (CC.nameOf(stations[si].town or stations[si].group) or ""))
 				if okD then depot = D.depot; used[e.node] = true; built[#built + 1] = D.construction
-				else log[#log + 1] = "deposito: " .. tostring(D.error) end
+				else log[#log + 1] = "deposito: " .. CC.errText(D) end
 			end
 		end
 	end
