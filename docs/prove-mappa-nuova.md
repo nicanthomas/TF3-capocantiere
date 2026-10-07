@@ -60,3 +60,10 @@ Lezioni:
 - p12 anello ripetuto: deposito di nuovo rifiutato, anche sulla diramazione ("Costruzione non consentita" per i primi
   raccordi). Ora il registro riporta il motivo esatto del gioco (`CC.errText`). Da riprovare.
 - Stato dei veicoli nel collaudo: l'enum ha i nomi dentro `__index`; ora il collaudo scrive EN_ROUTE ecc.
+
+## Sesta serie: anello completato
+- Deposito sull'anello: sugli estremi liberi il deposito urtava il binario accanto o una strada di campagna. Aggiunti
+  `CC.leadTrack` (binario d'accesso spostato di lato) e `CC.depotAtEndSafe` (prova diretta, poi binario d'accesso solo
+  dove l'area del deposito e' libera) e la ricerca su tutte le stazioni. Risultato: deposito costruito a Calliano.
+- p25: linee nei due sensi sulle 3 stazioni dell'anello (create_line_from_stations, pattern ring): 2 linee, 1 treno
+  ciascuna, collaudo ok.

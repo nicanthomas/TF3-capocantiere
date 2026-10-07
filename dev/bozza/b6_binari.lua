@@ -89,6 +89,31 @@ function CC.extendTrack(E, len)
 	return true, { endInfo = { node = node, x = ex, y = ey, z = E.z, dx = E.dx, dy = E.dy }, edges = edges }
 end
 
+-- Binario d'accesso da un estremo libero: avanti len m e di lato lat m (side 1 = sinistra), uscita parallela. Serve per
+-- staccare un deposito dai binari vicini (VERIFICATO p24: il deposito messo subito sull'estremo urta il binario accanto).
+function CC.leadTrack(E, len, lat, side)
+	local dx, dy = E.dx, E.dy
+	local nx, ny = -dy * (side or 1), dx * (side or 1)
+	local ex, ey = E.x + dx * len + nx * lat, E.y + dy * len + ny * lat
+	local P0, P1 = api.type.Vec3f.new(E.x, E.y, E.z), api.type.Vec3f.new(ex, ey, E.z)
+	local d = math.sqrt((ex - E.x) ^ 2 + (ey - E.y) ^ 2)
+	local T = api.type.Vec3f.new(dx * d, dy * d, 0)
+	local n = api.type.NodeAndEntity.new()
+	n.entity = -1; n.comp.position = P1
+	local prop = api.type.SimpleProposal.new()
+	prop.streetProposal.nodesToAdd = { n }
+	prop.streetProposal.edgesToAdd = { trackSeg(-2, E.node, P0, T, -1, P1, T) }
+	local okc, cmd = CC.buildCmd(prop, false)
+	if not okc then return false, { error = "binario d'accesso: " .. tostring(cmd) } end
+	local ok, _, ents = CC.send(cmd)
+	if not ok then return false, { error = "binario d'accesso rifiutato" } end
+	local edges = {}
+	for _, en in ipairs(ents or {}) do if CC.comp(en, api.type.ComponentType.BASE_EDGE) then edges[#edges + 1] = en end end
+	local node = CC.nodeAt(ex, ey)
+	if not node then return false, { error = "nodo nuovo non trovato", edges = edges } end
+	return true, { endInfo = { node = node, x = ex, y = ey, z = E.z, dx = dx, dy = dy }, edges = edges }
+end
+
 -- ---------------------------------------------------------------- segnali
 -- Modello del segnale: CC.SIGNAL_MODEL (dalla sonda s8) o il primo nome conosciuto che esiste. DA VERIFICARE.
 function CC.signalModel()

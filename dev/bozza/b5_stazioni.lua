@@ -166,7 +166,12 @@ function CC.railStationModulesN(e, layout, segments, kind)
 	local plat = cargo and CC.cargoPlatformModule(e) or (M .. "platform_passenger" .. era .. ".module")
 	if not plat then return nil, "modulo marciapiede merci non trovato (sonda s3 o s6)" end
 	local mods = {}
-	if not cargo then
+	if cargo then
+		-- DA VERIFICARE (prova p23): edificio merci e scale come nella stazione passeggeri (moduli trovati con la sonda s3:
+		-- main_building_1/2/3_cargo, side_building_*_cargo, stairs). Senza edificio il gioco va in crash.
+		mods[3400020] = M .. (CC.CARGO_BUILDING or "main_building_1_cargo.module")
+		mods[10800000] = M .. (CC.CARGO_STAIRS or "stairs.module")
+	else
 		mods[3400020] = M .. "main_building_1" .. era .. ".module"
 		if segments >= 4 then
 			mods[3400005] = M .. "side_building_1" .. era .. ".module"
@@ -478,17 +483,9 @@ SIM_ACTIONS.build_depot = function(a)
 		end
 		local errs = {}
 		for i = 1, math.min(4, #cands) do
-			local okD, D = CC.buildRailDepotAtEnd(cands[i], name)
+			local okD, D = CC.depotAtEndSafe(cands[i], name, nil, {})
 			if okD then return { ok = true, depot_id = D.depot } end
-			local det = ""
-			if type(D.detail) == "table" then
-				local parts = {}
-				for _, x in pairs(D.detail) do parts[#parts + 1] = tostring(x) end
-				det = " (" .. table.concat(parts, ", ") .. ")"
-			elseif D.detail then
-				det = " (" .. tostring(D.detail) .. ")"
-			end
-			errs[#errs + 1] = tostring(D.error) .. det
+			errs[#errs + 1] = CC.errText(D)
 			if D.construction then CC.removeConstruction(D.construction) end
 		end
 		-- nessun estremo libero o tutti rifiutati: deposito su una diramazione corta

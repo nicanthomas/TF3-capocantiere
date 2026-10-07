@@ -162,16 +162,73 @@ function CC.errText(D)
 	return t
 end
 
+-- Area libera da strade, binari e costruzioni entro r metri da (x, y)?
+function CC.areaClear(x, y, r)
+	local CT = api.type.ComponentType
+	local clear = true
+	pcall(function()
+		if #CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(x, y), r, CT.BASE_EDGE)) > 0 then clear = false end
+		if #CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(x, y), r, CT.CONSTRUCTION)) > 0 then clear = false end
+	end)
+	return clear
+end
+
+-- Deposito su un estremo libero: prima direttamente, poi (se urta qualcosa) in fondo a un binario d'accesso (CC.leadTrack,
+-- b6). VERIFICATO (p24): il deposito urta il binario accanto o una strada; il binario d'accesso si costruisce solo dove
+-- l'area del deposito (circa 45 m oltre l'estremo) risulta libera, per non lasciare avanzi inutili.
+function CC.depotAtEndSafe(E, name, builtEdges, log)
+	log = log or {}
+	local okD, D = CC.buildRailDepotAtEnd(E, name)
+	if okD then return true, D end
+	log[#log + 1] = "deposito sull'estremo: " .. CC.errText(D)
+	if not CC.leadTrack then return false, D end
+	for _, v in ipairs({ { 120, 25 }, { 200, 45 }, { 300, 70 } }) do
+		for _, side in ipairs({ 1, -1 }) do
+			local nx, ny = -E.dy * side, E.dx * side
+			local ex, ey = E.x + E.dx * v[1] + nx * v[2], E.y + E.dy * v[1] + ny * v[2]
+			if CC.areaClear(ex + E.dx * 50, ey + E.dy * 50, 35) then
+				local okL, Lt = CC.leadTrack(E, v[1], v[2], side)
+				if okL then
+					for _, e in ipairs(Lt.edges or {}) do if builtEdges then builtEdges[#builtEdges + 1] = e end end
+					local ok2, D2 = CC.buildRailDepotAtEnd(Lt.endInfo, name)
+					if ok2 then log[#log + 1] = "deposito in fondo a un binario d'accesso di " .. v[1] .. " m"; return true, D2 end
+					log[#log + 1] = "deposito sul binario d'accesso: " .. CC.errText(D2)
+					return false, D2
+				end
+				log[#log + 1] = "binario d'accesso " .. v[1] .. " m: " .. tostring(Lt.error)
+			end
+		end
+	end
+	log[#log + 1] = "nessuna area libera per il deposito vicino all'estremo"
+	return false, D
+end
+
 -- Deposito ferroviario su una diramazione corta dal binario del giocatore piu' vicino a p (entro 700 m): serve quando
 -- non ci sono estremi liberi (anello chiuso, stazioni passanti). La diramazione resta anche se il deposito e' rifiutato
 -- (pulizia prudente). DA VERIFICARE in gioco.
 function CC.railDepotByBranch(p, name, builtEdges, log)
 	log = log or {}
 	if not (p and CC.branchFromTrack and CC.nearestTrack) then return false, { error = "diramazione non disponibile" } end
-	local tr = CC.nearestTrack(p.x, p.y, 700)
+	-- tratto di binario a 250-700 m dalla stazione (lontano dagli scambi), fuori dalle costruzioni, non su ponte/galleria
+	local CT = api.type.ComponentType
+	local cands = {}
+	pcall(function()
+		for _, e in ipairs(CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(p.x, p.y), 700, CT.BASE_EDGE))) do
+			local be = CC.comp(e, CT.BASE_EDGE)
+			if be and tostring(be.roadTemplate):find("/track/", 1, true) and be.type == 0 and #CC.each(be.objects) == 0
+				and not (CC.inConstruction and CC.inConstruction(e)) then
+				local mx, my = (be.position0.x + be.position1.x) / 2, (be.position0.y + be.position1.y) / 2
+				local d = math.sqrt((mx - p.x) ^ 2 + (my - p.y) ^ 2)
+				if d >= 250 then cands[#cands + 1] = { edge = e, sv = 0.5, d = d } end
+			end
+		end
+	end)
+	table.sort(cands, function(a, b) return a.d < b.d end)
+	local tr = cands[1] or CC.nearestTrack(p.x, p.y, 700)
 	if not tr then return false, { error = "nessun binario del giocatore vicino" } end
 	for _, side in ipairs({ 1, -1 }) do
-		local okB, B = CC.branchFromTrack(tr.edge, tr.sv, side, 60)
+		-- VERIFICATO (p10): con la diramazione a 12 m di lato il deposito urta il binario principale; 35 m su 160 m
+		local okB, B = CC.branchFromTrack(tr.edge, tr.sv, side, 160, 35)
 		if okB then
 			for _, e in ipairs(B.edges or {}) do if builtEdges then builtEdges[#builtEdges + 1] = e end end
 			local okD, D = CC.buildRailDepotAtEnd(B.endInfo, name)
@@ -195,15 +252,16 @@ function CC.finishRailLink(stations, used, log, built, loco, opts)
 	local TM = api.type.enum.TransportMode
 	local depot
 	if opts.depotEnd then
-		local okD, D = CC.buildRailDepotAtEnd(opts.depotEnd, opts.depotName or "Deposito ferroviario")
-		if okD then depot = D.depot; built[#built + 1] = D.construction else log[#log + 1] = "deposito: " .. CC.errText(D) end
+		local okD, D = CC.depotAtEndSafe(opts.depotEnd, opts.depotName or "Deposito ferroviario", opts.builtEdges, log)
+		if okD then depot = D.depot; built[#built + 1] = D.construction end
 	end
-	for _, si in ipairs({ 1, #stations }) do
+	local order = { 1, #stations }
+	for k = 2, #stations - 1 do order[#order + 1] = k end
+	for _, si in ipairs(order) do
 		for _, e in ipairs(stations[si].ends) do
 			if not used[e.node] and not depot then
-				local okD, D = CC.buildRailDepotAtEnd(e, "Deposito " .. (CC.nameOf(stations[si].town or stations[si].group) or ""))
-				if okD then depot = D.depot; used[e.node] = true; built[#built + 1] = D.construction
-				else log[#log + 1] = "deposito: " .. CC.errText(D) end
+				local okD, D = CC.depotAtEndSafe(e, "Deposito " .. (CC.nameOf(stations[si].town or stations[si].group) or ""), opts.builtEdges, log)
+				if okD then depot = D.depot; used[e.node] = true; built[#built + 1] = D.construction end
 			end
 		end
 	end

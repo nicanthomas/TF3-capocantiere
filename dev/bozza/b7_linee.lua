@@ -276,7 +276,7 @@ end
 -- Divide un binario esistente al parametro sv (0..1) e ne fa partire una diramazione verso `side` (1 sinistra,
 -- -1 destra rispetto al verso node0 -> node1). Serve per collegare uno scalo o una stazione nuova a una linea gia'
 -- costruita (traffico misto). DA VERIFICARE: la divisione dei binari (la funzione per le strade e' verificata).
-function CC.branchFromTrack(e, sv, side, L)
+function CC.branchFromTrack(e, sv, side, L, lat)
 	local CT = api.type.ComponentType
 	local be = CC.comp(e, CT.BASE_EDGE)
 	if not be then return false, { error = "binario inesistente" } end
@@ -297,8 +297,9 @@ function CC.branchFromTrack(e, sv, side, L)
 	local ux, uy = qdx / ql, qdy / ql
 	L = L or CC.SPLIT_LEN
 	local nx, ny = -uy * (side or 1), ux * (side or 1)
-	-- fine della diramazione: avanti L e di lato 12 m, con uscita parallela al binario
-	local bx, by = qx + ux * L + nx * 12, qy + uy * L + ny * 12
+	-- fine della diramazione: avanti L e di lato lat m (default 12), con uscita parallela al binario
+	lat = lat or 12
+	local bx, by = qx + ux * L + nx * lat, qy + uy * L + ny * lat
 	local function seg(id, n0, a0, ta, n1, a1, tb)
 		local sg = api.type.SegmentAndEntity.new()
 		sg.entity = id; sg.type = 1
