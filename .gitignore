@@ -1,0 +1,17 @@
+# file di scambio generati dal gioco / dal middleware
+state.lua
+actions*.lua
+results*.lua
+captured_*.lua
+probe_gui.lua
+.tmp_*.lua
+# python
+__pycache__/
+*.pyc
+.venv/
+# segreti (la chiave API va solo nella variabile d'ambiente)
+.env
+*.key
+# salvataggi e crash
+*.sav
+*.dmp

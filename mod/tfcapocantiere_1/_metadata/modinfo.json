@@ -1,0 +1,15 @@
+{
+    "authors": [
+        {
+            "name": "Nicolo",
+            "role": "CREATOR"
+        }
+    ],
+    "description": "Test di I/O per il progetto Capo Cantiere (interfaccia LLM). Scrive solo nel log e nella cartella capocantiere dei dati utente.",
+    "name": "Capo Cantiere - Test",
+    "summary": "Test di I/O per Capo Cantiere",
+    "tags": [
+        "Script Mod"
+    ],
+    "url": ""
+}
