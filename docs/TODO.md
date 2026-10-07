@@ -70,6 +70,10 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Elicotteri (esistono: eliporto nel menu aereo, passeggeri e merci). (bozza b4)
 - [ ] Navi passeggeri e merci (porti: `harbor_modular.con`, `water_depot.con`). (bozza b4)
 - [ ] Capacita' ferroviaria: doppio binario, segnali.
+- [ ] Linee circolari (anello chiuso) e linee nei due sensi opposti sulla stessa infrastruttura.
+- [ ] Traffico misto passeggeri + merci sugli stessi binari: scali merci su raccordi collegati alla linea principale
+      con scambi, binari di sorpasso/precedenza, binari di transito nelle stazioni passeggeri per i merci, segnali
+      fitti; il collaudo controlla che i merci lenti non blocchino i passeggeri.
 - [ ] Potenziare cio' che esiste quando il traffico cresce: binari e marciapiedi in piu' nelle stazioni, fermate
       piu' grandi, strade allargate, scali e porti ampliati (le arterie fatte a inizio partita devono poter crescere).
 
