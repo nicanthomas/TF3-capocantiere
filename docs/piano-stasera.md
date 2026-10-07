@@ -2,6 +2,8 @@
 
 Partita: `CC_test`, salvataggio `autosave_CC_test_2300-04-15` (mod v13 installata). Dopo ogni prova: gioco in pausa.
 Regole: scrivo solo in `mods` e `capocantiere`, backup prima di sovrascrivere, niente cancellazioni.
+GitHub sempre aggiornato: dopo ogni modifica o scoperta (codice, risultati delle sonde e delle prove, schemi copiati,
+TODO) caricamento via Composio, titolo `gg.mm.aaaa-NR-Descrizione`, controllo degli SHA. Niente lavoro solo in locale.
 
 ## Chi fa cosa
 Regola: tutto cio' che posso fare io lo faccio io. Nicolo' fa solo cio' che richiede lui di persona:
