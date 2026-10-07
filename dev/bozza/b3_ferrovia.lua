@@ -72,13 +72,11 @@ function CC.placeRailStation(center, dx, dy, neighbors, name, opts)
 				if opts.accept then good, why = opts.accept(info) end
 				if good then info.site = c; return info, reasons end
 				reasons[#reasons + 1] = "posto scartato: " .. tostring(why)
-				CC.removeEdges(info.edges)
-				CC.removeConstruction(info.construction)
+				CC.safeRemove(info.construction, info.edges)
 			elseif ok then
 				-- costruita ma non come serve (es. estremi dei binari non riconosciuti): la tolgo
 				reasons[#reasons + 1] = "stazione costruita con " .. #(info.ends or {}) .. " estremi invece di " .. (opts.expectEnds or 2) .. ": rimossa"
-				CC.removeEdges(info.edges)
-				CC.removeConstruction(info.construction)
+				CC.safeRemove(info.construction, info.edges)
 			elseif info and info.error then
 				reasons[#reasons + 1] = tostring(info.error)
 			end
@@ -322,10 +320,7 @@ SIM_ACTIONS.build_cargo_rail_line = function(a)
 	local ok, r = pcall(buildCargoRail, a, built, builtEdges)
 	if not ok then r = { ok = false, error = tostring(r) } end
 	if not r.ok and not r.line_id then
-		local removed = 0
-		for i = #built, 1, -1 do if CC.removeConstruction(built[i]) then removed = removed + 1 end end
-		local _, nE = CC.removeEdges(builtEdges)
-		r.cleanup = removed .. " costruzioni e " .. tostring(nE or 0) .. " tratti di binario rimossi"
+		r.cleanup, r.leftovers = CC.rollback(built, builtEdges)
 	end
 	CC.trackOverride = nil
 	return r
@@ -449,10 +444,7 @@ SIM_ACTIONS.build_rail_line2 = function(a)
 	local ok, r = pcall(buildRailLine2, a, built, builtEdges)
 	if not ok then r = { ok = false, error = tostring(r) } end
 	if not r.ok and not r.line_id then
-		local removed = 0
-		for i = #built, 1, -1 do if CC.removeConstruction(built[i]) then removed = removed + 1 end end
-		local _, nE = CC.removeEdges(builtEdges)
-		r.cleanup = removed .. " costruzioni e " .. tostring(nE or 0) .. " tratti di binario rimossi"
+		r.cleanup, r.leftovers = CC.rollback(built, builtEdges)
 	end
 	r.era = CC.railEra()
 	r.era.track_used = CC.trackOverride or r.era.track

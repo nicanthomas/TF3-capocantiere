@@ -282,8 +282,7 @@ function CC.buildRailStationN(cx, cy, dx, dy, opts)
 			local okM, Mi = CC.mergeEnds(list, thLen)
 			for _, e in ipairs(Mi.edges or {}) do edges[#edges + 1] = e end
 			if not okM then
-				CC.removeEdges(edges)
-				CC.removeConstruction(con)
+				CC.safeRemove(con, edges)
 				return false, { error = "scambi della stazione rifiutati: " .. tostring(Mi.error) }
 			end
 			sides[key] = { Mi.endInfo }

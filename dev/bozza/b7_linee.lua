@@ -266,10 +266,7 @@ SIM_ACTIONS.build_cargo_rail_network = function(a)
 	local ok, r = pcall(buildCargoNet, a, built, builtEdges)
 	if not ok then r = { ok = false, error = tostring(r) } end
 	if not r.ok and not r.line_id then
-		local removed = 0
-		for i = #built, 1, -1 do if CC.removeConstruction(built[i]) then removed = removed + 1 end end
-		local _, nE = CC.removeEdges(builtEdges)
-		r.cleanup = removed .. " costruzioni e " .. tostring(nE or 0) .. " tratti di binario rimossi"
+		r.cleanup, r.leftovers = CC.rollback(built, builtEdges)
 	end
 	CC.trackOverride = nil
 	return r

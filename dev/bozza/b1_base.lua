@@ -126,6 +126,41 @@ function CC.gameSpeed()
 	return s
 end
 
+-- ---------------------------------------------------------------- pulizie prudenti
+-- VERIFICATO (crash del 07.10.2026 su mappa nuova): togliere nello stesso momento binari appena fatti e la stazione a
+-- cui sono attaccati fa scattare nel gioco "AreAllNodesEmpty" e poi il crash. Con CC.SAFE_CLEANUP (default) dopo un
+-- fallimento NON si tolgono binari ne' costruzioni con binari attaccati: restano come "avanzi" (CC._leftovers, campo
+-- leftovers del risultato) e si tolgono dopo, a mano o con un'azione apposta. Si tolgono solo costruzioni isolate.
+CC.SAFE_CLEANUP = (CC.SAFE_CLEANUP == nil) and true or CC.SAFE_CLEANUP
+CC._leftovers = CC._leftovers or { constructions = {}, edges = {} }
+
+function CC.noteLeftovers(cons, edges)
+	for _, c in ipairs(cons or {}) do CC._leftovers.constructions[#CC._leftovers.constructions + 1] = c end
+	for _, e in ipairs(edges or {}) do CC._leftovers.edges[#CC._leftovers.edges + 1] = e end
+end
+
+-- Toglie una costruzione con eventuali binari attaccati. In modo prudente: se ci sono binari, lascia tutto.
+function CC.safeRemove(con, edges)
+	if CC.SAFE_CLEANUP and edges and #edges > 0 then
+		CC.noteLeftovers({ con }, edges)
+		return false
+	end
+	if edges and #edges > 0 then CC.removeEdges(edges) end
+	return CC.removeConstruction(con)
+end
+
+-- Annulla quanto costruito da un'azione fallita. Ritorna il testo per r.cleanup e gli avanzi.
+function CC.rollback(built, builtEdges)
+	if CC.SAFE_CLEANUP and builtEdges and #builtEdges > 0 then
+		CC.noteLeftovers(built, builtEdges)
+		return "nessuna rimozione (pulizia prudente): " .. #built .. " costruzioni e " .. #builtEdges .. " tratti lasciati",
+			{ constructions = built, edges = builtEdges }
+	end
+	local removed = 0
+	for i = #built, 1, -1 do if CC.removeConstruction(built[i]) then removed = removed + 1 end end
+	return removed .. " costruzioni rimosse (nessun binario da togliere)", nil
+end
+
 -- ---------------------------------------------------------------- linee e veicoli
 function CC.lineVehicles(L)
 	local out = {}

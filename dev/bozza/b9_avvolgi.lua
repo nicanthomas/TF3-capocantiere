@@ -35,7 +35,12 @@ for name, f in pairs(SIM_ACTIONS) do
 			if not ok then r = { ok = false, error = tostring(r) } end
 			if type(r) ~= "table" then r = { ok = true, value = r } end
 			local created = CC.txClassify(tx)
-			if CLEANUP_ON_FAIL[name] and not r.ok and not r.line_id and #created.constructions > 0 then
+			-- pulizia prudente: niente rimozioni se l'azione ha fatto anche binari o (aerei/navi) strade d'accesso
+			local risky = #created.tracks > 0 or (name == "build_air_or_water_line" and #created.roads > 0)
+			if risky and CLEANUP_ON_FAIL[name] and not r.ok and not r.line_id then
+				CC.noteLeftovers(created.constructions, created.tracks)
+				r.leftovers = { constructions = created.constructions, edges = created.tracks }
+			elseif CLEANUP_ON_FAIL[name] and not r.ok and not r.line_id and #created.constructions > 0 then
 				local n = 0
 				for i = #created.constructions, 1, -1 do
 					if CC.removeConstruction(created.constructions[i]) then n = n + 1 end

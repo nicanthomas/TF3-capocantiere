@@ -59,6 +59,7 @@ MODEL = "claude-sonnet-5-5"
 MAX_TOKENS = 4096
 MAX_TOOL_ROUNDS = 12           # limite di sicurezza ai giri di tool per una singola richiesta
 MAX_TURNS = 8                  # turni di conversazione tenuti per intero (i piu' vecchi diventano un riassunto)
+UNDO_PHASE_PAUSE = 3.0         # secondi tra le fasi di "annulla" (il gioco deve elaborare la fase prima)
 MAX_AUTO_CHECKS = 5            # collaudi automatici (dopo 1-2 mesi di gioco) per ogni turno dell'utente
 
 SYSTEM_PROMPT = """Sei il "Capo Cantiere" di una partita a Transport Fever 3 (l'anno corrente e' in get_overview:
@@ -149,9 +150,22 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
         return result
     result = results[0] if results else {"ok": False, "error": "nessun risultato"}
     _log(bridge, name, args, result, time.time() - t0)
+    # "annulla" lavora a fasi (veicoli e linee, poi binari, poi costruzioni), una per richiesta: toglierle tutte nello
+    # stesso momento fa crashare il gioco. Si ripete finche' la mod risponde done (al massimo 3 fasi).
+    phases = 1
+    while entry and isinstance(result, dict) and result.get("ok") and result.get("done") is False and phases < 3:
+        time.sleep(UNDO_PHASE_PAUSE)
+        try:
+            more = bridge.send([action], timeout=330)
+        except TimeoutError as e:
+            result = {"ok": False, "error": str(e)}
+            break
+        result = more[0] if more else {"ok": False, "error": "nessun risultato"}
+        phases += 1
+        _log(bridge, name, args, result, 0.0)
     if isinstance(result, dict):
         if entry:
-            if result.get("ok"):
+            if result.get("ok") and result.get("done") is not False:
                 journal.mark_undone(entry)
         else:
             journal.record(name, args, result)

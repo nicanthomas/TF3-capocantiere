@@ -238,27 +238,27 @@ SIM_ACTIONS.undo = function(a)
 		end
 	end
 	log[#log + 1] = nL .. " linee cancellate"
-	-- VERIFICATO (crash del 07.10.2026, "Assertion it != components.end()" sull'entita' del deposito): vendere i veicoli
-	-- e togliere nello stesso momento la costruzione col deposito in cui stanno fa crashare il gioco. Se in questa
-	-- chiamata sono stati venduti veicoli, le costruzioni con depositi restano: vanno tolte con un secondo "annulla".
-	local soldAny = sold > 0
-	local pending = {}
+	-- VERIFICATO (due crash del 07.10.2026): vendere veicoli e togliere il loro deposito nello stesso momento, o togliere
+	-- binari e la stazione a cui sono attaccati insieme, corrompe lo stato del gioco. "Annulla" lavora a fasi, una per
+	-- chiamata: 1) veicoli e linee; 2) binari; 3) costruzioni. Se resta qualcosa, risponde done = false e va richiamato.
+	local existing = function(list) local o = {} for _, x in ipairs(list or {}) do if api.engine.entityExists(x) then o[#o + 1] = x end end return o end
+	local tracks = existing(c.tracks)
+	local cons = existing(c.constructions)
+	if sold > 0 or nL > 0 then
+		log[#log + 1] = "fase 1 fatta (veicoli e linee): binari e costruzioni al prossimo annulla"
+		return { ok = true, done = (#tracks == 0 and #cons == 0), log = log, errors = e1 }
+	end
+	if #tracks > 0 then
+		local okE, nE = CC.removeEdges(tracks)
+		log[#log + 1] = tostring(okE and nE or 0) .. " tratti di binario rimossi; costruzioni al prossimo annulla"
+		return { ok = okE ~= false, done = #cons == 0, log = log, errors = e1 }
+	end
 	local nC = 0
-	for i = #(c.constructions or {}), 1, -1 do
-		local con = c.constructions[i]
-		local hasDepot = false
-		pcall(function() hasDepot = #CC.each(CC.comp(con, api.type.ComponentType.CONSTRUCTION).depots) > 0 end)
-		if soldAny and hasDepot and api.engine.entityExists(con) then
-			pending[#pending + 1] = con
-		elseif api.engine.entityExists(con) then
-			if CC.removeConstruction(con) then nC = nC + 1 else log[#log + 1] = "costruzione " .. con .. " non rimossa" end
-		end
+	for i = #cons, 1, -1 do
+		if CC.removeConstruction(cons[i]) then nC = nC + 1 else log[#log + 1] = "costruzione " .. cons[i] .. " non rimossa" end
 	end
 	log[#log + 1] = nC .. " costruzioni rimosse"
-	if #pending > 0 then log[#log + 1] = #pending .. " costruzioni con deposito lasciate per un secondo annulla (veicoli appena venduti)" end
-	local okE, nE = CC.removeEdges(c.tracks or {})
-	log[#log + 1] = tostring(okE and nE or 0) .. " tratti di binario rimossi"
 	if c.roads and #c.roads > 0 then log[#log + 1] = #c.roads .. " tratti di strada lasciati (non si annullano)" end
-	return { ok = true, log = log, errors = e1, pending_constructions = (#pending > 0) and pending or nil }
+	return { ok = true, done = true, log = log, errors = e1 }
 end
 -- ===================================================================== fine b2

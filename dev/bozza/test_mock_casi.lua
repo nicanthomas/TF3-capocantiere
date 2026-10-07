@@ -47,8 +47,12 @@ local road = created.roads[1]
 local u = SIM_ACTIONS.undo({ created = created })
 check(u.ok, "undo ok")
 check(#W.sold == 1, "veicolo venduto")
-check(#W.removedCons == 1, "costruzione rimossa")
-check(#W.removedEdges == 1 and W.removedEdges[1] == created.tracks[1], "solo il binario rimosso")
+-- a fasi: 1) veicoli e linee, 2) binari, 3) costruzioni (togliere tutto insieme fa crashare il gioco)
+check(#W.removedCons == 0 and #W.removedEdges == 0 and u.done == false, "fase 1: solo veicoli e linee")
+local u2 = SIM_ACTIONS.undo({ created = created })
+check(#W.removedEdges == 1 and W.removedEdges[1] == created.tracks[1] and #W.removedCons == 0, "fase 2: solo il binario rimosso")
+local u3 = SIM_ACTIONS.undo({ created = created })
+check(#W.removedCons == 1 and u3.done == true, "fase 3: costruzione rimossa")
 check(W.comps[road] ~= nil, "la strada resta")
 
 -- 3) registri annidati: l'azione esterna vede anche quello che costruisce l'interna

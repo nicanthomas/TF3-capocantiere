@@ -259,6 +259,30 @@ class TestJournal(Base):
         finally:
             mod.stop = True
 
+    def test_undo_in_phases(self):
+        import main
+        created = {"vehicles": [11], "lines": [5], "constructions": [70], "tracks": [90], "roads": []}
+        calls = []
+
+        def reply(a):
+            if a["type"] == "undo":
+                calls.append(1)
+                return {"ok": True, "type": "undo", "done": len(calls) >= 3}
+            return {"ok": True, "type": a["type"], "line_id": 5, "created": created}
+
+        mod = FakeMod(self.dir, reply=reply)
+        mod.start()
+        try:
+            with mock.patch.object(main, "confirm", return_value=True), mock.patch("builtins.print"), \
+                    mock.patch.object(main, "UNDO_PHASE_PAUSE", 0.0):
+                main.run_game_tool("build_rail_line", {"town_ids": [101, 102]}, GameBridge(self.dir))
+                u = main.run_game_tool("undo_last_action", {}, GameBridge(self.dir))
+                self.assertTrue(u["ok"] and u["done"])
+                self.assertEqual(len(calls), 3)                       # veicoli/linee, binari, costruzioni
+                self.assertFalse(main.run_game_tool("undo_last_action", {}, GameBridge(self.dir))["ok"])
+        finally:
+            mod.stop = True
+
     def test_nothing_created_not_recorded(self):
         from journal import Journal
         j = Journal(self.dir)
