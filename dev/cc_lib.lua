@@ -1695,14 +1695,14 @@ function CC.buildCurvedTrack(a, b, step, ignoreErrors, kf)
 		local dz = q1.z - q0.z
 		local sg = api.type.SegmentAndEntity.new()
 		sg.entity = newId()
-		sg.type = 1
+		sg.type = CC.CURVE_SEG_TYPE or 1      -- 1 binario (default); 0 strada (superstrade, bozza b4)
 		sg.comp.node0 = q0.id; sg.comp.node1 = q1.id
 		sg.comp.position0 = api.type.Vec3f.new(q0.x, q0.y, q0.z); sg.comp.position1 = api.type.Vec3f.new(q1.x, q1.y, q1.z)
 		sg.comp.tangent0 = api.type.Vec3f.new(d0x * dt, d0y * dt, dz); sg.comp.tangent1 = api.type.Vec3f.new(d1x * dt, d1y * dt, dz)
 		sg.comp.type = segKind[i] or 0
 		sg.comp.typeIndex = (segKind[i] == 1 and bridgeIdx) or (segKind[i] == 2 and tunnelIdx) or -1
 		sg.comp.laneConfigs = tmpl.laneConfigs; sg.comp.roadTemplate = TRACK_TMPL; sg.comp.roadStyle = tmpl.streetStyle
-		sg.comp.roadType = api.type.enum.RoadType.TRACK
+		sg.comp.roadType = CC.CURVE_ROAD_TYPE or api.type.enum.RoadType.TRACK
 		segs[#segs + 1] = sg
 	end
 	local prop = api.type.SimpleProposal.new()

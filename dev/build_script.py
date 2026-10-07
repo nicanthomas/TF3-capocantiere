@@ -9,6 +9,8 @@ Questo script sostituisce quella parte con il contenuto attuale dei due file e l
 Uso (dalla cartella del progetto):
     python dev/build_script.py            # scrive lo script aggiornato
     python dev/build_script.py --check    # controlla soltanto che lo script sia gia' allineato (codice 1 se no)
+    python dev/build_script.py --bozza    # include anche dev/bozza/b*.lua (azioni NON ancora provate) e le
+                                          # modifiche al lato interfaccia della v14 (vedi GUI_PATCHES)
 
 Prima di scrivere fa una copia di backup dello script (capocantiere.script.lua.bak_<data>) e
 controlla la sintassi Lua del risultato se sul sistema c'e' liblua (vedi luachk.py).
@@ -29,6 +31,29 @@ SCRIPT = os.path.join(ROOT, "mod", "tfcapocantiere_1", "content", "capocantiere"
 
 START = "CC sim library"
 END = "fine azioni"
+BOZZA = sorted(glob.glob(os.path.join(ROOT, "dev", "bozza", "b[0-9]_*.lua")))
+
+# Modifiche al lato interfaccia dello script (fuori dai marcatori) per la v14. Idempotenti: (testo da cercare,
+# testo nuovo, segno che la modifica c'e' gia').
+GUI_PATCHES = [
+    # velocita' del gioco in state.lua (0 = pausa): il middleware avvisa invece di aspettare 5 minuti
+    ("\tif okY then s.year = year end\n",
+     "\tif okY then s.year = year end\n"
+     "\tpcall(function() s.speed = api.engine.getComponent(api.engine.util.getWorld(), api.type.ComponentType.GAME_SPEED).speedup end)\n",
+     "s.speed = "),
+    # ogni azione che non e' gestita dall'interfaccia passa al lato simulazione (azioni nuove senza toccare SIM_TYPES)
+    ("\t\tif type(a) == \"table\" and SIM_TYPES[a.type] then\n",
+     "\t\tif type(a) == \"table\" and (SIM_TYPES[a.type] or (a.type and not handlers[a.type])) then\n",
+     "not handlers[a.type]"),
+    # riprendere il gioco dal middleware
+    ("handlers.ping = function(a)\n",
+     "handlers.set_speed = function(a)\n"
+     "\tapi.cmd.sendCommand(api.cmd.makeGameSetSpeedCmd(tonumber(a.speed) or 1))\n"
+     "\treturn { ok = true }\n"
+     "end\n\n"
+     "handlers.ping = function(a)\n",
+     "handlers.set_speed"),
+]
 
 
 def read(p: str) -> str:
@@ -53,15 +78,27 @@ def marker_line_end(text: str, marker: str) -> int:
     return len(text) if j < 0 else j + 1
 
 
-def compose() -> tuple[str, str]:
+def compose(bozza: bool = False) -> tuple[str, str]:
     lib, act, old = read(LIB), read(ACT), read(SCRIPT)
     if START not in lib.splitlines()[0]:
         raise SystemExit("cc_lib.lua non inizia con il marcatore 'CC sim library'")
     if END not in act.rstrip("\n").splitlines()[-1]:
         raise SystemExit("cc_actions.lua non finisce con il marcatore 'fine azioni'")
+    if bozza:
+        # la bozza va prima dell'ultima riga di cc_actions (il marcatore 'fine azioni'), cosi' resta tra i marcatori
+        body = act.rstrip("\n")
+        cut = body.rfind("\n") + 1
+        act = body[:cut] + "".join(read(p) for p in BOZZA) + body[cut:] + "\n"
     a = marker_line_start(old, START)
     b = marker_line_end(old, END)
     new = old[:a] + lib + act + old[b:]
+    if bozza:
+        for find, repl, done in GUI_PATCHES:
+            if done in new:
+                continue
+            if new.count(find) != 1:
+                raise SystemExit("punto di modifica non trovato nello script: " + find.strip()[:60])
+            new = new.replace(find, repl)
     return old, new
 
 
@@ -82,7 +119,7 @@ def lua_syntax_ok(code: str) -> tuple[bool, str]:
 
 
 def main() -> int:
-    old, new = compose()
+    old, new = compose("--bozza" in sys.argv)
     ok, msg = lua_syntax_ok(new)
     if not ok:
         print("ERRORE di sintassi Lua:", msg)
