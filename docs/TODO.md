@@ -44,7 +44,8 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Nodi intermodali merci: catene camion → treno → camion (e porto/aeroporto). (bozza: scali con l'industria nel bacino)
 - [ ] Riuso di stazioni e depositi esistenti.
 - [ ] Dimensionamento delle stazioni (oggi fisso: 160 m, 1-2 binari): lunghezza in base ai treni (composizione mai
-      piu' lunga del marciapiede), numero di binari in base a linee e frequenze (+ binari di transito), scali merci con
+      piu' lunga del marciapiede), numero di binari in base a linee e frequenze (+ binari di transito; binario unico
+      condiviso dai due sensi, con segnali e incroci, quando il traffico e' basso o lo spazio poco), scali merci con
       binari per tipo di merce, stazioni camion/bus con stalli in base al traffico; spazio lasciato per ampliare.
 - [ ] Conflitti di spazio (edifici, strade, acqua, pendenze, altre costruzioni): provare in ordine spostamento e rotazione,
       sito alternativo + navetta, stazione piu' corta con treni piu' corti, meno binari + sorpassi fuori stazione,
