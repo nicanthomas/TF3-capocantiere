@@ -8,7 +8,7 @@
 --   - avviso se la partita risulta in pausa.
 local NO_TX = { undo = true, check_line = true, check_network = true, read_map = true }
 local CLEANUP_ON_FAIL = { build_tram_line = true, build_bus_line = true, connect_industry_to_city = true,
-	build_intercity_bus = true, connect_station_to_town = true }
+	build_intercity_bus = true, connect_station_to_town = true, build_air_or_water_line = true }
 -- argomenti delle azioni gia' esistenti (gli stessi degli schemi di middleware/tools.py)
 local SPECS = {
 	build_bus_line = { town_id = "id", num_stops = "int?", num_vehicles = "int?", name = "str?" },
@@ -40,7 +40,7 @@ for name, f in pairs(SIM_ACTIONS) do
 				for i = #created.constructions, 1, -1 do
 					if CC.removeConstruction(created.constructions[i]) then n = n + 1 end
 				end
-				r.cleanup = n .. " costruzioni rimosse (fermate e strade restano)"
+				r.cleanup = n .. " costruzioni rimosse (fermate e strade cittadine restano)"
 				created = CC.txClassify(tx)
 			end
 			r.created = created

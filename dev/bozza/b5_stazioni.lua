@@ -456,7 +456,12 @@ SIM_ACTIONS.build_depot = function(a)
 		if not ok then return { ok = false, error = tostring(info.error) } end
 		local modes = kind == "tram" and { TM.TRAM, TM.ELECTRIC_TRAM } or { TM.BUS, TM.TRUCK }
 		local reach = true
-		if a.station_id then reach = CC.hasPath(CC.depotNodes(info.depot), CC.stopNodeId(a.station_id), modes) end
+		if a.station_id then
+			reach = false
+			for _, n in ipairs(CC.groupNodes(a.station_id)) do
+				if CC.hasPath(CC.depotNodes(info.depot), n, modes) then reach = true; break end
+			end
+		end
 		return { ok = reach, depot_id = info.depot, error = (not reach) and "deposito costruito ma non raggiunge la stazione" or nil }
 	elseif kind == "rail" then
 		local cands = CC.freeTrackEndsNear(p.x, p.y, 500)
@@ -469,7 +474,15 @@ SIM_ACTIONS.build_depot = function(a)
 		for i = 1, math.min(4, #cands) do
 			local okD, D = CC.buildRailDepotAtEnd(cands[i], name)
 			if okD then return { ok = true, depot_id = D.depot } end
-			errs[#errs + 1] = tostring(D.error)
+			local det = ""
+			if type(D.detail) == "table" then
+				local parts = {}
+				for _, x in pairs(D.detail) do parts[#parts + 1] = tostring(x) end
+				det = " (" .. table.concat(parts, ", ") .. ")"
+			elseif D.detail then
+				det = " (" .. tostring(D.detail) .. ")"
+			end
+			errs[#errs + 1] = tostring(D.error) .. det
 			if D.construction then CC.removeConstruction(D.construction) end
 		end
 		return { ok = false, error = #cands == 0 and "nessun binario libero vicino alla stazione: serve un binario morto" or table.concat(errs, "; ") }

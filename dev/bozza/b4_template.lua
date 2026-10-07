@@ -16,10 +16,10 @@ CC.TEMPLATES = CC.TEMPLATES or {
 		half = 330, kind = "air" },   -- da: Geldrop-Mierlo Airport
 	heliport = { file = "::/stations/air/heliport.con", params = {  },
 		modules = nil,
-		half = 75, kind = "air" },   -- da: Lisse Heliport
+		half = 75, kind = "air", Rs = { 150, 250, 400, 600, 900 } },   -- da: Lisse Heliport (vicino al centro: bacino)
 	helipad = { file = "::/stations/air/helipad.con", params = {  },
 		modules = nil,
-		half = 20, kind = "air" },   -- da: Winterswijk Heliport
+		half = 20, kind = "air", Rs = { 60, 120, 200, 300, 500 } },   -- da: Winterswijk Heliport (in citta')
 	harbor = { file = "::/stations/water/harbor_modular.con", params = { smallterminals = 1 },
 		modules = { [100009736] = { name = "::/stations/water/small_pier.module", variant = 0 }, [100009804] = { name = "::/stations/water/passenger_dock_50_12.module", variant = 0 }, [100010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [99010053] = { name = "::/stations/water/passenger_dock_25_25.module", variant = 0 }, [99010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 } },
 		half = 40, kind = "water", waterSide = "-Y" },   -- da: Hilversum Port #1
@@ -223,7 +223,10 @@ SIM_ACTIONS.build_air_or_water_line = function(a)
 	local folder = (a.kind == "heliport" or a.kind == "helipad") and CC.VEHICLE_FOLDERS.heli or (tpl.kind == "water" and CC.VEHICLE_FOLDERS.ship or CC.VEHICLE_FOLDERS.plane)
 	local groups, depots, log = {}, {}, {}
 	for i, t in ipairs(a.town_ids) do
-		local ok, info = CC.buildTemplateNear(a.kind, t, (CC.nameOf(t) or "Citta'") .. " " .. a.kind)
+		-- VERIFICATO (salvataggio di terzi): helipad.con non ha deposito, heliport.con si'. Con "helipad" la prima
+		-- fermata diventa un eliporto (fa da hangar), le altre restano piazzole.
+		local key = (a.kind == "helipad" and i == 1 and CC.TEMPLATES.heliport) and "heliport" or a.kind
+		local ok, info = CC.buildTemplateNear(key, t, (CC.nameOf(t) or "Citta'") .. " " .. key)
 		if not ok then return { ok = false, error = (CC.nameOf(t) or "?") .. ": " .. tostring(info), stations = groups, log = log } end
 		if not info.groups[1] then return { ok = false, error = "costruito ma senza stazione", log = log } end
 		groups[i] = info.groups[1]
@@ -237,24 +240,51 @@ SIM_ACTIONS.build_air_or_water_line = function(a)
 		local ok, info = CC.buildTemplateNear("water_depot", a.town_ids[1], "Cantiere navale")
 		if ok then depot = info.depots[1] else log[#log + 1] = "deposito navale: " .. tostring(info) end
 	end
+	-- aerei/elicotteri: ripiego su un hangar del giocatore gia' esistente dello stesso tipo (volano ovunque)
+	if not depot and tpl.kind == "air" then
+		local want = (folder == CC.VEHICLE_FOLDERS.heli) and "heli" or "air"
+		local p0 = CC.posOf(groups[1])
+		local bd
+		for _, d in ipairs(CC.playerDepots()) do
+			local f = d.file or ""
+			local match = (want == "heli" and f:find("heliport", 1, true)) or (want == "air" and (f:find("airport", 1, true) or f:find("airfield", 1, true)))
+			if match and p0 and d.x then
+				local dist = (d.x - p0.x) ^ 2 + (d.y - p0.y) ^ 2
+				if not bd or dist < bd then depot, bd = d.depot, dist end
+			end
+		end
+		if depot then log[#log + 1] = "hangar esistente usato: " .. tostring(depot) end
+	end
 	if not depot then return { ok = false, error = "nessun deposito/hangar per i veicoli", stations = groups, log = log } end
 	local okL, li = CC.createLine(a.name or ("Linea " .. a.kind), groups)
 	if not okL then return { ok = false, error = li.error, stations = groups, log = log } end
-	local model = CC.pickModel(folder, nil, { passengers = not a.cargo })
-	if a.cargo then
-		-- merci: il modello piu' recente con capacita' merci
-		model = nil
-		api.res.modelRep.forEachModelWithMetadata("transportVehicle", function(n)
-			if n:find("/" .. folder .. "/", 1, true) then
-				local id = api.res.modelRep.find(n)
-				local _, other = CC.modelLoads(id)
-				local av = api.res.modelRep.get(id).metadata.availability
-				local from, to = av and av.yearFrom or 0, av and av.yearTo or 0
-				local y = CC.year()
-				if other > 0 and from <= y and (to == 0 or to > y) and (not model or from > model.from) then model = { id = id, name = n, from = from } end
+	-- VERIFICATO (sonda s4 + prova p20 sul salvataggio di terzi): gli aerei hanno modo 9 (grandi, solo aeroporto) o
+	-- 11 (piccoli: campo d'aviazione e aeroporto). Sul campo d'aviazione un aereo di modo 9 non puo' essere assegnato.
+	local TMe = api.type.enum.TransportMode
+	local SMALL = (TMe and TMe.SMALL_AIRCRAFT) or 11
+	local needMode = (a.kind == "airfield") and SMALL or nil
+	local model
+	api.res.modelRep.forEachModelWithMetadata("transportVehicle", function(n)
+		if n:find("/" .. folder .. "/", 1, true) then
+			local id = api.res.modelRep.find(n)
+			local m = api.res.modelRep.get(id)
+			local av = m.metadata.availability
+			local from, to = av and av.yearFrom or 0, av and av.yearTo or 0
+			local y = CC.year()
+			if from <= y and (to == 0 or to > y) then
+				local okMode = true
+				if needMode then
+					okMode = false
+					pcall(function()
+						for _, tm in ipairs(CC.each(m.metadata.transportVehicle.engineTransportModes)) do if tm == needMode then okMode = true end end
+					end)
+				end
+				local pass, other = CC.modelLoads(id)
+				local okLoad = (a.cargo and other > 0) or ((not a.cargo) and pass > 0)
+				if okMode and okLoad and (not model or from > model.from) then model = { id = id, name = n, from = from } end
 			end
-		end)
-	end
+		end
+	end)
 	if not model then return { ok = false, error = "nessun veicolo '" .. folder .. "' disponibile quest'anno", line_id = li.line, log = log } end
 	local okV, v = CC.buyVehicles(depot, model.id, math.max(1, math.min(10, a.num_vehicles or 2)), li.line)
 	return { ok = okV and #v.errors == 0, line_id = li.line, stations = groups, depot_id = depot, vehicles = v.vehicles,

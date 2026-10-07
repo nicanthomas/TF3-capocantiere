@@ -232,22 +232,33 @@ SIM_ACTIONS.undo = function(a)
 	local nL = 0
 	for _, L in ipairs(c.lines or {}) do
 		if CC.comp(L, api.type.ComponentType.LINE) then
-			CC.sellVehicles(CC.lineVehicles(L))
+			local vs = CC.lineVehicles(L)
+			if #vs > 0 then sold = sold + (CC.sellVehicles(vs) or 0) end
 			if CC.send(api.cmd.makeLineDestroyCmd(L)) then nL = nL + 1 else log[#log + 1] = "linea " .. L .. " non cancellata" end
 		end
 	end
 	log[#log + 1] = nL .. " linee cancellate"
+	-- VERIFICATO (crash del 07.10.2026, "Assertion it != components.end()" sull'entita' del deposito): vendere i veicoli
+	-- e togliere nello stesso momento la costruzione col deposito in cui stanno fa crashare il gioco. Se in questa
+	-- chiamata sono stati venduti veicoli, le costruzioni con depositi restano: vanno tolte con un secondo "annulla".
+	local soldAny = sold > 0
+	local pending = {}
 	local nC = 0
 	for i = #(c.constructions or {}), 1, -1 do
 		local con = c.constructions[i]
-		if api.engine.entityExists(con) then
+		local hasDepot = false
+		pcall(function() hasDepot = #CC.each(CC.comp(con, api.type.ComponentType.CONSTRUCTION).depots) > 0 end)
+		if soldAny and hasDepot and api.engine.entityExists(con) then
+			pending[#pending + 1] = con
+		elseif api.engine.entityExists(con) then
 			if CC.removeConstruction(con) then nC = nC + 1 else log[#log + 1] = "costruzione " .. con .. " non rimossa" end
 		end
 	end
 	log[#log + 1] = nC .. " costruzioni rimosse"
+	if #pending > 0 then log[#log + 1] = #pending .. " costruzioni con deposito lasciate per un secondo annulla (veicoli appena venduti)" end
 	local okE, nE = CC.removeEdges(c.tracks or {})
 	log[#log + 1] = tostring(okE and nE or 0) .. " tratti di binario rimossi"
 	if c.roads and #c.roads > 0 then log[#log + 1] = #c.roads .. " tratti di strada lasciati (non si annullano)" end
-	return { ok = true, log = log, errors = e1 }
+	return { ok = true, log = log, errors = e1, pending_constructions = (#pending > 0) and pending or nil }
 end
 -- ===================================================================== fine b2
