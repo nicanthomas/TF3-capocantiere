@@ -3,8 +3,9 @@ Controlla che tutto sia pronto per usare Capo Cantiere. Non modifica nulla.
 
     python verifica_installazione.py
 
-Controlla: versione di Python, libreria anthropic, chiave API (solo se e' impostata: non viene mai
-mostrata), cartella di scambio, state.lua aggiornato dalla mod, file azioni rimasti da sessioni precedenti.
+Controlla: versione di Python, file del middleware, libreria anthropic, chiave API (solo se e' impostata: non
+viene mai mostrata), cartella di scambio, state.lua aggiornato dalla mod (versione della mod, pausa), file azioni
+rimasti da sessioni precedenti.
 """
 
 from __future__ import annotations
@@ -32,6 +33,16 @@ def main() -> int:
         report(OK, f"Python {v.major}.{v.minor}")
     else:
         report(ERR, f"Python {v.major}.{v.minor}: serve 3.10 o piu' recente")
+
+    # file del middleware (un file mancante = installazione a meta')
+    here = os.path.dirname(os.path.abspath(__file__))
+    needed = ["main.py", "game_bridge.py", "tools.py", "tools_bozza.py", "lua_table.py", "conversation.py", "journal.py",
+              "action_log.py", "collaudo.py", "versione.py"]
+    missing = [f for f in needed if not os.path.exists(os.path.join(here, f))]
+    if missing:
+        report(ERR, "file del middleware mancanti: " + ", ".join(missing))
+    else:
+        report(OK, f"file del middleware: {len(needed)} presenti")
 
     # libreria anthropic
     try:
@@ -68,6 +79,18 @@ def main() -> int:
             report(OK, f"state.lua aggiornato {age:.0f} s fa: la mod e' attiva")
         else:
             report(WARN, f"state.lua vecchio di {age / 60:.0f} min: la partita e' aperta (non nel menu) con la mod attiva?")
+        try:
+            import lua_table
+            s = lua_table.load_userdata(st)
+            ver = s.get("modVersion")
+            if ver:
+                report(OK, f"versione della mod: {ver}" + (f", build del gioco {s['gameBuild']}" if s.get("gameBuild") else ""))
+            else:
+                report(WARN, "la mod non riporta la versione (v13 o precedente): le azioni della bozza non ci sono")
+            if s.get("speed") == 0:
+                report(WARN, "la partita e' in pausa: le azioni aspettano finche' non riprende")
+        except Exception as e:                       # state.lua in scrittura o illeggibile: non e' grave
+            report(WARN, f"state.lua non leggibile adesso ({type(e).__name__}): riprova tra qualche secondo")
 
     # file azioni rimasti
     stale = [f for f in os.listdir(folder) if re.fullmatch(r"actions_\d+(_[0-9a-f]+)?\.lua", f)]

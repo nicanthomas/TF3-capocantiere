@@ -21,6 +21,8 @@ Comandi speciali nella console:
     /ping     verifica che la mod risponda
     /reset    dimentica la conversazione
     /esci     esce
+
+Registro delle azioni: <cartella capocantiere>/log/azioni_AAAA-MM.jsonl
 """
 
 from __future__ import annotations
@@ -28,20 +30,27 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 
-from conversation import cached_request, trim_history, validate_args
+from action_log import log_action
+from collaudo import Collaudo, format_report
+from conversation import cached_request, summarize_history, trim_history, validate_args
 from game_bridge import GameBridge, find_entities, overview
-from tools import LOCAL_TOOLS, SPENDING_TOOLS, TOOLS, describe_action
-
 from journal import Journal
+from tools import LOCAL_TOOLS, SPENDING_TOOLS, TOOLS, describe_action
+from tools_bozza import format_plan
+from versione import check_versions
 
 # Azioni della bozza (dev/bozza, non ancora provate in gioco): solo con la variabile CAPOCANTIERE_BOZZA=1
 # e con la mod costruita includendo la bozza.
 USE_BOZZA = os.environ.get("CAPOCANTIERE_BOZZA") == "1"
+READ_TOOLS: set = set()
 if USE_BOZZA:
-    from tools_bozza import SPENDING_TOOLS_BOZZA, SYSTEM_PROMPT_BOZZA, TOOLS_BOZZA
+    from tools_bozza import LOCAL_TOOLS_BOZZA, READ_TOOLS_BOZZA, SPENDING_TOOLS_BOZZA, SYSTEM_PROMPT_BOZZA, TOOLS_BOZZA
     TOOLS = TOOLS + TOOLS_BOZZA
     SPENDING_TOOLS = SPENDING_TOOLS | SPENDING_TOOLS_BOZZA
+    LOCAL_TOOLS = LOCAL_TOOLS | LOCAL_TOOLS_BOZZA
+    READ_TOOLS = set(READ_TOOLS_BOZZA)
 
 TOOLS_BY_NAME = {t["name"]: t for t in TOOLS}
 
@@ -49,7 +58,8 @@ TOOLS_BY_NAME = {t["name"]: t for t in TOOLS}
 MODEL = "claude-sonnet-5-5"
 MAX_TOKENS = 4096
 MAX_TOOL_ROUNDS = 12           # limite di sicurezza ai giri di tool per una singola richiesta
-MAX_TURNS = 8                  # turni di conversazione tenuti in memoria (i piu' vecchi vengono tolti)
+MAX_TURNS = 8                  # turni di conversazione tenuti per intero (i piu' vecchi diventano un riassunto)
+MAX_AUTO_CHECKS = 5            # collaudi automatici (dopo 1-2 mesi di gioco) per ogni turno dell'utente
 
 SYSTEM_PROMPT = """Sei il "Capo Cantiere" di una partita a Transport Fever 3 (l'anno corrente e' in get_overview:
 la mod sceglie da sola veicoli, binari e stazioni adatti all'epoca).
@@ -78,7 +88,22 @@ if USE_BOZZA:
     SYSTEM_PROMPT += SYSTEM_PROMPT_BOZZA
 
 
+def ask_plan(args: dict) -> dict:
+    """Mostra il piano proposto da Claude e raccoglie la risposta dell'utente (si', no, o modifiche)."""
+    print("\n  >>> Piano proposto:")
+    print(format_plan(args))
+    ans = input("  Confermi il piano? (s = si', n = no, oppure scrivi cosa cambiare) ").strip()
+    low = ans.lower()
+    if low in ("s", "si", "sì", "y", "yes", "ok"):
+        return {"approved": True}
+    if low in ("n", "no", ""):
+        return {"approved": False}
+    return {"approved": False, "feedback": ans}
+
+
 def run_local_tool(name: str, args: dict, bridge: GameBridge) -> dict:
+    if name == "propose_plan":
+        return ask_plan(args)
     state = bridge.state()
     if name == "find_entity":
         return {"results": find_entities(state, args.get("query", ""), args.get("kind", "any"))}
@@ -113,12 +138,17 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
     else:
         action = {"type": name}
         action.update(args)
-    print("  (in costruzione: puo' richiedere fino a qualche minuto...)")
+    if name not in READ_TOOLS:
+        print("  (in costruzione: puo' richiedere fino a qualche minuto...)")
+    t0 = time.time()
     try:
         results = bridge.send([action], timeout=330)   # la mod aspetta fino a 300 s
     except TimeoutError as e:
-        return {"ok": False, "error": str(e)}
+        result = {"ok": False, "error": str(e)}
+        _log(bridge, name, args, result, time.time() - t0)
+        return result
     result = results[0] if results else {"ok": False, "error": "nessun risultato"}
+    _log(bridge, name, args, result, time.time() - t0)
     if isinstance(result, dict):
         if entry:
             if result.get("ok"):
@@ -126,7 +156,55 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
         else:
             journal.record(name, args, result)
             result.pop("created", None)                  # a Claude non serve l'elenco delle entita'
+            if name not in READ_TOOLS:
+                schedule_checks(bridge, name, result)
     return result
+
+
+def _log(bridge: GameBridge, name: str, args: dict, result: dict, seconds: float) -> None:
+    try:
+        log_action(bridge.folder, name, args, result, seconds)
+    except OSError as e:                                 # il registro non deve fermare il lavoro
+        print(f"  (registro azioni non scritto: {e})")
+
+
+def schedule_checks(bridge: GameBridge, name: str, result: dict) -> None:
+    """Le linee appena create vanno ricontrollate dopo 1-2 mesi di gioco (collaudo a distanza di tempo)."""
+    ids = list(result.get("line_ids") or [])
+    if result.get("line_id") is not None and result.get("line_id") not in ids:
+        ids.append(result["line_id"])
+    if ids and result.get("ok") is not False:
+        try:
+            Collaudo(bridge.folder).add(ids, bridge.state(), action=name)
+        except (OSError, RuntimeError):
+            pass
+
+
+def run_due_checks(bridge: GameBridge) -> str:
+    """Collaudi scaduti: check_line sul gioco per ogni linea; ritorna il testo da aggiungere al messaggio
+    dell'utente (vuoto se non c'e' niente). Gli errori di comunicazione rimandano il controllo al turno dopo."""
+    col = Collaudo(bridge.folder)
+    try:
+        state = bridge.state()
+        due = col.due(state)[:MAX_AUTO_CHECKS]
+    except (OSError, RuntimeError):
+        return ""
+    if not due or state.get("speed") == 0:
+        return ""
+    results, done = {}, []
+    for L in due:
+        try:
+            r = bridge.send([{"type": "check_line", "line_id": L}], timeout=60)
+        except TimeoutError:
+            break
+        results[L] = r[0] if r else None
+        done.append(L)
+    if not done:
+        return ""
+    col.mark_done(done)
+    report = format_report(results)
+    print("\n  [Collaudo automatico dopo 2 mesi di gioco]\n" + report)
+    return "\n\n[Collaudo automatico dopo 2 mesi di gioco]\n" + report
 
 
 def ask_claude(client, messages: list, bridge: GameBridge) -> None:
@@ -197,6 +275,11 @@ def main() -> None:
     moved = bridge.archive_stale_actions()
     if moved:
         print(f"Spostati in 'vecchi' {len(moved)} file azioni rimasti da sessioni precedenti: {', '.join(moved)}")
+    try:
+        for msg in check_versions(bridge.state(), bridge.folder):
+            print("Attenzione: " + msg)
+    except (OSError, RuntimeError):
+        pass
     client = anthropic.Anthropic()
     messages: list = []
 
@@ -231,7 +314,13 @@ def main() -> None:
                   f"{len(ov['lines'])} linee")
             continue
 
-        trim_history(messages, MAX_TURNS - 1)           # spazio per il turno nuovo
+        try:                                             # i turni vecchi diventano un riassunto
+            summarize_history(client, MODEL, messages, MAX_TURNS - 1)
+        except Exception as e:                           # se il riassunto non riesce, li taglio e basta
+            print(f"(riassunto non riuscito: {type(e).__name__}; tengo solo gli ultimi turni)")
+            trim_history(messages, MAX_TURNS - 1)
+        if USE_BOZZA:
+            text += run_due_checks(bridge)
         n_before = len(messages)
         messages.append({"role": "user", "content": text})
         try:

@@ -34,7 +34,7 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Salvataggio automatico prima delle azioni grandi (verificare se l'API lo consente).
 - [ ] Avviso / ripresa se la partita e' in pausa. (bozza: velocita' in state.lua, avviso nel middleware, `set_speed`)
 - [x] Validazione degli argomenti nel middleware (schema dei tool).
-- [ ] Validazione degli input anche nella mod.
+- [ ] Validazione degli input anche nella mod. (bozza: `CC.need` controlla anche che gli id esistano; tabella SPECS in b9)
 - [ ] Pulizia automatica anche per il tram quando l'azione fallisce. (bozza: b9)
 
 ## Fase 2 - Logica di posizionamento
@@ -43,24 +43,24 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Nodi intermodali passeggeri: stazione treno vicino a fermata tram/bus, linea urbana che passa dalla stazione. (bozza: navetta)
 - [ ] Nodi intermodali merci: catene camion → treno → camion (e porto/aeroporto). (bozza: scali con l'industria nel bacino)
 - [ ] Riuso di stazioni e depositi esistenti.
-- [ ] Dimensionamento delle stazioni (oggi fisso: 160 m, 1-2 binari): lunghezza in base ai treni (composizione mai
+- [ ] Dimensionamento delle stazioni (bozza b5; oggi fisso: 160 m, 1-2 binari): lunghezza in base ai treni (composizione mai
       piu' lunga del marciapiede), numero di binari in base a linee e frequenze (+ binari di transito; binario unico
       condiviso dai due sensi, con segnali e incroci, quando il traffico e' basso o lo spazio poco), scali merci con
       binari per tipo di merce, stazioni camion/bus con stalli in base al traffico; spazio lasciato per ampliare.
-- [ ] Conflitti di spazio (edifici, strade, acqua, pendenze, altre costruzioni): provare in ordine spostamento e rotazione,
+- [ ] Conflitti di spazio (bozza b5 `CC.placeStationSmart`; edifici, strade, acqua, pendenze, altre costruzioni): provare in ordine spostamento e rotazione,
       sito alternativo + navetta, stazione piu' corta con treni piu' corti, meno binari + sorpassi fuori stazione,
       ampliamento di una stazione esistente; demolire edifici della citta' solo dopo conferma; se nulla va, spiegare a
       Claude le alternative invece di costruire a meta'.
 - [ ] Depositi con logica: vicino al capolinea, collegati alla rete della linea, fuori dal centro. Tutti i tipi:
       strada, tram, ferrovia, navale; per aerei/elicotteri verificare se serve un deposito o fa da hangar l'aeroporto.
-- [ ] Comando diretto "costruisci deposito" (oggi i depositi nascono solo dentro "fai una linea").
+- [ ] Comando diretto "costruisci deposito". (bozza: `build_depot`, b5)
 
 ## Fase 2b - Collaudo: quello che costruisco deve funzionare
-- [ ] Dopo ogni costruzione, controllo automatico: linea con percorso valido, veicoli assegnati e in movimento
+- [ ] (bozza b8 + b9: `result.collaudo`) Dopo ogni costruzione, controllo automatico: linea con percorso valido, veicoli assegnati e in movimento
       (non bloccati), deposito raggiungibile, fermate con citta'/industrie nel bacino.
-- [ ] Controllo a distanza di tempo (es. dopo 1-2 mesi di gioco): passeggeri/merci trasportati > 0, carico in attesa,
+- [ ] (bozza: `middleware/collaudo.py` + `check_line`) Controllo a distanza di tempo (es. dopo 1-2 mesi di gioco): passeggeri/merci trasportati > 0, carico in attesa,
       veicoli fermi. Rapporto a Claude e proposta di correzione (piu' veicoli, fermata spostata, collegamento mancante).
-- [ ] Comando "controlla la rete": elenco di linee e costruzioni che non funzionano.
+- [ ] Comando "controlla la rete": elenco di linee e costruzioni che non funzionano. (bozza: `check_network`)
 - [ ] Le prove in gioco (p1-p9) verificano anche il funzionamento, non solo che la costruzione esista.
 
 ## Fase 2c - Imparare da reti fatte da altri e dalle mod esterne
@@ -72,7 +72,7 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 
 ## Fase 3 - Nuovi mezzi e infrastrutture
 - [ ] Treni merci. (bozza: b3, solo 1 fermata di carico -> 1 di scarico, 1 merce)
-- [ ] Linee merci a piu' fermate: raccolta da piu' industrie, consegna in piu' citta'/industrie, carico anche al ritorno
+- [ ] (bozza b7: `build_cargo_rail_network`) Linee merci a piu' fermate: raccolta da piu' industrie, consegna in piu' citta'/industrie, carico anche al ritorno
       (es. carbone all'andata, acciaio al ritorno), vagoni misti per piu' merci; Claude sceglie lo schema in base alla
       mappa e lo spiega nel piano.
 - [ ] Bus tra citta' vicine. (bozza: b2)
@@ -80,15 +80,15 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Aerei passeggeri e merci (aeroporti). (bozza b4 + sonde: schemi da copiare in gioco)
 - [ ] Elicotteri (esistono: eliporto nel menu aereo, passeggeri e merci). (bozza b4)
 - [ ] Navi passeggeri e merci (porti: `harbor_modular.con`, `water_depot.con`). (bozza b4)
-- [ ] Capacita' ferroviaria: doppio binario, segnali.
-- [ ] Linee circolari (anello chiuso) e linee nei due sensi opposti sulla stessa infrastruttura.
-- [ ] Traffico misto passeggeri + merci sugli stessi binari: scali merci su raccordi collegati alla linea principale
+- [ ] Capacita' ferroviaria: doppio binario, segnali. (bozza b6: i segnali vanno verificati con la sonda s8)
+- [ ] Linee circolari (anello chiuso) e linee nei due sensi opposti sulla stessa infrastruttura. (bozza: `build_rail_ring`)
+- [ ] (bozza b7: raccordo con `build_rail_station`, linee con `create_line_from_stations`) Traffico misto passeggeri + merci sugli stessi binari: scali merci su raccordi collegati alla linea principale
       con scambi, binari di sorpasso/precedenza, binari di transito nelle stazioni passeggeri per i merci, segnali
       fitti; il collaudo controlla che i merci lenti non blocchino i passeggeri.
-- [ ] Treni veloci / alta velocita' sulla stessa infrastruttura: linee che fermano solo nelle citta' principali,
+- [ ] (bozza b3: `express_town_ids`) Treni veloci / alta velocita' sulla stessa infrastruttura: linee che fermano solo nelle citta' principali,
       binari di transito nelle stazioni minori, binario ad alta velocita' e curve ampie dove serve, sorpassi dei treni
       lenti; avviso a Claude se la capacita' non basta (proposta: binari dedicati all'AV).
-- [ ] Attesa fuori stazione con piu' treni sulla stessa linea (soprattutto merci avanti/indietro): segnale d'ingresso
+- [ ] (bozza b6 `CC.buildPassingLoop`, usata da b7) Attesa fuori stazione con piu' treni sulla stessa linea (soprattutto merci avanti/indietro): segnale d'ingresso
       prima della stazione, binari d'attesa lunghi quanto il treno e fuori dalla linea principale (non bloccano altri
       treni ne' scambi/incroci), numero di binari di carico/scarico in base ai treni in circolo, eventuale anello di
       ritorno al capolinea; il collaudo controlla code ai segnali e treni fermi sulla linea.
@@ -96,10 +96,10 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
       piu' grandi, strade allargate, scali e porti ampliati (le arterie fatte a inizio partita devono poter crescere).
 
 ## Fase 3b - Pianificazione della rete (direttive strategiche)
-- [ ] Direttive ampie ("collega tutte le citta' principali", "porta il carbone alla citta' X"): Claude legge la mappa,
+- [ ] (bozza: `propose_plan` + istruzioni in `middleware/tools_bozza.py`) Direttive ampie ("collega tutte le citta' principali", "porta il carbone alla citta' X"): Claude legge la mappa,
       propone un piano in passi (arterie prima, poi linee secondarie e nodi di scambio), chiede conferma, poi costruisce
       un passo alla volta controllando ogni risultato.
-- [ ] Lettura della mappa per Claude: citta' e dimensioni, industrie e catene merci, acqua/coste, rilievi, rete esistente.
+- [ ] (bozza: `read_map`) Lettura della mappa per Claude: citta' e dimensioni, industrie e catene merci, acqua/coste, rilievi, rete esistente.
 
 ## Fase 4 - Gestione della rete
 - [ ] Aggiungere/togliere veicoli, sostituire modelli vecchi. (bozza: b2)
@@ -115,19 +115,20 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 ## Fase 6 - Qualita' e manutenzione
 - [x] Script di build `dev/build_script.py` (backup + controllo sintassi + `--check`).
 - [ ] Eventuale divisione dello script della mod in piu' file (da provare se TF3 lo consente).
-- [ ] Log per azione nella cartella capocantiere.
-- [ ] Numero di versione scritto dallo script di build dentro lo script della mod (e in state.lua).
+- [x] Log per azione nella cartella capocantiere (`middleware/action_log.py`: log/azioni_AAAA-MM.jsonl).
+- [x] Numero di versione scritto dallo script di build dentro lo script della mod (in state.lua con la v14).
 - [ ] Promozione delle bozze provate: da `dev/bozza/` a `cc_actions.lua`, schemi da `tools_bozza.py` a `tools.py`.
-- [ ] `state.lua` su mappe grandi: esportare solo i dati utili, e piu' di rado quando nulla cambia.
+- [ ] `state.lua` su mappe grandi: esportare solo i dati utili, e piu' di rado quando nulla cambia. (bozza: l'intervallo
+      si allunga fino a 60 s se l'esportazione e' lenta)
 - [x] Test automatici del middleware senza gioco (`middleware/test_middleware.py`).
 - [ ] Test automatici in gioco su CC_test.
 - [ ] Prove su una mappa nuova appena creata (2300, nessuna infrastruttura) come caso principale.
 - [ ] Prove nelle epoche intermedie (1950, 1990) e su altre mappe (montagna, isole, citta' molto dense).
 - [ ] Filtro veicoli delle mod (parti di treni bloccati, modelli incompleti).
-- [ ] Avviso se cambia la build di TF3.
+- [ ] Avviso se cambia la build di TF3. (bozza: `middleware/versione.py`; lettura della build in gioco DA VERIFICARE, sonda s11)
 - [x] Meno consumo API: prompt caching e taglio dei turni vecchi (`MAX_TURNS`).
-- [ ] Riassunto automatico dei messaggi vecchi (oggi vengono solo tagliati: Claude perde il contesto delle
-      costruzioni fatte prima).
+- [x] Riassunto automatico dei messaggi vecchi (`summarize_history`; se non riesce si tagliano come prima). Da provare
+      con la chiave vera.
 - [x] Middleware: all'avvio sposta in `vecchi` i file `actions_` rimasti (senza cancellarli).
 - [x] `docs/scoperte-api.md`: righe su `trackType` e `tramCatenary` corrette (indici da 1).
 - [ ] Finale: `DEV_MODE = false`, README aggiornato.

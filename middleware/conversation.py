@@ -2,12 +2,15 @@
 Aiuti per la conversazione con Claude:
   - validate_args: controlla gli argomenti di un tool rispetto al suo JSON Schema prima di mandarli al gioco
   - trim_history: tiene solo gli ultimi turni della conversazione (meno token = meno costi)
+  - summarize_history: come trim_history, ma i turni tolti diventano un riassunto (cosa e' stato costruito, id,
+    decisioni, piani approvati): Claude non perde il contesto delle costruzioni fatte prima
   - cached_request: prepara system, tools e messaggi con i punti di cache (prompt caching dell'API)
 """
 
 from __future__ import annotations
 
 import copy
+import json
 from typing import Any
 
 CACHE = {"type": "ephemeral"}
@@ -80,6 +83,67 @@ def trim_history(messages: list, max_turns: int = 8) -> int:
         return 0
     cut = starts[-max_turns]
     del messages[:cut]
+    return cut
+
+
+SUMMARY_PROMPT = """Riassumi in italiano, in al massimo 15 righe, la parte di conversazione che ricevi tra un utente e il
+"Capo Cantiere" di Transport Fever 3. Tieni solo cio' che serve per continuare il lavoro:
+- cosa e' stato costruito, con gli id di linee, stazioni, depositi e citta' (gli id sono importanti);
+- decisioni e preferenze dell'utente, piani approvati e passi non ancora fatti;
+- problemi aperti (collaudi falliti, errori della mod).
+Niente frasi di cortesia. Se c'e' gia' un riassunto precedente, uniscilo al nuovo."""
+
+SUMMARY_HEAD = "[Riassunto della conversazione precedente]"
+
+
+def _block_get(b: Any, key: str, default: Any = None) -> Any:
+    """I blocchi possono essere dizionari (scritti da noi) o oggetti dell'SDK (risposte di Claude)."""
+    if isinstance(b, dict):
+        return b.get(key, default)
+    return getattr(b, key, default)
+
+
+def transcript(messages: list, max_chars: int = 15000, result_chars: int = 400) -> str:
+    """Testo semplice della conversazione (per il riassunto): messaggi, tool chiamati e risultati accorciati."""
+    out = []
+    for m in messages:
+        who = "Utente" if m.get("role") == "user" else "Capo Cantiere"
+        c = m.get("content")
+        if isinstance(c, str):
+            out.append(f"{who}: {c}")
+            continue
+        for b in c or []:
+            t = _block_get(b, "type")
+            if t == "text":
+                out.append(f"{who}: {_block_get(b, 'text', '')}")
+            elif t == "tool_use":
+                args = json.dumps(_block_get(b, "input", {}) or {}, ensure_ascii=False)
+                out.append(f"[tool {_block_get(b, 'name')} {args}]")
+            elif t == "tool_result":
+                res = _block_get(b, "content", "")
+                if not isinstance(res, str):
+                    res = json.dumps(res, ensure_ascii=False)
+                out.append(f"[risultato: {res[:result_chars]}]")
+    text = "\n".join(out)
+    return text[-max_chars:]
+
+
+def summarize_history(client: Any, model: str, messages: list, max_turns: int = 8, max_tokens: int = 700) -> int:
+    """Se i turni sono piu' di max_turns, sostituisce i piu' vecchi con un riassunto fatto da Claude (una coppia di
+    messaggi utente/assistente all'inizio). Modifica la lista e ritorna quanti messaggi ha tolto.
+    Se la chiamata fallisce l'eccezione passa al chiamante, che puo' ripiegare su trim_history."""
+    starts = [i for i, m in enumerate(messages) if _is_turn_start(m)]
+    if len(starts) <= max_turns:
+        return 0
+    cut = starts[-max_turns]
+    old = messages[:cut]
+    resp = client.messages.create(model=model, max_tokens=max_tokens, system=SUMMARY_PROMPT,
+                                  messages=[{"role": "user", "content": transcript(old)}])
+    summary = "".join(_block_get(b, "text", "") for b in resp.content if _block_get(b, "type") == "text").strip()
+    if not summary:
+        raise RuntimeError("riassunto vuoto")
+    messages[:cut] = [{"role": "user", "content": f"{SUMMARY_HEAD}\n{summary}"},
+                      {"role": "assistant", "content": "Ok, ne tengo conto."}]
     return cut
 
 

@@ -14,13 +14,19 @@ Uso (dalla cartella del progetto):
 
 Prima di scrivere fa una copia di backup dello script (capocantiere.script.lua.bak_<data>) e
 controlla la sintassi Lua del risultato se sul sistema c'e' liblua (vedi luachk.py).
+
+Numero di versione: lo script riceve la riga  local CC_VERSION = "..."  (v14 + "bozza-" se c'e' la bozza + le prime
+8 cifre dell'impronta SHA-1 del codice composto). Con la bozza la versione finisce anche in state.lua (modVersion),
+cosi' il middleware sa quale mod sta girando.
 """
 
 from __future__ import annotations
 
 import datetime
 import glob
+import hashlib
 import os
+import re
 import shutil
 import sys
 
@@ -45,6 +51,23 @@ GUI_PATCHES = [
     ("\t\tif type(a) == \"table\" and SIM_TYPES[a.type] then\n",
      "\t\tif type(a) == \"table\" and (SIM_TYPES[a.type] or (a.type and not handlers[a.type])) then\n",
      "not handlers[a.type]"),
+    # versione della mod, tempo di gioco (collaudo dopo 1-2 mesi) e build del gioco in state.lua.
+    # date e gameBuild: DA VERIFICARE in gioco (se le funzioni non esistono restano vuoti, senza errori)
+    ("\tif okY then s.year = year end\n",
+     "\tif okY then s.year = year end\n"
+     "\ts.modVersion = CC_VERSION\n"
+     "\tpcall(function() s.gameTime = api.engine.getComponent(api.engine.util.getWorld(), api.type.ComponentType.GAME_TIME).gameTime end)\n"
+     "\tpcall(function() local d = game.interface.getGameTime().date; s.date = { year = d.year, month = d.month, day = d.day } end)\n"
+     "\tpcall(function() s.gameBuild = api.util.getBuildVersion() end)\n",
+     "s.modVersion = CC_VERSION"),
+    # state.lua su mappe grandi: se l'esportazione e' lenta, la si fa piu' di rado (10-60 s, 100 volte la sua durata)
+    ("\tif not g.lastExport or now - g.lastExport >= EXPORT_INTERVAL then\n",
+     "\tif not g.lastExport or now - g.lastExport >= (g.exportInterval or EXPORT_INTERVAL) then\n",
+     "(g.exportInterval or EXPORT_INTERVAL)"),
+    ("\t\tlocal ok, st, dt = pcall(exportState)\n",
+     "\t\tlocal ok, st, dt = pcall(exportState)\n"
+     "\t\tif ok and dt then g.exportInterval = math.max(EXPORT_INTERVAL, math.min(60, math.floor(dt * 100))) end\n",
+     "g.exportInterval = math.max"),
     # riprendere il gioco dal middleware
     ("handlers.ping = function(a)\n",
      "handlers.set_speed = function(a)\n"
@@ -92,6 +115,7 @@ def compose(bozza: bool = False) -> tuple[str, str]:
     a = marker_line_start(old, START)
     b = marker_line_end(old, END)
     new = old[:a] + lib + act + old[b:]
+    new = set_version(new, version_of(lib + act, bozza))
     if bozza:
         for find, repl, done in GUI_PATCHES:
             if done in new:
@@ -100,6 +124,22 @@ def compose(bozza: bool = False) -> tuple[str, str]:
                 raise SystemExit("punto di modifica non trovato nello script: " + find.strip()[:60])
             new = new.replace(find, repl)
     return old, new
+
+
+def version_of(code: str, bozza: bool) -> str:
+    """Versione deterministica: stessa composizione = stessa versione (cosi' --check resta affidabile)."""
+    return "v14-" + ("bozza-" if bozza else "") + hashlib.sha1(code.encode("utf-8")).hexdigest()[:8]
+
+
+def set_version(script: str, version: str) -> str:
+    """Scrive (o aggiorna) la riga 'local CC_VERSION = ...' subito dopo 'local STATE_VERSION = ...'."""
+    line = f'local CC_VERSION = "{version}"'
+    if re.search(r'^local CC_VERSION = ".*"$', script, flags=re.M):
+        return re.sub(r'^local CC_VERSION = ".*"$', line, script, count=1, flags=re.M)
+    m = re.search(r"^local STATE_VERSION = .*$", script, flags=re.M)
+    if not m:
+        raise SystemExit("riga 'local STATE_VERSION' non trovata: non so dove scrivere la versione")
+    return script[:m.end()] + "\n" + line + script[m.end():]
 
 
 def lua_syntax_ok(code: str) -> tuple[bool, str]:
@@ -135,6 +175,8 @@ def main() -> int:
     if old == new:
         print("Nessuna modifica: lo script e' gia' allineato")
         return 0
+    v = re.search(r'^local CC_VERSION = "(.*)"$', new, flags=re.M)
+    print("Versione della mod:", v.group(1) if v else "?")
     stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     shutil.copy2(SCRIPT, SCRIPT + ".bak_" + stamp)
     with open(SCRIPT, "w", encoding="utf-8", newline="") as f:

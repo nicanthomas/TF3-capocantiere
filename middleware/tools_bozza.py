@@ -11,7 +11,15 @@ SPENDING_TOOLS_BOZZA = {
     "build_intercity_bus", "connect_station_to_town", "add_vehicles", "remove_vehicles", "replace_vehicles",
     "delete_line", "extend_line", "build_cargo_rail_line", "build_air_or_water_line", "build_highway",
     "undo_last_action",
+    "build_depot", "build_rail_line2", "build_rail_ring", "build_cargo_rail_network", "create_line_from_stations",
+    "build_rail_station",
 }
+
+# Tool della bozza che leggono soltanto (nessuna conferma): vanno comunque al gioco.
+READ_TOOLS_BOZZA = {"check_line", "check_network", "read_map"}
+
+# Tool gestiti dal middleware senza il gioco.
+LOCAL_TOOLS_BOZZA = {"propose_plan"}
 
 _ID = {"type": "integer"}
 
@@ -89,6 +97,115 @@ TOOLS_BOZZA = [
             "town_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 2}}, "required": ["town_ids"]},
     },
     {
+        "name": "build_depot",
+        "description": ("Costruisce un deposito (kind = road | tram | rail | water) vicino a una stazione (station_id) o a una "
+                        "citta' (town_id), verso l'esterno del centro, collegato alla rete. Usalo quando check_line dice che "
+                        "nessun deposito raggiunge la linea. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "kind": {"type": "string", "enum": ["road", "tram", "rail", "water"]},
+            "station_id": _ID, "town_id": _ID, "name": {"type": "string"}}, "required": ["kind"]},
+    },
+    {
+        "name": "build_rail_line2",
+        "description": ("Ferrovia passeggeri tra 2-6 citta' (in ordine di percorso) con stazioni nel punto con piu' edifici e "
+                        "dimensionate (lunghezza e binari in base ai treni), navette verso il centro. double_track = doppio "
+                        "binario con segnali; express_town_ids = linea veloce che ferma solo in quelle citta' (binari di "
+                        "transito nelle altre). I treni fermano anche al ritorno. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "town_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 6},
+            "num_trains": {"type": "integer", "minimum": 1, "maximum": 12, "default": 1},
+            "num_cars": {"type": "integer", "minimum": 1, "maximum": 12, "default": 3},
+            "double_track": {"type": "boolean", "default": False},
+            "express_town_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 6},
+            "express_trains": {"type": "integer", "minimum": 1, "maximum": 4, "default": 1},
+            "feeder": {"type": "boolean", "default": True},
+            "name": {"type": "string"}}, "required": ["town_ids"]},
+    },
+    {
+        "name": "build_rail_ring",
+        "description": ("Ferrovia ad anello tra 3-8 citta' (ordinate per il giro piu' corto, salvo reorder=false), linee nei "
+                        "due sensi (both_directions), treni distribuiti lungo il giro, deposito accanto alla prima stazione. "
+                        "double_track = un binario per senso con segnali. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "town_ids": {"type": "array", "items": _ID, "minItems": 3, "maxItems": 8},
+            "both_directions": {"type": "boolean", "default": True},
+            "trains_per_direction": {"type": "integer", "minimum": 1, "maximum": 4, "default": 1},
+            "num_cars": {"type": "integer", "minimum": 1, "maximum": 12, "default": 3},
+            "double_track": {"type": "boolean", "default": False},
+            "reorder": {"type": "boolean", "default": True},
+            "name": {"type": "string"}}, "required": ["town_ids"]},
+    },
+    {
+        "name": "build_cargo_rail_network",
+        "description": ("Linea merci in treno a piu' fermate: raccolta da piu' industrie (pickup_ids), consegna a piu' "
+                        "industrie o citta' (delivery_ids), carico anche al ritorno (return_cargo), vagoni per tutte le merci, "
+                        "scali dimensionati, binari d'attesa se i treni sono piu' dei binari. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "pickup_ids": {"type": "array", "items": _ID, "minItems": 1, "maxItems": 5},
+            "delivery_ids": {"type": "array", "items": _ID, "minItems": 1, "maxItems": 5},
+            "num_trains": {"type": "integer", "minimum": 1, "maximum": 6, "default": 1},
+            "num_cars": {"type": "integer", "minimum": 1, "maximum": 16, "default": 6},
+            "return_cargo": {"type": "boolean", "default": True},
+            "name": {"type": "string"}}, "required": ["pickup_ids", "delivery_ids"]},
+    },
+    {
+        "name": "create_line_from_stations",
+        "description": ("Linea su stazioni gia' costruite (id dei gruppi, in ordine di percorso): pattern back_forth (andata e "
+                        "ritorno con fermate) o ring (anello; both_directions = anche il verso opposto). vehicle auto/bus/tram/"
+                        "truck/train/ship/plane; cargo = nome della merce per treni o camion merci. Serve anche per linee veloci "
+                        "o merci sugli stessi binari di un'altra linea. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "station_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 12},
+            "pattern": {"type": "string", "enum": ["back_forth", "ring"], "default": "back_forth"},
+            "both_directions": {"type": "boolean", "default": False},
+            "vehicle": {"type": "string", "enum": ["auto", "bus", "tram", "truck", "train", "ship", "plane"], "default": "auto"},
+            "count": {"type": "integer", "minimum": 1, "maximum": 20, "default": 2},
+            "num_cars": {"type": "integer", "minimum": 1, "maximum": 12, "default": 4},
+            "cargo": {"type": "string"},
+            "name": {"type": "string"}}, "required": ["station_ids"]},
+    },
+    {
+        "name": "build_rail_station",
+        "description": ("Una stazione ferroviaria (kind passengers | cargo) vicino a una citta' o industria (near_id), "
+                        "dimensionata per trains/lines, collegata con un raccordo al binario del giocatore piu' vicino "
+                        "(connect, default si'): per aggiungere scali merci o fermate a una linea esistente. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "near_id": _ID, "kind": {"type": "string", "enum": ["passengers", "cargo"], "default": "passengers"},
+            "trains": {"type": "integer", "minimum": 1, "maximum": 12, "default": 1},
+            "lines": {"type": "integer", "minimum": 1, "maximum": 6, "default": 1},
+            "train_len": {"type": "integer", "minimum": 40, "maximum": 480},
+            "connect": {"type": "boolean", "default": True},
+            "name": {"type": "string"}}, "required": ["near_id"]},
+    },
+    {
+        "name": "check_line",
+        "description": ("Collaudo di una linea: percorso tra le fermate, veicoli presenti e in movimento, deposito, bacino delle "
+                        "fermate, statistiche se disponibili. Restituisce problemi e suggerimenti. Non costruisce nulla."),
+        "input_schema": {"type": "object", "properties": {"line_id": _ID}, "required": ["line_id"]},
+    },
+    {
+        "name": "check_network",
+        "description": "Controlla tutte le linee del giocatore e restituisce solo quelle con problemi. Non costruisce nulla.",
+        "input_schema": {"type": "object", "properties": {"max_lines": {"type": "integer", "minimum": 1, "maximum": 100}}},
+    },
+    {
+        "name": "read_map",
+        "description": ("Mappa per pianificare: citta' ordinate per grandezza (edifici), industrie con merci, griglia di quote e "
+                        "acqua (grid punti per lato), linee esistenti. Usalo prima di un piano per direttive ampie."),
+        "input_schema": {"type": "object", "properties": {"grid": {"type": "integer", "minimum": 4, "maximum": 16, "default": 10}}},
+    },
+    {
+        "name": "propose_plan",
+        "description": ("Mostra all'utente un piano in passi (prima le arterie, poi linee secondarie e nodi di scambio) e chiede "
+                        "conferma. Usalo per direttive ampie PRIMA di costruire. Risponde approved=true/false ed eventuali "
+                        "modifiche chieste dall'utente (feedback)."),
+        "input_schema": {"type": "object", "properties": {
+            "title": {"type": "string"},
+            "steps": {"type": "array", "minItems": 1, "maxItems": 20, "items": {"type": "object", "properties": {
+                "action": {"type": "string"}, "description": {"type": "string"}}, "required": ["description"]}},
+            "notes": {"type": "string"}}, "required": ["steps"]},
+    },
+    {
         "name": "undo_last_action",
         "description": ("Annulla l'ultima azione che ha costruito qualcosa: vende i veicoli, cancella le linee, toglie "
                         "stazioni, depositi e binari creati. Le strade cittadine modificate restano. Chiede conferma."),
@@ -98,9 +215,25 @@ TOOLS_BOZZA = [
 
 SYSTEM_PROMPT_BOZZA = """
 Azioni in prova (bozza): build_intercity_bus, connect_station_to_town, add_vehicles, remove_vehicles, replace_vehicles,
-delete_line, extend_line, build_cargo_rail_line, build_air_or_water_line, build_highway, undo_last_action.
+delete_line, extend_line, build_cargo_rail_line, build_air_or_water_line, build_highway, undo_last_action, build_depot,
+build_rail_line2, build_rail_ring, build_cargo_rail_network, create_line_from_stations, build_rail_station, check_line,
+check_network, read_map, propose_plan.
 Sono nuove: se una fallisce riporta l'errore esatto all'utente. Dopo una ferrovia passeggeri, se la stazione e' lontana
 dal centro, proponi connect_station_to_town per creare il nodo di scambio con il bus.
+
+Come lavori (bozza):
+- Direttive ampie ("collega le citta' principali", "porta il carbone a X"): read_map, poi propose_plan con passi concreti
+  (arterie prima, poi linee secondarie, nodi di scambio, merci). Costruisci solo dopo approved=true, un passo alla volta,
+  controllando ogni risultato (campo collaudo). Se l'utente chiede modifiche (feedback), rifai il piano.
+- Tutto deve funzionare: dopo ogni costruzione leggi "collaudo" nel risultato. Se ci sono problemi, spiegali e proponi la
+  correzione (build_depot, add_vehicles, connect_station_to_town...), senza farla prima della conferma.
+- Binari: binario unico con stazioni d'incrocio per poco traffico (1-2 treni per senso); double_track quando i treni
+  sono di piu' o ci sono piu' linee (merci, veloci) sugli stessi binari. Linee veloci: express_town_ids. Anelli:
+  build_rail_ring con both_directions. Merci con piu' industrie: build_cargo_rail_network.
+- Stazioni e treni: la mod le dimensiona da sola (lunghezza in base ai treni, binari in base a linee e treni). Se una
+  stazione non trova spazio riporta le alternative ricevute; demolire edifici solo se l'utente lo chiede.
+- Notizie [Collaudo automatico] nel messaggio dell'utente: sono controlli fatti dopo 1-2 mesi di gioco; se ci sono
+  problemi proponi le correzioni.
 """
 
 
@@ -128,4 +261,43 @@ def describe_bozza(name: str, args: dict, n) -> str | None:
         return "Superstrada tra " + " e ".join(n(i) for i in args["town_ids"])
     if name == "undo_last_action":
         return "ANNULLARE l'ultima azione (vendita veicoli, rimozione di linee, stazioni, depositi e binari creati)"
+    if name == "build_depot":
+        where = n(args["station_id"]) if args.get("station_id") else n(args.get("town_id"))
+        return f"Deposito {args['kind']} vicino a {where}"
+    if name == "build_rail_line2":
+        extra = []
+        if args.get("double_track"):
+            extra.append("doppio binario")
+        if args.get("express_town_ids"):
+            extra.append("linea veloce per " + ", ".join(n(i) for i in args["express_town_ids"]))
+        return ("Ferrovia " + " - ".join(n(i) for i in args["town_ids"]) + f", {args.get('num_trains', 1)} treni"
+                + (" (" + "; ".join(extra) + ")" if extra else ""))
+    if name == "build_rail_ring":
+        return ("Ferrovia ad anello " + " - ".join(n(i) for i in args["town_ids"])
+                + (" nei due sensi" if args.get("both_directions", True) else "")
+                + (", doppio binario" if args.get("double_track") else "")
+                + f", {args.get('trains_per_direction', 1)} treni per senso")
+    if name == "build_cargo_rail_network":
+        return ("Treno merci: raccolta a " + ", ".join(n(i) for i in args["pickup_ids"]) + "; consegna a "
+                + ", ".join(n(i) for i in args["delivery_ids"]) + f"; {args.get('num_trains', 1)} treni")
+    if name == "create_line_from_stations":
+        return (f"Linea {args.get('pattern', 'back_forth')} su " + " - ".join(n(i) for i in args["station_ids"])
+                + f" con {args.get('count', 2)} veicoli {args.get('vehicle', 'auto')}"
+                + (f" ({args['cargo']})" if args.get("cargo") else ""))
+    if name == "build_rail_station":
+        return f"Stazione {args.get('kind', 'passengers')} vicino a {n(args['near_id'])}" + (
+            " collegata al binario piu' vicino" if args.get("connect", True) else "")
     return None
+
+
+def format_plan(args: dict) -> str:
+    """Testo del piano proposto da Claude, da mostrare all'utente."""
+    lines = []
+    if args.get("title"):
+        lines.append(args["title"])
+    for i, st in enumerate(args.get("steps", []), 1):
+        act = f" [{st['action']}]" if st.get("action") else ""
+        lines.append(f"  {i}. {st.get('description', '')}{act}")
+    if args.get("notes"):
+        lines.append("  Note: " + args["notes"])
+    return "\n".join(lines)

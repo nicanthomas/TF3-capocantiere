@@ -18,8 +18,8 @@ Regola: tutto cio' che posso fare io lo faccio io. Nicolo' fa solo cio' che rich
 - [ ] Spostare `actions_241_*` e `actions_242_*` in `capocantiere\vecchi` PRIMA di caricare il salvataggio
       (altrimenti la mod potrebbe eseguirli).
 - [ ] Backup del middleware installato in `capocantiere\backup\middleware_v7`, poi copia di quello nuovo
-      (main, game_bridge, tools, lua_table, conversation, journal, tools_bozza, verifica_installazione,
-      avvia_capocantiere.bat, test_middleware).
+      (main, game_bridge, tools, lua_table, conversation, journal, tools_bozza, action_log, collaudo, versione,
+      verifica_installazione, avvia_capocantiere.bat, test_middleware).
 - [ ] `python verifica_installazione.py`.
 
 ## 1. Verifica v13 nel 2300
@@ -33,6 +33,9 @@ Ogni sonda: `python dev/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev/
       porto + deposito navale. Se il controllo del computer non basta: Nicolo'.
 - [ ] s6 copia costruzioni -> `CC.TEMPLATES` / `CC.CARGO_STATION_TEMPLATE` in `dev/bozza`.
 - [ ] s7 linee e bacini.
+- [ ] Mettere a mano due segnali (uno a senso unico) su un binario, poi s8 segnali -> `CC.SIGNAL_MODEL`, verso.
+- [ ] s9 statistiche e stato dei veicoli (con una linea che gira da qualche minuto), s10 lunghezze e stazioni
+      (sola verifica a secco, senza --solo-lib), s11 tempo di gioco e build (due volte, a qualche minuto di distanza).
 
 ## 3. Prove della bozza (costruiscono: salvare prima)
 `python dev/mkeval.py --id <N> --key pN dev/prove/_aiuti.lua dev/prove/pN_*.lua`
@@ -46,6 +49,9 @@ Ogni sonda: `python dev/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev/
 - [ ] p5 ferrovia passeggeri v2
 - [ ] p9 strada d'accesso (dopo le costruzioni fatte a mano)
 - [ ] aerei / elicotteri / navi / superstrada (dopo aver riempito gli schemi)
+- [ ] p17 stazione a 4 binari e 240 m (poi la toglie), p16 mappa, p15 collaudo della rete
+- [ ] p10 depositi, p11 linea da stazioni esistenti
+- [ ] p12 anello nei due sensi, p13 doppio binario (dopo s8), p14 merci a piu' fermate, p18 raccordo (traffico misto)
 
 Per ogni prova che costruisce: controllare anche che FUNZIONI (veicoli in movimento, passeggeri/merci trasportati
 dopo qualche mese di gioco), non solo che la costruzione esista.
