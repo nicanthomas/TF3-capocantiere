@@ -43,6 +43,13 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Nodi intermodali passeggeri: stazione treno vicino a fermata tram/bus, linea urbana che passa dalla stazione. (bozza: navetta)
 - [ ] Nodi intermodali merci: catene camion → treno → camion (e porto/aeroporto). (bozza: scali con l'industria nel bacino)
 - [ ] Riuso di stazioni e depositi esistenti.
+- [ ] Dimensionamento delle stazioni (oggi fisso: 160 m, 1-2 binari): lunghezza in base ai treni (composizione mai
+      piu' lunga del marciapiede), numero di binari in base a linee e frequenze (+ binari di transito), scali merci con
+      binari per tipo di merce, stazioni camion/bus con stalli in base al traffico; spazio lasciato per ampliare.
+- [ ] Conflitti di spazio (edifici, strade, acqua, pendenze, altre costruzioni): provare in ordine spostamento e rotazione,
+      sito alternativo + navetta, stazione piu' corta con treni piu' corti, meno binari + sorpassi fuori stazione,
+      ampliamento di una stazione esistente; demolire edifici della citta' solo dopo conferma; se nulla va, spiegare a
+      Claude le alternative invece di costruire a meta'.
 - [ ] Depositi con logica: vicino al capolinea, collegati alla rete della linea, fuori dal centro. Tutti i tipi:
       strada, tram, ferrovia, navale; per aerei/elicotteri verificare se serve un deposito o fa da hangar l'aeroporto.
 - [ ] Comando diretto "costruisci deposito" (oggi i depositi nascono solo dentro "fai una linea").
