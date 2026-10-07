@@ -75,7 +75,7 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 
 ## Fase 5 - Interfaccia
 - [ ] Test di una finestra di testo nella GUI di TF3.
-- [ ] Chat in gioco con conferme Si'/No.
+- [ ] Chat in gioco con conferme Si'/No, aperta da un'icona nella barra del gioco.
 - [x] Avvio con doppio clic: `avvia_capocantiere.bat` + `verifica_installazione.py`.
 - [ ] Avvio insieme al gioco / middleware in sottofondo.
 
@@ -83,13 +83,18 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [x] Script di build `dev/build_script.py` (backup + controllo sintassi + `--check`).
 - [ ] Eventuale divisione dello script della mod in piu' file (da provare se TF3 lo consente).
 - [ ] Log per azione nella cartella capocantiere.
+- [ ] Numero di versione scritto dallo script di build dentro lo script della mod (e in state.lua).
+- [ ] Promozione delle bozze provate: da `dev/bozza/` a `cc_actions.lua`, schemi da `tools_bozza.py` a `tools.py`.
+- [ ] `state.lua` su mappe grandi: esportare solo i dati utili, e piu' di rado quando nulla cambia.
 - [x] Test automatici del middleware senza gioco (`middleware/test_middleware.py`).
 - [ ] Test automatici in gioco su CC_test.
 - [ ] Prove su una mappa nuova appena creata (2300, nessuna infrastruttura) come caso principale.
-- [ ] Prove nelle epoche intermedie (1950, 1990) e su altre mappe.
+- [ ] Prove nelle epoche intermedie (1950, 1990) e su altre mappe (montagna, isole, citta' molto dense).
 - [ ] Filtro veicoli delle mod (parti di treni bloccati, modelli incompleti).
 - [ ] Avviso se cambia la build di TF3.
 - [x] Meno consumo API: prompt caching e taglio dei turni vecchi (`MAX_TURNS`).
+- [ ] Riassunto automatico dei messaggi vecchi (oggi vengono solo tagliati: Claude perde il contesto delle
+      costruzioni fatte prima).
 - [x] Middleware: all'avvio sposta in `vecchi` i file `actions_` rimasti (senza cancellarli).
 - [x] `docs/scoperte-api.md`: righe su `trackType` e `tramCatenary` corrette (indici da 1).
 - [ ] Finale: `DEV_MODE = false`, README aggiornato.
