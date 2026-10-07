@@ -27,3 +27,27 @@ Lezioni:
   pezzo inutile che rischiare il crash.
 - Una prova per volta: con 7 prove nello stesso file non si capisce quale ha causato il problema.
 - Porti: verificare a secco anche la rete d'acqua; evitare punti vicini ad altre costruzioni sull'acqua.
+
+## Terza serie (mappa salvata da Nicolo', una prova per volta)
+- p2 bus Abriola-Afforte: ok. p5 ferrovia Abriola-Afforte (3,1 km, 13 ponti, 20 gallerie, 2 treni, navette): ok.
+- p4 treno merci (Centauro, fattoria -> allevamento, cereali): CRASH appena costruito lo scalo merci.
+  Registro: "Duplicate edge detected" nella rete della costruzione (`construction_util_connector`) e poi
+  `CheckDuplicateEdges` fatale, sempre con tratti di tipo 1 a quota -6 m (sotto i marciapiedi) in ogni tentativo di
+  scalo. CAUSA: la stazione merci fatta solo di marciapiedi merci e binari, senza edificio, non e' valida.
+  Era la stessa causa anche nei crash precedenti (il porto era solo l'ultima azione prima del crash).
+- Correzione: gli scali merci ferroviari sono bloccati (errore chiaro) finche' non si copia lo schema da uno scalo
+  costruito a mano (sonda s6 -> CC.CARGO_STATION_TEMPLATE) o non si prova una disposizione valida (CC.CARGO_MODULES_OK).
+
+## Quarta serie e scoperta sui file azioni rimasti
+- Dopo il crash della terza serie e la ricarica, un secondo crash identico (scalo merci vicino alla fattoria di
+  Centauro) sembrava inspiegabile: nessuna prova costruiva li'. CAUSA: i file `actions_<id>_*.lua` scritti prima del
+  crash e non ancora eseguiti restano nella cartella; ricaricando il salvataggio `lastActionId` torna indietro e la mod
+  esegue quei file vecchi (qui p14, rete merci, con il codice vecchio non bloccato). Il gioco da solo, lasciato
+  andare per 3 mesi senza azioni, non va in crash.
+- Regola: dopo una ricarica, prima di mandare azioni, spostare in `vecchi` i file azioni rimasti (il middleware lo fa
+  gia' all'avvio) o usare id che non si sovrappongono.
+- Anello ferroviario (p12) tra Calliano, Stern e Lissone: 3 stazioni da 200 m e 19,6 km di binario costruiti, ma
+  nessun deposito (l'anello non ha estremi liberi). Aggiunto il deposito su una diramazione corta
+  (`CC.railDepotByBranch`, usato anche da `build_depot`). DA PROVARE.
+- p4 con gli scali bloccati: errore chiaro, nessuna costruzione, nessun crash.
+- p19 elicotteri Afforte-Abriola: eliporto + piazzola, elicottero H225, collaudo ok.

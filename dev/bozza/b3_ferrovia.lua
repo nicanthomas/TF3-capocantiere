@@ -141,7 +141,32 @@ function CC.linkStations(stations, log, builtEdges, built, loco, opts)
 			.. (info.tunnels or 0) .. " in galleria, " .. (info.crossings or 0) .. " passaggi a livello, "
 			.. (info.overpasses or 0) .. " sovrappassi, " .. (info.underpasses or 0) .. " sottopassi"
 	end
-	return CC.finishRailLink(stations, used, log, built, loco)
+	return CC.finishRailLink(stations, used, log, built, loco, { builtEdges = builtEdges })
+end
+
+-- Deposito ferroviario su una diramazione corta dal binario del giocatore piu' vicino a p (entro 700 m): serve quando
+-- non ci sono estremi liberi (anello chiuso, stazioni passanti). La diramazione resta anche se il deposito e' rifiutato
+-- (pulizia prudente). DA VERIFICARE in gioco.
+function CC.railDepotByBranch(p, name, builtEdges, log)
+	log = log or {}
+	if not (p and CC.branchFromTrack and CC.nearestTrack) then return false, { error = "diramazione non disponibile" } end
+	local tr = CC.nearestTrack(p.x, p.y, 700)
+	if not tr then return false, { error = "nessun binario del giocatore vicino" } end
+	for _, side in ipairs({ 1, -1 }) do
+		local okB, B = CC.branchFromTrack(tr.edge, tr.sv, side, 60)
+		if okB then
+			for _, e in ipairs(B.edges or {}) do if builtEdges then builtEdges[#builtEdges + 1] = e end end
+			local okD, D = CC.buildRailDepotAtEnd(B.endInfo, name)
+			if okD then
+				log[#log + 1] = "deposito su una diramazione del binario (nessun estremo libero)"
+				return true, D
+			end
+			log[#log + 1] = "deposito sulla diramazione: " .. tostring(D.error)
+			return false, D
+		end
+		log[#log + 1] = "diramazione per il deposito: " .. tostring(B.error)
+	end
+	return false, { error = "diramazione rifiutata" }
 end
 
 -- Parte finale comune a tutti i collegamenti ferroviari: deposito su un estremo libero della prima o dell'ultima
@@ -162,6 +187,14 @@ function CC.finishRailLink(stations, used, log, built, loco, opts)
 				if okD then depot = D.depot; used[e.node] = true; built[#built + 1] = D.construction
 				else log[#log + 1] = "deposito: " .. tostring(D.error) end
 			end
+		end
+	end
+	-- nessun estremo libero (anello chiuso, stazioni passanti): deposito su una diramazione corta
+	if not depot then
+		for _, si in ipairs({ 1, #stations }) do
+			if depot then break end
+			local okD, D = CC.railDepotByBranch(CC.posOf(stations[si].group), "Deposito " .. (CC.nameOf(stations[si].town or stations[si].group) or ""), opts.builtEdges, log)
+			if okD then depot = D.depot; built[#built + 1] = D.construction end
 		end
 	end
 	if not depot then return false, "deposito ferroviario non costruito" end
@@ -193,6 +226,10 @@ end
 function CC.cargoStationModules(e)
 	e = e or CC.railEra()
 	if CC.CARGO_STATION_TEMPLATE then return CC.CARGO_STATION_TEMPLATE end
+	-- VERIFICATO: questa disposizione (solo marciapiedi merci + binari) fa crashare il gioco (vedi CC.railStationModulesN)
+	if not CC.CARGO_MODULES_OK then
+		return nil, "scalo merci ferroviario non ancora verificato: va copiato da uno costruito a mano (sonda s6)"
+	end
 	local all = {}
 	pcall(function() for _, n in ipairs(CC.each(api.res.moduleRep.getAll())) do all[tostring(n)] = true end end)
 	local M = "::/stations/rail/modular_station/"

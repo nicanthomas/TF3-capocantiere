@@ -234,7 +234,7 @@ function CC.linkStationsDouble(stations, log, builtEdges, built, loco, opts)
 		if not okD then return false, D end
 		for _, w in ipairs(D.warnings) do warnings[#warnings + 1] = w end
 	end
-	local ok, link = CC.finishRailLink(stations, used, log, built, loco, { bothWays = true })
+	local ok, link = CC.finishRailLink(stations, used, log, built, loco, { bothWays = true, builtEdges = builtEdges })
 	if ok then link.warnings = warnings end
 	return ok, link
 end
@@ -379,7 +379,7 @@ local function buildRing(a, built, builtEdges)
 	local used = {}
 	for _, st in ipairs(stations) do for _, e in ipairs(st.ends) do if e ~= depotEnd then used[e.node] = true end end end
 	local okF, link = CC.finishRailLink(stations, used, log, built, nil, {
-		depotEnd = depotEnd, depotName = "Deposito " .. (CC.nameOf(towns[1]) or ""), ring = true, bothWays = both })
+		depotEnd = depotEnd, depotName = "Deposito " .. (CC.nameOf(towns[1]) or ""), ring = true, bothWays = both, builtEdges = builtEdges })
 	if not okF then return { ok = false, error = link, log = log } end
 	local groups = {}
 	for i, st in ipairs(stations) do groups[i] = st.group end

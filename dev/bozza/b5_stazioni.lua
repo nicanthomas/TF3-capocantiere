@@ -156,6 +156,13 @@ function CC.railStationModulesN(e, layout, segments, kind)
 	local T = "::/trainstation___/infrastructure/track/" .. tr .. "/" .. tr .. (e.catenary and "_catenary" or "") .. ".street_template"
 	local era = "_era_" .. e.era
 	local cargo = kind == "cargo"
+	-- VERIFICATO (3 crash del 07.10.2026): una stazione con soli marciapiedi merci e binari (senza edificio merci) genera
+	-- tratti pedonali/merci doppi sotto i marciapiedi ("Duplicate edges found", quota -6 m) e il gioco va in crash appena
+	-- viene costruita. Finche' lo schema non e' copiato da uno scalo fatto a mano (sonda s6 -> CC.CARGO_STATION_TEMPLATE
+	-- o CC.CARGO_MODULES_OK = true dopo la prova) gli scali merci ferroviari NON si costruiscono.
+	if cargo and not CC.CARGO_MODULES_OK then
+		return nil, "scalo merci ferroviario non ancora verificato: va copiato da uno costruito a mano (sonda s6)"
+	end
 	local plat = cargo and CC.cargoPlatformModule(e) or (M .. "platform_passenger" .. era .. ".module")
 	if not plat then return nil, "modulo marciapiede merci non trovato (sonda s3 o s6)" end
 	local mods = {}
@@ -484,7 +491,11 @@ SIM_ACTIONS.build_depot = function(a)
 			errs[#errs + 1] = tostring(D.error) .. det
 			if D.construction then CC.removeConstruction(D.construction) end
 		end
-		return { ok = false, error = #cands == 0 and "nessun binario libero vicino alla stazione: serve un binario morto" or table.concat(errs, "; ") }
+		-- nessun estremo libero o tutti rifiutati: deposito su una diramazione corta
+		local blog = {}
+		local okB, B = CC.railDepotByBranch(p, name, nil, blog)
+		if okB then return { ok = true, depot_id = B.depot, log = blog } end
+		return { ok = false, error = (#cands == 0 and "nessun estremo di binario libero" or table.concat(errs, "; ")) .. "; " .. table.concat(blog, "; ") }
 	elseif kind == "water" then
 		if not (CC.TEMPLATES and CC.TEMPLATES.water_depot) then
 			return { ok = false, error = "schema del deposito navale non ancora copiato (sonda s6 su un deposito fatto a mano)" }
