@@ -67,6 +67,14 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Elicotteri (esistono: eliporto nel menu aereo, passeggeri e merci). (bozza b4)
 - [ ] Navi passeggeri e merci (porti: `harbor_modular.con`, `water_depot.con`). (bozza b4)
 - [ ] Capacita' ferroviaria: doppio binario, segnali.
+- [ ] Potenziare cio' che esiste quando il traffico cresce: binari e marciapiedi in piu' nelle stazioni, fermate
+      piu' grandi, strade allargate, scali e porti ampliati (le arterie fatte a inizio partita devono poter crescere).
+
+## Fase 3b - Pianificazione della rete (direttive strategiche)
+- [ ] Direttive ampie ("collega tutte le citta' principali", "porta il carbone alla citta' X"): Claude legge la mappa,
+      propone un piano in passi (arterie prima, poi linee secondarie e nodi di scambio), chiede conferma, poi costruisce
+      un passo alla volta controllando ogni risultato.
+- [ ] Lettura della mappa per Claude: citta' e dimensioni, industrie e catene merci, acqua/coste, rilievi, rete esistente.
 
 ## Fase 4 - Gestione della rete
 - [ ] Aggiungere/togliere veicoli, sostituire modelli vecchi. (bozza: b2)
