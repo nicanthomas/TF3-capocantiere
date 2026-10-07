@@ -229,5 +229,72 @@ class TestAskClaude(Base):
         self.assertFalse([f for f in os.listdir(self.dir) if f.startswith("actions_")])
 
 
+class TestJournal(Base):
+    def test_record_and_undo(self):
+        import json
+        import main
+        created = {"vehicles": [11, 12], "lines": [5], "constructions": [70], "tracks": [], "roads": [80]}
+
+        def reply(a):
+            if a["type"] == "undo":
+                return {"ok": True, "type": "undo", "got": a["created"]}
+            return {"ok": True, "type": a["type"], "line_id": 5, "created": created}
+
+        mod = FakeMod(self.dir, reply=reply)
+        mod.start()
+        try:
+            with mock.patch.object(main, "confirm", return_value=True), mock.patch("builtins.print"):
+                r = main.run_game_tool("build_bus_line", {"town_id": 101}, GameBridge(self.dir))
+                self.assertTrue(r["ok"])
+                self.assertNotIn("created", r)                       # a Claude non arriva l'elenco
+                entries = json.load(open(os.path.join(self.dir, "journal.json"), encoding="utf-8"))
+                self.assertEqual(len(entries), 1)
+                self.assertEqual(entries[0]["created"]["vehicles"], [11, 12])
+                u = main.run_game_tool("undo_last_action", {}, GameBridge(self.dir))
+                self.assertTrue(u["ok"])
+                self.assertEqual(mod.seen[-1]["actions"][0]["type"], "undo")
+                self.assertEqual(mod.seen[-1]["actions"][0]["created"]["constructions"], [70])
+                again = main.run_game_tool("undo_last_action", {}, GameBridge(self.dir))
+                self.assertFalse(again["ok"])                        # niente altro da annullare
+        finally:
+            mod.stop = True
+
+    def test_nothing_created_not_recorded(self):
+        from journal import Journal
+        j = Journal(self.dir)
+        self.assertFalse(j.record("ping", {}, {"ok": True}))
+        self.assertFalse(j.record("x", {}, {"ok": True, "created": {"vehicles": [], "roads": [3]}}))
+        self.assertIsNone(j.last_undoable())
+
+    def test_pause(self):
+        import main
+        st = dict(STATE, speed=0)
+        lua_table.save_userdata(os.path.join(self.dir, "state.lua"), st)
+        with mock.patch("builtins.print"):
+            r = main.run_game_tool("build_bus_line", {"town_id": 101}, GameBridge(self.dir))
+        self.assertFalse(r["ok"])
+        self.assertIn("pausa", r["error"])
+
+
+class TestBozzaTools(unittest.TestCase):
+    def test_schemas_and_descriptions(self):
+        from tools_bozza import SPENDING_TOOLS_BOZZA, TOOLS_BOZZA, describe_bozza
+        names = {t["name"] for t in TOOLS_BOZZA}
+        self.assertEqual(names, SPENDING_TOOLS_BOZZA)
+        self.assertFalse(names & set(TOOL))                          # nessun nome doppio con tools.py
+        samples = {
+            "build_intercity_bus": {"town_ids": [1, 2]}, "connect_station_to_town": {"station_id": 3},
+            "add_vehicles": {"line_id": 1, "count": 2}, "remove_vehicles": {"line_id": 1, "count": 1},
+            "replace_vehicles": {"line_id": 1}, "delete_line": {"line_id": 1}, "extend_line": {"line_id": 1, "town_id": 2},
+            "build_cargo_rail_line": {"industry_id": 1, "target_id": 2}, "build_air_or_water_line": {"town_ids": [1, 2], "kind": "harbor"},
+            "build_highway": {"town_ids": [1, 2]}, "undo_last_action": {},
+        }
+        for t in TOOLS_BOZZA:
+            self.assertEqual(validate_args(t, samples[t["name"]]), [], t["name"])
+            self.assertTrue(describe_bozza(t["name"], samples[t["name"]], lambda i: f"#{i}"), t["name"])
+        self.assertTrue(validate_args(next(t for t in TOOLS_BOZZA if t["name"] == "build_air_or_water_line"),
+                                      {"town_ids": [1, 2], "kind": "razzo"}))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

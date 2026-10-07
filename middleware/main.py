@@ -33,6 +33,16 @@ from conversation import cached_request, trim_history, validate_args
 from game_bridge import GameBridge, find_entities, overview
 from tools import LOCAL_TOOLS, SPENDING_TOOLS, TOOLS, describe_action
 
+from journal import Journal
+
+# Azioni della bozza (dev/bozza, non ancora provate in gioco): solo con la variabile CAPOCANTIERE_BOZZA=1
+# e con la mod costruita includendo la bozza.
+USE_BOZZA = os.environ.get("CAPOCANTIERE_BOZZA") == "1"
+if USE_BOZZA:
+    from tools_bozza import SPENDING_TOOLS_BOZZA, SYSTEM_PROMPT_BOZZA, TOOLS_BOZZA
+    TOOLS = TOOLS + TOOLS_BOZZA
+    SPENDING_TOOLS = SPENDING_TOOLS | SPENDING_TOOLS_BOZZA
+
 TOOLS_BY_NAME = {t["name"]: t for t in TOOLS}
 
 # Modello Anthropic: cambia qui per usarne un altro (es. "claude-opus-5-5").
@@ -64,6 +74,8 @@ Regole:
   l'errore e proponi un'altra coppia di citta' o un collegamento su strada. I treni merci non sono ancora supportati.
 - Le industrie hanno gia' una propria stazione merci per camion.
 """
+if USE_BOZZA:
+    SYSTEM_PROMPT += SYSTEM_PROMPT_BOZZA
 
 
 def run_local_tool(name: str, args: dict, bridge: GameBridge) -> dict:
@@ -82,17 +94,39 @@ def confirm(text: str) -> bool:
 
 
 def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
+    if bridge.state().get("speed") == 0:                 # la mod v14 esporta la velocita' del gioco
+        return {"ok": False, "error": "La partita e' in pausa: chiedi all'utente di riprendere il gioco e riprova."}
+    journal = Journal(bridge.folder)
+    entry = None
+    if name == "undo_last_action":
+        entry = journal.last_undoable()
+        if not entry:
+            return {"ok": False, "error": "Non c'e' nessuna azione da annullare nel registro."}
     if name in SPENDING_TOOLS:
-        if not confirm(describe_action(name, args, bridge.state())):
+        text = describe_action(name, args, bridge.state())
+        if entry:
+            text += f" -> {entry['type']} delle {entry['time']}"
+        if not confirm(text):
             return {"ok": False, "cancelled": True, "message": "Annullato dall'utente."}
-    action = {"type": name}
-    action.update(args)
+    if entry:
+        action = {"type": "undo", "created": entry["created"]}
+    else:
+        action = {"type": name}
+        action.update(args)
     print("  (in costruzione: puo' richiedere fino a qualche minuto...)")
     try:
         results = bridge.send([action], timeout=330)   # la mod aspetta fino a 300 s
     except TimeoutError as e:
         return {"ok": False, "error": str(e)}
-    return results[0] if results else {"ok": False, "error": "nessun risultato"}
+    result = results[0] if results else {"ok": False, "error": "nessun risultato"}
+    if isinstance(result, dict):
+        if entry:
+            if result.get("ok"):
+                journal.mark_undone(entry)
+        else:
+            journal.record(name, args, result)
+            result.pop("created", None)                  # a Claude non serve l'elenco delle entita'
+    return result
 
 
 def ask_claude(client, messages: list, bridge: GameBridge) -> None:

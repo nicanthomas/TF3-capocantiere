@@ -213,4 +213,11 @@ def describe_action(name: str, args: dict, state: dict) -> str:
     if name == "connect_industry_to_city":
         return (f"Collegare {n(args['industry_id'])} a {n(args['target_id'])} "
                 f"via {args.get('transport', 'truck')} con {args.get('num_vehicles', 2)} veicoli")
+    try:                                   # azioni della bozza (attive solo con CAPOCANTIERE_BOZZA=1)
+        from tools_bozza import describe_bozza
+        d = describe_bozza(name, args, n)
+        if d:
+            return d
+    except ImportError:
+        pass
     return f"{name} {args}"
