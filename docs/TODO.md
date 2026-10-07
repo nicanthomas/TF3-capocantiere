@@ -74,6 +74,9 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Traffico misto passeggeri + merci sugli stessi binari: scali merci su raccordi collegati alla linea principale
       con scambi, binari di sorpasso/precedenza, binari di transito nelle stazioni passeggeri per i merci, segnali
       fitti; il collaudo controlla che i merci lenti non blocchino i passeggeri.
+- [ ] Treni veloci / alta velocita' sulla stessa infrastruttura: linee che fermano solo nelle citta' principali,
+      binari di transito nelle stazioni minori, binario ad alta velocita' e curve ampie dove serve, sorpassi dei treni
+      lenti; avviso a Claude se la capacita' non basta (proposta: binari dedicati all'AV).
 - [ ] Potenziare cio' che esiste quando il traffico cresce: binari e marciapiedi in piu' nelle stazioni, fermate
       piu' grandi, strade allargate, scali e porti ampliati (le arterie fatte a inizio partita devono poter crescere).
 
