@@ -54,6 +54,20 @@ function CC.lineStats(L)
 	return st
 end
 
+-- C'e' un'altra stazione del giocatore (gruppo diverso) entro r metri dal gruppo g? (scambio a piedi)
+function CC.otherStationNear(g, r)
+	local p = CC.posOf(g)
+	if not p then return false end
+	local found = false
+	pcall(function()
+		for _, st in ipairs(CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(p.x, p.y), r, api.type.ComponentType.STATION))) do
+			local og = api.engine.system.stationGroupSystem.getStationGroup(st)
+			if og and og ~= g and og >= 0 then found = true; break end
+		end
+	end)
+	return found
+end
+
 -- Controllo di una linea. Ritorna { ok, problems = { testo }, suggestions = { testo }, ... }.
 function CC.checkLine(L)
 	local CT = api.type.ComponentType
@@ -77,11 +91,15 @@ function CC.checkLine(L)
 			for _, tm in ipairs(CC.each(api.res.modelRep.get(CC.vehicleModels(vs[1])[1]).metadata.transportVehicle.engineTransportModes)) do modes[#modes + 1] = tm end
 		end)
 	end
-	-- percorso tra fermate consecutive (anche dall'ultima alla prima: la linea gira)
+	-- percorso tra fermate consecutive (anche dall'ultima alla prima: la linea gira), con la stazione e il terminale
+	-- indicati dalla fermata (VERIFICATO s14 sul salvataggio di terzi: nessun falso "nessun percorso")
+	local stops = CC.lineStops(L)
 	if #modes > 0 then
-		for i = 1, #groups do
-			local j = i % #groups + 1
-			if groups[i] ~= groups[j] and not CC.hasPath(CC.stopNodeId(groups[i]), CC.stopNodeId(groups[j]), modes) then
+		for i = 1, #stops do
+			local j = i % #stops + 1
+			if stops[i].stationGroup ~= stops[j].stationGroup
+				and not CC.hasPath(CC.lineStopNode(stops[i]), CC.lineStopNode(stops[j]), modes)
+				and not CC.groupPath(stops[i].stationGroup, stops[j].stationGroup, modes) then
 				r.problems[#r.problems + 1] = "nessun percorso dalla fermata " .. i .. " (" .. (CC.nameOf(groups[i]) or "?") .. ") alla " .. j
 				r.suggestions[#r.suggestions + 1] = "collegare le due fermate (strada/binario mancante o senso unico)"
 			end
@@ -92,13 +110,26 @@ function CC.checkLine(L)
 		r.problems[#r.problems + 1] = "nessun deposito raggiunge la linea"
 		r.suggestions[#r.suggestions + 1] = "costruire un deposito collegato (build_depot)"
 	end
-	-- bacino delle fermate
+	-- bacino delle fermate. VERIFICATO sul salvataggio di terzi (94 linee che funzionano): molte fermate non hanno
+	-- edifici nel bacino ma servono da nodo di scambio (fermata bus davanti alla stazione, metropolitana, porti,
+	-- monumenti). Una fermata senza bacino e' solo una nota se: il gruppo e' servito da altre linee, oppure c'e' un'altra
+	-- stazione del giocatore entro 250 m. La linea ha un problema solo se meno di 2 fermate servono a qualcosa.
+	local counts = CC._lineCounts or CC.groupLineCounts()
+	r.notes = {}
+	local useful = 0
 	for i, g in ipairs(groups) do
-		local s = CC.groupStation(g)
-		if s and #CC.stationCatchables(s) == 0 then
-			r.problems[#r.problems + 1] = "la fermata " .. i .. " (" .. (CC.nameOf(g) or "?") .. ") non ha edifici o industrie nel bacino"
-			r.suggestions[#r.suggestions + 1] = "spostare la fermata verso il centro o collegarla con una navetta"
+		if CC.groupCatchables(g) > 0 then
+			useful = useful + 1
+		elseif (counts[g] or 0) > 1 or CC.otherStationNear(g, 250) then
+			useful = useful + 1
+			r.notes[#r.notes + 1] = "fermata " .. i .. " (" .. (CC.nameOf(g) or "?") .. "): nodo di scambio senza edifici nel bacino"
+		else
+			r.notes[#r.notes + 1] = "fermata " .. i .. " (" .. (CC.nameOf(g) or "?") .. "): nessun edificio o industria nel bacino"
 		end
+	end
+	if #groups >= 2 and useful < 2 then
+		r.problems[#r.problems + 1] = "meno di 2 fermate hanno edifici, industrie o coincidenze nel bacino: la linea trasporta poco o nulla"
+		r.suggestions[#r.suggestions + 1] = "spostare le fermate verso il centro o collegarle con una navetta"
 	end
 	-- veicoli: stato e movimento rispetto all'ultimo controllo
 	local states, still, moved, unknown = {}, 0, 0, 0
@@ -143,10 +174,12 @@ SIM_ACTIONS.check_network = function(a)
 	local lines = {}
 	pcall(function() lines = CC.each(api.engine.system.lineSystem.getLinesForPlayer(api.engine.util.getPlayer())) end)
 	local bad, okN = {}, 0
+	CC._lineCounts = CC.groupLineCounts()
 	for i = 1, math.min(#lines, (a and a.max_lines) or 40) do
 		local r = CC.checkLine(lines[i])
 		if r.ok then okN = okN + 1 else bad[#bad + 1] = { line_id = r.line_id, name = r.name, problems = r.problems, suggestions = r.suggestions } end
 	end
+	CC._lineCounts = nil
 	return { ok = true, lines_checked = math.min(#lines, (a and a.max_lines) or 40), lines_ok = okN, lines_with_problems = bad }
 end
 

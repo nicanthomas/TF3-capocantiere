@@ -3,15 +3,32 @@
 --   1. stasera si costruiscono A MANO un campo d'aviazione/aeroporto, un eliporto, un porto e un deposito navale;
 --   2. la sonda s6 ne copia file .con, parametri e moduli;
 --   3. i dati vanno in CC.TEMPLATES qui sotto e la mod li ripete dove serve.
--- Finche' CC.TEMPLATES e' vuoto le azioni rispondono "schema mancante" senza costruire nulla.
+-- Schemi riempiti il 07.10.2026 dalle costruzioni di un salvataggio di terzi (sonda s17). DA PROVARE in gioco.
 
 CC.TEMPLATES = CC.TEMPLATES or {
-	-- esempio di formato (da riempire con l'uscita della sonda s6):
-	-- airfield = { file = "::/stations/air/....con", params = { ... }, modules = { [slot] = { name = "...", variant = 0 } },
-	--              half = 150, kind = "air" },
-	-- heliport = { ..., half = 30, kind = "air" },
-	-- harbor = { ..., half = 60, kind = "water", waterSide = "+Y" },   -- waterSide dalla sonda (campo water)
-	-- water_depot = { ..., half = 40, kind = "water", waterSide = "+Y" },
+	-- Copiati con la sonda s17 dal salvataggio di terzi (07.10.2026, vedi docs/studio-salvataggio-terzi.md).
+	-- half = mezza dimensione massima in metri (dal bounding box); waterSide = lato locale con acqua a 30-100 m.
+	airfield = { file = "::/stations/air/airfield.con", params = { hangar = 1, terminals = 3 },
+		modules = { [10001000] = { name = "::/stations/air/airfield/af_hangar.module", variant = 0 }, [10001002] = { name = "::/stations/air/airfield/af_main.module", variant = 0 }, [10001004] = { name = "::/stations/air/airfield/af_terminal.module", variant = 0 }, [10001006] = { name = "::/stations/air/airfield/af_terminal.module", variant = 0 }, [10001008] = { name = "::/stations/air/airfield/af_terminal.module", variant = 0 } },
+		half = 200, kind = "air" },   -- da: Brunssum Airport
+	airport = { file = "::/stations/air/airport.con", params = { dir = 2, hangar = 1, terminals = 1 },
+		modules = { [1008] = { name = "::/stations/air/airport/ap_main.module", variant = 0 }, [2000] = { name = "::/stations/air/airport/ap_hangar.module", variant = 0 }, [70003] = { name = "::/stations/air/airport/ap_terminal.module", variant = 0 }, [70012] = { name = "::/stations/air/airport/ap_terminal.module", variant = 0 }, [9000] = { name = "::/stations/air/airport/airport_era_c_landing_direction.module", variant = 0 } },
+		half = 330, kind = "air" },   -- da: Geldrop-Mierlo Airport
+	heliport = { file = "::/stations/air/heliport.con", params = {  },
+		modules = nil,
+		half = 75, kind = "air" },   -- da: Lisse Heliport
+	helipad = { file = "::/stations/air/helipad.con", params = {  },
+		modules = nil,
+		half = 20, kind = "air" },   -- da: Winterswijk Heliport
+	harbor = { file = "::/stations/water/harbor_modular.con", params = { smallterminals = 1 },
+		modules = { [100009736] = { name = "::/stations/water/small_pier.module", variant = 0 }, [100009804] = { name = "::/stations/water/passenger_dock_50_12.module", variant = 0 }, [100010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [99010053] = { name = "::/stations/water/passenger_dock_25_25.module", variant = 0 }, [99010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 } },
+		half = 40, kind = "water", waterSide = "-Y" },   -- da: Hilversum Port #1
+	harbor_large = { file = "::/stations/water/harbor_modular.con", params = { largeterminals = 1 },
+		modules = { [100009444] = { name = "::/stations/water/medium_pier.module", variant = 0 }, [100009612] = { name = "::/stations/water/passenger_dock_100_25.module", variant = 0 }, [100009722] = { name = "::/stations/water/passenger_dock_100_50.module", variant = 0 }, [100010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [101010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [102010149] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [103008547] = { name = "::/stations/water/medium_pier.module", variant = 0 }, [103010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [105008808] = { name = "::/stations/water/passenger_dock_100_25.module", variant = 0 }, [105009608] = { name = "::/stations/water/passenger_dock_100_25.module", variant = 0 }, [87008347] = { name = "::/stations/water/medium_pier.module", variant = 0 }, [89008608] = { name = "::/stations/water/passenger_dock_100_25.module", variant = 0 }, [89009408] = { name = "::/stations/water/passenger_dock_100_25.module", variant = 0 }, [90008345] = { name = "::/stations/water/medium_pier.module", variant = 0 }, [90009145] = { name = "::/stations/water/medium_pier.module", variant = 0 }, [92010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [93009855] = { name = "::/stations/water/passenger_dock_25_25.module", variant = 0 }, [93010055] = { name = "::/stations/water/passenger_dock_25_25.module", variant = 0 }, [93010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [94010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [95009611] = { name = "::/stations/water/passenger_dock_100_25.module", variant = 0 }, [95009754] = { name = "::/stations/water/passenger_dock_25_25.module", variant = 0 }, [95010055] = { name = "::/stations/water/passenger_dock_25_25.module", variant = 0 }, [95010151] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [96010151] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [97010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [98010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 }, [99010150] = { name = "::/stations/water/pedestrian_entrance.module", variant = 0 } },
+		half = 160, kind = "water", waterSide = "-Y" },   -- da: Hilversum Port
+	water_depot = { file = "::/depots/water/water_depot.con", params = {  },
+		modules = nil,
+		half = 80, kind = "water", waterSide = "-Y" },   -- da: Hilversum Ship Depot
 }
 
 -- Cartelle dei veicoli (dalla sonda s4): aerei, elicotteri, navi.
@@ -198,12 +215,12 @@ function CC.buildTemplateNear(key, town, name)
 end
 
 -- ---------------------------------------------------------------- linee aeree / elicotteri / navi
--- kind: "airfield" | "airport" | "heliport" | "harbor"; cargo = true per le merci (veicoli senza posti).
+-- kind: "airfield" | "airport" | "heliport" | "helipad" | "harbor" | "harbor_large"; cargo = true per le merci (veicoli senza posti).
 SIM_ACTIONS.build_air_or_water_line = function(a)
 	CC.need(a, { town_ids = "ints", kind = "str", num_vehicles = "int?", name = "str?" })
 	local tpl = CC.TEMPLATES[a.kind]
 	if not tpl then return { ok = false, error = "schema '" .. a.kind .. "' mancante (vedi sonda s6)" } end
-	local folder = (a.kind == "heliport") and CC.VEHICLE_FOLDERS.heli or (tpl.kind == "water" and CC.VEHICLE_FOLDERS.ship or CC.VEHICLE_FOLDERS.plane)
+	local folder = (a.kind == "heliport" or a.kind == "helipad") and CC.VEHICLE_FOLDERS.heli or (tpl.kind == "water" and CC.VEHICLE_FOLDERS.ship or CC.VEHICLE_FOLDERS.plane)
 	local groups, depots, log = {}, {}, {}
 	for i, t in ipairs(a.town_ids) do
 		local ok, info = CC.buildTemplateNear(a.kind, t, (CC.nameOf(t) or "Citta'") .. " " .. a.kind)

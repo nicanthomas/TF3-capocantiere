@@ -17,3 +17,5 @@ __pycache__/
 *.dmp
 # backup creati da dev/build_script.py
 *.bak_*
+# risultati grezzi delle sonde (grandi, restano in locale; riassunto in docs/studio-salvataggio-terzi.md)
+dev/risultati/

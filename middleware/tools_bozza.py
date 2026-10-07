@@ -84,7 +84,7 @@ TOOLS_BOZZA = [
                         "cargo=true per le merci. Funziona solo per i tipi gia' configurati nella mod. Chiede conferma."),
         "input_schema": {"type": "object", "properties": {
             "town_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 4},
-            "kind": {"type": "string", "enum": ["airfield", "airport", "heliport", "harbor"]},
+            "kind": {"type": "string", "enum": ["airfield", "airport", "heliport", "helipad", "harbor", "harbor_large"]},
             "cargo": {"type": "boolean", "default": False},
             "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 10, "default": 2},
             "name": {"type": "string"}}, "required": ["town_ids", "kind"]},

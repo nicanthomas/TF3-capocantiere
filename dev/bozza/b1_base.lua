@@ -141,18 +141,90 @@ function CC.lineGroups(L)
 	return g
 end
 
--- Modi di trasporto della linea (lc.vehicleInfo.transportModes: tabella di booleani con indice modo+1).
+-- Modi di trasporto della linea. VERIFICATO (salvataggio di terzi, sonda s14): getLineTransportModesUnion da' i modi
+-- giusti (es. bus 3 + 4, treno 7, 8, 14, 15); lc.vehicleInfo.transportModes ha indice = modo (NON modo+1).
 function CC.lineModes(L)
 	local modes = {}
 	pcall(function()
-		local tm = CC.comp(L, api.type.ComponentType.LINE).vehicleInfo.transportModes
-		for i = 1, 32 do
-			local on = false
-			pcall(function() on = tm[i] end)
-			if on then modes[#modes + 1] = i - 1 end
+		for k, on in pairs(api.engine.util.line.getLineTransportModesUnion(L)) do
+			local m = tonumber(k)
+			if on and m then modes[#modes + 1] = m end
 		end
 	end)
+	if #modes == 0 then
+		pcall(function()
+			local tm = CC.comp(L, api.type.ComponentType.LINE).vehicleInfo.transportModes
+			for i = 0, 32 do
+				local on = false
+				pcall(function() on = tm[i] end)
+				if on then modes[#modes + 1] = i end
+			end
+		end)
+	end
+	table.sort(modes)
 	return modes
+end
+
+-- Fermate della linea (strutture Line.Stop: stationGroup, station, terminal; station e terminal da 0).
+function CC.lineStops(L)
+	local lc = CC.comp(L, api.type.ComponentType.LINE)
+	return lc and CC.each(lc.stops) or {}
+end
+
+-- Nodo e stazione di una fermata della linea: quella indicata da stop.station/stop.terminal. VERIFICATO (s13/s14):
+-- nei gruppi con piu' stazioni (fermata bus accanto alla ferrovia) la prima stazione del gruppo non e' quella giusta.
+function CC.lineStopNode(stop)
+	local CT = api.type.ComponentType
+	local sg = CC.comp(stop.stationGroup, CT.STATION_GROUP)
+	local st = sg and CC.each(sg.stations)[(stop.station or 0) + 1]
+	local sc = st and CC.comp(st, CT.STATION)
+	local t = sc and CC.each(sc.terminals)[(stop.terminal or 0) + 1]
+	return t and t.vehicleNodeId, st
+end
+
+-- Nodi (primo terminale di ogni stazione) di un gruppo di stazioni.
+function CC.groupNodes(g)
+	local CT = api.type.ComponentType
+	local out = {}
+	local sg = CC.comp(g, CT.STATION_GROUP)
+	for _, st in ipairs(sg and CC.each(sg.stations) or {}) do
+		local sc = CC.comp(st, CT.STATION)
+		local t = sc and CC.each(sc.terminals)[1]
+		if t then out[#out + 1] = t.vehicleNodeId end
+	end
+	return out
+end
+
+-- Percorso tra due gruppi: prova tutte le coppie di stazioni (un gruppo puo' avere fermata bus + ferrovia).
+function CC.groupPath(g1, g2, modes)
+	for _, a in ipairs(CC.groupNodes(g1)) do
+		for _, b in ipairs(CC.groupNodes(g2)) do
+			if CC.hasPath(a, b, modes) then return true end
+		end
+	end
+	return false
+end
+
+-- Edifici/industrie nel bacino di tutte le stazioni del gruppo.
+function CC.groupCatchables(g)
+	local n = 0
+	local sg = CC.comp(g, api.type.ComponentType.STATION_GROUP)
+	for _, st in ipairs(sg and CC.each(sg.stations) or {}) do n = n + #CC.stationCatchables(st) end
+	return n
+end
+
+-- Quante linee del giocatore fermano in ogni gruppo (nodi di scambio: fermate senza bacino ma con piu' linee).
+function CC.groupLineCounts()
+	local cnt = {}
+	pcall(function()
+		for _, L in ipairs(CC.each(api.engine.system.lineSystem.getLinesForPlayer(api.engine.util.getPlayer()))) do
+			local seen = {}
+			for _, s in ipairs(CC.lineStops(L)) do
+				if not seen[s.stationGroup] then seen[s.stationGroup] = true; cnt[s.stationGroup] = (cnt[s.stationGroup] or 0) + 1 end
+			end
+		end
+	end)
+	return cnt
 end
 
 -- Modelli (id) dei pezzi di un veicolo, nell'ordine (locomotiva per prima).
@@ -205,7 +277,7 @@ function CC.depotForLine(L)
 		end)
 	end
 	local p = CC.posOf(groups[1])
-	local target = CC.stopNodeId(groups[1])
+	local target = CC.lineStops(L)[1] and CC.lineStopNode(CC.lineStops(L)[1]) or CC.stopNodeId(groups[1])
 	local best, bd
 	for _, d in ipairs(CC.playerDepots()) do
 		local dist = (p and d.x) and math.sqrt((d.x - p.x) ^ 2 + (d.y - p.y) ^ 2) or 1e9

@@ -29,7 +29,7 @@ SIM_ACTIONS.build_intercity_bus = function(a)
 	-- strada percorribile in tutti e due i versi tra fermate consecutive (e dall'ultima alla prima)
 	for i = 1, #groups do
 		local g1, g2 = groups[i], groups[i % #groups + 1]
-		if not CC.hasPath(CC.stopNodeId(g1), CC.stopNodeId(g2), { TM.BUS }) then
+		if not CC.groupPath(g1, g2, { TM.BUS }) then
 			return { ok = false, error = "nessuna strada per bus tra " .. (CC.nameOf(towns[i]) or "?") .. " e " .. (CC.nameOf(towns[i % #towns + 1]) or "?"), stations = groups, log = log }
 		end
 	end
@@ -73,7 +73,7 @@ SIM_ACTIONS.connect_station_to_town = function(a)
 	local gC, err = CC.townStop(town, (CC.nameOf(town) or "Centro") .. " centro", 250)
 	if not gC then return { ok = false, error = err, log = log } end
 	if gC == gS then return { ok = false, error = "la stazione e' gia' in centro: navetta non necessaria", log = log } end
-	if not CC.hasPath(CC.stopNodeId(gS), CC.stopNodeId(gC), { TM.BUS }) or not CC.hasPath(CC.stopNodeId(gC), CC.stopNodeId(gS), { TM.BUS }) then
+	if not CC.groupPath(gS, gC, { TM.BUS }) or not CC.groupPath(gC, gS, { TM.BUS }) then
 		return { ok = false, error = "la fermata della stazione non e' collegata al centro su strada (andata e ritorno)", log = log }
 	end
 	local depot, builtD = ensureRoadDepot(gS, sp.x, sp.y, "Deposito " .. (CC.nameOf(town) or ""))
@@ -206,7 +206,7 @@ SIM_ACTIONS.extend_line = function(a)
 	local modes = CC.lineModes(a.line_id)
 	if #modes == 0 then modes = { TM.BUS } end
 	local last, first = groups[#groups], groups[1]
-	if not CC.hasPath(CC.stopNodeId(last), CC.stopNodeId(g), modes) or not CC.hasPath(CC.stopNodeId(g), CC.stopNodeId(first), modes) then
+	if not CC.groupPath(last, g, modes) or not CC.groupPath(g, first, modes) then
 		return { ok = false, error = "la nuova fermata non e' raggiungibile dai veicoli della linea" }
 	end
 	local stops = {}
