@@ -52,6 +52,13 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Comando "controlla la rete": elenco di linee e costruzioni che non funzionano.
 - [ ] Le prove in gioco (p1-p9) verificano anche il funzionamento, non solo che la costruzione esista.
 
+## Fase 2c - Imparare da reti fatte da altri e dalle mod esterne
+- [ ] Salvataggio di un altro giocatore (con le stesse mod del suo autore): caricarlo con la nostra mod e leggere con
+      le sonde s6/s7 aeroporti, porti, scali, svincoli, linee e depositi reali -> schemi (`CC.TEMPLATES`) e regole di
+      posizionamento.
+- [ ] Mod esterne che Nicolo' usera': leggerne i file (cartella mods + Workshop di Steam, sola lettura) per capirne
+      la logica (costruzioni, moduli, veicoli, parametri) e farle usare anche alla nostra mod.
+
 ## Fase 3 - Nuovi mezzi e infrastrutture
 - [ ] Treni merci. (bozza: b3)
 - [ ] Bus tra citta' vicine. (bozza: b2)

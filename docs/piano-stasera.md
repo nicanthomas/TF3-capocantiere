@@ -43,6 +43,10 @@ dopo qualche mese di gioco), non solo che la costruzione esista.
 - [ ] Nuova partita di prova nel 2300 su mappa appena creata, senza nulla costruito (stesse mod): ripetere p2, p4, p5
       partendo da zero (prime arterie e linee principali).
 
+## 3c. Salvataggio di terzi e mod esterne (se disponibili)
+- [ ] Caricare il salvataggio dell'altro giocatore (installando prima le sue mod), sonde s6/s7, salvare i risultati.
+- [ ] Leggere le mod esterne (mods + Workshop, sola lettura).
+
 ## 4. Versione 14
 - [ ] `python dev/build_script.py --bozza`, backup della v13, installazione, ricarica della partita.
 - [ ] `set CAPOCANTIERE_BOZZA=1` e prima sessione vera con `avvia_capocantiere.bat`.
