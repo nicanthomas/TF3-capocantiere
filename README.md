@@ -44,8 +44,9 @@ Ogni azione che costruisce o compra chiede conferma prima di essere inviata.
 2. Python 3.10+, poi `pip install anthropic`.
 3. Chiave API **solo** come variabile d'ambiente (mai nei file):
    `setx ANTHROPIC_API_KEY "..."` e riapri il terminale.
-4. Con la partita aperta: `python middleware/main.py`
-   (se la cartella di scambio e' diversa: variabile `CAPOCANTIERE_DIR`).
+4. Controllo: `python middleware/verifica_installazione.py` (non modifica nulla).
+5. Con la partita aperta: doppio clic su `middleware/avvia_capocantiere.bat`
+   (oppure `python middleware/main.py`; se la cartella di scambio e' diversa: variabile `CAPOCANTIERE_DIR`).
 
 Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 
@@ -53,4 +54,13 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 
 - La mod scrive solo nella cartella `capocantiere` dei dati utente.
 - `DEV_MODE = true` nello script abilita `lua_eval` / `sim_eval` (solo per sviluppo): da spegnere per l'uso normale.
-- Modello Anthropic configurato in `middleware/main.py` (`MODEL`).
+- Modello Anthropic configurato in `middleware/main.py` (`MODEL`). Il middleware usa il prompt caching e tiene
+  in memoria solo gli ultimi turni della conversazione (`MAX_TURNS`) per contenere i costi.
+- Gli argomenti dei tool vengono controllati in Python prima di arrivare al gioco.
+- All'avvio i file `actions_*` rimasti da sessioni precedenti vengono spostati in `capocantiere/vecchi`.
+
+## Sviluppo
+
+- `python middleware/test_middleware.py`: test del middleware senza gioco e senza API.
+- `python dev/build_script.py`: copia `dev/cc_lib.lua` + `dev/cc_actions.lua` nello script della mod
+  (con backup e controllo di sintassi); `--check` verifica soltanto che siano allineati.

@@ -15,3 +15,5 @@ __pycache__/
 # salvataggi e crash
 *.sav
 *.dmp
+# backup creati da dev/build_script.py
+*.bak_*

@@ -54,14 +54,14 @@ Verificate in gioco durante lo sviluppo. Dove c'e' scritto **CRASH** il gioco si
 - Binari: `SegmentAndEntity.type = 1`, template `::/infrastructure/track/<simple|standard|high_speed>/...[_catenary]`.
 - Passaggio a livello: prima spezzare la strada (proposta separata), poi posare il binario sul nuovo nodo.
   Nella stessa proposta: "Costruzione non consentita". Non si puo' spezzare a pochi metri da un nodo: usare il nodo.
-- Deposito ferroviario: parametri `trackType` (0 simple, 1 standard, 2 high_speed) e `catenary` (0/1).
+- Deposito ferroviario: parametri `trackType` (1 simple, 2 standard, 3 high_speed) e `catenary` (1 No, 2 Si'): indici da 1.
 - Locomotiva: `engineTransportModes` non vuoto e capacita' 0; elettrica se manca TRAIN tra i modi. Le motrici
   dei treni bloccati (`*_front`) hanno capacita' 0 ma non vanno usate con carrozze normali.
 
 ## Epoche
 - I veicoli hanno `yearTo = 0` dopo il 2020-2030: nel 2300 restano disponibili gli ultimi modelli.
 - Strade "new" (citta' moderne): solo variante `_tram_electrified`; strade "old": `_tram` e `_tram_electrified`.
-- Deposito tram: parametro `tramCatenary` (0/1). `ce.params` va assegnato in un colpo solo: il gioco copia la
+- Deposito tram: parametro `tramCatenary` (1 No, 2 Si'). `ce.params` va assegnato in un colpo solo: il gioco copia la
   tabella, modifiche successive (`ce.params.x = ...`) vanno perse.
 - Modalita' pathfinder: `TransportMode.ELECTRIC_TRAM` / `ELECTRIC_TRAIN` per i veicoli elettrici.
 - Le azioni lunghe (ferrovie) possono superare i 60 s: timeout della mod 300 s.

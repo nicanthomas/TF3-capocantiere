@@ -13,13 +13,15 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Chiave API nuova: `setx ANTHROPIC_API_KEY "..."`, `pip install anthropic`; revocare la chiave vecchia (utente).
 - [ ] Verifica nel 2300 (`autosave_CC_test_2300-04-15`): veicoli in movimento su ferrovia a 2 binari con
       2 treni elettrici, tram elettrico, bus, merci.
+- [ ] Installare sul PC il middleware aggiornato (backup prima) e lanciare `verifica_installazione.py`.
 - [ ] Prima sessione completa con `main.py` e direttive vere.
 
 ## Fase 1 - Protezione della partita
 - [ ] Verifica "a secco" di ogni proposta (`makeProposalData`) prima di costruire.
 - [ ] Salvataggio automatico prima delle azioni grandi (verificare se l'API lo consente).
 - [ ] Avviso / ripresa se la partita e' in pausa.
-- [ ] Validazione degli input delle azioni nella mod.
+- [x] Validazione degli argomenti nel middleware (schema dei tool).
+- [ ] Validazione degli input anche nella mod.
 - [ ] Pulizia automatica anche per il tram quando l'azione fallisce.
 
 ## Fase 2 - Logica di posizionamento
@@ -46,16 +48,19 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 ## Fase 5 - Interfaccia
 - [ ] Test di una finestra di testo nella GUI di TF3.
 - [ ] Chat in gioco con conferme Si'/No.
-- [ ] Avvio con un'icona (middleware in sottofondo).
+- [x] Avvio con doppio clic: `avvia_capocantiere.bat` + `verifica_installazione.py`.
+- [ ] Avvio insieme al gioco / middleware in sottofondo.
 
 ## Fase 6 - Qualita' e manutenzione
-- [ ] Script di build per lo script della mod (oggi cc_lib + cc_actions incollati a mano); eventuale divisione in piu' file.
+- [x] Script di build `dev/build_script.py` (backup + controllo sintassi + `--check`).
+- [ ] Eventuale divisione dello script della mod in piu' file (da provare se TF3 lo consente).
 - [ ] Log per azione nella cartella capocantiere.
-- [ ] Test automatici su CC_test.
+- [x] Test automatici del middleware senza gioco (`middleware/test_middleware.py`).
+- [ ] Test automatici in gioco su CC_test.
 - [ ] Prove nelle epoche intermedie (1950, 1990) e su altre mappe.
 - [ ] Filtro veicoli delle mod (parti di treni bloccati, modelli incompleti).
 - [ ] Avviso se cambia la build di TF3.
-- [ ] Meno consumo API: riassunto della conversazione, prompt caching.
-- [ ] Middleware: sposta in una sottocartella i vecchi file `actions_` rimasti (senza cancellarli).
-- [ ] `docs/scoperte-api.md`: correggere le righe superate su `trackType` e `tramCatenary` (indici da 1).
+- [x] Meno consumo API: prompt caching e taglio dei turni vecchi (`MAX_TURNS`).
+- [x] Middleware: all'avvio sposta in `vecchi` i file `actions_` rimasti (senza cancellarli).
+- [x] `docs/scoperte-api.md`: righe su `trackType` e `tramCatenary` corrette (indici da 1).
 - [ ] Finale: `DEV_MODE = false`, README aggiornato.
