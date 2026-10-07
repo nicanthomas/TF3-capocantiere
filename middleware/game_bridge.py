@@ -116,6 +116,22 @@ class GameBridge:
                 except OSError:
                     pass
 
+    def archive_stale_actions(self) -> list[str]:
+        """All'avvio: i file actions_* presenti vengono da sessioni precedenti (il middleware li scrive solo
+        mentre aspetta una risposta). Se restassero, la mod potrebbe eseguirli dopo il caricamento di un
+        salvataggio. Li sposto nella sottocartella 'vecchi' (non li cancello)."""
+        moved = []
+        old_dir = os.path.join(self.folder, "vecchi")
+        for fn in sorted(os.listdir(self.folder)):
+            if re.fullmatch(r"actions_\d+(_[0-9a-f]+)?\.lua", fn):
+                os.makedirs(old_dir, exist_ok=True)
+                dst = os.path.join(old_dir, fn)
+                if os.path.exists(dst):
+                    dst = os.path.join(old_dir, f"{time.strftime('%Y%m%d_%H%M%S')}_{fn}")
+                os.replace(os.path.join(self.folder, fn), dst)
+                moved.append(fn)
+        return moved
+
     def ping(self) -> bool:
         try:
             r = self.send([{"type": "ping"}], timeout=8)

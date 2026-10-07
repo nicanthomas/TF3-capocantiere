@@ -29,13 +29,17 @@ import json
 import os
 import sys
 
+from conversation import cached_request, trim_history, validate_args
 from game_bridge import GameBridge, find_entities, overview
 from tools import LOCAL_TOOLS, SPENDING_TOOLS, TOOLS, describe_action
+
+TOOLS_BY_NAME = {t["name"]: t for t in TOOLS}
 
 # Modello Anthropic: cambia qui per usarne un altro (es. "claude-opus-5-5").
 MODEL = "claude-sonnet-5-5"
 MAX_TOKENS = 4096
 MAX_TOOL_ROUNDS = 12           # limite di sicurezza ai giri di tool per una singola richiesta
+MAX_TURNS = 8                  # turni di conversazione tenuti in memoria (i piu' vecchi vengono tolti)
 
 SYSTEM_PROMPT = """Sei il "Capo Cantiere" di una partita a Transport Fever 3 (l'anno corrente e' in get_overview:
 la mod sceglie da sola veicoli, binari e stazioni adatti all'epoca).
@@ -97,9 +101,7 @@ def ask_claude(client, messages: list, bridge: GameBridge) -> None:
         resp = client.messages.create(
             model=MODEL,
             max_tokens=MAX_TOKENS,
-            system=SYSTEM_PROMPT,
-            tools=TOOLS,
-            messages=messages,
+            **cached_request(SYSTEM_PROMPT, TOOLS, messages),   # prompt caching: meno costi
         )
         messages.append({"role": "assistant", "content": resp.content})
 
@@ -116,6 +118,18 @@ def ask_claude(client, messages: list, bridge: GameBridge) -> None:
                 continue
             args = block.input or {}
             print(f"  [tool] {block.name} {json.dumps(args, ensure_ascii=False)}")
+            problems = validate_args(TOOLS_BY_NAME.get(block.name, {}), args)
+            if block.name not in TOOLS_BY_NAME:
+                problems = [f"tool sconosciuto: {block.name}"]
+            if problems:                                 # argomenti sbagliati: non disturbo il gioco
+                tool_results.append({
+                    "type": "tool_result",
+                    "tool_use_id": block.id,
+                    "content": json.dumps({"ok": False, "error": "argomenti non validi", "details": problems},
+                                          ensure_ascii=False),
+                    "is_error": True,
+                })
+                continue
             try:
                 if block.name in LOCAL_TOOLS:
                     out = run_local_tool(block.name, args, bridge)
@@ -146,6 +160,9 @@ def main() -> None:
         sys.exit(1)
 
     bridge = GameBridge()
+    moved = bridge.archive_stale_actions()
+    if moved:
+        print(f"Spostati in 'vecchi' {len(moved)} file azioni rimasti da sessioni precedenti: {', '.join(moved)}")
     client = anthropic.Anthropic()
     messages: list = []
 
@@ -180,6 +197,7 @@ def main() -> None:
                   f"{len(ov['lines'])} linee")
             continue
 
+        trim_history(messages, MAX_TURNS - 1)           # spazio per il turno nuovo
         n_before = len(messages)
         messages.append({"role": "user", "content": text})
         try:
