@@ -104,4 +104,78 @@ check(rr.ok and rr.sold == 2 and rr.left == 1, "remove_vehicles: venduti 2, rest
 local rd = SIM_ACTIONS.delete_line({ line_id = L2 })
 check(rd.ok and #W.destroyedLines == 1, "delete_line ok")
 
+-- 10) piano delle stazioni (b5)
+local p1 = CC.planStation({ kind = "passengers", trains = 1, lines = 1, train_len = 100 })
+check(p1.tracks == 1 and p1.through == 0 and p1.layout == "PT", "1 treno: binario unico (" .. p1.layout .. ")")
+check(p1.segments == 3 and p1.length == 120, "treno da 100 m: stazione da 120 m (" .. p1.length .. ")")
+local p2 = CC.planStation({ kind = "passengers", trains = 2, lines = 1, train_len = 150 })
+check(p2.tracks == 2 and p2.layout == "PTTP", "2 treni: 2 binari per incrociarsi")
+check(p2.segments == 4, "treno da 150 m: 4 pezzi (160 m)")
+local p3 = CC.planStation({ kind = "passengers", trains = 4, lines = 2, double = true, through = 1, terminal = true, train_len = 200 })
+check(p3.tracks == 3 and p3.through == 2, "doppio binario, capolinea con 4 treni, transito: 3 + 2 (" .. p3.tracks .. " + " .. p3.through .. ")")
+local p4 = CC.planStation({ kind = "cargo", trains = 3, cargo_types = 2 })
+check(p4.tracks == 3, "scalo: 2 merci, 3 treni -> 3 binari (" .. p4.tracks .. ")")
+local p5 = CC.planStation({ kind = "cargo", trains = 4, cargo_types = 1 })
+check(p5.tracks == 2 and #p5.notes == 1, "scalo: 1 merce, 4 treni -> 2 binari + avviso binario d'attesa")
+local p6 = CC.planStation({ kind = "passengers", trains = 20, lines = 9, double = true, through = 1, max_tracks = 8 })
+check(p6.tracks + p6.through <= 8, "mai piu' di max_tracks binari")
+-- disposizione: ogni binario ha un marciapiede accanto
+for k = 1, 6 do
+	local lay = CC.stationLayout(k, 0)
+	local okLay = CC.layoutTracks(lay) == k
+	for c = 1, #lay do
+		if lay:sub(c, c) == "T" and lay:sub(c - 1, c - 1) ~= "P" and lay:sub(c + 1, c + 1) ~= "P" then okLay = false end
+	end
+	check(okLay, "disposizione con " .. k .. " binari: " .. lay)
+end
+local off = CC.moduleOffsets(4)
+check(off[1] == -10 and off[4] == 20, "posizioni dei pezzi per 160 m come la stazione copiata")
+check(#CC.moduleOffsets(6) == 6 and CC.moduleOffsets(6)[1] == -20, "posizioni per 6 pezzi")
+check(CC.stationLengthParam(4) == 3, "parametro length 160 m = 3 (verificato)")
+check(CC.expectedEnds({ layout = "PTTP" }, { f = true, b = false }) == 3, "estremi attesi: un lato unito, uno no")
+check(CC.staggerStop(1, 3, 6) == 0 and CC.staggerStop(2, 3, 6) == 2 and CC.staggerStop(3, 3, 6) == 4, "treni distribuiti lungo la linea")
+check(CC.fitCars(nil, nil, 10, 120) == 3, "treno accorciato per stare nel marciapiede (" .. CC.fitCars(nil, nil, 10, 120) .. ")")
+
+-- 11) ordine delle fermate e anello (b6, b7)
+local bf = CC.lineStopOrder({ 1, 2, 3, 4 }, "back_forth")
+check(table.concat(bf, ",") == "1,2,3,4,3,2", "avanti e indietro: " .. table.concat(bf, ","))
+check(table.concat(CC.lineStopOrder({ 1, 2 }, "back_forth"), ",") == "1,2", "avanti e indietro con 2 fermate")
+check(table.concat(CC.lineStopOrder({ 1, 2, 3, 4 }, "ring_reverse"), ",") == "1,4,3,2", "anello al contrario")
+local pts = { { x = 0, y = 0 }, { x = 10, y = 10 }, { x = 10, y = 0 }, { x = 0, y = 10 } }
+local ord = CC.orderRing(pts)
+local function tour(o) local L = 0 for i = 1, #o do local a, b = pts[o[i]], pts[o[i % #o + 1]] L = L + math.sqrt((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2) end return L end
+check(ord[1] == 1 and math.abs(tour(ord) - 40) < 1e-6, "anello senza incroci (giro di 40, ordine " .. table.concat(ord, ",") .. ")")
+
+-- 12) controllo argomenti nuovi tipi e azioni vecchie (b1, b9)
+check(not pcall(CC.need, { x = 1 }, { x = "bool" }), "need: bool richiesto")
+check(pcall(CC.need, { x = true }, { x = "bool?" }), "need: bool ok")
+check(not pcall(CC.need, { t = 424242 }, { t = "id" }), "need: entita' inesistente rifiutata")
+check(not pcall(CC.need, { n = 2.5 }, { n = "int" }), "need: decimale rifiutato dove serve un intero")
+local rv = SIM_ACTIONS.build_bus_line({ town_id = "101" })
+check(rv.ok == false and tostring(rv.error):find("town_id"), "azione vecchia: argomento sbagliato fermato nella mod (" .. tostring(rv.error) .. ")")
+local rp = SIM_ACTIONS.create_line_from_stations({ station_ids = { grp, grp }, pattern = "zigzag" })
+check(rp.ok == false and tostring(rp.error):find("pattern"), "linea da stazioni: pattern sconosciuto rifiutato")
+
+-- 13) collaudo di una linea (b8): bacino vuoto e veicolo fermo al secondo controllo
+local stB = newEnt({ STATION = { terminals = V({ { vehicleNodeId = 56 } }) }, BOUNDING_VOLUME = { bbox = { min = { x = 0, y = 0, z = 0 }, max = { x = 2, y = 2, z = 0 } } } })
+local grpB = newEnt({ STATION_GROUP = { stations = V({ stB }) } })
+local L3 = newEnt({ LINE = { stops = V({ { stationGroup = grp }, { stationGroup = grpB } }), vehicleInfo = { transportModes = { false, true } } } })
+local v3 = newEnt({ TRANSPORT_VEHICLE = { line = L3, state = 1, transportVehicleConfig = { vehicles = V({ { part = { modelId = 501 } } }) } },
+	BOUNDING_VOLUME = { bbox = { min = { x = 50, y = 50, z = 0 }, max = { x = 52, y = 52, z = 0 } } } })
+local c1 = CC.checkLine(L3)
+check(c1.ok == false and c1.vehicles == 1 and c1.stops == 2, "collaudo: linea letta (veicoli " .. tostring(c1.vehicles) .. ")")
+local foundCatch = false
+for _, pr in ipairs(c1.problems) do if pr:find("bacino") then foundCatch = true end end
+check(foundCatch, "collaudo: fermate senza bacino segnalate")
+check(c1.movement_unknown == 1, "collaudo: primo controllo, movimento non ancora verificabile")
+W.comps[WORLD].GAME_TIME.gameTime = 9000
+local c2 = CC.checkLine(L3)
+check(c2.vehicles_still == 1, "collaudo: secondo controllo, veicolo fermo riconosciuto")
+W.comps[v3].BOUNDING_VOLUME.bbox = { min = { x = 150, y = 50, z = 0 }, max = { x = 152, y = 52, z = 0 } }
+W.comps[WORLD].GAME_TIME.gameTime = 12000
+local c3 = CC.checkLine(L3)
+check(c3.vehicles_moving == 1 and c3.vehicles_still == 0, "collaudo: veicolo che si e' mosso")
+local cn = SIM_ACTIONS.check_network({})
+check(cn.ok == true and type(cn.lines_with_problems) == "table", "controlla la rete: risponde anche senza linee del giocatore")
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))

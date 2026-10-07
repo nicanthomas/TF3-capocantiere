@@ -86,21 +86,35 @@ function CC.buildCmd(prop, ignoreErrors)
 end
 
 -- ---------------------------------------------------------------- controllo argomenti nella mod
--- spec: { campo = "int" | "int?" | "ints" | "str?" | "num?" }  (? = facoltativo). Errore leggibile se non va.
+-- spec: { campo = "int" | "int?" | "ints" | "str?" | "num?" | "bool?" | "id" | "ids" }  (? = facoltativo).
+-- "id"/"ids": numeri di entita' che devono esistere nella partita. Errore leggibile se non va.
+-- I campi sono controllati in ordine alfabetico, cosi' l'errore e' sempre lo stesso a parita' di argomenti.
 function CC.need(a, spec)
-	for k, t in pairs(spec) do
+	if type(a) ~= "table" then error("argomenti mancanti", 0) end
+	local keys = {}
+	for k in pairs(spec) do keys[#keys + 1] = k end
+	table.sort(keys)
+	for _, k in ipairs(keys) do
+		local t = spec[k]
 		local v = a[k]
 		local opt = t:sub(-1) == "?"
 		local base = opt and t:sub(1, -2) or t
 		if v == nil then
 			if not opt then error("argomento mancante: " .. k, 0) end
-		elseif base == "int" or base == "num" then
+		elseif base == "int" or base == "num" or base == "id" then
 			if type(v) ~= "number" then error("argomento " .. k .. ": atteso un numero", 0) end
-		elseif base == "ints" then
+			if base == "int" and v ~= math.floor(v) then error("argomento " .. k .. ": atteso un numero intero", 0) end
+			if base == "id" and not api.engine.entityExists(v) then error("argomento " .. k .. ": l'entita' " .. v .. " non esiste", 0) end
+		elseif base == "ints" or base == "ids" then
 			if type(v) ~= "table" or #v == 0 then error("argomento " .. k .. ": attesa una lista di numeri", 0) end
-			for _, x in ipairs(v) do if type(x) ~= "number" then error("argomento " .. k .. ": attesa una lista di numeri", 0) end end
+			for _, x in ipairs(v) do
+				if type(x) ~= "number" then error("argomento " .. k .. ": attesa una lista di numeri", 0) end
+				if base == "ids" and not api.engine.entityExists(x) then error("argomento " .. k .. ": l'entita' " .. x .. " non esiste", 0) end
+			end
 		elseif base == "str" then
 			if type(v) ~= "string" then error("argomento " .. k .. ": atteso un testo", 0) end
+		elseif base == "bool" then
+			if type(v) ~= "boolean" then error("argomento " .. k .. ": atteso vero/falso", 0) end
 		end
 	end
 end

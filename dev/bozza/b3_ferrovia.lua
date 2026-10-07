@@ -54,7 +54,11 @@ function CC.placeRailStation(center, dx, dy, neighbors, name, opts)
 			if tries >= (opts.maxTries or 12) then return nil, reasons end
 			tries = tries + 1
 			local ok, info
-			if opts.modules then
+			if opts.builder then
+				-- costruttore su misura (es. CC.buildRailStationN: piu' binari, lunghezza variabile, b5)
+				local okP, a, b = pcall(opts.builder, c.x, c.y, dx, dy)
+				if okP then ok, info = a, b else ok, info = false, { error = tostring(a) } end
+			elseif opts.modules then
 				local orig = CC.railStationModules
 				CC.railStationModules = function() return opts.modules end
 				local okP, a, b = pcall(CC.buildRailStation, c.x, c.y, dx, dy, { name = name, tracks = 2 })
@@ -63,7 +67,7 @@ function CC.placeRailStation(center, dx, dy, neighbors, name, opts)
 			else
 				ok, info = CC.buildRailStation(c.x, c.y, dx, dy, { name = name, tracks = 2 })
 			end
-			if ok and info.group and #info.ends == 2 then
+			if ok and info.group and #info.ends == (opts.expectEnds or 2) then
 				local good, why = true, nil
 				if opts.accept then good, why = opts.accept(info) end
 				if good then info.site = c; return info, reasons end
@@ -72,7 +76,7 @@ function CC.placeRailStation(center, dx, dy, neighbors, name, opts)
 				CC.removeConstruction(info.construction)
 			elseif ok then
 				-- costruita ma non come serve (es. estremi dei binari non riconosciuti): la tolgo
-				reasons[#reasons + 1] = "stazione costruita con " .. #(info.ends or {}) .. " estremi invece di 2: rimossa"
+				reasons[#reasons + 1] = "stazione costruita con " .. #(info.ends or {}) .. " estremi invece di " .. (opts.expectEnds or 2) .. ": rimossa"
 				CC.removeEdges(info.edges)
 				CC.removeConstruction(info.construction)
 			elseif info and info.error then
@@ -86,7 +90,10 @@ end
 -- Binari tra stazioni consecutive (con forme di curva diverse, deviazioni, ripiego dall'alta velocita'),
 -- deposito dietro un estremo libero, controllo dei percorsi con la modalita' del treno.
 -- stations: lista di info di buildRailStation (con .town facoltativo). Ritorna ok, { depot, mode, loco } o false, errore.
-function CC.linkStations(stations, log, builtEdges, built, loco)
+-- opts.waitLoops = { [indice stazione] = true }: binario d'attesa/incrocio appena fuori da quella stazione (b6),
+-- per i treni che arrivano quando i binari della stazione sono occupati.
+function CC.linkStations(stations, log, builtEdges, built, loco, opts)
+	opts = opts or {}
 	local TM = api.type.enum.TransportMode
 	local function endToward(st, x, y)
 		local best, bv
@@ -103,6 +110,15 @@ function CC.linkStations(stations, log, builtEdges, built, loco)
 		local ea, eb = endToward(sa, pa.x, pa.y), endToward(sb, pb.x, pb.y)
 		if used[ea.node] or used[eb.node] then return false, "orientamento delle stazioni non compatibile" end
 		used[ea.node] = true; used[eb.node] = true
+		for _, w in ipairs({ { i, "a" }, { i + 1, "b" } }) do
+			if opts.waitLoops and opts.waitLoops[w[1]] then
+				local okW, W = CC.buildPassingLoop(w[2] == "a" and ea or eb, opts.waitLen)
+				if not okW then return false, "binario d'attesa alla stazione " .. w[1] .. ": " .. tostring(W.error) end
+				for _, e in ipairs(W.edges) do builtEdges[#builtEdges + 1] = e end
+				if w[2] == "a" then ea = W.exit else eb = W.exit end
+				log[#log + 1] = "binario d'attesa fuori dalla stazione " .. w[1] .. (W.warning and (" (" .. W.warning .. ")") or "")
+			end
+		end
 		local ok, info
 		for _, kf in ipairs({ 0.9, 0.5, 1.4, 0.3 }) do
 			ok, info = CC.buildCurvedTrack(ea, eb, 60, false, kf)
@@ -127,7 +143,20 @@ function CC.linkStations(stations, log, builtEdges, built, loco)
 			.. (info.tunnels or 0) .. " in galleria, " .. (info.crossings or 0) .. " passaggi a livello, "
 			.. (info.overpasses or 0) .. " sovrappassi, " .. (info.underpasses or 0) .. " sottopassi"
 	end
+	return CC.finishRailLink(stations, used, log, built, loco)
+end
+
+-- Parte finale comune a tutti i collegamenti ferroviari: deposito su un estremo libero della prima o dell'ultima
+-- stazione (o su opts.depotEnd), scelta della locomotiva, controllo dei percorsi deposito -> stazioni e tra stazioni.
+function CC.finishRailLink(stations, used, log, built, loco, opts)
+	opts = opts or {}
+	used = used or {}
+	local TM = api.type.enum.TransportMode
 	local depot
+	if opts.depotEnd then
+		local okD, D = CC.buildRailDepotAtEnd(opts.depotEnd, opts.depotName or "Deposito ferroviario")
+		if okD then depot = D.depot; built[#built + 1] = D.construction else log[#log + 1] = "deposito: " .. tostring(D.error) end
+	end
 	for _, si in ipairs({ 1, #stations }) do
 		for _, e in ipairs(stations[si].ends) do
 			if not used[e.node] and not depot then
@@ -146,9 +175,14 @@ function CC.linkStations(stations, log, builtEdges, built, loco)
 	if not CC.hasPath(dOut, CC.stopNodeId(g1), { mode }) and not CC.hasPath(dOut, CC.stopNodeId(gN), { mode }) then
 		return false, "il deposito non raggiunge le stazioni" .. (loco.electric and " (treno elettrico)" or "")
 	end
-	for i = 1, #stations - 1 do
-		if not CC.hasPath(CC.stopNodeId(stations[i].group), CC.stopNodeId(stations[i + 1].group), { mode }) then
-			return false, "binari costruiti ma i treni non trovano il percorso " .. i .. "-" .. (i + 1)
+	local nPairs = opts.ring and #stations or (#stations - 1)
+	for i = 1, nPairs do
+		local j = i % #stations + 1
+		if not CC.hasPath(CC.stopNodeId(stations[i].group), CC.stopNodeId(stations[j].group), { mode }) then
+			return false, "binari costruiti ma i treni non trovano il percorso " .. i .. "-" .. j
+		end
+		if opts.bothWays and not CC.hasPath(CC.stopNodeId(stations[j].group), CC.stopNodeId(stations[i].group), { mode }) then
+			return false, "binari costruiti ma i treni non trovano il percorso " .. j .. "-" .. i .. " (verso opposto)"
 		end
 	end
 	return true, { depot = depot, mode = mode, loco = loco }
@@ -300,12 +334,24 @@ end
 -- ---------------------------------------------------------------- ferrovia passeggeri v2
 -- Come build_rail_line, ma ogni stazione va nel posto con piu' edifici nel bacino (non solo il primo libero)
 -- e, se richiesto (feeder = true, default), ogni stazione viene collegata al centro con una navetta bus.
+-- Opzioni nuove (b5/b6/b7, DA VERIFICARE in gioco):
+--   double_track = true: doppio binario tra le stazioni (un binario per senso, segnali a senso unico);
+--   express_town_ids = { ... }: linea veloce che ferma solo in queste citta' (sottoinsieme di town_ids); nelle altre
+--     stazioni c'e' un binario di transito per non fermarsi dietro ai regionali;
+--   express_trains = n: treni della linea veloce (default 1).
+-- Le fermate vanno avanti e indietro (A, B, C, B): senza, il treno tornerebbe da C ad A senza fermarsi in B.
 local function buildRailLine2(a, built, builtEdges)
 	local towns = a.town_ids
 	if #towns < 2 then return { ok = false, error = "servono almeno 2 citta'" } end
+	local express = {}
+	for _, t in ipairs(a.express_town_ids or {}) do express[t] = true end
+	local hasExpress = next(express) ~= nil
+	local special = a.double_track or hasExpress
 	local C = {}
 	for i, t in ipairs(towns) do C[i] = townCenter(t) end
-	local log, stations = {}, {}
+	local log, stations, notes = {}, {}, {}
+	local nCars = a.num_cars or 3
+	local trainLen = CC.estimateTrainLength and CC.estimateTrainLength(nCars) or 120
 	for i, t in ipairs(towns) do
 		local dx, dy
 		if i == 1 then dx, dy = unit(C[2].x - C[1].x, C[2].y - C[1].y)
@@ -319,27 +365,71 @@ local function buildRailLine2(a, built, builtEdges)
 		if C[i - 1] then nbs[#nbs + 1] = C[i - 1] end
 		if C[i + 1] then nbs[#nbs + 1] = C[i + 1] end
 		local tname = CC.nameOf(t) or ("citta' " .. i)
-		local st, why = CC.placeRailStation(C[i], dx, dy, nbs, tname .. " stazione", {
-			score = function(x, y) return CC.townBuildingsNear(x, y, 300) * 10 - math.sqrt((x - C[i].x) ^ 2 + (y - C[i].y) ^ 2) / 100 end,
-		})
-		if not st then return { ok = false, error = "non trovo spazio per la stazione di " .. tname, log = why } end
+		local score = function(x, y) return CC.townBuildingsNear(x, y, 300) * 10 - math.sqrt((x - C[i].x) ^ 2 + (y - C[i].y) ^ 2) / 100 end
+		local st, why
+		if special then
+			local skip = hasExpress and not express[t]
+			local plan = CC.planStation({ kind = "passengers", lines = (hasExpress and express[t]) and 2 or 1,
+				trains = (a.num_trains or 1) + ((hasExpress and express[t]) and (a.express_trains or 1) or 0),
+				train_len = trainLen, double = a.double_track, through = skip and 1 or 0,
+				terminal = (i == 1 or i == #towns) })
+			local info
+			st, info = CC.placeStationSmart(C[i], dx, dy, nbs, tname .. " stazione", plan, { score = score })
+			if not st then return { ok = false, error = "non trovo spazio per la stazione di " .. tname, log = info and info.steps, alternatives = info and info.alternatives, reuse_group = info and info.reuse_group } end
+			if info.needs_feeder then notes[#notes + 1] = tname .. ": stazione lontana dal centro, serve la navetta" end
+			if info.shorter then notes[#notes + 1] = tname .. ": stazione accorciata a " .. info.plan.length .. " m (treni al massimo " .. info.max_train_len .. " m)"; trainLen = math.min(trainLen, info.max_train_len) end
+			st.plan = info.plan
+		else
+			st, why = CC.placeRailStation(C[i], dx, dy, nbs, tname .. " stazione", { score = score })
+			if not st then return { ok = false, error = "non trovo spazio per la stazione di " .. tname, log = why } end
+		end
 		st.town = t
 		stations[i] = st
 		built[#built + 1] = st.construction
 		for _, e in ipairs(st.edges or {}) do builtEdges[#builtEdges + 1] = e end
 		log[#log + 1] = tname .. ": stazione a " .. st.site.R .. " m dal centro, " .. CC.townBuildingsNear(st.site.x, st.site.y, 300) .. " edifici entro 300 m"
+			.. (st.plan and (", " .. st.plan.tracks .. " binari + " .. st.plan.through .. " di transito, " .. st.plan.length .. " m") or "")
 	end
-	local okL, link = CC.linkStations(stations, log, builtEdges, built)
+	local okL, link
+	if a.double_track then
+		okL, link = CC.linkStationsDouble(stations, log, builtEdges, built)
+	else
+		okL, link = CC.linkStations(stations, log, builtEdges, built)
+	end
 	if not okL then return { ok = false, error = link, log = log } end
 	local groups = {}
 	for i, st in ipairs(stations) do groups[i] = st.group end
-	local okLine, li = CC.createLine(a.name or "Treno", groups)
+	local okLine, li = CC.createLine(a.name or "Treno", CC.lineStopOrder(groups, "back_forth"))
 	if not okLine then return { ok = false, error = li.error, log = log } end
-	local nTrains = math.max(1, math.min(#stations, a.num_trains or 1))
+	local nTrains = math.max(1, math.min(a.double_track and 2 * #stations or #stations, a.num_trains or 1))
 	local trains, errs = {}, {}
-	for _ = 1, nTrains do
-		local okT, T = CC.buyTrain(link.depot, li.line, a.num_cars or 3)
+	local nStops = #CC.lineStopOrder(groups, "back_forth")
+	for k = 1, nTrains do
+		local okT, T = CC.buyPassengerTrain(link.depot, li.line, nCars, CC.staggerStop(k, nTrains, nStops), trainLen, link.loco)
 		if okT then trains[#trains + 1] = T.vehicle else errs[#errs + 1] = T.error end
+	end
+	local result = { ok = #trains > 0 and #errs == 0, line_id = li.line, stations = groups, depot_id = link.depot, trains = trains, errors = errs, log = log, notes = notes }
+	-- linea veloce: solo le citta' indicate, sugli stessi binari
+	if hasExpress then
+		local eg = {}
+		for i, t in ipairs(towns) do if express[t] then eg[#eg + 1] = groups[i] end end
+		if #eg >= 2 then
+			local okE, le = CC.createLine((a.name or "Treno") .. " veloce", CC.lineStopOrder(eg, "back_forth"))
+			if okE then
+				result.express_line_id = le.line
+				result.line_ids = { li.line, le.line }
+				local nE = math.max(1, math.min(4, a.express_trains or 1))
+				for k = 1, nE do
+					local okT, T = CC.buyPassengerTrain(link.depot, le.line, nCars, CC.staggerStop(k, nE, 2 * #eg - 2), trainLen, link.loco)
+					if okT then trains[#trains + 1] = T.vehicle else errs[#errs + 1] = "veloce: " .. tostring(T.error) end
+				end
+			else
+				errs[#errs + 1] = "linea veloce non creata"
+			end
+		else
+			errs[#errs + 1] = "linea veloce: servono almeno 2 citta' tra quelle della linea"
+		end
+		result.ok = #trains > 0 and #errs == 0
 	end
 	-- nodi di scambio: navetta bus stazione - centro (gli errori non fanno fallire la linea)
 	if a.feeder ~= false then
@@ -348,11 +438,12 @@ local function buildRailLine2(a, built, builtEdges)
 			log[#log + 1] = (CC.nameOf(towns[i]) or "?") .. ": navetta " .. ((okF and F.ok) and ("linea " .. tostring(F.line_id)) or ("non creata (" .. tostring(okF and F.error or F) .. ")"))
 		end
 	end
-	return { ok = #trains > 0 and #errs == 0, line_id = li.line, stations = groups, depot_id = link.depot, trains = trains, errors = errs, log = log }
+	return result
 end
 
 SIM_ACTIONS.build_rail_line2 = function(a)
-	CC.need(a, { town_ids = "ints", num_trains = "int?", num_cars = "int?", name = "str?" })
+	CC.need(a, { town_ids = "ids", num_trains = "int?", num_cars = "int?", name = "str?", double_track = "bool?",
+		express_town_ids = "ids?", express_trains = "int?", feeder = "bool?" })
 	local built, builtEdges = {}, {}
 	CC.trackOverride = nil
 	local ok, r = pcall(buildRailLine2, a, built, builtEdges)
