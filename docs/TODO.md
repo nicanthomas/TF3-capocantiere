@@ -63,7 +63,10 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
       la logica (costruzioni, moduli, veicoli, parametri) e farle usare anche alla nostra mod.
 
 ## Fase 3 - Nuovi mezzi e infrastrutture
-- [ ] Treni merci. (bozza: b3)
+- [ ] Treni merci. (bozza: b3, solo 1 fermata di carico -> 1 di scarico, 1 merce)
+- [ ] Linee merci a piu' fermate: raccolta da piu' industrie, consegna in piu' citta'/industrie, carico anche al ritorno
+      (es. carbone all'andata, acciaio al ritorno), vagoni misti per piu' merci; Claude sceglie lo schema in base alla
+      mappa e lo spiega nel piano.
 - [ ] Bus tra citta' vicine. (bozza: b2)
 - [ ] Autostrade tra citta' con svincoli. (bozza: superstrada senza svincoli, b4)
 - [ ] Aerei passeggeri e merci (aeroporti). (bozza b4 + sonde: schemi da copiare in gioco)
