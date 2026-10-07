@@ -36,7 +36,15 @@ function T.industryPair(dmin, dmax)
 	local inds = {}
 	for _, e in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.INDUSTRY))) do
 		local p = CC.posOf(e)
+		-- industrie in acqua o sulla riva (piattaforme petrolifere): niente scalo ferroviario accanto
+		local wet = false
 		if p then
+			for a = 0, 315, 45 do
+				local r = math.rad(a)
+				if CC.onWater(p.x + math.cos(r) * 150, p.y + math.sin(r) * 150) then wet = true end
+			end
+		end
+		if p and not wet then
 			local ins, outs = CC.industryCargo(e)
 			inds[#inds + 1] = { id = e, name = CC.nameOf(e), x = p.x, y = p.y, ins = ins, outs = outs }
 		end
