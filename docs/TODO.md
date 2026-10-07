@@ -1,5 +1,7 @@
 # Da fare (aggiornato 07.10.2026)
 
+Bozze scritte senza gioco (da provare): vedi `dev/bozza/README.md` e `docs/piano-stasera.md`.
+
 Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 
 ## Gia' fatto
@@ -17,33 +19,33 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Prima sessione completa con `main.py` e direttive vere.
 
 ## Fase 1 - Protezione della partita
-- [ ] Verifica "a secco" di ogni proposta (`makeProposalData`) prima di costruire.
+- [ ] Verifica "a secco" di ogni proposta (`makeProposalData`) prima di costruire. (bozza: `CC.buildCmd`)
 - [ ] Salvataggio automatico prima delle azioni grandi (verificare se l'API lo consente).
-- [ ] Avviso / ripresa se la partita e' in pausa.
+- [ ] Avviso / ripresa se la partita e' in pausa. (bozza: velocita' in state.lua, avviso nel middleware, `set_speed`)
 - [x] Validazione degli argomenti nel middleware (schema dei tool).
 - [ ] Validazione degli input anche nella mod.
-- [ ] Pulizia automatica anche per il tram quando l'azione fallisce.
+- [ ] Pulizia automatica anche per il tram quando l'azione fallisce. (bozza: b9)
 
 ## Fase 2 - Logica di posizionamento
-- [ ] Stazioni dove servono (bacino di passeggeri/merci), non solo dove c'e' spazio.
-- [ ] Ogni costruzione collegata alla rete stradale (strade d'accesso se mancano).
-- [ ] Nodi intermodali passeggeri: stazione treno vicino a fermata tram/bus, linea urbana che passa dalla stazione.
-- [ ] Nodi intermodali merci: catene camion → treno → camion (e porto/aeroporto).
+- [ ] Stazioni dove servono (bacino di passeggeri/merci), non solo dove c'e' spazio. (bozza: b3)
+- [ ] Ogni costruzione collegata alla rete stradale (strade d'accesso se mancano). (bozza: `CC.ensureRoadAccess`)
+- [ ] Nodi intermodali passeggeri: stazione treno vicino a fermata tram/bus, linea urbana che passa dalla stazione. (bozza: navetta)
+- [ ] Nodi intermodali merci: catene camion → treno → camion (e porto/aeroporto). (bozza: scali con l'industria nel bacino)
 - [ ] Riuso di stazioni e depositi esistenti.
 
 ## Fase 3 - Nuovi mezzi e infrastrutture
-- [ ] Treni merci.
-- [ ] Bus tra citta' vicine.
-- [ ] Autostrade tra citta' con svincoli.
-- [ ] Aerei passeggeri e merci (aeroporti).
-- [ ] Elicotteri (verificare quali modelli esistono).
-- [ ] Navi passeggeri e merci (porti).
+- [ ] Treni merci. (bozza: b3)
+- [ ] Bus tra citta' vicine. (bozza: b2)
+- [ ] Autostrade tra citta' con svincoli. (bozza: superstrada senza svincoli, b4)
+- [ ] Aerei passeggeri e merci (aeroporti). (bozza b4 + sonde: schemi da copiare in gioco)
+- [ ] Elicotteri (esistono: eliporto nel menu aereo, passeggeri e merci). (bozza b4)
+- [ ] Navi passeggeri e merci (porti: `harbor_modular.con`, `water_depot.con`). (bozza b4)
 - [ ] Capacita' ferroviaria: doppio binario, segnali.
 
 ## Fase 4 - Gestione della rete
-- [ ] Aggiungere/togliere veicoli, sostituire modelli vecchi.
-- [ ] Modificare, allungare, demolire linee su richiesta.
-- [ ] Annulla ultima azione.
+- [ ] Aggiungere/togliere veicoli, sostituire modelli vecchi. (bozza: b2)
+- [ ] Modificare, allungare, demolire linee su richiesta. (bozza: b2)
+- [ ] Annulla ultima azione. (bozza: b2 + `middleware/journal.py`)
 
 ## Fase 5 - Interfaccia
 - [ ] Test di una finestra di testo nella GUI di TF3.

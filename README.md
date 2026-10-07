@@ -64,3 +64,6 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 - `python middleware/test_middleware.py`: test del middleware senza gioco e senza API.
 - `python dev/build_script.py`: copia `dev/cc_lib.lua` + `dev/cc_actions.lua` nello script della mod
   (con backup e controllo di sintassi); `--check` verifica soltanto che siano allineati.
+- `dev/bozza/`: funzioni nuove ancora da provare in gioco (treni merci, bus tra citta', gestione veicoli, annulla,
+  aerei/elicotteri/navi, superstrade); test senza gioco con `python3 dev/bozza/run_mock.py`.
+- `dev/sonde/` e `dev/prove/`: codice da eseguire in gioco con `python dev/mkeval.py` (vedi `docs/piano-stasera.md`).
