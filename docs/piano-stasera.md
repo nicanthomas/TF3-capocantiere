@@ -36,6 +36,12 @@ Ogni sonda: `python dev/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev/
 - [ ] p9 strada d'accesso (dopo le costruzioni fatte a mano)
 - [ ] aerei / elicotteri / navi / superstrada (dopo aver riempito gli schemi)
 
+Per ogni prova che costruisce: controllare anche che FUNZIONI (veicoli in movimento, passeggeri/merci trasportati
+dopo qualche mese di gioco), non solo che la costruzione esista.
+
+## 3b. Early game
+- [ ] Nuova partita di prova nel 1850 (stesse mod): ripetere p2, p4, p5 con veicoli a vapore e carrozze.
+
 ## 4. Versione 14
 - [ ] `python dev/build_script.py --bozza`, backup della v13, installazione, ricarica della partita.
 - [ ] `set CAPOCANTIERE_BOZZA=1` e prima sessione vera con `avvia_capocantiere.bat`.

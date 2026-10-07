@@ -4,6 +4,14 @@ Bozze scritte senza gioco (da provare): vedi `dev/bozza/README.md` e `docs/piano
 
 Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 
+## Principi (richiesta di Nicolo', 07.10.2026)
+- La mod deve saper piazzare TUTTO cio' che il giocatore puo' costruire a mano (stazioni, fermate, depositi di ogni
+  tipo, scali merci, porti, aeroporti, eliporti, strade, autostrade, binari, segnali).
+- Ogni cosa piazzata deve FUNZIONARE, non essere solo un costo fisso: collegata alla rete, servita da una linea con
+  veicoli, con un bacino di passeggeri/merci reale. Se non funziona, l'azione lo dice e prova a correggere.
+- Uso principale: early game (dal 1850), per costruire le arterie e le linee principali. Quindi i veicoli d'epoca
+  (vapore, carrozze a cavalli, niente elettrico) sono il caso piu' importante, non il 2300.
+
 ## Gia' fatto
 - [x] Bus, tram (anche elettrici), fermate, linee, acquisto veicoli.
 - [x] Merci su strada (industria → industria/citta').
@@ -32,6 +40,17 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Nodi intermodali passeggeri: stazione treno vicino a fermata tram/bus, linea urbana che passa dalla stazione. (bozza: navetta)
 - [ ] Nodi intermodali merci: catene camion → treno → camion (e porto/aeroporto). (bozza: scali con l'industria nel bacino)
 - [ ] Riuso di stazioni e depositi esistenti.
+- [ ] Depositi con logica: vicino al capolinea, collegati alla rete della linea, fuori dal centro. Tutti i tipi:
+      strada, tram, ferrovia, navale; per aerei/elicotteri verificare se serve un deposito o fa da hangar l'aeroporto.
+- [ ] Comando diretto "costruisci deposito" (oggi i depositi nascono solo dentro "fai una linea").
+
+## Fase 2b - Collaudo: quello che costruisco deve funzionare
+- [ ] Dopo ogni costruzione, controllo automatico: linea con percorso valido, veicoli assegnati e in movimento
+      (non bloccati), deposito raggiungibile, fermate con citta'/industrie nel bacino.
+- [ ] Controllo a distanza di tempo (es. dopo 1-2 mesi di gioco): passeggeri/merci trasportati > 0, carico in attesa,
+      veicoli fermi. Rapporto a Claude e proposta di correzione (piu' veicoli, fermata spostata, collegamento mancante).
+- [ ] Comando "controlla la rete": elenco di linee e costruzioni che non funzionano.
+- [ ] Le prove in gioco (p1-p9) verificano anche il funzionamento, non solo che la costruzione esista.
 
 ## Fase 3 - Nuovi mezzi e infrastrutture
 - [ ] Treni merci. (bozza: b3)
@@ -59,6 +78,7 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Log per azione nella cartella capocantiere.
 - [x] Test automatici del middleware senza gioco (`middleware/test_middleware.py`).
 - [ ] Test automatici in gioco su CC_test.
+- [ ] Prove in early game (1850-1900: vapore, cavalli, solo diesel/vapore) come caso principale.
 - [ ] Prove nelle epoche intermedie (1950, 1990) e su altre mappe.
 - [ ] Filtro veicoli delle mod (parti di treni bloccati, modelli incompleti).
 - [ ] Avviso se cambia la build di TF3.
