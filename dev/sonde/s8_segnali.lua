@@ -19,8 +19,28 @@ local function plainish(v, depth)
 	return r
 end
 -- binari del giocatore con oggetti (segnali, fermate di passaggio)
+-- VERIFICATO (07.10): getEntitiesWithComponent(BASE_EDGE) e' VIETATO -> binari cercati con l'octree attorno alle
+-- costruzioni del giocatore (stazioni, depositi) e a CC.PROBE_POS = {x=, y=} se impostato.
 local found = 0
-for _, e in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.BASE_EDGE))) do
+local edgesToCheck, seenE = {}, {}
+local centers = {}
+if CC.PROBE_POS then centers[#centers + 1] = CC.PROBE_POS end
+pcall(function()
+	for _, con in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.CONSTRUCTION))) do
+		if CC.comp(con, CT.PLAYER_OWNED) and #centers < 20 then
+			local p = CC.posOf(con)
+			if p then centers[#centers + 1] = p end
+		end
+	end
+end)
+for _, p in ipairs(centers) do
+	pcall(function()
+		for _, e in ipairs(CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(p.x, p.y), 1500, CT.BASE_EDGE))) do
+			if not seenE[e] then seenE[e] = true; edgesToCheck[#edgesToCheck + 1] = e end
+		end
+	end)
+end
+for _, e in ipairs(edgesToCheck) do
 	if found >= 6 then break end
 	local be = CC.comp(e, CT.BASE_EDGE)
 	if be and tostring(be.roadTemplate):find("/track/", 1, true) then

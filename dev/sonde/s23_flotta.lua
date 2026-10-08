@@ -47,6 +47,15 @@ for _, L in ipairs(lines) do
 		local f = api.engine.util.line[n]
 		r.fn[n] = f and try(n, f, L) or "assente"
 	end
+	-- PUNTUALITA' (novita' TF3): tutte le funzioni di util.line con Delay/Punctual/Late/Time/Timetable nel nome
+	pcall(function()
+		for k, f in pairs(api.engine.util.line) do
+			local n = tostring(k)
+			if (n:find("Delay") or n:find("Punctual") or n:find("Late") or n:find("Time") or n:find("Schedule")) and type(f) ~= "nil" then
+				r.fn["punt." .. n] = try(n, f, L)
+			end
+		end
+	end)
 	-- sistemi che potrebbero dare tempi/statistiche
 	pcall(function()
 		local ls = api.engine.system.lineSystem

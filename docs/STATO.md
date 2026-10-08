@@ -99,13 +99,21 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 | Confini mappa `CC.mapBox` / `CC.inMap` | s20, s21 | -8192..8192 su questa mappa |
 
 ## 7. Da fare (in ordine)
+0. **Recupero dal salvataggio di terzi (sola lettura, una sola azione)**. Nel primo studio (07.10) quella partita
+   conteneva gia' scali merci ferroviari, porti modulari, magazzini, depositi/officine di ogni tipo e una rete a
+   doppio binario, ma erano stati copiati solo aerei, eliporti e porto: gli scali merci e i segnali NO (avrebbero
+   evitato i crash degli scali). Se il salvataggio "My 1st Sandbox with mods Final" si carica (quello SENZA l'icona
+   rossa nell'elenco): caricarlo, mandare in un solo file `sonde/s24_copia_schemi.lua`, `sonde/s25_stazioni_industrie.lua`
+   e `sonde/s8_segnali.lua` (tutte sola lettura), leggere i risultati con l'azione successiva, salvare gli schemi in
+   `dev/bozza` (CC.TEMPLATES / schemi scali a piu' binari e piu' lunghezze / segnale) e tornare a "partita vuota di
+   test". Se non si carica: saltare e usare le costruzioni fatte a mano (punti 1 e 1a).
 1. **p23**: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
    `python3 dev/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
 1a. **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
     binario per i due sensi. Voluto: (A) 2 binari, uno per senso, oppure (B) 1 binario con tratti a doppio binario
     per l'incrocio dei treni. Ordine:
-    1. segnale piazzato A MANO nel gioco su un binario, poi sonda `s8_segnali.lua` per copiare come si piazza da
-       script (`CC.SIGNAL_MODEL`, `CC.addSignals` in b6 sono da verificare);
+    1. segnale copiato dal salvataggio di terzi (punto 0) oppure piazzato A MANO su un binario, poi sonda
+       `s8_segnali.lua` (ora cerca i binari con l'octree) per copiare come si piazza da script (`CC.SIGNAL_MODEL`, `CC.addSignals` in b6 sono da verificare);
     2. opzione A: `build_rail_ring` con `double_track = true` (usa `CC.linkStationsDouble`, segnali a senso unico),
        2 linee (una per senso), piu' treni per senso; collaudo e far correre il gioco;
     3. opzione B: binario unico + `CC.buildPassingLoop` (b6) fuori dalle stazioni, con segnali agli scambi.
