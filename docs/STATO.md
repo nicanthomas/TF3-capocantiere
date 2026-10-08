@@ -14,6 +14,10 @@ Dettagli: `docs/prove-mappa-nuova.md` (cronologia prove), `docs/studio-salvatagg
 - Partita: modalita' creativa, anno >= 2020. Tutto quello che si piazza deve FUNZIONARE (anche i depositi).
   Restare dentro i confini della mappa.
 - Crash: la partita e' salvata; chiudere il gioco, riaprirlo e ricaricare da soli (sequenza al punto 4).
+- PRINCIPIO GENERALE (08.10.2026): la mod e il middleware agiscono SOLO dopo un input esplicito di Nicolo'.
+  Nessuna azione automatica, programmata o in background nel gioco (niente cicli che costruiscono, comprano,
+  vendono o modificano da soli). Ogni costruzione, acquisto o modifica parte da una sua richiesta e finisce li'
+  (il collaudo subito dopo una costruzione fa parte della stessa richiesta e non cambia nulla).
 - RISPARMIO CREDITI (richiesta 08.10.2026): poche chiamate, piu' prove senza rischio nello stesso file azioni, le
   prove rischiose da sole; screenshot solo se serve (crash); se un servizio non risponde fermarsi e scriverlo invece
   di aspettare; non rileggere file grandi interi.
