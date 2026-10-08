@@ -1,5 +1,5 @@
 """
-Controllo delle versioni all'avvio: versione della mod (scritta da dev/build_script.py) e build di Transport Fever 3
+Controllo delle versioni all'avvio: versione della mod (scritta da dev-notes/build_script.py) e build di Transport Fever 3
 (se la mod riesce a leggerla). Se la build del gioco cambia, l'API potrebbe essere cambiata: avviso di rifare le prove.
 Ultime versioni viste in <cartella capocantiere>/versioni_viste.json.
 """
@@ -23,7 +23,7 @@ def check_versions(state: dict, folder: str) -> list[str]:
         msgs.append("La mod non riporta la sua versione (v13 o precedente): alcune funzioni nuove non ci sono.")
     if prev.get("gameBuild") and cur["gameBuild"] and prev["gameBuild"] != cur["gameBuild"]:
         msgs.append(f"La build di Transport Fever 3 e' cambiata ({prev['gameBuild']} -> {cur['gameBuild']}): l'API potrebbe "
-                    "essere cambiata. Prima di costruire esegui le prove (dev/prove) sulla partita di test.")
+                    "essere cambiata. Prima di costruire esegui le prove (dev-notes/prove) sulla partita di test.")
     if prev.get("modVersion") and cur["modVersion"] and prev["modVersion"] != cur["modVersion"]:
         msgs.append(f"Mod aggiornata: {prev['modVersion']} -> {cur['modVersion']}.")
     if cur != {k: prev.get(k) for k in cur}:

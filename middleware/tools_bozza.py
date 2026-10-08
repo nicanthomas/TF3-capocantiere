@@ -1,5 +1,5 @@
 """
-Tool per le azioni della BOZZA (dev/bozza, NON ANCORA PROVATE IN GIOCO).
+Tool per le azioni della BOZZA (dev-notes/bozza, NON ANCORA PROVATE IN GIOCO).
 
 Si attivano solo con la variabile d'ambiente CAPOCANTIERE_BOZZA=1 e con la mod costruita includendo la bozza:
 senza, Claude non li vede. Quando un'azione e' provata in gioco, il suo schema si sposta in tools.py.

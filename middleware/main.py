@@ -41,7 +41,7 @@ from tools import LOCAL_TOOLS, SPENDING_TOOLS, TOOLS, describe_action
 from tools_bozza import format_plan
 from versione import check_versions
 
-# Azioni della bozza (dev/bozza, non ancora provate in gioco): solo con la variabile CAPOCANTIERE_BOZZA=1
+# Azioni della bozza (dev-notes/bozza, non ancora provate in gioco): solo con la variabile CAPOCANTIERE_BOZZA=1
 # e con la mod costruita includendo la bozza.
 USE_BOZZA = os.environ.get("CAPOCANTIERE_BOZZA") == "1"
 READ_TOOLS: set = set()

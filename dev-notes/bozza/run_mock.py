@@ -1,4 +1,4 @@
-"""Esegue i test della bozza con un finto api (serve liblua5.x sul sistema): python3 dev/bozza/run_mock.py"""
+"""Esegue i test della bozza con un finto api (serve liblua5.x sul sistema): python3 dev-notes/bozza/run_mock.py"""
 import ctypes
 import glob
 import os

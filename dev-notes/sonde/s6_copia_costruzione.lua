@@ -15,7 +15,7 @@ for i = 1, math.min(8, #list) do
 	local con = list[i]
 	local c = CC.comp(con, CT.CONSTRUCTION)
 	-- params e modules nello stesso formato usato per costruire (numeri restano numeri): si copiano cosi' come sono
-	-- in CC.TEMPLATES (vedi dev/bozza/b4_template.lua)
+	-- in CC.TEMPLATES (vedi dev-notes/bozza/b4_template.lua)
 	local r = { id = con, file = tostring(c.fileName), pos = CC.posOf(con), params = {}, modules = {} }
 	pcall(function()
 		for k, v in pairs(c.params) do

@@ -6,7 +6,7 @@
 -- Schemi riempiti il 07.10.2026 dalle costruzioni di un salvataggio di terzi (sonda s17). DA PROVARE in gioco.
 
 CC.TEMPLATES = CC.TEMPLATES or {
-	-- Copiati con la sonda s17 dal salvataggio di terzi (07.10.2026, vedi docs/studio-salvataggio-terzi.md).
+	-- Copiati con la sonda s17 dal salvataggio di terzi (07.10.2026, vedi dev-notes/note/studio-salvataggio-terzi.md).
 	-- half = mezza dimensione massima in metri (dal bounding box); waterSide = lato locale con acqua a 30-100 m.
 	airfield = { file = "::/stations/air/airfield.con", params = { hangar = 1, terminals = 3 },
 		modules = { [10001000] = { name = "::/stations/air/airfield/af_hangar.module", variant = 0 }, [10001002] = { name = "::/stations/air/airfield/af_main.module", variant = 0 }, [10001004] = { name = "::/stations/air/airfield/af_terminal.module", variant = 0 }, [10001006] = { name = "::/stations/air/airfield/af_terminal.module", variant = 0 }, [10001008] = { name = "::/stations/air/airfield/af_terminal.module", variant = 0 } },

@@ -27,18 +27,18 @@ Regola: tutto cio' che posso fare io lo faccio io. Nicolo' fa solo cio' che rich
       che si incrociano), tram elettrico Caprifoglio, bus Assalve, merci fattoria -> Assalve.
 
 ## 2. Sonde (sola lettura, nessun rischio)
-Ogni sonda: `python dev/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev/sonde/sN_*.lua`, poi leggere il results.
+Ogni sonda: `python dev-notes/mkeval.py --id <lastActionId+1> --key sN --solo-lib dev-notes/sonde/sN_*.lua`, poi leggere il results.
 - [ ] s1 API (salvataggio, comandi linee), s2 costruzioni, s3 moduli, s4 veicoli (aerei/elicotteri/navi), s5 strade.
 - [ ] (io, col mouse nel gioco) Costruire a mano: scalo merci ferroviario, campo d'aviazione o aeroporto, eliporto,
       porto + deposito navale. Se il controllo del computer non basta: Nicolo'.
-- [ ] s6 copia costruzioni -> `CC.TEMPLATES` / `CC.CARGO_STATION_TEMPLATE` in `dev/bozza`.
+- [ ] s6 copia costruzioni -> `CC.TEMPLATES` / `CC.CARGO_STATION_TEMPLATE` in `dev-notes/bozza`.
 - [ ] s7 linee e bacini.
 - [ ] Mettere a mano due segnali (uno a senso unico) su un binario, poi s8 segnali -> `CC.SIGNAL_MODEL`, verso.
 - [ ] s9 statistiche e stato dei veicoli (con una linea che gira da qualche minuto), s10 lunghezze e stazioni
       (sola verifica a secco, senza --solo-lib), s11 tempo di gioco e build (due volte, a qualche minuto di distanza).
 
 ## 3. Prove della bozza (costruiscono: salvare prima)
-`python dev/mkeval.py --id <N> --key pN dev/prove/_aiuti.lua dev/prove/pN_*.lua`
+`python dev-notes/mkeval.py --id <N> --key pN dev-notes/prove/_aiuti.lua dev-notes/prove/pN_*.lua`
 - [ ] p1 ricognizione (sola lettura)
 - [ ] p2 bus tra citta'
 - [ ] p3 aggiungi / togli / sostituisci veicoli
@@ -67,5 +67,5 @@ dopo qualche mese di gioco), non solo che la costruzione esista.
 - [ ] (io) Elenco delle mod installate letto dalla cartella mods + Workshop (sola lettura), lettura della loro logica.
 
 ## 4. Versione 14
-- [ ] `python dev/build_script.py --bozza`, backup della v13, installazione, ricarica della partita.
+- [ ] `python dev-notes/build_script.py --bozza`, backup della v13, installazione, ricarica della partita.
 - [ ] `set CAPOCANTIERE_BOZZA=1` e prima sessione vera con `avvia_capocantiere.bat`.

@@ -1,8 +1,8 @@
 """
 Prepara i file azione per provare codice nel gioco con sim_eval (solo con DEV_MODE = true nella mod).
 
-    python dev/mkeval.py --id 245 --key prova1 dev/prove/p2_bus_intercity.lua
-    python dev/mkeval.py --id 245 --key sonda1 --solo-lib dev/sonde/s1_api.lua
+    python dev-notes/mkeval.py --id 245 --key prova1 dev-notes/prove/p2_bus_intercity.lua
+    python dev-notes/mkeval.py --id 245 --key sonda1 --solo-lib dev-notes/sonde/s1_api.lua
 
 Crea due file nella cartella --out (default: la cartella di scambio, variabile CAPOCANTIERE_DIR):
   actions_<id>_<nonce>.lua     sim_eval con  cc_lib + cc_actions + bozza (b*.lua) + i file indicati

@@ -3,7 +3,7 @@ import os
 ROOT=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(ROOT,'middleware'))
 import lua_table
-D=os.path.join(ROOT,'dev')
+D=os.path.join(ROOT,'dev-notes')
 base=[D+'/cc_lib.lua',D+'/cc_actions.lua']+sorted(glob.glob(D+'/bozza/b[0-9]_*.lua'))
 basecode='\n'.join(open(p,encoding='utf-8').read() for p in base)
 aiuti=open(D+'/prove/_aiuti.lua',encoding='utf-8').read()

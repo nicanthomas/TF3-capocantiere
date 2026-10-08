@@ -1,8 +1,11 @@
 # STATO DEL PROGETTO — leggere per primo (aggiornato 08.10.2026)
 
 Questo file permette a una chat nuova di ripartire senza rileggere le conversazioni precedenti.
-Dettagli: `docs/prove-mappa-nuova.md` (cronologia prove), `docs/studio-salvataggio-terzi.md` e `docs/scoperte-api.md`
-(API verificate), `dev/bozza/README.md` (cosa c'e' in ogni file della bozza).
+Struttura del repo (dal 08.10.2026): nella radice solo `mod/`, `middleware/`, `README.md`, `LICENSE`; tutto lo
+sviluppo e' in `dev-notes/` (codice: `cc_lib.lua`, `build_script.py`, `bozza/`, `sonde/`, `prove/`, `strumenti/`;
+note: `dev-notes/note/`, compreso questo file). I comandi di questo file usano questi percorsi.
+Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/note/studio-salvataggio-terzi.md` e `dev-notes/note/scoperte-api.md`
+(API verificate), `dev-notes/bozza/README.md` (cosa c'e' in ogni file della bozza).
 
 ## 1. Regole di Nicolo' (vincolanti)
 - Rispondere in italiano, al massimo una domanda per volta, lavorare in autonomia. Non inventare l'API: provarla.
@@ -17,8 +20,8 @@ Dettagli: `docs/prove-mappa-nuova.md` (cronologia prove), `docs/studio-salvatagg
 - GITHUB SEMPRE AGGIORNATO (08.10.2026): dopo ogni passo concluso (prova riuscita o fallita, sonda letta,
   correzione) fare subito il commit, senza accumulare. Tenere allineati col tempo anche: `README.md` (tabella delle
   azioni con lo stato "Provato in gioco", requisiti, costo per sessione quando misurato), questo file (sezioni 5-8)
-  e `docs/prove-mappa-nuova.md`. Quando la v14 e' provata: release su GitHub con lo zip di
-  `python dev/build_script.py --release` (DEV_MODE spento), screenshot o GIF di una richiesta trasformata in
+  e `dev-notes/note/prove-mappa-nuova.md`. Quando la v14 e' provata: release su GitHub con lo zip di
+  `python dev-notes/build_script.py --release` (DEV_MODE spento), screenshot o GIF di una richiesta trasformata in
   costruzione nel README, costo medio di una sessione nel README. Push con la patch compressa applicata nel
   workbench di Composio (meno crediti), controllando gli SHA dei file.
 - PRINCIPIO GENERALE (08.10.2026): la mod e il middleware agiscono SOLO dopo un input esplicito di Nicolo'.
@@ -48,13 +51,13 @@ Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e
    se non e' gia' dentro, `...\3493540\local\crash_dump` (sola lettura del log dei crash).
 3. Verificare con una chiamata leggera che il GitHub di Composio risponda (es. `GITHUB_GET_A_BRANCH` su main).
 4. Clonare il repo (`git clone https://github.com/nicanthomas/TF3-capocantiere.git`, pubblico) e lanciare
-   `cd dev/bozza && python3 run_mock.py` (deve dare 65 ok).
+   `cd dev-notes/bozza && python3 run_mock.py` (deve dare 65 ok).
 Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
-- Bozza delle funzioni nuove in `dev/bozza/b1..b9` (provata in gioco con `sim_eval`, DEV_MODE). Diventera' v14 con
-  `python dev/build_script.py --bozza` (prima fare il backup della v13 nella cartella mods).
+- Bozza delle funzioni nuove in `dev-notes/bozza/b1..b9` (provata in gioco con `sim_eval`, DEV_MODE). Diventera' v14 con
+  `python dev-notes/build_script.py --bozza` (prima fare il backup della v13 nella cartella mods).
 - Protocollo: la mod esegue `actions_<id>_<nonce>.lua` con id = lastActionId+1 (stato GUI, salvato nella partita;
   si legge in `state.lua`), scrive `results_<id>_<nonce>.lua` e cancella il file azioni.
   `sim_eval` mette in coda il codice nel lato simulazione: il valore si legge con un `sim_result` (chiave `g<id>_<n>`)
@@ -74,20 +77,20 @@ Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
   3. ON-DEMAND: adeguare i veicoli o rinnovare la flotta SOLO quando Nicolo' lo chiede esplicitamente
      (es. "Adegua i veicoli della linea X"). Strumento previsto: `adjust_line_fleet(line_id, target_interval?,
      renew_old?)`: la mod calcola e applica in una volta sola (aggiunge/toglie/sostituisce) e riferisce cosa ha fatto.
-- Dati necessari (DA VERIFICARE con la sonda `dev/sonde/s23_flotta.lua`, sola lettura): tempo di un giro o
+- Dati necessari (DA VERIFICARE con la sonda `dev-notes/sonde/s23_flotta.lua`, sola lettura): tempo di un giro o
   intervallo della linea, eta' e vita utile dei veicoli, capienza, passeggeri/merci in attesa alle fermate.
   NB: `api.engine.util.line.getFrequency` NON esiste; esistono getMaxFrequency, getLineCapacityUsages,
   calcLineStationThroughput. Non scrivere l'analisi su funzioni non provate.
 - Per la sonda serve una linea con veicoli in movimento da qualche minuto di gioco: lanciarla dopo aver costruito
-  una linea (es. bus p2) e lasciato correre il gioco. `python3 dev/strumenti/step.py ID "" sonde/s23_flotta.lua`.
+  una linea (es. bus p2) e lasciato correre il gioco. `python3 dev-notes/strumenti/step.py ID "" sonde/s23_flotta.lua`.
 
 ## 3. Ciclo di prova (dalla chat cloud)
-1. `python3 dev/strumenti/step.py ID "chiavi_da_leggere" prove/pX.lua[,sonde/sY.lua] [gruppo2 ...]`
+1. `python3 dev-notes/strumenti/step.py ID "chiavi_da_leggere" prove/pX.lua[,sonde/sY.lua] [gruppo2 ...]`
    -> scrive `/mnt/user-data/outputs/cc/actions_ID_<nonce>.lua` (bozza + prove, ogni prova in pcall).
 2. SendUserFile del file, poi `device_commit_files` in
    `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\capocantiere\` (stesso nome).
 3. Attendere ~5 s, `device_stage_files` di `results_ID_<nonce>.lua`, poi
-   `python3 dev/strumenti/show.py <file staged> [lunghezza]`.
+   `python3 dev-notes/strumenti/show.py <file staged> [lunghezza]`.
 4. Il risultato di una `sim_eval` arriva con l'azione ID+1 che contiene la chiave `gID_0`.
    Per risparmiare: mettere nell'azione ID+1 anche la prova successiva (se non rischiosa).
 - Il bridge non ha `device_bash`: niente `ls` sul PC; `device_list_dir` della cartella e' enorme (evitarlo).
@@ -138,12 +141,12 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
      binari e altre lunghezze, stazione sotterranea e sopraelevata (e metropolitana, se la sua mod e' attiva:
      `underground_station.con` e' di una mod di terzi), segnale normale e a senso unico (modello, lato, posizione sul binario), porto
      modulare, magazzino, stazione con moduli di comfort, fermata merci per tram/camion, stazione integrata.
-   - Salvare i risultati NEL REPO (questa volta si', compressi o riassunti se grandi) in `dev/schemi_terzi/`, e
+   - Salvare i risultati NEL REPO (questa volta si', compressi o riassunti se grandi) in `dev-notes/schemi_terzi/`, e
      riportare gli schemi utili nella bozza (CC.TEMPLATES, schemi scali, segnale). Poi la chat carica DA SOLA
      la "partita vuota di test" (nessuna mod da disattivare; clic come nella sezione 4, partendo
      dal menu principale: Esc/menu -> Esci al menu, poi Carica partita).
 1. **p23**: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
-   `python3 dev/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
+   `python3 dev-notes/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
 1a. **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
     binario per i due sensi. Voluto: (A) 2 binari, uno per senso, oppure (B) 1 binario con tratti a doppio binario
     per l'incrocio dei treni. Ordine:
@@ -163,7 +166,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     di veicoli calcolato alla creazione e strumento `adjust_line_fleet` (solo su richiesta, nessun ciclo automatico).
 4c. Puntualita' delle consegne (novita' TF3): allargare la sonda s23 ai dati di ritardo/puntualita' e usarli in
     "adegua i veicoli della linea X" (solo su richiesta).
-5. Build v14 (`dev/build_script.py --bozza`), backup v13, installazione in mods, prova col middleware.
+5. Build v14 (`dev-notes/build_script.py --bozza`), backup v13, installazione in mods, prova col middleware.
 5b. Novita' TF3 da aggiungere dopo la v14 (ognuna: prima sonda o copia di una costruzione fatta a mano):
     - potenziatori di produzione (lavoratori, fertilizzanti...): leggere quali beni potenziano quale industria;
       Claude propone e, su richiesta, costruisce la catena (e' una linea merci normale);
@@ -175,7 +178,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     - rapporto "stato delle citta'" su richiesta: bisogni soddisfatti e no, aree comunali, industrie nuove
       (solo lettura e proposte, nessuna azione automatica).
     Non servono alla mod: traffico, semafori/attraversamenti, difficolta'/modalita'/campagna/editor.
-6. Aggiornare questo file e `docs/prove-mappa-nuova.md` a ogni passo.
+6. Aggiornare questo file e `dev-notes/note/prove-mappa-nuova.md` a ogni passo.
 
 ## 8. Cause di crash note (non ripetere)
 - Scalo merci con marciapiedi merci negli slot passeggeri (74xxxxx): "Duplicate edges found" a quota -6 m.

@@ -15,8 +15,8 @@ __pycache__/
 # salvataggi e crash
 *.sav
 *.dmp
-# backup creati da dev/build_script.py
+# backup creati da dev-notes/build_script.py
 *.bak_*
-# risultati grezzi delle sonde (grandi, restano in locale; riassunto in docs/studio-salvataggio-terzi.md)
-dev/risultati/
+# risultati grezzi delle sonde (grandi, restano in locale; riassunto in dev-notes/note/studio-salvataggio-terzi.md)
+dev-notes/risultati/
 dist/

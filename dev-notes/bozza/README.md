@@ -1,7 +1,7 @@
 # Bozza delle funzioni nuove (NON ANCORA PROVATE IN GIOCO)
 
 Codice scritto senza il gioco: va provato in gioco con `sim_eval` (DEV_MODE) sulla partita di test, corretto e solo
-dopo unito alla mod con `python dev/build_script.py --bozza`. Le parti dell'API usate sono quelle gia' verificate,
+dopo unito alla mod con `python dev-notes/build_script.py --bozza`. Le parti dell'API usate sono quelle gia' verificate,
 tranne dove indicato.
 
 | File | Contenuto | Rischio |
@@ -21,20 +21,20 @@ tranne dove indicato.
 
 ## Test senza gioco
 
-`python3 dev/bozza/run_mock.py`: 64 controlli con un finto `api` (registro, annidamento, annulla, pulizia, verifica
+`python3 dev-notes/bozza/run_mock.py`: 64 controlli con un finto `api` (registro, annidamento, annulla, pulizia, verifica
 a secco, argomenti, copia della composizione dei veicoli, piano delle stazioni, disposizione dei binari, ordine delle
 fermate, giro dell'anello, collaudo con veicolo fermo/in movimento). Non sostituisce le prove in gioco.
 
 ## Prove in gioco (stasera)
 
-Ordine e comandi in `docs/piano-stasera.md`. Sonde in `dev/sonde/` (sola lettura), prove in `dev/prove/`
+Ordine e comandi in `dev-notes/note/piano-stasera.md`. Sonde in `dev-notes/sonde/` (sola lettura), prove in `dev-notes/prove/`
 (costruiscono: farle sulla partita di test, salvata prima).
 
 ## Dopo le prove
 
 1. Correggere la bozza.
 2. Riempire `CC.TEMPLATES`, `CC.CARGO_STATION_TEMPLATE`, `CC.VEHICLE_FOLDERS` con i dati delle sonde.
-3. `python dev/build_script.py --bozza` (v14: bozza + velocita' del gioco, versione della mod, tempo di gioco e build
+3. `python dev-notes/build_script.py --bozza` (v14: bozza + velocita' del gioco, versione della mod, tempo di gioco e build
    in state.lua + esportazione di state.lua piu' rada se e' lenta + inoltro automatico delle azioni nuove al lato
    simulazione + comando `set_speed`).
 4. Middleware con `CAPOCANTIERE_BOZZA=1` per dare a Claude i tool nuovi (`middleware/tools_bozza.py`).

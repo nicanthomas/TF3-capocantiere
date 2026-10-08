@@ -1,7 +1,7 @@
 -- Test della bozza SENZA gioco: un finto "api" minimo (Lua 5.4 sul PC di sviluppo).
 -- Controlla la parte di logica che non dipende dal gioco: registro delle entita' create, azioni annidate,
 -- pulizia dopo un fallimento, annulla, controllo degli argomenti, copia dei veicoli di una linea.
--- Uso: python3 dev/bozza/run_mock.py   (concatena questo file + cc_lib + cc_actions + bozza + test_mock_casi.lua)
+-- Uso: python3 dev-notes/bozza/run_mock.py   (concatena questo file + cc_lib + cc_actions + bozza + test_mock_casi.lua)
 
 local W = { comps = {}, nextId = 1000, sent = {}, removedCons = {}, removedEdges = {}, sold = {}, destroyedLines = {} }
 local CTn = {}

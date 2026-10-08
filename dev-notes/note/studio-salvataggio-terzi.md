@@ -2,7 +2,7 @@
 
 Salvataggio scaricato dal hub delle mod da Nicolo', caricato con la mod Capo Cantiere v13 attiva.
 Mappa olandese, anno 2082, 16 citta', 46 industrie, 94 linee, 240 stazioni, 165 depositi/officine.
-Solo letture (sim_eval, DEV_MODE): nulla e' stato costruito ne' salvato. Risultati grezzi solo in locale (`dev/risultati/`, troppo grandi per il repo).
+Solo letture (sim_eval, DEV_MODE): nulla e' stato costruito ne' salvato. Risultati grezzi solo in locale (`dev-notes/risultati/`, troppo grandi per il repo).
 
 ## Rete trovata
 - Linee: 60 su 94 con 2 fermate; le altre fino a 20 fermate (tram, bus urbani, aerei a 3 scali).

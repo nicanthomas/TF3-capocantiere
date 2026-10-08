@@ -14,6 +14,6 @@ d=lua_table.load_userdata(f'{out}/{name}.lua')
 for i,a in enumerate(d['actions']):
     if a['type']=='sim_eval':
         open(f'/tmp/chk{i}.lua','w').write(a['code'])
-        r=subprocess.run(['python3',os.path.join(ROOT,'dev','luachk.py'),f'/tmp/chk{i}.lua'],capture_output=True,text=True).stdout.strip()
+        r=subprocess.run(['python3',os.path.join(ROOT,'dev-notes','luachk.py'),f'/tmp/chk{i}.lua'],capture_output=True,text=True).stdout.strip()
         if not r.startswith('OK'): print('SYNTAX',r)
 print(name, [a.get('key') for a in d['actions']])

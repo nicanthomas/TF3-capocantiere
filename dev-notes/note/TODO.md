@@ -1,6 +1,6 @@
 # Da fare (aggiornato 07.10.2026)
 
-Bozze scritte senza gioco (da provare): vedi `dev/bozza/README.md` e `docs/piano-stasera.md`.
+Bozze scritte senza gioco (da provare): vedi `dev-notes/bozza/README.md` e `dev-notes/note/piano-stasera.md`.
 
 Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 
@@ -113,11 +113,11 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [ ] Avvio insieme al gioco / middleware in sottofondo.
 
 ## Fase 6 - Qualita' e manutenzione
-- [x] Script di build `dev/build_script.py` (backup + controllo sintassi + `--check`).
+- [x] Script di build `dev-notes/build_script.py` (backup + controllo sintassi + `--check`).
 - [ ] Eventuale divisione dello script della mod in piu' file (da provare se TF3 lo consente).
 - [x] Log per azione nella cartella capocantiere (`middleware/action_log.py`: log/azioni_AAAA-MM.jsonl).
 - [x] Numero di versione scritto dallo script di build dentro lo script della mod (in state.lua con la v14).
-- [ ] Promozione delle bozze provate: da `dev/bozza/` a `cc_actions.lua`, schemi da `tools_bozza.py` a `tools.py`.
+- [ ] Promozione delle bozze provate: da `dev-notes/bozza/` a `cc_actions.lua`, schemi da `tools_bozza.py` a `tools.py`.
 - [ ] `state.lua` su mappe grandi: esportare solo i dati utili, e piu' di rado quando nulla cambia. (bozza: l'intervallo
       si allunga fino a 60 s se l'esportazione e' lenta)
 - [x] Test automatici del middleware senza gioco (`middleware/test_middleware.py`).
@@ -130,5 +130,5 @@ Modalita' di gioco prevista: creativa (i costi non vanno gestiti).
 - [x] Riassunto automatico dei messaggi vecchi (`summarize_history`; se non riesce si tagliano come prima). Da provare
       con la chiave vera.
 - [x] Middleware: all'avvio sposta in `vecchi` i file `actions_` rimasti (senza cancellarli).
-- [x] `docs/scoperte-api.md`: righe su `trackType` e `tramCatenary` corrette (indici da 1).
+- [x] `dev-notes/note/scoperte-api.md`: righe su `trackType` e `tramCatenary` corrette (indici da 1).
 - [ ] Finale: `DEV_MODE = false`, README aggiornato.

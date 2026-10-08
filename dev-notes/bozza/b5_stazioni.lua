@@ -56,7 +56,7 @@ end
 --       senza fermarsi (> 0: binari di transito), terminal = capolinea, cargo_types = merci diverse (scali),
 --       max_tracks = limite (default 8) }
 -- Ritorna { segments, length, tracks, through, layout, notes }.
--- Regole (vedi docs/TODO.md, "Dimensionamento delle stazioni"):
+-- Regole (vedi dev-notes/note/TODO.md, "Dimensionamento delle stazioni"):
 --   - lunghezza: il treno piu' lungo + 10 m di margine, a pezzi da 40 m (minimo 2 pezzi = 80 m);
 --   - binario unico (1) se ferma un solo treno di una sola linea; 2 se i treni devono incrociarsi;
 --     doppio binario: almeno un binario per senso; una linea in piu' = binari in piu';

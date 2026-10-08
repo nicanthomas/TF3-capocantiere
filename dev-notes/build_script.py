@@ -1,5 +1,5 @@
 """
-Compone lo script della mod da dev/cc_lib.lua + dev/cc_actions.lua.
+Compone lo script della mod da dev-notes/cc_lib.lua + dev-notes/cc_actions.lua.
 
 Lo script della mod (mod/.../capocantiere.script.lua) contiene una copia dei due file tra i marcatori
     -- ===...=== CC sim library      (prima riga di cc_lib.lua)
@@ -7,11 +7,11 @@ Lo script della mod (mod/.../capocantiere.script.lua) contiene una copia dei due
 Questo script sostituisce quella parte con il contenuto attuale dei due file e lascia invariato il resto.
 
 Uso (dalla cartella del progetto):
-    python dev/build_script.py            # scrive lo script aggiornato
-    python dev/build_script.py --check    # controlla soltanto che lo script sia gia' allineato (codice 1 se no)
-    python dev/build_script.py --bozza    # include anche dev/bozza/b*.lua (azioni NON ancora provate) e le
+    python dev-notes/build_script.py            # scrive lo script aggiornato
+    python dev-notes/build_script.py --check    # controlla soltanto che lo script sia gia' allineato (codice 1 se no)
+    python dev-notes/build_script.py --bozza    # include anche dev-notes/bozza/b*.lua (azioni NON ancora provate) e le
                                           # modifiche al lato interfaccia della v14 (vedi GUI_PATCHES)
-    python dev/build_script.py --release [--bozza]
+    python dev-notes/build_script.py --release [--bozza]
                                           # versione DA DISTRIBUIRE: copia della mod in dist/tfcapocantiere_1 con
                                           # DEV_MODE = false (niente lua_eval/sim_eval) e zip dist/tfcapocantiere_1.zip;
                                           # la mod di sviluppo in mod/ resta com'e' (DEV_MODE = true per le prove)
@@ -35,13 +35,13 @@ import shutil
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LIB = os.path.join(ROOT, "dev", "cc_lib.lua")
-ACT = os.path.join(ROOT, "dev", "cc_actions.lua")
+LIB = os.path.join(ROOT, "dev-notes", "cc_lib.lua")
+ACT = os.path.join(ROOT, "dev-notes", "cc_actions.lua")
 SCRIPT = os.path.join(ROOT, "mod", "tfcapocantiere_1", "content", "capocantiere", "capocantiere.script.lua")
 
 START = "CC sim library"
 END = "fine azioni"
-BOZZA = sorted(glob.glob(os.path.join(ROOT, "dev", "bozza", "b[0-9]_*.lua")))
+BOZZA = sorted(glob.glob(os.path.join(ROOT, "dev-notes", "bozza", "b[0-9]_*.lua")))
 
 # Modifiche al lato interfaccia dello script (fuori dai marcatori) per la v14. Idempotenti: (testo da cercare,
 # testo nuovo, segno che la modifica c'e' gia').

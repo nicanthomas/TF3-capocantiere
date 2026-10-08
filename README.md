@@ -19,8 +19,8 @@ Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
 |---|---|
 | `mod/tfcapocantiere_1/` | La mod da copiare in `<dati utente TF3>/local/mods/` |
 | `middleware/` | Console Python: `main.py` (chat con Claude), `game_bridge.py` (scambio file), `tools.py` (tool per Claude), `lua_table.py` (lettura/scrittura tabelle Lua) |
-| `dev/` | Strumenti di sviluppo: libreria sim (`cc_lib.lua`, `cc_actions.lua`) usata per i test via eval, controllo sintassi Lua, mock |
-| `docs/` | Scoperte sull'API di TF3 e cose da fare |
+| `dev-notes/` | Solo per lo sviluppo: libreria sim (`cc_lib.lua`, `cc_actions.lua`), build della mod, bozza delle funzioni nuove (`bozza/`), sonde e prove in gioco (`sonde/`, `prove/`), strumenti di prova (`strumenti/`) |
+| `dev-notes/note/` | Note di sviluppo: stato del progetto (`STATO.md`), diario delle prove, scoperte sull'API di TF3 |
 
 ## Azioni supportate (tool di Claude)
 
@@ -64,7 +64,7 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 
 - La mod scrive solo nella cartella `capocantiere` dei dati utente.
 - `DEV_MODE = true` nello script di sviluppo abilita `lua_eval` / `sim_eval` (codice arbitrario: solo per le prove).
-  La versione da distribuire si crea con `python dev/build_script.py --release` (`dist/`, `DEV_MODE = false`, zip).
+  La versione da distribuire si crea con `python dev-notes/build_script.py --release` (`dist/`, `DEV_MODE = false`, zip).
 - Modello Anthropic configurato in `middleware/main.py` (`MODEL`). Il middleware usa il prompt caching e tiene
   in memoria solo gli ultimi turni della conversazione (`MAX_TURNS`) per contenere i costi.
 - Gli argomenti dei tool vengono controllati in Python prima di arrivare al gioco.
@@ -73,11 +73,11 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 ## Sviluppo
 
 - `python middleware/test_middleware.py`: test del middleware senza gioco e senza API.
-- `python dev/build_script.py`: copia `dev/cc_lib.lua` + `dev/cc_actions.lua` nello script della mod
+- `python dev-notes/build_script.py`: copia `dev-notes/cc_lib.lua` + `dev-notes/cc_actions.lua` nello script della mod
   (con backup e controllo di sintassi); `--check` verifica soltanto che siano allineati.
-- `dev/bozza/`: funzioni nuove ancora da provare in gioco (treni merci, bus tra citta', gestione veicoli, annulla,
-  aerei/elicotteri/navi, superstrade); test senza gioco con `python3 dev/bozza/run_mock.py`.
-- `dev/sonde/` e `dev/prove/`: codice da eseguire in gioco con `python dev/mkeval.py` (vedi `docs/piano-stasera.md`).
+- `dev-notes/bozza/`: funzioni nuove ancora da provare in gioco (treni merci, bus tra citta', gestione veicoli, annulla,
+  aerei/elicotteri/navi, superstrade); test senza gioco con `python3 dev-notes/bozza/run_mock.py`.
+- `dev-notes/sonde/` e `dev-notes/prove/`: codice da eseguire in gioco con `python dev-notes/mkeval.py` (vedi `dev-notes/note/piano-stasera.md`).
 
 ## Licenza
 
