@@ -103,7 +103,8 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
    furono copiati solo aerei, eliporti e porto; gli scali merci e i segnali NO (e la sonda s12 contava i segnali con
    `CT.BASE_EDGE_TRACK`, che non esiste: per questo "0 segnali"). Questa volta copiare TUTTO, perche' dopo la
    partita non sara' piu' disponibile.
-   - La partita la carica NICOLO' A MANO (deve disattivare alcune mod ogni volta). La chat aspetta che lo dica.
+   - La partita la carica NICOLO' A MANO (deve disattivare ogni volta le mod "deluxe" e "preorder"). La chat
+     aspetta che lo dica.
    - Dopo il caricamento: lastActionId riparte dal valore di quella partita -> leggere `state.lua` e neutralizzare
      eventuali file azioni rimasti (sezione 2) prima di mandare id nuovi.
    - Un primo file con le sonde (tutte sola lettura, ognuna in pcall): `sonde/s24_copia_schemi.lua` (tutte le
@@ -119,8 +120,9 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
      `underground_station.con` e' di una mod di terzi), segnale normale e a senso unico (modello, lato, posizione sul binario), porto
      modulare, magazzino, stazione con moduli di comfort, fermata merci per tram/camion, stazione integrata.
    - Salvare i risultati NEL REPO (questa volta si', compressi o riassunti se grandi) in `dev/schemi_terzi/`, e
-     riportare gli schemi utili nella bozza (CC.TEMPLATES, schemi scali, segnale). Poi Nicolo' torna alla
-     "partita vuota di test".
+     riportare gli schemi utili nella bozza (CC.TEMPLATES, schemi scali, segnale). Poi la chat carica DA SOLA
+     la "partita vuota di test" (nessuna mod da disattivare; clic come nella sezione 4, partendo
+     dal menu principale: Esc/menu -> Esci al menu, poi Carica partita).
 1. **p23**: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
    `python3 dev/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
 1a. **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
