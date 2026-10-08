@@ -113,6 +113,15 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 (1 gen 2020, lastActionId 0, mappa vuota): ogni ricarica cancella le prove fatte.
 
 ## 5. Stato del gioco al 08.10.2026
+- **BLOCCO (08.10 sera, build 40420)**: dopo l'aggiornamento del gioco `app.saveUserdata("capocantiere", ...)` da'
+  "directory ... not available or invalid": la mod non esporta piu' state.lua e (probabilmente) non legge i file
+  azioni. Dettagli e passo previsto: `dev-notes/note/aggiornamento-40420.md`. Serve l'accesso a
+  `mods\tfcapocantiere_1` (chiesto, NEGATO dal controllo automatico dei permessi: Nicolo' deve concederlo) per
+  installare la copia di diagnosi, poi una ricarica della partita.
+- Partita di terzi caricata da Nicolo' (autosave "My 1st Sandbox with mods Final_2082-02-24_2"); punto 0 della
+  sezione 7 NON ancora fatto (nessuna sonda eseguita). File neutri nuovi: actions_1_28deba77, actions_34_8d1957db.
+- Percorsi verificati 08.10: il gioco e' su E:\SteamLibrary, ma `userdata` (capocantiere, mods, crash_dump) e'
+  ancora in C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\ (nessuna modifica necessaria).
 - Partita "partita vuota di test" caricata dopo il crash del 07.10 sera, lastActionId = 7 (prossimo id: 8).
 - Sulla mappa ci sono solo 3 scali merci costruiti A MANO (id 89222, 89437, 89493, 1 binario, 160 m).
 - Nella cartella restano file azioni neutri per gli id 4 e 33 e due vecchi (241, 242): innocui.
