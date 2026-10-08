@@ -101,6 +101,15 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 ## 7. Da fare (in ordine)
 1. **p23**: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
    `python3 dev/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
+1a. **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
+    binario per i due sensi. Voluto: (A) 2 binari, uno per senso, oppure (B) 1 binario con tratti a doppio binario
+    per l'incrocio dei treni. Ordine:
+    1. segnale piazzato A MANO nel gioco su un binario, poi sonda `s8_segnali.lua` per copiare come si piazza da
+       script (`CC.SIGNAL_MODEL`, `CC.addSignals` in b6 sono da verificare);
+    2. opzione A: `build_rail_ring` con `double_track = true` (usa `CC.linkStationsDouble`, segnali a senso unico),
+       2 linee (una per senso), piu' treni per senso; collaudo e far correre il gioco;
+    3. opzione B: binario unico + `CC.buildPassingLoop` (b6) fuori dalle stazioni, con segnali agli scambi.
+    Ripiego senza segnali: binario unico con stazioni a 2 binari (incrocio in stazione), valido con pochi treni.
 1b. **Stazioni integrate nei siti industriali (novita' TF3)**: sonda (sola lettura) per capire se le industrie hanno
     gia' una stazione propria utilizzabile in una linea (gruppo/stazione/terminali, mezzi serviti, bacino). Se si':
     le linee merci usano quelle invece di costruire scali (meno costruzioni, meno rischio di crash).
