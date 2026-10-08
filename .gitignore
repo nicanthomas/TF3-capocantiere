@@ -5,6 +5,7 @@ results*.lua
 captured_*.lua
 probe_gui.lua
 .tmp_*.lua
+_tmp_*.lua
 # python
 __pycache__/
 *.pyc

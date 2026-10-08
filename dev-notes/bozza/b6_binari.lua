@@ -252,8 +252,12 @@ function CC.linkTwoEnds(ea, eb, log, label)
 	local ok, info
 	for _, kf in ipairs({ 0.9, 0.5, 1.4, 0.3 }) do
 		ok, info = CC.buildCurvedTrack(ea, eb, 60, false, kf)
-		if ok or not info.retry then break end
-		log[#log + 1] = label .. ": " .. tostring(info.error) .. ", provo un altro tracciato"
+		if ok then break end
+		local em = tostring(info.error) .. " " .. ((info.detail and info.detail.msg) and table.concat(info.detail.msg, "; ") or "")
+		if info.at then em = em .. string.format(" a %.0f,%.0f", info.at[1], info.at[2]) end
+		if info.detail and info.detail.coll then em = em .. " coll " .. table.concat(info.detail.coll, ",", 1, math.min(6, #info.detail.coll)) end
+		if not info.retry and not em:find("Curvatura", 1, true) and not em:find("non consentita", 1, true) then break end
+		log[#log + 1] = label .. ": " .. em .. " (kf " .. kf .. "), provo un altro tracciato"
 	end
 	if not ok and info.retry and not CC.SKIP_DETOUR then
 		ok, info = railDetour(ea, eb, log, label)
@@ -288,7 +292,45 @@ local function hermite6(p0, t0, p1, t1, t)
 	local a, b, c, d = 2 * t3 - 3 * t2 + 1, t3 - 2 * t2 + t, -2 * t3 + 3 * t2, t3 - t2
 	return { p0[1] * a + t0[1] * b + p1[1] * c + t1[1] * d, p0[2] * a + t0[2] * b + p1[2] * c + t1[2] * d, p0[3] * a + t0[3] * b + p1[3] * c + t1[3] * d }
 end
-function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd)
+-- Pezzi per spezzare la strada e in sv (0..1) nel nodo nodeId, da mettere in una proposta piu' grande (stesso
+-- metodo di CC.splitStreet): { node, edges = { 2 SegmentAndEntity }, configs, x, y, z }
+function CC.streetSplitParts(e, sv, nodeId, idA, idB)
+	local CT = api.type.ComponentType
+	local be = CC.comp(e, CT.BASE_EDGE)
+	local st = CC.comp(e, CT.BASE_EDGE_STREET)
+	if not be or not st then return nil end
+	local P0, T0, P1, T1 = { be.position0.x, be.position0.y, be.position0.z }, { be.tangent0.x, be.tangent0.y, be.tangent0.z },
+		{ be.position1.x, be.position1.y, be.position1.z }, { be.tangent1.x, be.tangent1.y, be.tangent1.z }
+	local P = hermite6(P0, T0, P1, T1, sv)
+	local s0, s1 = math.max(0, sv - 1e-3), math.min(1, sv + 1e-3)
+	local Pa, Pb = hermite6(P0, T0, P1, T1, s0), hermite6(P0, T0, P1, T1, s1)
+	local D = { (Pb[1] - Pa[1]) / (s1 - s0), (Pb[2] - Pa[2]) / (s1 - s0), (Pb[3] - Pa[3]) / (s1 - s0) }
+	local nd = api.type.NodeAndEntity.new()
+	nd.entity = nodeId
+	nd.comp.position = api.type.Vec3f.new(P[1], P[2], P[3])
+	local function V(a, k) return api.type.Vec3f.new(a[1] * k, a[2] * k, a[3] * k) end
+	local function half(id, n0, q0, tt0, n1, q1, tt1)
+		local sg = api.type.SegmentAndEntity.new()
+		sg.entity = id; sg.type = 0
+		sg.comp = CC.comp(e, CT.BASE_EDGE)
+		sg.comp.node0 = n0; sg.comp.node1 = n1
+		sg.comp.position0 = q0; sg.comp.position1 = q1; sg.comp.tangent0 = tt0; sg.comp.tangent1 = tt1
+		sg.comp.objects = {}
+		sg.streetEdge = st
+		local po = CC.comp(e, CT.PLAYER_OWNED)
+		if po then sg.playerOwned = po end
+		return sg
+	end
+	local Q = V(P, 1)
+	local edges = {
+		half(idA, be.node0, V(P0, 1), V(T0, sv), nodeId, Q, V(D, sv)),
+		half(idB, nodeId, Q, V(D, 1 - sv), be.node1, V(P1, 1), V(T1, 1 - sv)),
+	}
+	local cfg = {}
+	for _, nn in ipairs({ be.node0, be.node1 }) do if CC.comp(nn, CT.BASE_NODE_CONFIG) then cfg[#cfg + 1] = nn end end
+	return { node = nd, edges = edges, configs = cfg, x = P[1], y = P[2], z = P[3] }
+end
+function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd, opts)
 	local CT = api.type.ComponentType
 	local function v(x) return { x.x, x.y, x.z } end
 	local segs, byNode = {}, {}
@@ -314,6 +356,21 @@ function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd)
 		nodes[#nodes + 1] = node
 	end
 	if #steps ~= #segs then return false, { error = "binari non in fila (" .. #steps .. " su " .. #segs .. ")" } end
+	-- opts.skipStart / skipEnd: metri da lasciare senza parallelo all'inizio e alla fine (per raccordarsi ai binari
+	-- della stazione con una curva a S, VERIFICATO p35: gli assi dei binari delle stazioni distano 10-15 m, non 5)
+	if opts and ((opts.skipStart or 0) > 0 or (opts.skipEnd or 0) > 0) then
+		local function slen(sg) return math.sqrt((sg.p1[1] - sg.p0[1]) ^ 2 + (sg.p1[2] - sg.p0[2]) ^ 2) end
+		local a0, acc = 1, 0
+		while a0 < #steps and acc < (opts.skipStart or 0) do acc = acc + slen(steps[a0].sg); a0 = a0 + 1 end
+		local b0, acc2 = #steps, 0
+		while b0 > a0 and acc2 < (opts.skipEnd or 0) do acc2 = acc2 + slen(steps[b0].sg); b0 = b0 - 1 end
+		if b0 - a0 < 1 then return false, { error = "tratto troppo corto per il binario parallelo" } end
+		local s2, n2 = {}, {}
+		for i = a0, b0 do s2[#s2 + 1] = steps[i]; n2[#n2 + 1] = nodes[i] end
+		n2[#n2 + 1] = nodes[b0 + 1]
+		steps, nodes = s2, n2
+		snapStart, snapEnd = nil, nil
+	end
 	local pos, dir = {}, {}
 	for i, st in ipairs(steps) do
 		local sg = st.sg
@@ -323,13 +380,60 @@ function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd)
 		pos[i + 1] = pB; dir[i + 1] = tB
 	end
 	local nodesToAdd, newPos, newEnt, nextNode = {}, {}, {}, -1000
+	local roadSplit, roadEdges, roadRemove, roadCfg, roadEdgeId = {}, {}, {}, {}, -5000
 	for i = 1, #nodes do
 		local d = dir[i]
 		local l = math.sqrt(d[1] * d[1] + d[2] * d[2])
 		local rx, ry = d[2] / l, -d[1] / l
 		local p = { pos[i][1] + rx * offset, pos[i][2] + ry * offset, pos[i][3] }
 		local snap = (i == 1 and snapStart) or (i == #nodes and snapEnd) or nil
-		if snap then
+		-- passaggio a livello del binario 1 su questo nodo: anche il binario 2 attraversa la strada a raso
+		-- (VERIFICATO p35: senza, "Collisione" con la strada). Si spezza la strada nel punto giusto.
+		local crossNode
+		CC._parDiag = CC._parDiag or {}
+		if not snap and i > 1 and i < #nodes then
+			local rux, ruy = rx * offset, ry * offset
+			local rl = math.sqrt(rux * rux + ruy * ruy)
+			for _, rs in ipairs(CC.each(api.engine.system.streetSystem.getNodeSegments(nodes[i]))) do
+				local rbe = CC.comp(rs, CT.BASE_EDGE)
+				if rbe and not tostring(rbe.roadTemplate):find("/track/", 1, true) and not crossNode then
+					local atStart = rbe.node0 == nodes[i]
+					local a0 = atStart and rbe.position0 or rbe.position1
+					local a1 = atStart and rbe.position1 or rbe.position0
+					local ux, uy = a1.x - a0.x, a1.y - a0.y
+					local len = math.sqrt(ux * ux + uy * uy)
+					if len > 1 then
+						ux, uy = ux / len, uy / len
+						local c = (ux * rux + uy * ruy) / rl
+						if c > 0.3 then
+							local dd = rl / c
+							if dd < len - 3 and not roadSplit[rs] then
+								-- strada spezzata NELLA STESSA proposta del binario 2 (come fa il gioco col mouse): uno
+								-- splitStreet separato prima viene rifiutato (VERIFICATO p35: "Costruzione non consentita")
+								local sp = atStart and (dd / len) or (1 - dd / len)
+								nextNode = nextNode - 1
+								local parts = CC.streetSplitParts(rs, sp, nextNode, roadEdgeId - 1, roadEdgeId - 2)
+								roadEdgeId = roadEdgeId - 2
+								if parts then
+									roadSplit[rs] = true
+									nodesToAdd[#nodesToAdd + 1] = parts.node
+									for _, re in ipairs(parts.edges) do roadEdges[#roadEdges + 1] = re end
+									roadRemove[#roadRemove + 1] = rs
+									for _, nc in ipairs(parts.configs) do roadCfg[#roadCfg + 1] = nc end
+									crossNode = { nextNode, parts.x, parts.y, parts.z }
+								end
+								CC._parDiag[#CC._parDiag + 1] = string.format("strada %d nodo %d c=%.2f d=%.1f/%.1f -> %s", rs, nodes[i], c, dd, len, parts and "spezzata" or "no")
+							else
+								CC._parDiag[#CC._parDiag + 1] = string.format("strada %d nodo %d troppo corta (%.1f/%.1f)", rs, nodes[i], dd, len)
+							end
+						end
+					end
+				end
+			end
+		end
+		if crossNode then
+			newEnt[i] = crossNode[1]; newPos[i] = { crossNode[2], crossNode[3], crossNode[4] }
+		elseif snap then
 			local bn = CC.comp(snap, CT.BASE_NODE)
 			newEnt[i] = snap; newPos[i] = { bn.position.x, bn.position.y, bn.position.z }
 			if math.sqrt((newPos[i][1] - p[1]) ^ 2 + (newPos[i][2] - p[2]) ^ 2) > 1.5 then
@@ -380,7 +484,10 @@ function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd)
 	end
 	local prop = api.type.SimpleProposal.new()
 	prop.streetProposal.nodesToAdd = nodesToAdd
+	for _, re in ipairs(roadEdges) do edgesToAdd[#edgesToAdd + 1] = re end
 	prop.streetProposal.edgesToAdd = edgesToAdd
+	if #roadRemove > 0 then prop.streetProposal.edgesToRemove = roadRemove end
+	if #roadCfg > 0 then prop.streetProposal.nodeConfigsToRemove = roadCfg end
 	local player = api.engine.util.getPlayer()
 	local ctx = api.type.Context.new()
 	ctx.player = player
@@ -392,11 +499,27 @@ function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd)
 	local ok, res, ents = CC.send(cmd)
 	if not ok then
 		local info = res and CC.proposalErrors(res) or {}
-		return false, { error = "binario parallelo rifiutato" .. ((info.msg and #info.msg > 0) and (" (" .. table.concat(info.msg, "; ") .. ")") or "") }
+		local kinds, laneSet = {}, {}
+		for _, sg in ipairs(segs) do laneSet[sg.edge] = true end
+		for i, c in ipairs(info.coll or {}) do
+			if i > 6 then break end
+			local k = "altro"
+			if laneSet[c] then k = "binario da affiancare"
+			elseif c < 0 then k = "pezzo nuovo " .. c
+			elseif CC.comp(c, CT.CONSTRUCTION) then k = "costruzione " .. tostring(CC.comp(c, CT.CONSTRUCTION).fileName):gsub("^.*/", "")
+			elseif CC.comp(c, CT.BASE_EDGE) then
+				local cb = CC.comp(c, CT.BASE_EDGE)
+				k = "strada/binario " .. tostring(cb.roadTemplate):gsub("^.*/", "") .. string.format(" (%.0f,%.0f)-(%.0f,%.0f)", cb.position0.x, cb.position0.y, cb.position1.x, cb.position1.y)
+			elseif CC.comp(c, CT.BASE_NODE) then k = "nodo" end
+			kinds[#kinds + 1] = tostring(c) .. "=" .. k
+		end
+		local dg = table.concat(CC._parDiag or {}, "; "); CC._parDiag = {}
+		return false, { error = "[" .. dg .. "] binario parallelo rifiutato" .. ((info.msg and #info.msg > 0) and (" (" .. table.concat(info.msg, "; ") .. ")") or "") .. (#kinds > 0 and (" con " .. table.concat(kinds, ", ")) or "") }
 	end
 	local out = {}
 	for _, en in ipairs(ents or {}) do if CC.comp(en, CT.BASE_EDGE) then out[#out + 1] = en end end
-	return true, { edges = out }
+	local first = newPos[1]; local last = newPos[#newPos]
+	return true, { edges = out, startNode = CC.nodeAt(first[1], first[2]), endNode = CC.nodeAt(last[1], last[2]) }
 end
 
 -- Doppio binario tra due "gruppi" di estremi: As (2 estremi dalla parte a), Bs (2 dalla parte b).
@@ -406,6 +529,16 @@ function CC.linkDouble(As, Bs, log, label, builtEdges)
 	local ca = { x = (As[1].x + As[2].x) / 2, y = (As[1].y + As[2].y) / 2 }
 	local cb = { x = (Bs[1].x + Bs[2].x) / 2, y = (Bs[1].y + Bs[2].y) / 2 }
 	As, Bs = pairByLane(As, Bs, ca.x, ca.y, cb.x, cb.y)
+	-- il lato si decide sulle direzioni vere degli estremi, non sulla corda a -> b: su un anello il binario arriva in b
+	-- da tutt'altra parte (VERIFICATO p35: binario 2 a est del binario 1 ma estremo di b a ovest -> raccordo rifiutato)
+	local swappedB = false
+	if As[1].dx and Bs[1].dx then
+		local sA = (As[2].x - As[1].x) * As[1].dy - (As[2].y - As[1].y) * As[1].dx
+		local sB = -((Bs[2].x - Bs[1].x) * Bs[1].dy - (Bs[2].y - Bs[1].y) * Bs[1].dx)
+		if sA * sB < 0 then Bs = { Bs[2], Bs[1] }; swappedB = true end
+		local function f(e) return string.format("%d(%.0f,%.0f d%.2f,%.2f)", e.node or 0, e.x, e.y, e.dx, e.dy) end
+		log[#log + 1] = label .. string.format(": estremi a %s %s, b %s %s, lati %.1f %.1f", f(As[1]), f(As[2]), f(Bs[1]), f(Bs[2]), sA, sB)
+	end
 	local warnings = {}
 	-- binario 1 con il tracciato normale, binario 2 PARALLELO al primo (stessi ponti e gallerie); se il parallelo
 	-- non si puo' fare, binario 2 con un tracciato suo (ripiego, avviso).
@@ -416,14 +549,44 @@ function CC.linkDouble(As, Bs, log, label, builtEdges)
 		if k == 2 and lane1 then
 			local d = As[1]
 			local off = (As[2].x - As[1].x) * d.dy - (As[2].y - As[1].y) * d.dx
-			ok, info = CC.parallelTrack(lane1, As[1].node, off, As[2].node, Bs[2].node)
+			if math.abs(math.abs(off) - CC.TRACK_SPACING) < 0.5 then
+				ok, info = CC.parallelTrack(lane1, As[1].node, off, As[2].node, Bs[2].node)
+			else
+				-- binari della stazione piu' lontani di 5 m: parallelo a 5 m che parte/finisce 150 m piu' in la',
+				-- raccordato ai binari della stazione con curve a S
+				local o5 = (off < 0 and -1 or 1) * CC.TRACK_SPACING
+				ok, info = CC.parallelTrack(lane1, As[1].node, o5, nil, nil, { skipStart = CC.PARALLEL_JOIN or 150, skipEnd = CC.PARALLEL_JOIN or 150 })
+				if ok then
+					local edges2 = info.edges
+					local EP0, EP1 = info.startNode and CC.trackEndInfo(info.startNode), info.endNode and CC.trackEndInfo(info.endNode)
+					local okJ1, J1, okJ2, J2
+					if EP0 then okJ1, J1 = CC.linkTwoEnds(As[2], EP0, log, label .. " (raccordo 2 in uscita)") end
+					if okJ1 and EP1 then okJ2, J2 = CC.linkTwoEnds(EP1, Bs[2], log, label .. " (raccordo 2 in entrata)") end
+					if okJ1 and okJ2 then
+						for _, e in ipairs(J1.edges or {}) do edges2[#edges2 + 1] = e end
+						for _, e in ipairs(J2.edges or {}) do edges2[#edges2 + 1] = e end
+						info = { edges = edges2 }
+					else
+						for _, e in ipairs(edges2) do builtEdges[#builtEdges + 1] = e end
+						for _, e in ipairs((J1 and J1.edges) or {}) do builtEdges[#builtEdges + 1] = e end
+						ok, info = false, { error = "raccordi del binario parallelo non riusciti: " .. tostring((J1 and J1.error) or (J2 and J2.error) or "estremi non trovati") }
+					end
+				end
+			end
 			if ok then
-				log[#log + 1] = label .. " (binario 2): parallelo al binario 1 a " .. string.format("%.1f", math.abs(off)) .. " m"
+				log[#log + 1] = label .. " (binario 2): parallelo al binario 1 a " .. string.format("%.1f", CC.TRACK_SPACING) .. " m"
 			else
 				warnings[#warnings + 1] = label .. ": binario 2 non parallelo (" .. tostring(info.error) .. "), tracciato separato"
+				log[#log + 1] = label .. " (binario 2): parallelo non riuscito: " .. tostring(info.error) .. string.format(" (offset %.1f m)", off)
 			end
 		end
 		if not ok then ok, info = CC.linkTwoEnds(As[k], Bs[k], log, label .. (k == 1 and " (binario 1)" or " (binario 2)")) end
+		if not ok and k == 1 and swappedB then
+			-- stesso abbinamento senza incroci, ma scambiando gli estremi di a invece di quelli di b
+			log[#log + 1] = label .. " (binario 1): riprovo con gli estremi di a scambiati"
+			As, Bs = { As[2], As[1] }, { Bs[2], Bs[1] }
+			ok, info = CC.linkTwoEnds(As[1], Bs[1], log, label .. " (binario 1)")
+		end
 		if ok and k == 1 then lane1 = info.edges end
 		if not ok then
 			local msg = tostring(info.error)
