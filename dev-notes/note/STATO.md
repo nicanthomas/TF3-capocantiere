@@ -125,6 +125,8 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   (Transport Fever 3, Steam, transportfever3.exe). Il gioco e' su E:\SteamLibrary, i dati utente restano su C:.
 - Studio della partita di terzi FATTO (punto 0): risultati in `dev-notes/schemi_terzi/` (README con il riassunto).
   Ultimo id usato sulla partita di terzi: 10 (non salvata).
+- Poi caricata la "partita vuota di test" (dalla chat: nel salvataggio va disattivata la mod mancante "Scania R-Series -
+  Base set", Mod -> filtro Mancanti -> Disattiva tutto). lastActionId era 0. id 1 = p23, id 2 = lettura: prossimo id 3.
 ## 6. Cosa funziona (provato in gioco)
 | Funzione | Prova | Note |
 |---|---|---|
@@ -163,7 +165,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
      riportare gli schemi utili nella bozza (CC.TEMPLATES, schemi scali, segnale). Poi la chat carica DA SOLA
      la "partita vuota di test" (nessuna mod da disattivare; clic come nella sezione 4, partendo
      dal menu principale: Esc/menu -> Esci al menu, poi Carica partita).
-1. **p23**: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
+1. **p23 RIUSCITA (08.10.2026)**: scalo merci (1 binario, 160 m) vicino alla "Raffineria di petrolio di Maretto", costruzione 89548, gruppo 89601, 2 estremi, nessun crash (build 40420). Era: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
    `python3 dev-notes/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
 1a. **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
     binario per i due sensi. Voluto: (A) 2 binari, uno per senso, oppure (B) 1 binario con tratti a doppio binario

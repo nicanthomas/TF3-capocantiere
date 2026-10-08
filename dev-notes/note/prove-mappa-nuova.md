@@ -85,3 +85,8 @@ Lezioni:
   parametri `tracks = 1`, `length = 3`, `specialization = 1`.
 - Ora gli scali merci usano solo questo schema (1 binario, 160 m, treni merci entro 150 m, un treno per linea semplice;
   piu' treni con la rete merci e i binari d'attesa). `CC.buyCargoTrain` mancava: aggiunto.
+
+## 08.10.2026 sera (build 40420, scambio file in mod_presets con prefisso capocantiere_)
+- Studio della partita di terzi completato: `dev-notes/schemi_terzi/`.
+- partita vuota di test, id 1: **p23 scalo merci OK** (Raffineria di petrolio di Maretto, costruzione 89548, gruppo 89601,
+  2 estremi, posto a R 180 m / 60 gradi dopo 2 posti rifiutati). Nessun crash.
