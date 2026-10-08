@@ -24,7 +24,27 @@ from typing import Any
 
 import lua_table
 
-DEFAULT_DIR = r"C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\capocantiere"
+import glob as _glob
+
+STEAM_USERDATA_GLOBS = [
+    r"C:\Program Files (x86)\Steam\userdata\*\3493540\local\capocantiere",
+    r"C:\Program Files\Steam\userdata\*\3493540\local\capocantiere",
+]
+
+
+def find_default_dir() -> str:
+    """Cartella di scambio nei dati utente di Steam (3493540 = Transport Fever 3), senza ID dell'account nel codice.
+    Se ce n'e' piu' d'una (piu' account Steam) prende quella usata piu' di recente. Variabile CAPOCANTIERE_DIR per
+    forzarne un'altra."""
+    found = []
+    for pattern in STEAM_USERDATA_GLOBS:
+        found += [d for d in _glob.glob(pattern) if os.path.isdir(d)]
+    if not found:
+        return STEAM_USERDATA_GLOBS[0].replace("*", "<steam-id>")
+    return max(found, key=os.path.getmtime)
+
+
+DEFAULT_DIR = find_default_dir()
 
 
 class GameBridge:
@@ -98,13 +118,15 @@ class GameBridge:
     def _wait_state_id(self, req_id: int, timeout: float = 5.0) -> None:
         """Aspetta che state.lua riporti lastActionId >= req_id (la mod lo riscrive subito)."""
         deadline = time.time() + timeout
+        last = None
         while time.time() < deadline:
             try:
                 if int(self.state().get("lastActionId") or 0) >= req_id:
                     return
-            except (RuntimeError, lua_table.LuaParseError):
-                pass
+            except (RuntimeError, lua_table.LuaParseError) as e:
+                last = e
             time.sleep(0.3)
+        print(f"  [avviso] state.lua non conferma l'azione {req_id} dopo {timeout:.0f} s" + (f" ({last})" if last else ""))
 
     def _cleanup(self, upto: int) -> None:
         """Cancella i file results gia' letti."""

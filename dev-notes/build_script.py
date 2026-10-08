@@ -12,9 +12,12 @@ Uso (dalla cartella del progetto):
     python dev-notes/build_script.py --bozza    # include anche dev-notes/bozza/b*.lua (azioni NON ancora provate) e le
                                           # modifiche al lato interfaccia della v14 (vedi GUI_PATCHES)
     python dev-notes/build_script.py --release [--bozza]
-                                          # versione DA DISTRIBUIRE: copia della mod in dist/tfcapocantiere_1 con
-                                          # DEV_MODE = false (niente lua_eval/sim_eval) e zip dist/tfcapocantiere_1.zip;
-                                          # la mod di sviluppo in mod/ resta com'e' (DEV_MODE = true per le prove)
+                                          # versione DA DISTRIBUIRE: dist/tfcapocantiere_1 con DEV_MODE = false
+                                          # (niente lua_eval/sim_eval) e zip dist/tfcapocantiere_1.zip
+    python dev-notes/build_script.py --dev [--bozza]
+                                          # copia PER LE PROVE sul PC di sviluppo: dist/tfcapocantiere_1_dev con
+                                          # DEV_MODE = true (servono sim_eval/lua_eval per sonde e prove)
+                                          # La mod in mod/ ha sempre DEV_MODE = false (sicura da copiare).
 
 Prima di scrivere fa una copia di backup dello script (capocantiere.script.lua.bak_<data>) e
 controlla la sintassi Lua del risultato se sul sistema c'e' liblua (vedi luachk.py).
@@ -166,29 +169,33 @@ DIST = os.path.join(ROOT, "dist")
 MOD_DIR = os.path.join(ROOT, "mod", "tfcapocantiere_1")
 
 
-def release(code: str) -> int:
-    """Scrive la versione da distribuire in dist/ (DEV_MODE = false) e la comprime; non tocca mod/."""
-    rel, n = re.subn(r"^local DEV_MODE = true", "local DEV_MODE = false", code, flags=re.M)
+def build_copy(code: str, dev: bool) -> int:
+    """Copia della mod in dist/: --release (DEV_MODE = false, + zip) o --dev (DEV_MODE = true). Non tocca mod/."""
+    want = "true" if dev else "false"
+    out_code, n = re.subn(r"^local DEV_MODE = (true|false)", "local DEV_MODE = " + want, code, flags=re.M)
     if n != 1:
-        print("ERRORE: riga 'local DEV_MODE = true' non trovata (o trovata piu' volte):", n)
+        print("ERRORE: riga 'local DEV_MODE = ...' non trovata (o trovata piu' volte):", n)
         return 3
-    ok, msg = lua_syntax_ok(rel)
+    ok, msg = lua_syntax_ok(out_code)
     if not ok:
-        print("ERRORE di sintassi Lua nella versione da distribuire:", msg)
+        print("ERRORE di sintassi Lua nella copia:", msg)
         return 2
-    out = os.path.join(DIST, "tfcapocantiere_1")
+    name = "tfcapocantiere_1_dev" if dev else "tfcapocantiere_1"
+    out = os.path.join(DIST, name)
     if os.path.exists(out):
         stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         shutil.move(out, out + ".bak_" + stamp)
     shutil.copytree(MOD_DIR, out, ignore=shutil.ignore_patterns("*.bak_*"))
     target = os.path.join(out, os.path.relpath(SCRIPT, MOD_DIR))
     with open(target, "w", encoding="utf-8", newline="") as f:
-        f.write(rel)
-    zipped = shutil.make_archive(os.path.join(DIST, "tfcapocantiere_1"), "zip", DIST, "tfcapocantiere_1")
-    v = re.search(r'^local CC_VERSION = "(.*)"$', rel, flags=re.M)
-    print("Versione da distribuire:", v.group(1) if v else "?", "- DEV_MODE = false")
+        f.write(out_code)
+    v = re.search(r'^local CC_VERSION = "(.*)"$', out_code, flags=re.M)
+    print("Versione:", v.group(1) if v else "?", "- DEV_MODE =", want)
     print("Cartella:", out)
-    print("Zip:", zipped)
+    if not dev:
+        print("Zip:", shutil.make_archive(os.path.join(DIST, name), "zip", DIST, name))
+    else:
+        print("Da copiare nella cartella mods del PC di prova come 'tfcapocantiere_1' (backup della mod installata prima).")
     return 0
 
 
@@ -201,7 +208,9 @@ def main() -> int:
     if msg:
         print(msg)
     if "--release" in sys.argv:
-        return release(new)
+        return build_copy(new, dev=False)
+    if "--dev" in sys.argv:
+        return build_copy(new, dev=True)
     if "--check" in sys.argv:
         if old == new:
             print("OK: lo script della mod e' allineato a cc_lib.lua + cc_actions.lua")

@@ -1,0 +1,27 @@
+# Controlli automatici a ogni push e pull request (senza gioco e senza API).
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lua (per mock e controllo sintassi)
+        run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
+      - name: Test del middleware (30)
+        working-directory: middleware
+        run: python test_middleware.py
+      - name: Mock della bozza Lua (65 controlli)
+        run: python dev-notes/bozza/run_mock.py
+      - name: Script della mod allineato ai sorgenti (solo avviso finche' la v14 non e' provata in gioco)
+        continue-on-error: true
+        run: python dev-notes/build_script.py --check
+      - name: La mod nel repo ha DEV_MODE spento
+        run: grep -q '^local DEV_MODE = false' mod/tfcapocantiere_1/content/capocantiere/capocantiere.script.lua

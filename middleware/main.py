@@ -54,8 +54,29 @@ if USE_BOZZA:
 
 TOOLS_BY_NAME = {t["name"]: t for t in TOOLS}
 
-# Modello Anthropic: cambia qui per usarne un altro (es. "claude-opus-5-5").
-MODEL = "claude-sonnet-5-5"
+# Modello Anthropic: predefinito qui, oppure variabile d'ambiente CAPOCANTIERE_MODEL.
+MODEL = os.environ.get("CAPOCANTIERE_MODEL", "claude-sonnet-5-5")
+# Avviso quando i token della sessione superano questa soglia (variabile CAPOCANTIERE_TOKEN_WARN; 0 = mai).
+TOKEN_WARN = int(os.environ.get("CAPOCANTIERE_TOKEN_WARN", "500000"))
+USAGE = {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0, "calls": 0}
+
+
+def add_usage(resp) -> None:
+    """Somma i token di una risposta e stampa il totale della sessione (per misurare il costo reale)."""
+    u = getattr(resp, "usage", None)
+    if u is None:
+        return
+    USAGE["input"] += getattr(u, "input_tokens", 0) or 0
+    USAGE["output"] += getattr(u, "output_tokens", 0) or 0
+    USAGE["cache_read"] += getattr(u, "cache_read_input_tokens", 0) or 0
+    USAGE["cache_write"] += getattr(u, "cache_creation_input_tokens", 0) or 0
+    USAGE["calls"] += 1
+
+
+def usage_line() -> str:
+    tot = USAGE["input"] + USAGE["output"] + USAGE["cache_read"] + USAGE["cache_write"]
+    return (f"[token sessione] chiamate {USAGE['calls']}, input {USAGE['input']}, output {USAGE['output']}, "
+            f"cache letta {USAGE['cache_read']}, cache scritta {USAGE['cache_write']} (totale {tot})")
 MAX_TOKENS = 4096
 MAX_TOOL_ROUNDS = 12           # limite di sicurezza ai giri di tool per una singola richiesta
 MAX_TURNS = 8                  # turni di conversazione tenuti per intero (i piu' vecchi diventano un riassunto)
@@ -190,8 +211,8 @@ def schedule_checks(bridge: GameBridge, name: str, result: dict) -> None:
     if ids and result.get("ok") is not False:
         try:
             Collaudo(bridge.folder).add(ids, bridge.state(), action=name)
-        except (OSError, RuntimeError):
-            pass
+        except (OSError, RuntimeError) as e:
+            print(f"  [avviso] collaudo a distanza non programmato per {ids}: {e}")
 
 
 def run_due_checks(bridge: GameBridge) -> str:
@@ -230,12 +251,17 @@ def ask_claude(client, messages: list, bridge: GameBridge) -> None:
             **cached_request(SYSTEM_PROMPT, TOOLS, messages),   # prompt caching: meno costi
         )
         messages.append({"role": "assistant", "content": resp.content})
+        add_usage(resp)
 
         for block in resp.content:
             if block.type == "text" and block.text.strip():
                 print(f"\nCapo Cantiere: {block.text.strip()}")
 
         if resp.stop_reason != "tool_use":
+            print("  " + usage_line())
+            tot = USAGE["input"] + USAGE["output"] + USAGE["cache_read"] + USAGE["cache_write"]
+            if TOKEN_WARN and tot > TOKEN_WARN:
+                print(f"  [avviso] la sessione ha superato {TOKEN_WARN} token: valuta /reset o una sessione nuova")
             return
 
         tool_results = []
@@ -292,8 +318,8 @@ def main() -> None:
     try:
         for msg in check_versions(bridge.state(), bridge.folder):
             print("Attenzione: " + msg)
-    except (OSError, RuntimeError):
-        pass
+    except (OSError, RuntimeError) as e:
+        print(f"Attenzione: controllo delle versioni non riuscito: {e}")
     client = anthropic.Anthropic()
     messages: list = []
 
@@ -312,6 +338,7 @@ def main() -> None:
         if not text:
             continue
         if text in ("/esci", "/exit", "/quit"):
+            print(usage_line())
             break
         if text == "/reset":
             messages = []

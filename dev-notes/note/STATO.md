@@ -17,6 +17,12 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
 - Partita: modalita' creativa, anno >= 2020. Tutto quello che si piazza deve FUNZIONARE (anche i depositi).
   Restare dentro i confini della mappa.
 - Crash: la partita e' salvata; chiudere il gioco, riaprirlo e ricaricare da soli (sequenza al punto 4).
+- COMMIT: titolo CORTO `gg.mm.aaaa-NR-Descrizione` (max ~70 caratteri), dettagli nel corpo del messaggio.
+  La GitHub Actions (`.github/workflows/test.yml`) lancia a ogni push i 30 test del middleware, i 65 controlli del
+  mock, `build_script.py --check` (solo avviso) e controlla che la mod nel repo abbia DEV_MODE = false.
+- DEV_MODE (08.10.2026): la mod in `mod/` ha DEV_MODE = false. Sonde e prove richiedono DEV_MODE = true: sul PC di
+  prova si installa SEMPRE la copia di `python dev-notes/build_script.py --dev [--bozza]` (dist/tfcapocantiere_1_dev,
+  da copiare come `tfcapocantiere_1`, backup prima). La mod gia' installata stasera (v13) ha ancora DEV_MODE = true.
 - GITHUB SEMPRE AGGIORNATO (08.10.2026): dopo ogni passo concluso (prova riuscita o fallita, sonda letta,
   correzione) fare subito il commit, senza accumulare. Tenere allineati col tempo anche: `README.md` (tabella delle
   azioni con lo stato "Provato in gioco", requisiti, costo per sessione quando misurato), questo file (sezioni 5-8)
@@ -37,8 +43,10 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
 ## 1b. Avvio della chat: chiedere SUBITO tutte le autorizzazioni (una volta sola, all'inizio)
 0. **VERIFICARE I PERCORSI (08.10.2026)**: Nicolo' ha spostato la cartella di INSTALLAZIONE del gioco fuori da C:
    (spazio finito). Tutti i percorsi di questo file (cartella `capocantiere`, `mods`, `crash_dump`) erano in
-   `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\`. Di solito spostare il gioco in un'altra
+   `C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\`. Di solito spostare il gioco in un'altra
    libreria Steam NON sposta `userdata` (resta nella cartella di Steam), ma va verificato:
+   - `<steam-id>` = l'unica cartella numerica in `C:\Program Files (x86)\Steam\userdata\` (trovarla con
+     `device_list_dir`; l'ID non si scrive nel repo). Il middleware la trova da solo (`find_default_dir`).
    - controllare con `device_list_dir` se `...\local\mods\tfcapocantiere_1`, `...\local\capocantiere` e
      `...\local\crash_dump` esistono ancora; se no, cercare la nuova posizione (nuova cartella di Steam o della
      libreria) e chiedere l'accesso a quella;
@@ -49,7 +57,7 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
      percorsi nuovi, poi proseguire.
 Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e poi lasciare lavorare:
 1. Controllo del computer (`request_access`): Transport Fever 3 e Steam (servono per la ripresa dopo un crash).
-2. Cartella `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\capocantiere` (lettura/scrittura) e,
+2. Cartella `C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\capocantiere` (lettura/scrittura) e,
    se non e' gia' dentro, `...\3493540\local\crash_dump` (sola lettura del log dei crash).
 3. Verificare con una chiamata leggera che il GitHub di Composio risponda (es. `GITHUB_GET_A_BRANCH` su main).
 4. Clonare il repo (`git clone https://github.com/nicanthomas/TF3-capocantiere.git`, pubblico) e lanciare
@@ -90,7 +98,7 @@ Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 1. `python3 dev-notes/strumenti/step.py ID "chiavi_da_leggere" prove/pX.lua[,sonde/sY.lua] [gruppo2 ...]`
    -> scrive `/mnt/user-data/outputs/cc/actions_ID_<nonce>.lua` (bozza + prove, ogni prova in pcall).
 2. SendUserFile del file, poi `device_commit_files` in
-   `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\capocantiere\` (stesso nome).
+   `C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\capocantiere\` (stesso nome).
 3. Attendere ~5 s, `device_stage_files` di `results_ID_<nonce>.lua`, poi
    `python3 dev-notes/strumenti/show.py <file staged> [lunghezza]`.
 4. Il risultato di una `sim_eval` arriva con l'azione ID+1 che contiene la chiave `gID_0`.
@@ -168,7 +176,8 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     di veicoli calcolato alla creazione e strumento `adjust_line_fleet` (solo su richiesta, nessun ciclo automatico).
 4c. Puntualita' delle consegne (novita' TF3): allargare la sonda s23 ai dati di ritardo/puntualita' e usarli in
     "adegua i veicoli della linea X" (solo su richiesta).
-5. Build v14 (`dev-notes/build_script.py --bozza`), backup v13, installazione in mods, prova col middleware.
+5. Build v14: `python dev-notes/build_script.py --bozza` (aggiorna mod/, poi `--check` deve dare OK), e per il PC di
+   prova `--dev --bozza`; backup v13, installazione in mods, prova col middleware (contatore token: misurare il costo).
 5b. Novita' TF3 da aggiungere dopo la v14 (ognuna: prima sonda o copia di una costruzione fatta a mano):
     - potenziatori di produzione (lavoratori, fertilizzanti...): leggere quali beni potenziano quale industria;
       Claude propone e, su richiesta, costruisce la catena (e' una linea merci normale);

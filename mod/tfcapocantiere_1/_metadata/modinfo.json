@@ -5,9 +5,9 @@
             "role": "CREATOR"
         }
     ],
-    "description": "Test di I/O per il progetto Capo Cantiere (interfaccia LLM). Scrive solo nel log e nella cartella capocantiere dei dati utente.",
-    "name": "Capo Cantiere - Test",
-    "summary": "Test di I/O per Capo Cantiere",
+    "description": "Capo Cantiere: dai ordini in italiano e Claude (Anthropic) li costruisce nel gioco tramite un programma Python esterno. La mod scrive solo nella cartella capocantiere dei dati utente.",
+    "name": "Capo Cantiere",
+    "summary": "Costruzioni guidate da Claude con comandi in italiano",
     "tags": [
         "Script Mod"
     ],

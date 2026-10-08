@@ -322,9 +322,9 @@ end
 
 -- SOLO SVILUPPO: esegue codice Lua scritto dal middleware nella cartella capocantiere.
 -- Serve per provare le funzioni dell'API senza ricaricare la partita. Il codice gira nella
--- stessa sandbox della mod (niente io, niente os.execute). Da disattivare (DEV_MODE = false)
--- quando le azioni definitive saranno pronte.
-local DEV_MODE = true
+-- stessa sandbox della mod (niente io, niente os.execute). Nel repo e' SPENTO: la copia per le prove si crea con
+-- python dev-notes/build_script.py --dev  (dist/tfcapocantiere_1_dev, DEV_MODE = true).
+local DEV_MODE = false
 local DEV = { log = {} }   -- tabella del modulo: le callback dei comandi possono scriverci
 local SIM_SNAPSHOT = nil  -- ultimo stato del lato simulazione visto dalla GUI (solo sviluppo)
 

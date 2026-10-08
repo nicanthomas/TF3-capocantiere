@@ -19,7 +19,7 @@ Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
 |---|---|
 | `mod/tfcapocantiere_1/` | La mod da copiare in `<dati utente TF3>/local/mods/` |
 | `middleware/` | Console Python: `main.py` (chat con Claude), `game_bridge.py` (scambio file), `tools.py` (tool per Claude), `lua_table.py` (lettura/scrittura tabelle Lua) |
-| `dev-notes/` | Solo per lo sviluppo: libreria sim (`cc_lib.lua`, `cc_actions.lua`), build della mod, bozza delle funzioni nuove (`bozza/`), sonde e prove in gioco (`sonde/`, `prove/`), strumenti di prova (`strumenti/`) |
+| `dev-notes/` | Appunti e strumenti di lavoro, NON documentazione per gli utenti. Solo per lo sviluppo: libreria sim (`cc_lib.lua`, `cc_actions.lua`), build della mod, bozza delle funzioni nuove (`bozza/`), sonde e prove in gioco (`sonde/`, `prove/`), strumenti di prova (`strumenti/`) |
 | `dev-notes/note/` | Note di sviluppo: stato del progetto (`STATO.md`), diario delle prove, scoperte sull'API di TF3 |
 
 ## Azioni supportate (tool di Claude)
@@ -56,16 +56,19 @@ Il progetto e' pensato **solo per Windows con Steam** (percorsi, file `.bat`, `s
    `setx ANTHROPIC_API_KEY "..."` e riapri il terminale.
 4. Controllo: `python middleware/verifica_installazione.py` (non modifica nulla).
 5. Con la partita aperta: doppio clic su `middleware/avvia_capocantiere.bat`
-   (oppure `python middleware/main.py`; se la cartella di scambio e' diversa: variabile `CAPOCANTIERE_DIR`).
+   (oppure `python middleware/main.py`). La cartella di scambio viene trovata da sola nei dati utente di Steam;
+   se non la trova: variabile `CAPOCANTIERE_DIR`.
 
 Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 
 ## Note
 
 - La mod scrive solo nella cartella `capocantiere` dei dati utente.
-- `DEV_MODE = true` nello script di sviluppo abilita `lua_eval` / `sim_eval` (codice arbitrario: solo per le prove).
-  La versione da distribuire si crea con `python dev-notes/build_script.py --release` (`dist/`, `DEV_MODE = false`, zip).
-- Modello Anthropic configurato in `middleware/main.py` (`MODEL`). Il middleware usa il prompt caching e tiene
+- La mod nel repo ha `DEV_MODE = false`: `lua_eval` / `sim_eval` (codice arbitrario, solo per le prove) sono spenti.
+  Per lo sviluppo: `python dev-notes/build_script.py --dev` crea una copia con `DEV_MODE = true`;
+  `--release` crea la versione da distribuire (`dist/`, zip).
+- Modello Anthropic: predefinito in `middleware/main.py` (`MODEL`), oppure variabile d'ambiente `CAPOCANTIERE_MODEL`.
+  A ogni risposta il middleware stampa i token usati nella sessione (avviso oltre `CAPOCANTIERE_TOKEN_WARN`). Il middleware usa il prompt caching e tiene
   in memoria solo gli ultimi turni della conversazione (`MAX_TURNS`) per contenere i costi.
 - Gli argomenti dei tool vengono controllati in Python prima di arrivare al gioco.
 - All'avvio i file `actions_*` rimasti da sessioni precedenti vengono spostati in `capocantiere/vecchi`.
