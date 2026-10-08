@@ -108,14 +108,15 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
      eventuali file azioni rimasti (sezione 2) prima di mandare id nuovi.
    - Un primo file con le sonde (tutte sola lettura, ognuna in pcall): `sonde/s24_copia_schemi.lua` (tutte le
      disposizioni diverse di scali merci, stazioni passeggeri, porti, magazzini, depositi/officine, impianti
-     anti-inquinamento, fermate + catalogo dei moduli), `sonde/s25_stazioni_industrie.lua` (stazioni integrate,
+     anti-inquinamento, fermate, stazioni sotterranee/sopraelevate/metropolitana anche di mod + catalogo dei moduli), `sonde/s25_stazioni_industrie.lua` (stazioni integrate,
      un'industria per tipo), `sonde/s26_binari_segnali.lua` (tutta la mappa: tipi di binario/ponte/galleria,
      segnali con componenti e modelli, distanza del doppio binario), `sonde/s27_linee_veicoli.lua` (linee, modelli,
      impostazioni di carico/scarico delle fermate), `sonde/s8_segnali.lua`. Se il risultato e' troppo grande o
      qualcosa va storto, rimandarle separate. Opzioni: `CC.PROBE_MAX_LAYOUTS` (8), `CC.PROBE_MAX_SIGNALS` (30).
    - Guardare i risultati e, se manca qualcosa (un tipo di costruzione, un dettaglio dei segnali, un campo),
      scrivere SUBITO un'altra sonda e rilanciarla finche' la partita e' aperta. Controllare almeno: scalo merci a 2+
-     binari e altre lunghezze, segnale normale e a senso unico (modello, lato, posizione sul binario), porto
+     binari e altre lunghezze, stazione sotterranea e sopraelevata (e metropolitana, se la sua mod e' attiva:
+     `underground_station.con` e' di una mod di terzi), segnale normale e a senso unico (modello, lato, posizione sul binario), porto
      modulare, magazzino, stazione con moduli di comfort, fermata merci per tram/camion, stazione integrata.
    - Salvare i risultati NEL REPO (questa volta si', compressi o riassunti se grandi) in `dev/schemi_terzi/`, e
      riportare gli schemi utili nella bozza (CC.TEMPLATES, schemi scali, segnale). Poi Nicolo' torna alla

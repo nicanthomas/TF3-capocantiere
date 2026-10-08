@@ -7,15 +7,37 @@ local CT = api.type.ComponentType
 local out = { schemi = {}, segnali = {}, conteggi = {} }
 
 local function short(n) return (tostring(n):gsub("^::/", ""):gsub("stations/rail/modular_station/", "RS/"):gsub("trainstation___/infrastructure/track/", "T/")) end
-local function category(file, mods)
+-- Livello della stazione rispetto al terreno: sotterranea (< -4 m), sopraelevata (> +4 m) o a raso.
+local function level(c)
+	local lv = ""
+	pcall(function()
+		local m = c.transf
+		local h = CC.heightAt(m[13], m[14])
+		if h then
+			local dz = m[15] - h
+			if dz < -4 then lv = "_sotterranea" elseif dz > 4 then lv = "_sopraelevata" end
+		end
+	end)
+	return lv
+end
+local function category(file, mods, c)
 	local f = tostring(file)
+	local joined = table.concat(mods, " ")
+	local tag = ""
+	for _, k in ipairs({ "underground", "elevated", "metro", "subway" }) do
+		if joined:find(k, 1, true) or f:find(k, 1, true) then tag = "_" .. k; break end
+	end
 	if f:find("modular_station.con", 1, true) then
-		for _, m in pairs(mods) do if m:find("cargo", 1, true) then return "rail_cargo" end end
-		return "rail_passengers"
+		local base = joined:find("cargo", 1, true) and "rail_cargo" or "rail_passengers"
+		return base .. tag .. level(c)
 	end
 	for _, k in ipairs({ "harbor", "warehouse", "rail_depot", "rail_maint", "road_depot", "road_maint", "tram_depot",
 		"water_depot", "water_maint", "pollution", "modular_terminal", "underground_station", "airport", "airfield", "heli" }) do
-		if f:find(k, 1, true) then return k end
+		if f:find(k, 1, true) then return k .. level(c) end
+	end
+	-- qualsiasi altra stazione o fermata (anche di mod: metropolitana, monorotaia...): categoria = nome del file
+	if f:find("/stations/", 1, true) or f:find("metro", 1, true) or f:find("subway", 1, true) then
+		return "altro:" .. (f:match("([^/]+)%.con$") or f) .. level(c)
 	end
 	return nil
 end
@@ -29,7 +51,7 @@ for _, con in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.CONSTRUCTION
 		pcall(function()
 			for slot, m in pairs(c.params.modules or {}) do mods[#mods + 1] = tostring(slot) .. "=" .. short(m.name) .. "|" .. tostring(m.variant) end
 		end)
-		local cat = category(c.fileName, mods)
+		local cat = category(c.fileName, mods, c)
 		if cat then
 			out.conteggi[cat] = (out.conteggi[cat] or 0) + 1
 			byCat[cat] = byCat[cat] or {}
@@ -80,6 +102,8 @@ for cat, list in pairs(byCat) do
 	out.catalogo_moduli[cat] = cl
 end
 
+-- Stazioni ferroviarie: separate per livello (a raso / sotterranea / sopraelevata) e per moduli "underground",
+-- "elevated", "metro"; le altre stazioni (anche di mod) per nome del file: nulla di quanto costruito resta fuori.
 -- SEGNALI: binari con oggetti vicino alle stazioni ferroviarie (ricerca con l'octree: getEntitiesWithComponent(BASE_EDGE)
 -- e' vietato). Si cerca in cerchi di 1500 m attorno a ogni stazione, fino a 8 binari con oggetti.
 local function compsOf(ent)
