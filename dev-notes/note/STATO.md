@@ -22,8 +22,10 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
   azioni con lo stato "Provato in gioco", requisiti, costo per sessione quando misurato), questo file (sezioni 5-8)
   e `dev-notes/note/prove-mappa-nuova.md`. Quando la v14 e' provata: release su GitHub con lo zip di
   `python dev-notes/build_script.py --release` (DEV_MODE spento), screenshot o GIF di una richiesta trasformata in
-  costruzione nel README, costo medio di una sessione nel README. Push con la patch compressa applicata nel
-  workbench di Composio (meno crediti), controllando gli SHA dei file.
+  costruzione nel README, costo medio di una sessione nel README. Push nel modo piu' economico (verificato 08.10):
+  nel workbench di Composio `git clone https://github.com/nicanthomas/TF3-capocantiere.git` (repo pubblico), applicare
+  la patch compressa (`git diff -U0`, gzip+base64; `git apply --unidiff-zero`), confrontare l'impronta di tutti i
+  file con quella locale, poi `GITHUB_COMMIT_MULTIPLE_FILES` con upserts/deletes letti dal disco del workbench.
 - PRINCIPIO GENERALE (08.10.2026): la mod e il middleware agiscono SOLO dopo un input esplicito di Nicolo'.
   Nessuna azione automatica, programmata o in background nel gioco (niente cicli che costruiscono, comprano,
   vendono o modificano da soli). Ogni costruzione, acquisto o modifica parte da una sua richiesta e finisce li'
