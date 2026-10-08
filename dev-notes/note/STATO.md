@@ -97,9 +97,10 @@ Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 ## 3. Ciclo di prova (dalla chat cloud)
 1. `python3 dev-notes/strumenti/step.py ID "chiavi_da_leggere" prove/pX.lua[,sonde/sY.lua] [gruppo2 ...]`
    -> scrive `/mnt/user-data/outputs/cc/actions_ID_<nonce>.lua` (bozza + prove, ogni prova in pcall).
+   Dalla 40420 rinominarlo `capocantiere_actions_ID_<nonce>.lua` (prefisso).
 2. SendUserFile del file, poi `device_commit_files` in
-   `C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\capocantiere\` (stesso nome).
-3. Attendere ~5 s, `device_stage_files` di `results_ID_<nonce>.lua`, poi
+   `C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\mod_presets\` (stesso nome).
+3. Attendere ~5 s, `device_stage_files` di `capocantiere_results_ID_<nonce>.lua`, poi
    `python3 dev-notes/strumenti/show.py <file staged> [lunghezza]`.
 4. Il risultato di una `sim_eval` arriva con l'azione ID+1 che contiene la chiave `gID_0`.
    Per risparmiare: mettere nell'azione ID+1 anche la prova successiva (se non rischiosa).
@@ -112,23 +113,18 @@ Carica partita (540,560) -> "partita vuota di test" Carica (360,293) -> Avvia pa
 Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota di test" e' quello INIZIALE
 (1 gen 2020, lastActionId 0, mappa vuota): ogni ricarica cancella le prove fatte.
 
-## 5. Stato del gioco al 08.10.2026
-- **BLOCCO (08.10 sera, build 40420)**: dopo l'aggiornamento del gioco `app.saveUserdata("capocantiere", ...)` da'
-  "directory ... not available or invalid": la mod non esporta piu' state.lua e (probabilmente) non legge i file
-  azioni. Dettagli e passo previsto: `dev-notes/note/aggiornamento-40420.md`. Serve l'accesso a
-  `mods\tfcapocantiere_1` (chiesto, NEGATO dal controllo automatico dei permessi: Nicolo' deve concederlo) per
-  installare la copia di diagnosi, poi una ricarica della partita.
-  AGGIORNAMENTO: accesso concesso; installata la copia di diagnosi (v13 + `ensureDir()`, DEV_MODE true; backup
-  `capocantiere.script.lua.bak_20261008_v13` nella stessa cartella). Dopo la ricarica: leggere nel log le righe
-  `[CAPOCANTIERE] DIRTEST`.
-- Partita di terzi caricata da Nicolo' (autosave "My 1st Sandbox with mods Final_2082-02-24_2"); punto 0 della
-  sezione 7 NON ancora fatto (nessuna sonda eseguita). File neutri nuovi: actions_1_28deba77, actions_34_8d1957db.
-- Percorsi verificati 08.10: il gioco e' su E:\SteamLibrary, ma `userdata` (capocantiere, mods, crash_dump) e'
-  ancora in C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\ (nessuna modifica necessaria).
-- Partita "partita vuota di test" caricata dopo il crash del 07.10 sera, lastActionId = 7 (prossimo id: 8).
-- Sulla mappa ci sono solo 3 scali merci costruiti A MANO (id 89222, 89437, 89493, 1 binario, 160 m).
-- Nella cartella restano file azioni neutri per gli id 4 e 33 e due vecchi (241, 242): innocui.
-
+## 5. Stato del gioco al 08.10.2026 (sera)
+- **CARTELLA DI SCAMBIO CAMBIATA (build 40420)**: la 40420 permette `app.*Userdata` solo su alcune cartelle del gioco
+  (`mod_presets`, `biomes`, `heightmaps`, `towns_industries`; NON `capocantiere`, ne' sue sottocartelle). La mod installata
+  (v13 + patch `ensureDir`, backup `capocantiere.script.lua.bak_20261008_v13` nella cartella della mod) scrive in
+  `...\3493540\local\mod_presets\` con prefisso `capocantiere_`: `capocantiere_state.lua`,
+  `capocantiere_actions_<id>_<nonce>.lua`, `capocantiere_results_<id>_<nonce>.lua`. Dettagli:
+  `dev-notes/note/aggiornamento-40420.md`. DA FARE: portare la stessa modifica in `mod/` (senza ID Steam) e nel
+  middleware (`game_bridge.py`: cartella `mod_presets`, prefisso `capocantiere_`), test compresi.
+- Accessi concessi in questa chat: `capocantiere`, `crash_dump`, `mods\tfcapocantiere_1`, `mod_presets`, computer
+  (Transport Fever 3, Steam, transportfever3.exe). Il gioco e' su E:\SteamLibrary, i dati utente restano su C:.
+- Studio della partita di terzi FATTO (punto 0): risultati in `dev-notes/schemi_terzi/` (README con il riassunto).
+  Ultimo id usato sulla partita di terzi: 10 (non salvata).
 ## 6. Cosa funziona (provato in gioco)
 | Funzione | Prova | Note |
 |---|---|---|
@@ -143,7 +139,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 | Confini mappa `CC.mapBox` / `CC.inMap` | s20, s21 | -8192..8192 su questa mappa |
 
 ## 7. Da fare (in ordine)
-0. **Studio COMPLETO del salvataggio di terzi (accesso UNA SOLA VOLTA, sola lettura)**. Nel primo studio (07.10)
+0. **FATTO 08.10.2026** (risultati in `dev-notes/schemi_terzi/`). Era: studio COMPLETO del salvataggio di terzi (accesso UNA SOLA VOLTA, sola lettura). Nel primo studio (07.10)
    furono copiati solo aerei, eliporti e porto; gli scali merci e i segnali NO (e la sonda s12 contava i segnali con
    `CT.BASE_EDGE_TRACK`, che non esiste: per questo "0 segnali"). Questa volta copiare TUTTO, perche' dopo la
    partita non sara' piu' disponibile.

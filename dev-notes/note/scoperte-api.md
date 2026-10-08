@@ -112,3 +112,18 @@ Verificate in gioco durante lo sviluppo. Dove c'e' scritto **CRASH** il gioco si
 - Veicoli: per bus/tram/carrozze scegliere solo modelli con posti passeggeri (nel 2300 il tram piu' recente,
   `f_tram_univ`, e' merci).
 - Le azioni nei file vanno numerate in sequenza (lastActionId + 1): un id saltato blocca le successive.
+
+## Build 40420 (08.10.2026)
+- `app.getAllUserdata/saveUserdata/loadUserdata` solo su cartelle del gioco: funzionano `mod_presets`, `biomes`,
+  `heightmaps`, `towns_industries`; falliscono `capocantiere` (anche con percorso assoluto), sottocartelle
+  (`mod_presets/x`), `save`, `screenshots`, `mods`, `keyframes`, `recordings`, `save_maps`, `staging_area`, `crash_dump`.
+  `app.getUserDataFolder()` = cartella `local\` dei dati utente.
+- `pairs(api.type.ComponentType)` non restituisce piu' i nomi (chiavi userdata): usare i nomi noti, es.
+  `CT.SIGNAL_LIST` (26), `CT.EDGE_OBJECT` (88), `CT.MODEL_INSTANCE_LIST` (57), `CT.BASE_EDGE` (5), `CT.BASE_NODE` (8),
+  `CT.CONSTRUCTION` (13), `CT.STATION` (58), `CT.NAME` (62), `CT.PLAYER_OWNED` (73), `CT.TRANSPORT_NETWORK` (51).
+  NON esistono: `CT.BASE_EDGE_TRACK`, `CT.SIGNAL`, `CT.WAYPOINT`.
+- `BASE_EDGE.objects` e' una tabella Lua `{ {entita', tipo} }` (tipo 2 = segnale, 0/1 = fermata stradale sx/dx):
+  `:size()`/`:at()` non esistono.
+- Segnale: `EDGE_OBJECT.param`, `SIGNAL_LIST.signals[1]` (`type`, `state`, `stateTime`, `edgePr = {EdgeId, bool}`;
+  bool true = verso node0->node1), modello in `MODEL_INSTANCE_LIST.fatInstances[1]` (`modelId`, `transf`);
+  `api.res.modelRep.getName(modelId)` funziona. Modelli dei segnali: `infrastructure/signal/signal_path_a|c.mdl`.
