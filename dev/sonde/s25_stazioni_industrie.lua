@@ -1,5 +1,5 @@
 -- SONDA 25 (sola lettura): le industrie di TF3 hanno una stazione integrata utilizzabile in una linea?
--- Per le prime 6 industrie (asciutte): stazioni dentro la costruzione dell'industria, stazioni/gruppi non del
+-- Per UN'industria per tipo (fino a 32 tipi, asciutte; accesso una sola volta alla partita di terzi): stazioni dentro la costruzione dell'industria, stazioni/gruppi non del
 -- giocatore entro 400 m, mezzi serviti (carriers), terminali, bacino; campi della costruzione e dell'industria.
 local CT = api.type.ComponentType
 local out = { industrie = {}, tipi = {} }
@@ -27,11 +27,23 @@ local function stationInfo(st)
 	end)
 	return r
 end
-local n = 0
+local n, typeSeen = 0, {}
+local function indType(ind)
+	local f = "?"
+	pcall(function()
+		local c = CC.comp(ind, CT.CONSTRUCTION)
+		if not c then c = CC.comp(api.engine.system.streetConnectorSystem.getConstructionEntityForSimBuilding(ind), CT.CONSTRUCTION) end
+		f = tostring(c.fileName)
+	end)
+	return f
+end
 for _, ind in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.INDUSTRY))) do
-	if n >= 6 then break end
+	if n >= 32 then break end
 	local p = CC.posOf(ind)
-	if p and not CC.onWater(p.x, p.y) then
+	local ty = indType(ind)
+	if ty == "?" then ty = "?" .. tostring(ind) end
+	if p and not typeSeen[ty] and not CC.onWater(p.x, p.y) then
+		typeSeen[ty] = true
 		n = n + 1
 		local r = { id = ind, name = CC.nameOf(ind), stations = {}, near = {} }
 		r.industry_fields = keys(CC.comp(ind, CT.INDUSTRY))

@@ -2,7 +2,7 @@
 -- salvataggio di terzi "My 1st Sandbox with mods Final"): stazioni ferroviarie merci e passeggeri (moduli e parametri),
 -- porti modulari, magazzini, depositi/officine di ogni tipo, impianti contro l'inquinamento, fermate stradali, e i
 -- SEGNALI sui binari (componenti e modelli). Nel primo studio (07.10) erano stati copiati solo aerei/eliporti/porto:
--- questa sonda recupera il resto. Per ogni tipo: i 2 esempi con meno moduli (i piu' semplici) e il piu' grande.
+-- questa sonda recupera il resto. Accesso UNA SOLA VOLTA: copiare tutto (disposizioni diverse e catalogo moduli).
 local CT = api.type.ComponentType
 local out = { schemi = {}, segnali = {}, conteggi = {} }
 
@@ -38,18 +38,28 @@ for _, con in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.CONSTRUCTION
 	end
 end
 
+-- Per ogni tipo: TUTTE le disposizioni diverse (firma = file + elenco ordinato dei nomi dei moduli, senza slot),
+-- fino a CC.PROBE_MAX_LAYOUTS (default 8) per tipo, dalle piu' semplici; piu' il catalogo dei moduli usati.
+out.catalogo_moduli = {}
 for cat, list in pairs(byCat) do
 	table.sort(list, function(a, b) return #a.mods < #b.mods end)
-	local pick = { list[1], list[2], list[#list] }
-	local seen = {}
 	out.schemi[cat] = {}
-	for _, it in ipairs(pick) do
-		if it and not seen[it.con] then
-			seen[it.con] = true
+	local cata, sigSeen, nLay = {}, {}, 0
+	for _, it in ipairs(list) do
+		local names = {}
+		for _, m in ipairs(it.mods) do
+			local n = m:match("=([^|]+)")
+			if n then names[#names + 1] = n; cata[n] = (cata[n] or 0) + 1 end
+		end
+		table.sort(names)
+		local sig = tostring(it.c.fileName) .. "#" .. table.concat(names, ",")
+		if not sigSeen[sig] and nLay < (CC.PROBE_MAX_LAYOUTS or 8) then
+			sigSeen[sig] = true
+			nLay = nLay + 1
 			local c = it.c
 			local r = { id = it.con, name = CC.nameOf(it.con), file = short(c.fileName), params = {}, nModules = #it.mods }
 			table.sort(it.mods)
-			r.modules = (#it.mods <= 120) and it.mods or { "troppi moduli: " .. #it.mods }
+			r.modules = (#it.mods <= 150) and it.mods or { "troppi moduli: " .. #it.mods }
 			pcall(function()
 				for k, v in pairs(c.params) do
 					if k ~= "modules" and type(v) ~= "table" and type(v) ~= "userdata" then r.params[tostring(k)] = v end
@@ -64,6 +74,10 @@ for cat, list in pairs(byCat) do
 			table.insert(out.schemi[cat], r)
 		end
 	end
+	local cl = {}
+	for n, k in pairs(cata) do cl[#cl + 1] = n .. " x" .. k end
+	table.sort(cl)
+	out.catalogo_moduli[cat] = cl
 end
 
 -- SEGNALI: binari con oggetti vicino alle stazioni ferroviarie (ricerca con l'octree: getEntitiesWithComponent(BASE_EDGE)
@@ -92,12 +106,12 @@ local function compsOf(ent)
 end
 local seenEdge, found = {}, 0
 for _, it in ipairs((byCat.rail_passengers or {})) do
-	if found >= 8 then break end
+	if found >= (CC.PROBE_MAX_SIGNAL_EDGES or 8) then break end
 	local p = CC.posOf(it.con)
 	if p then
 		pcall(function()
 			for _, e in ipairs(CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(p.x, p.y), 1500, CT.BASE_EDGE))) do
-				if found >= 8 then break end
+				if found >= (CC.PROBE_MAX_SIGNAL_EDGES or 8) then break end
 				if not seenEdge[e] then
 					seenEdge[e] = true
 					local be = CC.comp(e, CT.BASE_EDGE)
