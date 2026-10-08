@@ -40,6 +40,24 @@ Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 - Dopo una ricarica lastActionId torna al valore del salvataggio: i file azioni rimasti con id futuri verrebbero
   eseguiti. Neutralizzarli (stesso nome, `actions = {}`) prima di proseguire.
 
+## 2b. Architettura "Planner + Executor" e flotta ON-DEMAND (decisione di Nicolo', 08.10.2026)
+- Planner = Claude + middleware: capisce la richiesta e chiama solo strumenti di alto livello (id di citta',
+  industrie, stazioni, linee; mai coordinate). Executor = mod Lua: tutta la geometria (posti, binari, curve, ponti,
+  depositi) e i calcoli. GIA' cosi' (verificato: nessuno dei 29 strumenti riceve coordinate).
+- NESSUN ciclo automatico in background che cambia la flotta. Comportamento voluto:
+  1. CREAZIONE: quando crea una linea, la mod analizza il percorso (lunghezza/tempo di un giro, capienza dei
+     veicoli, domanda) e mette il numero giusto di veicoli iniziali, poi si ferma.
+  2. GESTIONE MANUALE: dopo la creazione la linea resta statica; il controllo e' al 100% del giocatore.
+  3. ON-DEMAND: adeguare i veicoli o rinnovare la flotta SOLO quando Nicolo' lo chiede esplicitamente
+     (es. "Adegua i veicoli della linea X"). Strumento previsto: `adjust_line_fleet(line_id, target_interval?,
+     renew_old?)`: la mod calcola e applica in una volta sola (aggiunge/toglie/sostituisce) e riferisce cosa ha fatto.
+- Dati necessari (DA VERIFICARE con la sonda `dev/sonde/s23_flotta.lua`, sola lettura): tempo di un giro o
+  intervallo della linea, eta' e vita utile dei veicoli, capienza, passeggeri/merci in attesa alle fermate.
+  NB: `api.engine.util.line.getFrequency` NON esiste; esistono getMaxFrequency, getLineCapacityUsages,
+  calcLineStationThroughput. Non scrivere l'analisi su funzioni non provate.
+- Per la sonda serve una linea con veicoli in movimento da qualche minuto di gioco: lanciarla dopo aver costruito
+  una linea (es. bus p2) e lasciato correre il gioco. `python3 dev/strumenti/step.py ID "" sonde/s23_flotta.lua`.
+
 ## 3. Ciclo di prova (dalla chat cloud)
 1. `python3 dev/strumenti/step.py ID "chiavi_da_leggere" prove/pX.lua[,sonde/sY.lua] [gruppo2 ...]`
    -> scrive `/mnt/user-data/outputs/cc/actions_ID_<nonce>.lua` (bozza + prove, ogni prova in pcall).
@@ -82,6 +100,8 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 2. Se tiene: p4 (treno merci industria -> industria, `build_cargo_rail_line`) e p14 (rete merci).
 3. Porto (p21), deposito navale; doppio binario con segnali (p13; prima piazzare un segnale a mano e leggerlo con s8).
 4. p3/p8 (aggiungi/sostituisci veicoli, allunga linea); far correre il gioco e verificare che i veicoli si muovano.
+4b. Flotta on-demand (sezione 2b): costruire una linea bus, far correre il gioco, sonda s23; poi numero iniziale
+    di veicoli calcolato alla creazione e strumento `adjust_line_fleet` (solo su richiesta, nessun ciclo automatico).
 5. Build v14 (`dev/build_script.py --bozza`), backup v13, installazione in mods, prova col middleware.
 6. Aggiornare questo file e `docs/prove-mappa-nuova.md` a ogni passo.
 
