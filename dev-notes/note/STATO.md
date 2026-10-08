@@ -119,8 +119,9 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   (v13 + patch `ensureDir`, backup `capocantiere.script.lua.bak_20261008_v13` nella cartella della mod) scrive in
   `...\3493540\local\mod_presets\` con prefisso `capocantiere_`: `capocantiere_state.lua`,
   `capocantiere_actions_<id>_<nonce>.lua`, `capocantiere_results_<id>_<nonce>.lua`. Dettagli:
-  `dev-notes/note/aggiornamento-40420.md`. DA FARE: portare la stessa modifica in `mod/` (senza ID Steam) e nel
-  middleware (`game_bridge.py`: cartella `mod_presets`, prefisso `capocantiere_`), test compresi.
+  `dev-notes/note/aggiornamento-40420.md`. FATTO (commit 49): `mod/` usa `DIR = "mod_presets"`, `FP = "capocantiere_"`;
+  middleware (`game_bridge.py`: cartella `mod_presets`, prefisso, dati del middleware in `capocantiere`), test,
+  `verifica_installazione.py`, `step.py` (scrive gia' `capocantiere_actions_...`).
 - Accessi concessi in questa chat: `capocantiere`, `crash_dump`, `mods\tfcapocantiere_1`, `mod_presets`, computer
   (Transport Fever 3, Steam, transportfever3.exe). Il gioco e' su E:\SteamLibrary, i dati utente restano su C:.
 - Studio della partita di terzi FATTO (punto 0): risultati in `dev-notes/schemi_terzi/` (README con il riassunto).

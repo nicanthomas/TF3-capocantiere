@@ -62,15 +62,16 @@ def main() -> int:
 
     # cartella di scambio
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from game_bridge import DEFAULT_DIR
+    from game_bridge import DEFAULT_DIR, prefix_for
     folder = os.environ.get("CAPOCANTIERE_DIR", DEFAULT_DIR)
     if not os.path.isdir(folder):
         report(ERR, f"cartella di scambio non trovata: {folder} (imposta CAPOCANTIERE_DIR)")
         return finish()
     report(OK, f"cartella di scambio: {folder}")
+    pre = prefix_for(folder)
 
     # state.lua
-    st = os.path.join(folder, "state.lua")
+    st = os.path.join(folder, pre + "state.lua")
     if not os.path.exists(st):
         report(WARN, "state.lua non c'e' ancora: apri una partita con la mod Capo Cantiere attiva")
     else:
@@ -93,9 +94,9 @@ def main() -> int:
             report(WARN, f"state.lua non leggibile adesso ({type(e).__name__}): riprova tra qualche secondo")
 
     # file azioni rimasti
-    stale = [f for f in os.listdir(folder) if re.fullmatch(r"actions_\d+(_[0-9a-f]+)?\.lua", f)]
+    stale = [f for f in os.listdir(folder) if re.fullmatch(re.escape(pre) + r"actions_\d+(_[0-9a-f]+)?\.lua", f)]
     if stale:
-        report(WARN, f"file azioni rimasti: {', '.join(sorted(stale))} - main.py li sposta in 'vecchi' all'avvio")
+        report(WARN, f"file azioni rimasti: {', '.join(sorted(stale))} - main.py li sposta in '" + pre + "vecchi' all'avvio")
     return finish()
 
 

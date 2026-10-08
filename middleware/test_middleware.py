@@ -22,6 +22,7 @@ from tools import TOOLS
 
 TOOL = {t["name"]: t for t in TOOLS}
 
+P = "capocantiere_"   # prefisso dei file nella cartella mod_presets (build 40420)
 STATE = {
     "lastActionId": 5, "year": 2300, "noCosts": True,
     "towns": [{"id": 101, "name": "Caprifoglio", "pos": {"x": 0, "y": 0, "z": 10}},
@@ -40,27 +41,30 @@ class FakeMod(threading.Thread):
 
     def run(self):
         while not self.stop:
-            st = lua_table.load_userdata(os.path.join(self.folder, "state.lua"))
+            st = lua_table.load_userdata(os.path.join(self.folder, P + "state.lua"))
             nxt = st["lastActionId"] + 1
             for fn in os.listdir(self.folder):
-                if fn.startswith(f"actions_{nxt}_"):
+                if fn.startswith(P + f"actions_{nxt}_"):
                     req = lua_table.load_userdata(os.path.join(self.folder, fn))
                     self.seen.append(req)
                     os.remove(os.path.join(self.folder, fn))
                     st["lastActionId"] = nxt
-                    lua_table.save_userdata(os.path.join(self.folder, "state.lua"), st)
+                    lua_table.save_userdata(os.path.join(self.folder, P + "state.lua"), st)
                     res = {"id": nxt, "nonce": req["nonce"], "results": [self.reply(a) for a in req["actions"]]}
-                    lua_table.save_userdata(os.path.join(self.folder, f"results_{nxt}_{req['nonce']}.lua"), res)
+                    lua_table.save_userdata(os.path.join(self.folder, P + f"results_{nxt}_{req['nonce']}.lua"), res)
             time.sleep(0.05)
 
 
 class Base(unittest.TestCase):
     def setUp(self):
-        self.dir = tempfile.mkdtemp()
-        lua_table.save_userdata(os.path.join(self.dir, "state.lua"), STATE)
+        self.root = tempfile.mkdtemp()
+        self.dir = os.path.join(self.root, "mod_presets")          # cartella di scambio con la mod
+        self.data = os.path.join(self.root, "capocantiere")        # dati del middleware (diario, registro)
+        os.makedirs(self.dir)
+        lua_table.save_userdata(os.path.join(self.dir, P + "state.lua"), STATE)
 
     def tearDown(self):
-        shutil.rmtree(self.dir, ignore_errors=True)
+        shutil.rmtree(self.root, ignore_errors=True)
 
 
 class TestLuaTable(unittest.TestCase):
@@ -138,7 +142,7 @@ class TestBridge(Base):
             self.assertEqual(mod.seen[0]["id"], 6)
             self.assertEqual(b.send([{"type": "ping"}], timeout=5)[0]["type"], "ping")
             self.assertEqual(mod.seen[1]["id"], 7)
-            self.assertFalse([f for f in os.listdir(self.dir) if f.startswith("results_")])
+            self.assertFalse([f for f in os.listdir(self.dir) if f.startswith(P + "results_")])
         finally:
             mod.stop = True
 
@@ -148,13 +152,13 @@ class TestBridge(Base):
             b.send([{"type": "ping"}], timeout=1)
 
     def test_archive(self):
-        for fn in ("actions_241_ab12.lua", "actions_242_cd34.lua", "results_9_ff.lua"):
+        for fn in (P + "actions_241_ab12.lua", P + "actions_242_cd34.lua", P + "results_9_ff.lua"):
             with open(os.path.join(self.dir, fn), "w") as f:
                 f.write("function data() return {} end")
         moved = GameBridge(self.dir).archive_stale_actions()
-        self.assertEqual(moved, ["actions_241_ab12.lua", "actions_242_cd34.lua"])
-        self.assertEqual(sorted(os.listdir(os.path.join(self.dir, "vecchi"))), moved)
-        self.assertTrue(os.path.exists(os.path.join(self.dir, "results_9_ff.lua")))
+        self.assertEqual(moved, [P + "actions_241_ab12.lua", P + "actions_242_cd34.lua"])
+        self.assertEqual(sorted(os.listdir(os.path.join(self.dir, P + "vecchi"))), moved)
+        self.assertTrue(os.path.exists(os.path.join(self.dir, P + "results_9_ff.lua")))
 
     def test_find(self):
         r = find_entities(STATE, "assalve")
@@ -226,7 +230,7 @@ class TestAskClaude(Base):
         r = msgs[2]["content"][0]
         self.assertIn("cancelled", r["content"])
         self.assertFalse(r["is_error"])
-        self.assertFalse([f for f in os.listdir(self.dir) if f.startswith("actions_")])
+        self.assertFalse([f for f in os.listdir(self.dir) if f.startswith(P + "actions_")])
 
 
 class TestJournal(Base):
@@ -247,7 +251,7 @@ class TestJournal(Base):
                 r = main.run_game_tool("build_bus_line", {"town_id": 101}, GameBridge(self.dir))
                 self.assertTrue(r["ok"])
                 self.assertNotIn("created", r)                       # a Claude non arriva l'elenco
-                entries = json.load(open(os.path.join(self.dir, "journal.json"), encoding="utf-8"))
+                entries = json.load(open(os.path.join(self.data, "journal.json"), encoding="utf-8"))
                 self.assertEqual(len(entries), 1)
                 self.assertEqual(entries[0]["created"]["vehicles"], [11, 12])
                 u = main.run_game_tool("undo_last_action", {}, GameBridge(self.dir))
@@ -293,7 +297,7 @@ class TestJournal(Base):
     def test_pause(self):
         import main
         st = dict(STATE, speed=0)
-        lua_table.save_userdata(os.path.join(self.dir, "state.lua"), st)
+        lua_table.save_userdata(os.path.join(self.dir, P + "state.lua"), st)
         with mock.patch("builtins.print"):
             r = main.run_game_tool("build_bus_line", {"town_id": 101}, GameBridge(self.dir))
         self.assertFalse(r["ok"])
@@ -440,7 +444,7 @@ class TestServices(Base):
         import json
         import main
         st = dict(STATE, date={"year": 2300, "month": 3})
-        lua_table.save_userdata(os.path.join(self.dir, "state.lua"), st)
+        lua_table.save_userdata(os.path.join(self.dir, P + "state.lua"), st)
 
         def reply(a):
             if a["type"] == "check_line":
@@ -453,14 +457,14 @@ class TestServices(Base):
             with mock.patch.object(main, "confirm", return_value=True), mock.patch("builtins.print"):
                 r = main.run_game_tool("build_rail_ring", {"town_ids": [101, 102, 103]}, GameBridge(self.dir))
                 self.assertTrue(r["ok"])
-                logs = os.listdir(os.path.join(self.dir, "log"))
+                logs = os.listdir(os.path.join(self.data, "log"))
                 self.assertEqual(len(logs), 1)
-                entries = json.load(open(os.path.join(self.dir, "collaudo.json"), encoding="utf-8"))
+                entries = json.load(open(os.path.join(self.data, "collaudo.json"), encoding="utf-8"))
                 self.assertEqual(sorted(e["line_id"] for e in entries), [41, 42])
                 self.assertEqual(main.run_due_checks(GameBridge(self.dir)), "")          # non ancora 2 mesi
-                st2 = lua_table.load_userdata(os.path.join(self.dir, "state.lua"))
+                st2 = lua_table.load_userdata(os.path.join(self.dir, P + "state.lua"))
                 st2["date"] = {"year": 2300, "month": 5}
-                lua_table.save_userdata(os.path.join(self.dir, "state.lua"), st2)
+                lua_table.save_userdata(os.path.join(self.dir, P + "state.lua"), st2)
                 note = main.run_due_checks(GameBridge(self.dir))
                 self.assertIn("[Collaudo automatico", note)
                 self.assertIn("1 veicoli fermi", note)

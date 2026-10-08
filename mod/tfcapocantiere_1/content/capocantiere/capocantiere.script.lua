@@ -2,7 +2,7 @@
 --
 -- Risultati del test di I/O (passo 2), verificati in gioco:
 --   * lato interfaccia (guiUpdate): app.saveUserdata / loadUserdata / getAllUserdata FUNZIONANO
---     e scrivono in <dati utente>/capocantiere/<nome>.lua
+--     e scrivono in <dati utente>/<cartella>/<nome>.lua (dalla 40420: mod_presets/capocantiere_<nome>.lua)
 --   * lato simulazione (update): app NON e' disponibile, api.gui non esiste
 --   * io, dofile, loadfile non esistono; os ha solo time/clock/date/getenv
 -- Quindi tutto lo scambio di file avviene nel lato interfaccia. Da li' si legge lo stato
@@ -11,7 +11,11 @@
 -- Il gioco ricrea spesso lo stato Lua degli script: i dati che devono durare stanno
 -- nello stato dello script (guiState:get()/set()), non in variabili locali.
 
-local DIR = "capocantiere"
+-- Cartella di scambio. Dalla build 40420 (08.10.2026) app.*Userdata accetta solo le cartelle del gioco
+-- (mod_presets, biomes, heightmaps, towns_industries): "capocantiere" da' "The directory you trying to access is
+-- not available or invalid". Si usa mod_presets con il prefisso "capocantiere_" su tutti i nomi dei file.
+local DIR = "mod_presets"
+local FP = "capocantiere_"
 local EXPORT_INTERVAL = 10      -- secondi tra due esportazioni di state.lua
 local STATE_VERSION = 1
 
@@ -275,7 +279,7 @@ local function exportState()
 	local t0 = os.clock()
 	local s = buildState()
 	s.lastActionId = CURRENT_G and CURRENT_G.lastActionId or 0
-	app.saveUserdata(DIR, "state", s)
+	app.saveUserdata(DIR, FP .. "state", s)
 	return s, os.clock() - t0
 end
 
@@ -380,7 +384,7 @@ end
 local function findActionFile(nextId)
 	local ok, list = pcall(app.getAllUserdata, DIR)
 	if not ok or type(list) ~= "table" then return nil end
-	local prefix = "actions_" .. nextId .. "_"
+	local prefix = FP .. "actions_" .. nextId .. "_"
 	for _, n in ipairs(list) do
 		if n:sub(1, #prefix) == prefix then return n end
 	end
@@ -393,7 +397,7 @@ local function runActions(g)
 	if not fname then return end
 	local ok, req = pcall(app.loadUserdata, DIR, fname)
 	if not ok or type(req) ~= "table" or req.id ~= nextId then return end
-	local nonce = tostring(req.nonce or fname:sub(#("actions_" .. nextId .. "_") + 1))
+	local nonce = tostring(req.nonce or fname:sub(#(FP .. "actions_" .. nextId .. "_") + 1))
 
 	L("eseguo richiesta azioni id " .. tostring(req.id))
 	local results = {}
@@ -431,7 +435,7 @@ local function runActions(g)
 	if waiting then
 		g.pending = { id = req.id, nonce = nonce, results = results, started = os.time() }
 	else
-		app.saveUserdata(DIR, "results_" .. req.id .. "_" .. nonce, { id = req.id, nonce = nonce, results = results, finishedAt = os.time() })
+		app.saveUserdata(DIR, FP .. "results_" .. req.id .. "_" .. nonce, { id = req.id, nonce = nonce, results = results, finishedAt = os.time() })
 	end
 	-- state.lua subito aggiornato: contiene il nuovo lastActionId e gli effetti delle azioni
 	CURRENT_G = g
@@ -468,7 +472,7 @@ local function guiTick(guiState)
 			end
 		end
 		if done then
-			app.saveUserdata(DIR, "results_" .. p.id .. "_" .. p.nonce, { id = p.id, nonce = p.nonce, results = p.results, finishedAt = now })
+			app.saveUserdata(DIR, FP .. "results_" .. p.id .. "_" .. p.nonce, { id = p.id, nonce = p.nonce, results = p.results, finishedAt = now })
 			g.pending = nil
 			pcall(exportState)
 		end
@@ -502,7 +506,7 @@ end
 
 -- ---------------------------------------------------------------- cattura costruzioni del giocatore (SOLO SVILUPPO)
 -- Quando il giocatore costruisce qualcosa con gli strumenti del gioco, salva una descrizione
--- della proposta in capocantiere/captured_<n>.lua: serve a imparare il formato corretto
+-- della proposta in mod_presets/capocantiere_captured_<n>.lua: serve a imparare il formato corretto
 -- (es. per le fermate su strada) da usare poi nelle azioni automatiche.
 
 local function v3(v)
@@ -607,7 +611,7 @@ local function captureEvent(src, id, name, param)
 		DEV.lastProposal = prop     -- solo sviluppo: riusabile da lua_eval finche' lo stato Lua vive
 	end)
 	DEV.captureCount = (DEV.captureCount or 0) + 1
-	local fn = "captured_" .. tostring(os.time()) .. "_" .. tostring(DEV.captureCount)
+	local fn = FP .. "captured_" .. tostring(os.time()) .. "_" .. tostring(DEV.captureCount)
 	pcall(app.saveUserdata, DIR, fn, rec)
 	L("catturata costruzione del giocatore: " .. idS .. " / " .. nameS .. " -> " .. fn)
 end
@@ -3180,7 +3184,7 @@ local M = {
 				if cap and cap.seq ~= g.savedCaptureSeq then
 					g.savedCaptureSeq = cap.seq
 					guiState:set(g)
-					app.saveUserdata(DIR, "captured_" .. tostring(os.time()) .. "_" .. tostring(cap.seq), cap)
+					app.saveUserdata(DIR, FP .. "captured_" .. tostring(os.time()) .. "_" .. tostring(cap.seq), cap)
 					L("catturata costruzione: " .. cap.id .. " / " .. cap.name)
 				end
 			end)

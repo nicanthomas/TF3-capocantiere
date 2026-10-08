@@ -1,10 +1,11 @@
 """
 Ponte file tra il middleware Python e la mod Lua "Capo Cantiere" in Transport Fever 3.
 
-Cartella di scambio: <dati utente TF3>/capocantiere
-  state.lua    scritto dalla mod ogni ~10 s  (citta', industrie, stazioni, linee, depositi)
-  actions_<N>_<nonce>.lua  scritto da qui     { id = N, nonce = "...", actions = { {type=...}, ... } }
-  results_<N>_<nonce>.lua  scritto dalla mod  { id = N, nonce = "...", results = { ... }, finishedAt = ... }
+Cartella di scambio: <dati utente TF3>/mod_presets, file con il prefisso "capocantiere_" (dalla build 40420 del
+gioco la mod puo' leggere/scrivere solo nelle cartelle del gioco; prima era <dati utente>/capocantiere senza prefisso)
+  capocantiere_state.lua    scritto dalla mod ogni ~10 s  (citta', industrie, stazioni, linee, depositi)
+  capocantiere_actions_<N>_<nonce>.lua  scritto da qui     { id = N, nonce = "...", actions = { {type=...}, ... } }
+  capocantiere_results_<N>_<nonce>.lua  scritto dalla mod  { id = N, nonce = "...", results = { ... }, finishedAt = ... }
 
 Gli id sono progressivi (1, 2, 3...); il nonce e' casuale. La mod cerca ogni ~1 s un file
 actions_<ultimo+1>_*, lo esegue, scrive results con lo stesso nome e cancella il file azioni.
@@ -27,9 +28,19 @@ import lua_table
 import glob as _glob
 
 STEAM_USERDATA_GLOBS = [
-    r"C:\Program Files (x86)\Steam\userdata\*\3493540\local\capocantiere",
-    r"C:\Program Files\Steam\userdata\*\3493540\local\capocantiere",
+    r"C:\Program Files (x86)\Steam\userdata\*\3493540\local\mod_presets",
+    r"C:\Program Files\Steam\userdata\*\3493540\local\mod_presets",
 ]
+FILE_PREFIX = "capocantiere_"
+
+
+def prefix_for(folder: str) -> str:
+    """Prefisso dei nomi file: "capocantiere_" in mod_presets (build 40420+), nessuno nella vecchia cartella
+    'capocantiere'. CAPOCANTIERE_PREFIX lo forza."""
+    env = os.environ.get("CAPOCANTIERE_PREFIX")
+    if env is not None:
+        return env
+    return "" if os.path.basename(os.path.normpath(folder)).lower() == "capocantiere" else FILE_PREFIX
 
 
 def find_default_dir() -> str:
@@ -54,12 +65,20 @@ class GameBridge:
             raise FileNotFoundError(
                 f"Cartella di scambio non trovata: {self.folder}\n"
                 "Imposta la variabile d'ambiente CAPOCANTIERE_DIR con il percorso giusto.")
+        self.prefix = prefix_for(self.folder)
+        # dati del middleware (registro, diario, collaudi): restano nella cartella 'capocantiere' accanto, che il
+        # middleware (Python) puo' usare liberamente; la mod non la vede piu' dalla 40420
+        if self.prefix:
+            self.data_folder = os.path.join(os.path.dirname(os.path.normpath(self.folder)), "capocantiere")
+            os.makedirs(self.data_folder, exist_ok=True)
+        else:
+            self.data_folder = self.folder
         self._state: dict | None = None
         self._state_mtime = 0.0
 
     # ------------------------------------------------------------------ percorsi
     def _path(self, name: str) -> str:
-        return os.path.join(self.folder, name + ".lua")
+        return os.path.join(self.folder, self.prefix + name + ".lua")
 
     # ------------------------------------------------------------------ stato
     def state(self, refresh: bool = True) -> dict:
@@ -131,7 +150,7 @@ class GameBridge:
     def _cleanup(self, upto: int) -> None:
         """Cancella i file results gia' letti."""
         for fn in os.listdir(self.folder):
-            m = re.fullmatch(r"results_(\d+)(_[0-9a-f]+)?\.lua", fn)
+            m = re.fullmatch(re.escape(self.prefix) + r"results_(\d+)(_[0-9a-f]+)?\.lua", fn)
             if m and int(m.group(1)) <= upto:
                 try:
                     os.remove(os.path.join(self.folder, fn))
@@ -143,9 +162,9 @@ class GameBridge:
         mentre aspetta una risposta). Se restassero, la mod potrebbe eseguirli dopo il caricamento di un
         salvataggio. Li sposto nella sottocartella 'vecchi' (non li cancello)."""
         moved = []
-        old_dir = os.path.join(self.folder, "vecchi")
+        old_dir = os.path.join(self.folder, self.prefix + "vecchi")
         for fn in sorted(os.listdir(self.folder)):
-            if re.fullmatch(r"actions_\d+(_[0-9a-f]+)?\.lua", fn):
+            if re.fullmatch(re.escape(self.prefix) + r"actions_\d+(_[0-9a-f]+)?\.lua", fn):
                 os.makedirs(old_dir, exist_ok=True)
                 dst = os.path.join(old_dir, fn)
                 if os.path.exists(dst):

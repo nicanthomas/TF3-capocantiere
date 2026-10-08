@@ -22,7 +22,7 @@ Comandi speciali nella console:
     /reset    dimentica la conversazione
     /esci     esce
 
-Registro delle azioni: <cartella capocantiere>/log/azioni_AAAA-MM.jsonl
+Registro delle azioni: <dati utente>/capocantiere/log/azioni_AAAA-MM.jsonl
 """
 
 from __future__ import annotations
@@ -143,7 +143,7 @@ def confirm(text: str) -> bool:
 def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
     if bridge.state().get("speed") == 0:                 # la mod v14 esporta la velocita' del gioco
         return {"ok": False, "error": "La partita e' in pausa: chiedi all'utente di riprendere il gioco e riprova."}
-    journal = Journal(bridge.folder)
+    journal = Journal(bridge.data_folder)
     entry = None
     if name == "undo_last_action":
         entry = journal.last_undoable()
@@ -198,7 +198,7 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
 
 def _log(bridge: GameBridge, name: str, args: dict, result: dict, seconds: float) -> None:
     try:
-        log_action(bridge.folder, name, args, result, seconds)
+        log_action(bridge.data_folder, name, args, result, seconds)
     except OSError as e:                                 # il registro non deve fermare il lavoro
         print(f"  (registro azioni non scritto: {e})")
 
@@ -210,7 +210,7 @@ def schedule_checks(bridge: GameBridge, name: str, result: dict) -> None:
         ids.append(result["line_id"])
     if ids and result.get("ok") is not False:
         try:
-            Collaudo(bridge.folder).add(ids, bridge.state(), action=name)
+            Collaudo(bridge.data_folder).add(ids, bridge.state(), action=name)
         except (OSError, RuntimeError) as e:
             print(f"  [avviso] collaudo a distanza non programmato per {ids}: {e}")
 
@@ -218,7 +218,7 @@ def schedule_checks(bridge: GameBridge, name: str, result: dict) -> None:
 def run_due_checks(bridge: GameBridge) -> str:
     """Collaudi scaduti: check_line sul gioco per ogni linea; ritorna il testo da aggiungere al messaggio
     dell'utente (vuoto se non c'e' niente). Gli errori di comunicazione rimandano il controllo al turno dopo."""
-    col = Collaudo(bridge.folder)
+    col = Collaudo(bridge.data_folder)
     try:
         state = bridge.state()
         due = col.due(state)[:MAX_AUTO_CHECKS]
@@ -316,7 +316,7 @@ def main() -> None:
     if moved:
         print(f"Spostati in 'vecchi' {len(moved)} file azioni rimasti da sessioni precedenti: {', '.join(moved)}")
     try:
-        for msg in check_versions(bridge.state(), bridge.folder):
+        for msg in check_versions(bridge.state(), bridge.data_folder):
             print("Attenzione: " + msg)
     except (OSError, RuntimeError) as e:
         print(f"Attenzione: controllo delle versioni non riuscito: {e}")

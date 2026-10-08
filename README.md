@@ -6,8 +6,8 @@ e Claude li traduce in costruzioni nel gioco.
 ```
 Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
                     │
-                    ▼  file actions_<id>_<nonce>.lua / results_<id>_<nonce>.lua / state.lua
-          cartella <dati utente TF3>/capocantiere
+                    ▼  file capocantiere_actions_<id>_<nonce>.lua / capocantiere_results_... / capocantiere_state.lua
+          cartella <dati utente TF3>/mod_presets
                     ▲
                     │
           mod Lua "Capo Cantiere" in TF3 (GUI legge i file, lato simulazione costruisce)
@@ -63,7 +63,9 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 
 ## Note
 
-- La mod scrive solo nella cartella `capocantiere` dei dati utente.
+- La mod scrive solo file `capocantiere_*.lua` nella cartella `mod_presets` dei dati utente: dalla build 40420
+  (08.10.2026) il gioco permette agli script solo le proprie cartelle. Il middleware tiene registro, diario e
+  collaudi nella cartella `capocantiere` dei dati utente.
 - La mod nel repo ha `DEV_MODE = false`: `lua_eval` / `sim_eval` (codice arbitrario, solo per le prove) sono spenti.
   Per lo sviluppo: `python dev-notes/build_script.py --dev` crea una copia con `DEV_MODE = true`;
   `--release` crea la versione da distribuire (`dist/`, zip).
