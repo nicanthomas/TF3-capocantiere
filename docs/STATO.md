@@ -18,6 +18,16 @@ Dettagli: `docs/prove-mappa-nuova.md` (cronologia prove), `docs/studio-salvatagg
   prove rischiose da sole; screenshot solo se serve (crash); se un servizio non risponde fermarsi e scriverlo invece
   di aspettare; non rileggere file grandi interi.
 
+## 1b. Avvio della chat: chiedere SUBITO tutte le autorizzazioni (una volta sola, all'inizio)
+Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e poi lasciare lavorare:
+1. Controllo del computer (`request_access`): Transport Fever 3 e Steam (servono per la ripresa dopo un crash).
+2. Cartella `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\capocantiere` (lettura/scrittura) e,
+   se non e' gia' dentro, `...\3493540\local\crash_dump` (sola lettura del log dei crash).
+3. Verificare con una chiamata leggera che il GitHub di Composio risponda (es. `GITHUB_GET_A_BRANCH` su main).
+4. Clonare il repo (`git clone https://github.com/nicanthomas/TF3-capocantiere.git`, pubblico) e lanciare
+   `cd dev/bozza && python3 run_mock.py` (deve dare 65 ok).
+Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
+
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
 - Bozza delle funzioni nuove in `dev/bozza/b1..b9` (provata in gioco con `sim_eval`, DEV_MODE). Diventera' v14 con
