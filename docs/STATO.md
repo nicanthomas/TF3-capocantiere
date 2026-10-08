@@ -101,12 +101,28 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 ## 7. Da fare (in ordine)
 1. **p23**: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
    `python3 dev/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
+1b. **Stazioni integrate nei siti industriali (novita' TF3)**: sonda (sola lettura) per capire se le industrie hanno
+    gia' una stazione propria utilizzabile in una linea (gruppo/stazione/terminali, mezzi serviti, bacino). Se si':
+    le linee merci usano quelle invece di costruire scali (meno costruzioni, meno rischio di crash).
 2. Se tiene: p4 (treno merci industria -> industria, `build_cargo_rail_line`) e p14 (rete merci).
 3. Porto (p21), deposito navale; doppio binario con segnali (p13; prima piazzare un segnale a mano e leggerlo con s8).
 4. p3/p8 (aggiungi/sostituisci veicoli, allunga linea); far correre il gioco e verificare che i veicoli si muovano.
 4b. Flotta on-demand (sezione 2b): costruire una linea bus, far correre il gioco, sonda s23; poi numero iniziale
     di veicoli calcolato alla creazione e strumento `adjust_line_fleet` (solo su richiesta, nessun ciclo automatico).
+4c. Puntualita' delle consegne (novita' TF3): allargare la sonda s23 ai dati di ritardo/puntualita' e usarli in
+    "adegua i veicoli della linea X" (solo su richiesta).
 5. Build v14 (`dev/build_script.py --bozza`), backup v13, installazione in mods, prova col middleware.
+5b. Novita' TF3 da aggiungere dopo la v14 (ognuna: prima sonda o copia di una costruzione fatta a mano):
+    - potenziatori di produzione (lavoratori, fertilizzanti...): leggere quali beni potenziano quale industria;
+      Claude propone e, su richiesta, costruisce la catena (e' una linea merci normale);
+    - magazzini/stoccaggio vicino a porti e scali (schema `warehouses/warehouse.con`, visto nel salvataggio di terzi);
+    - scelta dei veicoli anche per velocita' di carico, comfort, rumore, inquinamento (campi dei modelli da trovare);
+    - tram merci e metropolitana leggera (copiare stazioni/binari fatti a mano);
+    - moduli di comfort nelle stazioni passeggeri (copiare da una stazione fatta a mano);
+    - barriere antirumore/alberi su richiesta (priorita' bassa);
+    - rapporto "stato delle citta'" su richiesta: bisogni soddisfatti e no, aree comunali, industrie nuove
+      (solo lettura e proposte, nessuna azione automatica).
+    Non servono alla mod: traffico, semafori/attraversamenti, difficolta'/modalita'/campagna/editor.
 6. Aggiornare questo file e `docs/prove-mappa-nuova.md` a ogni passo.
 
 ## 8. Cause di crash note (non ripetere)
