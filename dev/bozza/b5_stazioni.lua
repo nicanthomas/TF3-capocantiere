@@ -72,9 +72,13 @@ function CC.planStation(p)
 	local lines = math.max(1, p.lines or 1)
 	local tracks, notes = 1, {}
 	if p.kind == "cargo" then
-		local types = math.max(1, p.cargo_types or 1)
-		tracks = math.max(types, math.min(trains, types + 1))
-		if trains > tracks then notes[#notes + 1] = "piu' treni che binari: gli altri aspettano fuori stazione (serve un binario d'attesa)" end
+		-- VERIFICATO solo lo scalo a 1 binario da 160 m (copiato da uno fatto a mano): i treni merci restano entro 150 m
+		-- e gli altri treni aspettano fuori stazione (binario d'attesa). Merci diverse: vagoni misti sullo stesso binario.
+		tracks = 1
+		segments = 4
+		if trains > 1 then notes[#notes + 1] = "scalo a 1 binario: gli altri treni aspettano fuori stazione (serve un binario d'attesa)" end
+		if (p.cargo_types or 1) > 1 then notes[#notes + 1] = "merci diverse sullo stesso binario (scalo universale)" end
+		if trainLen > 150 then notes[#notes + 1] = "treno accorciato a 150 m (scalo da 160 m)" end
 	elseif p.double then
 		tracks = math.max(2, 2 * math.ceil(lines / 2))
 		if trains > 2 * tracks then tracks = tracks + 2 end
@@ -156,22 +160,28 @@ function CC.railStationModulesN(e, layout, segments, kind)
 	local T = "::/trainstation___/infrastructure/track/" .. tr .. "/" .. tr .. (e.catenary and "_catenary" or "") .. ".street_template"
 	local era = "_era_" .. e.era
 	local cargo = kind == "cargo"
-	-- VERIFICATO (3 crash del 07.10.2026): una stazione con soli marciapiedi merci e binari (senza edificio merci) genera
-	-- tratti pedonali/merci doppi sotto i marciapiedi ("Duplicate edges found", quota -6 m) e il gioco va in crash appena
-	-- viene costruita. Finche' lo schema non e' copiato da uno scalo fatto a mano (sonda s6 -> CC.CARGO_STATION_TEMPLATE
-	-- o CC.CARGO_MODULES_OK = true dopo la prova) gli scali merci ferroviari NON si costruiscono.
-	if cargo and not CC.CARGO_MODULES_OK then
-		return nil, "scalo merci ferroviario non ancora verificato: va copiato da uno costruito a mano (sonda s6)"
-	end
-	local plat = cargo and CC.cargoPlatformModule(e) or (M .. "platform_passenger" .. era .. ".module")
-	if not plat then return nil, "modulo marciapiede merci non trovato (sonda s3 o s6)" end
-	local mods = {}
+	-- VERIFICATO (4 crash del 07.10.2026): il marciapiede merci e' largo DUE colonne e usa gli slot 64xxxxx (non 74xxxxx).
+	-- Messo come un marciapiede passeggeri (74xxxxx, binario nella colonna accanto) si sovrappone al binario e genera
+	-- tratti doppi sotto i marciapiedi ("Duplicate edges found", quota -6 m): il gioco va in crash.
+	-- Schema copiato da 3 scali costruiti a mano (sonda s22): 1 binario, 160 m (length = 3), specialization = 1:
+	--   3701980 main_building_1_cargo, 64000xx marciapiede merci (colonna 0), 84020xx binario (colonna 2), xx = -10..20.
+	-- Solo questo schema e' verificato: altre lunghezze o piu' binari vanno prima copiati da uno scalo fatto a mano.
 	if cargo then
-		-- DA VERIFICARE (prova p23): edificio merci e scale come nella stazione passeggeri (moduli trovati con la sonda s3:
-		-- main_building_1/2/3_cargo, side_building_*_cargo, stairs). Senza edificio il gioco va in crash.
-		mods[3400020] = M .. (CC.CARGO_BUILDING or "main_building_1_cargo.module")
-		mods[10800000] = M .. (CC.CARGO_STAIRS or "stairs.module")
-	else
+		if layout ~= "PT" or segments ~= 4 then
+			return nil, "scalo merci: verificato solo con 1 binario e 160 m (chiesti " .. CC.layoutTracks(layout) .. " binari, " .. (segments * CC.STATION_SEG_LEN) .. " m)"
+		end
+		local platC = CC.cargoPlatformModule(e)
+		if not platC then return nil, "modulo marciapiede merci non trovato" end
+		local mods = { [3701980] = { name = M .. "main_building_1_cargo.module", variant = 0 } }
+		for _, o in ipairs(CC.moduleOffsets(4)) do
+			mods[6400000 + o] = { name = platC, variant = 0 }
+			mods[8402000 + o] = { name = T, variant = 0 }
+		end
+		return mods, nil, { specialization = 1 }
+	end
+	local plat = M .. "platform_passenger" .. era .. ".module"
+	local mods = {}
+	do
 		mods[3400020] = M .. "main_building_1" .. era .. ".module"
 		if segments >= 4 then
 			mods[3400005] = M .. "side_building_1" .. era .. ".module"
@@ -186,7 +196,7 @@ function CC.railStationModulesN(e, layout, segments, kind)
 				mods[8400000 + c * 1000 + o] = T
 			else
 				mods[7400000 + c * 1000 + o] = plat
-				if not cargo then mods[10400000 + c * 1000 + o] = M .. "platform_passenger_roof" .. era .. ".module" end
+				mods[10400000 + c * 1000 + o] = M .. "platform_passenger_roof" .. era .. ".module"
 			end
 		end
 	end
@@ -244,13 +254,14 @@ function CC.buildRailStationN(cx, cy, dx, dy, opts)
 	local segments = opts.segments or 4
 	local nT = CC.layoutTracks(layout)
 	local merge = opts.merge or { f = true, b = true }
-	local mods, merr = CC.railStationModulesN(nil, layout, segments, opts.kind)
+	local mods, merr, extra = CC.railStationModulesN(nil, layout, segments, opts.kind)
 	if not mods then return false, { error = merr } end
 	local z = opts.z or CC.heightAt(cx, cy) or 0
 	local prop = api.type.SimpleProposal.new()
 	local ce = api.type.SimpleProposal.ConstructionEntity.new()
 	ce.fileName = "::/stations/rail/modular_station/modular_station.con"
 	ce.params = { year = CC.year(), seed = 0, modules = mods, tracks = nT, length = CC.stationLengthParam(segments) }
+	for k, v in pairs(extra or {}) do ce.params[k] = v end
 	ce.transf = api.type.Mat4f.new(
 		api.type.Vec4f.new(dy, -dx, 0, 0), api.type.Vec4f.new(dx, dy, 0, 0),
 		api.type.Vec4f.new(0, 0, 1, 0), api.type.Vec4f.new(cx, cy, z, 1))

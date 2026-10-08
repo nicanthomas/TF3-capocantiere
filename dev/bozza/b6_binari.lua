@@ -95,6 +95,7 @@ function CC.leadTrack(E, len, lat, side)
 	local dx, dy = E.dx, E.dy
 	local nx, ny = -dy * (side or 1), dx * (side or 1)
 	local ex, ey = E.x + dx * len + nx * lat, E.y + dy * len + ny * lat
+	if not CC.inMap(ex, ey, 150) then return false, { error = "binario d'accesso fuori dai confini della mappa" } end
 	local P0, P1 = api.type.Vec3f.new(E.x, E.y, E.z), api.type.Vec3f.new(ex, ey, E.z)
 	local d = math.sqrt((ex - E.x) ^ 2 + (ey - E.y) ^ 2)
 	local T = api.type.Vec3f.new(dx * d, dy * d, 0)

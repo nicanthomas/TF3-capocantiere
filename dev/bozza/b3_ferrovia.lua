@@ -30,7 +30,7 @@ function CC.railSiteCandidates(center, dx, dy, neighbors, pass, Rs)
 					if not CC.pathClear(ex, ey, mx, my, 10) then exitsOk = false end
 				end
 			end
-			if flatOk and exitsOk and not CC.onWater(cx, cy) and CC.railClearance(cx, cy, dx, dy, 100, beyond) then
+			if flatOk and exitsOk and CC.inMap(cx, cy, 400) and not CC.onWater(cx, cy) and CC.railClearance(cx, cy, dx, dy, 100, beyond) then
 				out[#out + 1] = { x = cx, y = cy, R = R, ang = ang }
 			end
 		end
@@ -165,6 +165,7 @@ end
 -- Area libera da strade, binari e costruzioni entro r metri da (x, y)?
 function CC.areaClear(x, y, r)
 	local CT = api.type.ComponentType
+	if not CC.inMap(x, y, r + 50) then return false end
 	local clear = true
 	pcall(function()
 		if #CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(x, y), r, CT.BASE_EDGE)) > 0 then clear = false end
@@ -296,74 +297,27 @@ function CC.finishRailLink(stations, used, log, built, loco, opts)
 end
 
 -- ---------------------------------------------------------------- stazione merci
--- Moduli per una stazione merci a 2 binari. Prima scelta: schema copiato da una stazione merci costruita a mano
--- (CC.CARGO_STATION_TEMPLATE, dalla sonda s6); altrimenti cerco i moduli "platform_cargo" dell'epoca.
--- DA VERIFICARE: nomi dei moduli merci e se serve un edificio.
+-- Scalo merci: schema verificato copiato da uno costruito a mano (1 binario, 160 m: vedi CC.railStationModulesN, b5).
+-- Ritorna il costruttore da passare a CC.placeRailStation.
+function CC.cargoStationBuilder(name)
+	return function(x, y, ddx, ddy)
+		return CC.buildRailStationN(x, y, ddx, ddy, { layout = "PT", segments = 4, kind = "cargo", name = name })
+	end
+end
 function CC.cargoStationModules(e)
-	e = e or CC.railEra()
-	if CC.CARGO_STATION_TEMPLATE then return CC.CARGO_STATION_TEMPLATE end
-	-- VERIFICATO: questa disposizione (solo marciapiedi merci + binari) fa crashare il gioco (vedi CC.railStationModulesN)
-	if not CC.CARGO_MODULES_OK then
-		return nil, "scalo merci ferroviario non ancora verificato: va copiato da uno costruito a mano (sonda s6)"
-	end
-	local all = {}
-	pcall(function() for _, n in ipairs(CC.each(api.res.moduleRep.getAll())) do all[tostring(n)] = true end end)
-	local M = "::/stations/rail/modular_station/"
-	local era = "_era_" .. e.era
-	local plat
-	for _, cand in ipairs({ M .. "platform_cargo" .. era .. ".module", M .. "platform_cargo.module", M .. "cargo_platform" .. era .. ".module" }) do
-		if all[cand] then plat = cand; break end
-	end
-	if not plat then
-		for n in pairs(all) do
-			if n:find("modular_station", 1, true) and n:find("cargo", 1, true) and n:find("platform", 1, true) then plat = n; break end
-		end
-	end
-	if not plat then return nil, "modulo marciapiede merci non trovato (eseguire la sonda s3)" end
-	local T = "::/trainstation___/infrastructure/track/" .. e.track .. "/" .. e.track .. (e.catenary and "_catenary" or "") .. ".street_template"
-	local mods = {}
-	for _, o in ipairs({ -10, 0, 10, 20 }) do
-		for _, c in ipairs({ 1, 2 }) do mods[8400000 + c * 1000 + o] = T end
-		for _, c in ipairs({ 0, 3 }) do mods[7400000 + c * 1000 + o] = plat end
-	end
-	local out = {}
-	for k, v in pairs(mods) do out[k] = { name = v, variant = 0 } end
-	return out
+	return CC.railStationModulesN(e, "PT", 4, "cargo")
 end
+CC.CARGO_MAX_TRAIN_LEN = 150   -- scalo da 160 m
 
--- Treno merci: locomotiva + n carri per la merce data.
-function CC.buyCargoTrain(depot, line, cargo, nCars, loco)
+-- Treno merci (locomotiva + carri per la merce) entro la lunghezza dello scalo, assegnato alla linea.
+function CC.buyCargoTrain(depot, line, cargo, nCars, loco, stopIndex)
 	loco = loco or CC.pickLocomotive(CC.railEra().catenary)
-	local car = CC.pickModelForCargo("waggon", cargo)
 	if not loco then return false, "nessuna locomotiva disponibile" end
-	if not car then return false, "nessun carro per " .. CC.cargoName(cargo) end
-	local models = { loco.id }
-	for _ = 1, nCars or 4 do models[#models + 1] = car.id end
-	local ok, veh, warn = CC.buyComposition(depot, models, line, 0)
-	if not ok then return false, veh end
-	return true, { vehicle = veh, loco = loco.name, car = car.name, warning = warn }
-end
-
--- Merce che va da ind a target (industria che la usa o citta' che la accetta). Ritorna cargo o nil, errore.
-function CC.cargoFor(ind, target)
-	local CT = api.type.ComponentType
-	local _, outs = CC.industryCargo(ind)
-	if #outs == 0 then return nil, "l'industria non produce merci" end
-	if CC.comp(target, CT.INDUSTRY) then
-		local ins = CC.industryCargo(target)
-		for _, o in ipairs(outs) do for _, i in ipairs(ins) do if o == i then return o end end end
-		return nil, "la destinazione non usa le merci prodotte da questa industria"
-	elseif CC.comp(target, CT.TOWN) then
-		local accepted = {}
-		pcall(function()
-			for _, list in pairs(api.engine.util.town.getLandUse2CargoTypes()) do
-				for _, id in ipairs(CC.each(list)) do accepted[id] = true end
-			end
-		end)
-		for _, o in ipairs(outs) do if accepted[o] then return o end end
-		return nil, "le citta' non accettano le merci di questa industria"
-	end
-	return nil, "destinazione non valida"
+	local models, miss = CC.trainModels(loco, nCars or 4, { cargo }, CC.CARGO_MAX_TRAIN_LEN)
+	if #miss > 0 then return false, "nessun carro per: " .. table.concat(miss, ", ") end
+	local ok, veh, warn = CC.buyComposition(depot, models, line, stopIndex or 0)
+	if not ok then return false, tostring(veh) end
+	return true, { vehicle = veh, cars = #models - 1, warning = warn }
 end
 
 -- ---------------------------------------------------------------- linea ferroviaria merci
@@ -377,13 +331,15 @@ local function buildCargoRail(a, built, builtEdges)
 	if not cargo then return { ok = false, error = err } end
 	local mods, merr = CC.cargoStationModules()
 	if not mods then return { ok = false, error = merr } end
+	local n1 = (CC.nameOf(ind) or "Industria") .. " scalo merci"
+	local n2 = (CC.nameOf(target) or "Arrivo") .. " scalo merci"
 	local P1, P2 = CC.posOf(ind), CC.posOf(target)
 	if not P1 or not P2 then return { ok = false, error = "posizione di partenza o arrivo non trovata" } end
 	local dx, dy = unit(P2.x - P1.x, P2.y - P1.y)
 	local log, stations = {}, {}
 	-- partenza: piu' vicina possibile all'industria, e l'industria deve essere nel bacino
-	local s1, why1 = CC.placeRailStation(P1, dx, dy, { P2 }, (CC.nameOf(ind) or "Industria") .. " scalo merci", {
-		modules = mods, Rs = { 120, 180, 250, 350, 500 }, maxTries = 10,
+	local s1, why1 = CC.placeRailStation(P1, dx, dy, { P2 }, n1, {
+		builder = CC.cargoStationBuilder(n1), Rs = { 120, 180, 250, 350, 500 }, maxTries = 10,
 		score = function(x, y) return -math.sqrt((x - P1.x) ^ 2 + (y - P1.y) ^ 2) end,
 		accept = function(info)
 			if CC.stationCatches(info.station, ind) then return true end
@@ -396,8 +352,8 @@ local function buildCargoRail(a, built, builtEdges)
 	stations[1] = s1
 	-- arrivo
 	local isTown = CC.comp(target, CT.TOWN) ~= nil
-	local s2, why2 = CC.placeRailStation(P2, -dx, -dy, { P1 }, (CC.nameOf(target) or "Arrivo") .. " scalo merci", {
-		modules = mods, Rs = isTown and { 250, 350, 500, 650 } or { 120, 180, 250, 350, 500 }, maxTries = 10,
+	local s2, why2 = CC.placeRailStation(P2, -dx, -dy, { P1 }, n2, {
+		builder = CC.cargoStationBuilder(n2), Rs = isTown and { 250, 350, 500, 650 } or { 120, 180, 250, 350, 500 }, maxTries = 10,
 		score = isTown and function(x, y) return CC.townBuildingsNear(x, y, 300) end
 			or function(x, y) return -math.sqrt((x - P2.x) ^ 2 + (y - P2.y) ^ 2) end,
 		accept = function(info)
@@ -418,8 +374,10 @@ local function buildCargoRail(a, built, builtEdges)
 	local okLine, li = CC.createLine(a.name or (CC.cargoName(cargo) .. " in treno: " .. (CC.nameOf(ind) or "") .. " - " .. (CC.nameOf(target) or "")), { s1.group, s2.group })
 	if not okLine then return { ok = false, error = li.error, log = log } end
 	local trains, errs = {}, {}
-	for _ = 1, math.max(1, math.min(2, a.num_trains or 1)) do
-		local okT, T = CC.buyCargoTrain(link.depot, li.line, cargo, math.max(1, math.min(10, a.num_cars or 4)), link.loco)
+	-- binario unico e scali a 1 binario: un solo treno (due si bloccherebbero); per piu' treni build_cargo_rail_network
+	local nT = 1
+	for k = 1, nT do
+		local okT, T = CC.buyCargoTrain(link.depot, li.line, cargo, math.max(1, math.min(10, a.num_cars or 4)), link.loco, CC.staggerStop(k, nT, 2))
 		if okT then trains[#trains + 1] = T.vehicle else errs[#errs + 1] = T end
 	end
 	return { ok = #trains > 0 and #errs == 0, line_id = li.line, stations = { s1.group, s2.group }, depot_id = link.depot,

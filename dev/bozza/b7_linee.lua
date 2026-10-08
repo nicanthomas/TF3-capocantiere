@@ -300,6 +300,7 @@ function CC.branchFromTrack(e, sv, side, L, lat)
 	-- fine della diramazione: avanti L e di lato lat m (default 12), con uscita parallela al binario
 	lat = lat or 12
 	local bx, by = qx + ux * L + nx * lat, qy + uy * L + ny * lat
+	if CC.inMap and not CC.inMap(bx, by, 150) then return false, { error = "diramazione fuori dai confini della mappa" } end
 	local function seg(id, n0, a0, ta, n1, a1, tb)
 		local sg = api.type.SegmentAndEntity.new()
 		sg.entity = id; sg.type = 1

@@ -40,6 +40,7 @@ local function unit2(x, y) local l = math.sqrt(x * x + y * y); if l < 1e-6 then 
 -- groups, depots } o false, errore. Passa dalla verifica a secco (CC.buildCmd).
 function CC.placeTemplate(tpl, x, y, dx, dy, name)
 	local CT = api.type.ComponentType
+	if not CC.inMap(x, y, (tpl.half or 100) + 100) then return false, "fuori dai confini della mappa" end
 	local z = CC.heightAt(x, y) or 0
 	local prop = api.type.SimpleProposal.new()
 	local ce = api.type.SimpleProposal.ConstructionEntity.new()
@@ -138,7 +139,7 @@ local function airSites(center, tpl, Rs)
 			local x, y = center.x + math.cos(r) * R, center.y + math.sin(r) * R
 			for _, d in ipairs({ { 1, 0 }, { 0, 1 }, { 0.7071, 0.7071 }, { 0.7071, -0.7071 } }) do
 				local dx, dy = d[1], d[2]
-				local h0 = CC.heightAt(x, y)
+				local h0 = CC.inMap(x, y, half + 150) and CC.heightAt(x, y) or nil
 				local h1 = CC.heightAt(x + dx * half, y + dy * half)
 				local h2 = CC.heightAt(x - dx * half, y - dy * half)
 				local h3 = CC.heightAt(x + dy * half * 0.5, y - dx * half * 0.5)
@@ -167,6 +168,7 @@ local function shoreSites(center, maxR)
 		local lastLand
 		for d = 0, maxR or 3000, 25 do
 			local x, y = center.x + dx * d, center.y + dy * d
+			if not CC.inMap(x, y, 200) then break end
 			if CC.onWater(x, y) then
 				if lastLand then out[#out + 1] = { x = lastLand[1], y = lastLand[2], dx = dx, dy = dy, R = d } end
 				break

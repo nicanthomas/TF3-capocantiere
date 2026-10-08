@@ -67,3 +67,21 @@ Lezioni:
   dove l'area del deposito e' libera) e la ricerca su tutte le stazioni. Risultato: deposito costruito a Calliano.
 - p25: linee nei due sensi sulle 3 stazioni dell'anello (create_line_from_stations, pattern ring): 2 linee, 1 treno
   ciascuna, collaudo ok.
+
+## Settima serie: confini della mappa e scalo merci (causa vera)
+- Confini (sonde s20, s21): `terrain.getBoundingBox()` da' un Box2 {min, max} (qui -8192..8192), `isValidCoordinate`
+  e' false fuori, e oltre il bordo `getHeightAt` ripete l'ultimo valore (quindi le altezze non bastano a capirlo).
+  Aggiunti `CC.mapBox` e `CC.inMap(x, y, margine)`: scartano i posti fuori mappa per stazioni, aeroporti, porti
+  (la ricerca della costa si ferma al bordo), binari d'accesso, diramazioni e controlli d'area.
+- p23 (scalo merci con edificio e scale): CRASH identico ("Duplicate edges found" a quota -5,4 m, tratti di 2,5 m
+  di traverso sotto i marciapiedi). Quindi l'edificio non c'entrava.
+- Ricarica: il salvataggio "partita vuota di test" e' quello iniziale (1 gen 2020, lastActionId 0): tutte le prove
+  precedenti sono sparite. Un file azioni "neutro" con un `sim_result` di una chiave inesistente blocca la mod per 300 s
+  (attende il lato simulazione): i file neutri devono avere `actions = {}`.
+- Costruiti A MANO 3 scali merci (terminal stazione merci, 1 binario, 160 m) e copiati con la sonda s22. CAUSA VERA:
+  il marciapiede merci usa gli slot 64xxxxx ed e' largo DUE colonne (binario nella colonna 2: 84020xx); la mod lo
+  metteva come un marciapiede passeggeri (74xxxxx, binario nella colonna 1) e il binario finiva sopra il marciapiede.
+  Schema: `3701980` main_building_1_cargo, `64000xx` platform_cargo_era_c, `84020xx` binario, xx = -10..20,
+  parametri `tracks = 1`, `length = 3`, `specialization = 1`.
+- Ora gli scali merci usano solo questo schema (1 binario, 160 m, treni merci entro 150 m, un treno per linea semplice;
+  piu' treni con la rete merci e i binari d'attesa). `CC.buyCargoTrain` mancava: aggiunto.

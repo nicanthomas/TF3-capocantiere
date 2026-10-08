@@ -1,19 +1,28 @@
--- PROVA 23 (rischio crash: salvataggio pronto): scalo merci a 2 binari con edificio merci e scale, isolato, in un
--- posto libero vicino a un'industria. Se il gioco non va in crash e lo scalo vede l'industria, gli scali si sbloccano.
-CC.CARGO_MODULES_OK = true
+-- PROVA 23 (rischio crash: salvataggio pronto): scalo merci con lo schema copiato da uno fatto a mano (1 binario,
+-- 160 m, marciapiede merci 64xxxxx su due colonne, edificio 3701980), vicino a un'industria asciutta e lontana dal bordo.
 local best
 for _, e in ipairs(CC.each(api.engine.getEntitiesWithComponent(api.type.ComponentType.INDUSTRY))) do
 	local n = CC.nameOf(e) or ""
-	if not n:find("Centauro", 1, true) and not best then best = e end
+	local q = CC.posOf(e)
+	local wet = false
+	if q then for a = 0, 315, 45 do local r = math.rad(a); if CC.onWater(q.x + math.cos(r) * 150, q.y + math.sin(r) * 150) then wet = true end end end
+	if q and not wet and CC.inMap(q.x, q.y, 1500) and not best then best = e end
 end
 local p = CC.posOf(best)
-local plan = CC.planStation({ kind = "cargo", trains = 1, lines = 1, train_len = 120 })
-local st, info = CC.placeStationSmart(p, 1, 0, {}, "Prova p23 scalo", plan, {})
-local out = { industry = CC.nameOf(best), plan = plan, ok = st ~= nil, steps = info and info.steps }
+local name = (CC.nameOf(best) or "Industria") .. " scalo merci"
+local st, why = CC.placeRailStation(p, 1, 0, {}, name, {
+	builder = CC.cargoStationBuilder(name), Rs = { 120, 180, 250, 350, 500 }, maxTries = 6,
+	score = function(x, y) return -math.sqrt((x - p.x) ^ 2 + (y - p.y) ^ 2) end,
+	accept = function(info)
+		if CC.stationCatches(info.station, best) then return true end
+		return false, "l'industria non e' nel bacino"
+	end,
+})
+local out = { industry = CC.nameOf(best), ok = st ~= nil, why = why }
 if st then
 	out.ends = #st.ends
-	out.catches = CC.stationCatches(st.station, best)
 	out.construction = st.construction
+	out.group = st.group
+	out.pos = st.site
 end
-CC.CARGO_MODULES_OK = nil
 return out

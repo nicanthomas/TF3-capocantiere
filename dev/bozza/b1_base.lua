@@ -131,6 +131,58 @@ end
 -- cui sono attaccati fa scattare nel gioco "AreAllNodesEmpty" e poi il crash. Con CC.SAFE_CLEANUP (default) dopo un
 -- fallimento NON si tolgono binari ne' costruzioni con binari attaccati: restano come "avanzi" (CC._leftovers, campo
 -- leftovers del risultato) e si tolgono dopo, a mano o con un'azione apposta. Si tolgono solo costruzioni isolate.
+-- ---------------------------------------------------------------- confini della mappa
+-- VERIFICATO (s20, s21): getBoundingBox() da' Box2 {min, max} (mappa di prova: -8192..8192); isValidCoordinate(Vec2f)
+-- e' false fuori; oltre il bordo getHeightAt ripete l'ultimo valore.
+-- Il terreno offre getBoundingBox e isValidCoordinate; se non rispondono si usa CC.MAP_HALF.
+CC.MAP_MARGIN = CC.MAP_MARGIN or 300
+CC.MAP_HALF = CC.MAP_HALF or 8000
+local function terr() return api.engine.terrain or (api.engine.util and api.engine.util.terrain) end
+local function num(v) return type(v) == "number" and v or nil end
+function CC.mapBox()
+	if CC._mapBox then return CC._mapBox end
+	local box
+	pcall(function()
+		local b = terr().getBoundingBox()
+		local mn, mx = b.min or b[1], b.max or b[2]
+		if mn and mx and num(mn.x) and num(mx.x) and mx.x > mn.x then
+			box = { minX = mn.x, minY = mn.y, maxX = mx.x, maxY = mx.y, src = "getBoundingBox" }
+		end
+	end)
+	if not box then
+		-- bordo: dove l'altezza smette di cambiare andando verso l'esterno
+		local function edge(ax, ay)
+			local last, lastR = nil, nil
+			for R = 20000, 2000, -250 do
+				local ok, h = pcall(function() return terr().getHeightAt(api.type.Vec2f.new(ax * R, ay * R)) end)
+				if ok and type(h) ~= "number" then ok = false end
+				if not ok then return nil end
+				if last and math.abs(h - last) > 0.05 then return lastR end
+				last, lastR = h, R
+			end
+			return nil
+		end
+		local px, nx, py, ny = edge(1, 0), edge(-1, 0), edge(0, 1), edge(0, -1)
+		local H = CC.MAP_HALF
+		box = { minX = -(nx or H), maxX = px or H, minY = -(ny or H), maxY = py or H, src = "altezze" }
+	end
+	CC._mapBox = box
+	return box
+end
+-- (x, y) dentro la mappa con almeno `m` metri dal bordo?
+function CC.inMap(x, y, m)
+	if not x or not y then return false end
+	m = m or CC.MAP_MARGIN
+	local b = CC.mapBox()
+	if x < b.minX + m or x > b.maxX - m or y < b.minY + m or y > b.maxY - m then return false end
+	local valid = true
+	pcall(function()
+		local r = terr().isValidCoordinate(api.type.Vec2f.new(x, y))
+		if r == false then valid = false end
+	end)
+	return valid
+end
+
 CC.SAFE_CLEANUP = (CC.SAFE_CLEANUP == nil) and true or CC.SAFE_CLEANUP
 CC._leftovers = CC._leftovers or { constructions = {}, edges = {} }
 
