@@ -168,7 +168,11 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
      dal menu principale: Esc/menu -> Esci al menu, poi Carica partita).
 1. **p23 RIUSCITA (08.10.2026)**: scalo merci (1 binario, 160 m) vicino alla "Raffineria di petrolio di Maretto", costruzione 89548, gruppo 89601, 2 estremi, nessun crash (build 40420). Era: scalo merci con lo schema copiato (`CC.cargoStationBuilder`, slot 64xxxxx). Rischio crash: da sola.
    `python3 dev-notes/strumenti/step.py 8 "" prove/p23_scalo_merci.lua`
-1a. **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
+1a. **IN CORSO (08.10.2026 sera)**: segnali da script VERIFICATI (p26-p34, vedi scoperte-api.md, `CC.placeSignals` /
+    `CC.addSignals` in b6). Doppio binario: la diramazione subito fuori dalla stazione collide (p36) -> nuovo schema:
+    binari della stazione NON uniti, tratto dritto di 140 m, binario 1 col tracciato normale, binario 2 PARALLELO
+    (`CC.parallelTrack`, metodo della mod "Parallel Tracks"), segnali a senso unico dopo i due binari. Prova: p35.
+    Era: **Anello ferroviario con binari adeguati (richiesta di Nicolo' 08.10.2026)**: l'anello provato ieri aveva un solo
     binario per i due sensi. Voluto: (A) 2 binari, uno per senso, oppure (B) 1 binario con tratti a doppio binario
     per l'incrocio dei treni. Ordine:
     1. segnale copiato dal salvataggio di terzi (punto 0, sonde s26/s8) oppure piazzato A MANO su un binario, poi sonda

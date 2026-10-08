@@ -127,3 +127,20 @@ Verificate in gioco durante lo sviluppo. Dove c'e' scritto **CRASH** il gioco si
 - Segnale: `EDGE_OBJECT.param`, `SIGNAL_LIST.signals[1]` (`type`, `state`, `stateTime`, `edgePr = {EdgeId, bool}`;
   bool true = verso node0->node1), modello in `MODEL_INSTANCE_LIST.fatInstances[1]` (`modelId`, `transf`);
   `api.res.modelRep.getName(modelId)` funziona. Modelli dei segnali: `infrastructure/signal/signal_path_a|c.mdl`.
+
+## Segnali da script (VERIFICATO 08.10.2026, prove p26-p34)
+- Metodo (come la mod "Automatic Signal Spacing"): proposta con `edgesToRemove = { binario }`, `edgesToAdd = { copia }`
+  (`SegmentAndEntity`, `entity = -k`, `type = 1`, `comp = BASE_EDGE` del binario, `playerOwned` copiato,
+  `comp.objects` = oggetti di prima + `{ -400000000 - k, 2 }`) e `edgeObjectsToAdd = { EdgeObject }` con
+  `edgeEntity = -k`, `param` 0..1, `oneWay`, `left`, `model = "::/infrastructure/signal/signal_path_c.con"`,
+  `playerEntity`. Comando: `api.cmd.makeWorldBuildProposalCmd(prop, Context(player), false, true)`.
+- `api.engine.util.proposal.makeProposalData` con oggetti dei binari lancia SEMPRE "Unknown exception": niente verifica
+  a secco. Model `.mdl` o oggetto senza binario rifatto: errore o "Couldn't find resource for edge object".
+- `left = false` -> segnale per i treni da node0 a node1 (`SIGNAL_LIST.signals[1].edgePr[2] = true`, modello girato
+  come la tangente); `left = true` -> da node1 a node0. `oneWay = true` -> `signals[1].type = 1`.
+- Funziona dal lato simulazione e dall'interfaccia. Il binario rifatto ha un id nuovo.
+- CRASH: leggere da `lua_eval` una proposta del giocatore conservata (`DEV.lastProposal`) dopo che e' stata applicata.
+- Lato interfaccia: `api.gui.camera.getCameraData()` / `setCameraData(api.type.Vec5f.new(x, y, dist, rot, pitch))`
+  spostano la visuale (servono per guardare una costruzione); `game.gui` non esiste nella 40420.
+- Diramazione (2 binari dallo stesso estremo) subito fuori dalla gola di una stazione: "Collisione" / "Costruzione
+  non consentita"; in aperta campagna funziona.
