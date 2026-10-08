@@ -23,6 +23,18 @@ Dettagli: `docs/prove-mappa-nuova.md` (cronologia prove), `docs/studio-salvatagg
   di aspettare; non rileggere file grandi interi.
 
 ## 1b. Avvio della chat: chiedere SUBITO tutte le autorizzazioni (una volta sola, all'inizio)
+0. **VERIFICARE I PERCORSI (08.10.2026)**: Nicolo' ha spostato la cartella di INSTALLAZIONE del gioco fuori da C:
+   (spazio finito). Tutti i percorsi di questo file (cartella `capocantiere`, `mods`, `crash_dump`) erano in
+   `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\`. Di solito spostare il gioco in un'altra
+   libreria Steam NON sposta `userdata` (resta nella cartella di Steam), ma va verificato:
+   - controllare con `device_list_dir` se `...\local\mods\tfcapocantiere_1`, `...\local\capocantiere` e
+     `...\local\crash_dump` esistono ancora; se no, cercare la nuova posizione (nuova cartella di Steam o della
+     libreria) e chiedere l'accesso a quella;
+   - se la cartella `mods` usata dal gioco e' cambiata, COPIARE la mod `tfcapocantiere_1` nella nuova cartella `mods`
+     (prima backup; l'originale NON si cancella senza chiedere: regola "non cancellare nulla") e verificare nel
+     gioco che la mod risulti attiva;
+   - aggiornare in questo file e in `middleware/game_bridge.py` (DEFAULT_DIR o variabile CAPOCANTIERE_DIR) i
+     percorsi nuovi, poi proseguire.
 Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e poi lasciare lavorare:
 1. Controllo del computer (`request_access`): Transport Fever 3 e Steam (servono per la ripresa dopo un crash).
 2. Cartella `C:\Program Files (x86)\Steam\userdata\888286537\3493540\local\capocantiere` (lettura/scrittura) e,
