@@ -11,6 +11,10 @@ Uso (dalla cartella del progetto):
     python dev/build_script.py --check    # controlla soltanto che lo script sia gia' allineato (codice 1 se no)
     python dev/build_script.py --bozza    # include anche dev/bozza/b*.lua (azioni NON ancora provate) e le
                                           # modifiche al lato interfaccia della v14 (vedi GUI_PATCHES)
+    python dev/build_script.py --release [--bozza]
+                                          # versione DA DISTRIBUIRE: copia della mod in dist/tfcapocantiere_1 con
+                                          # DEV_MODE = false (niente lua_eval/sim_eval) e zip dist/tfcapocantiere_1.zip;
+                                          # la mod di sviluppo in mod/ resta com'e' (DEV_MODE = true per le prove)
 
 Prima di scrivere fa una copia di backup dello script (capocantiere.script.lua.bak_<data>) e
 controlla la sintassi Lua del risultato se sul sistema c'e' liblua (vedi luachk.py).
@@ -158,6 +162,36 @@ def lua_syntax_ok(code: str) -> tuple[bool, str]:
     return r == 0, "" if r == 0 else lua.lua_tolstring(L, -1, None).decode("utf-8", "replace")
 
 
+DIST = os.path.join(ROOT, "dist")
+MOD_DIR = os.path.join(ROOT, "mod", "tfcapocantiere_1")
+
+
+def release(code: str) -> int:
+    """Scrive la versione da distribuire in dist/ (DEV_MODE = false) e la comprime; non tocca mod/."""
+    rel, n = re.subn(r"^local DEV_MODE = true", "local DEV_MODE = false", code, flags=re.M)
+    if n != 1:
+        print("ERRORE: riga 'local DEV_MODE = true' non trovata (o trovata piu' volte):", n)
+        return 3
+    ok, msg = lua_syntax_ok(rel)
+    if not ok:
+        print("ERRORE di sintassi Lua nella versione da distribuire:", msg)
+        return 2
+    out = os.path.join(DIST, "tfcapocantiere_1")
+    if os.path.exists(out):
+        stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        shutil.move(out, out + ".bak_" + stamp)
+    shutil.copytree(MOD_DIR, out, ignore=shutil.ignore_patterns("*.bak_*"))
+    target = os.path.join(out, os.path.relpath(SCRIPT, MOD_DIR))
+    with open(target, "w", encoding="utf-8", newline="") as f:
+        f.write(rel)
+    zipped = shutil.make_archive(os.path.join(DIST, "tfcapocantiere_1"), "zip", DIST, "tfcapocantiere_1")
+    v = re.search(r'^local CC_VERSION = "(.*)"$', rel, flags=re.M)
+    print("Versione da distribuire:", v.group(1) if v else "?", "- DEV_MODE = false")
+    print("Cartella:", out)
+    print("Zip:", zipped)
+    return 0
+
+
 def main() -> int:
     old, new = compose("--bozza" in sys.argv)
     ok, msg = lua_syntax_ok(new)
@@ -166,6 +200,8 @@ def main() -> int:
         return 2
     if msg:
         print(msg)
+    if "--release" in sys.argv:
+        return release(new)
     if "--check" in sys.argv:
         if old == new:
             print("OK: lo script della mod e' allineato a cc_lib.lua + cc_actions.lua")

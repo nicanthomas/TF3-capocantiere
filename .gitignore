@@ -19,3 +19,4 @@ __pycache__/
 *.bak_*
 # risultati grezzi delle sonde (grandi, restano in locale; riassunto in docs/studio-salvataggio-terzi.md)
 dev/risultati/
+dist/

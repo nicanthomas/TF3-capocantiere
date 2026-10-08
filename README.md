@@ -37,6 +37,16 @@ Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
 
 Ogni azione che costruisce o compra chiede conferma prima di essere inviata.
 
+## Requisiti
+
+Il progetto e' pensato **solo per Windows con Steam** (percorsi, file `.bat`, `setx`):
+
+- Transport Fever 3 (versione Steam, provato con la build 40408), partita in modalita' creativa consigliata;
+- Python 3.10+ con il pacchetto `anthropic`;
+- una chiave API Anthropic (variabile d'ambiente `ANTHROPIC_API_KEY`);
+- modello: configurabile in `middleware/main.py` (`MODEL`); oggi `claude-sonnet-5-5`. Il costo medio di una
+  sessione non e' ancora stato misurato: verra' indicato qui dopo le prove con la v14.
+
 ## Installazione
 
 1. Copia `mod/tfcapocantiere_1` in `C:\Program Files (x86)\Steam\userdata\<id>\3493540\local\mods\`
@@ -53,7 +63,8 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 ## Note
 
 - La mod scrive solo nella cartella `capocantiere` dei dati utente.
-- `DEV_MODE = true` nello script abilita `lua_eval` / `sim_eval` (solo per sviluppo): da spegnere per l'uso normale.
+- `DEV_MODE = true` nello script di sviluppo abilita `lua_eval` / `sim_eval` (codice arbitrario: solo per le prove).
+  La versione da distribuire si crea con `python dev/build_script.py --release` (`dist/`, `DEV_MODE = false`, zip).
 - Modello Anthropic configurato in `middleware/main.py` (`MODEL`). Il middleware usa il prompt caching e tiene
   in memoria solo gli ultimi turni della conversazione (`MAX_TURNS`) per contenere i costi.
 - Gli argomenti dei tool vengono controllati in Python prima di arrivare al gioco.
@@ -67,3 +78,7 @@ Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 - `dev/bozza/`: funzioni nuove ancora da provare in gioco (treni merci, bus tra citta', gestione veicoli, annulla,
   aerei/elicotteri/navi, superstrade); test senza gioco con `python3 dev/bozza/run_mock.py`.
 - `dev/sonde/` e `dev/prove/`: codice da eseguire in gioco con `python dev/mkeval.py` (vedi `docs/piano-stasera.md`).
+
+## Licenza
+
+MIT, vedi [LICENSE](LICENSE).
