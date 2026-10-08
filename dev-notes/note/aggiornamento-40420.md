@@ -35,3 +35,7 @@ Il middleware (`game_bridge.py`) va poi allineato alla cartella trovata.
 - "Fixed an error when bulldozing stations while a pinned window is active": utile per l'annulla.
 - Campagna "build signal task", Map Editor, Tycoon Mod, grafica, localizzazione: nessun effetto.
 - Salvataggi: la partita di terzi (versione 604, init 599) si carica senza errori nella 40420.
+
+## 08.10 sera: copia di diagnosi installata
+Patch applicata alla v13 installata (non alla v14 del repo), backup `capocantiere.script.lua.bak_20261008_v13`.
+In attesa che Nicolo' ricarichi la partita di terzi (lo script si legge solo al caricamento).

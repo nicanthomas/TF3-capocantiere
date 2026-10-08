@@ -118,6 +118,9 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   azioni. Dettagli e passo previsto: `dev-notes/note/aggiornamento-40420.md`. Serve l'accesso a
   `mods\tfcapocantiere_1` (chiesto, NEGATO dal controllo automatico dei permessi: Nicolo' deve concederlo) per
   installare la copia di diagnosi, poi una ricarica della partita.
+  AGGIORNAMENTO: accesso concesso; installata la copia di diagnosi (v13 + `ensureDir()`, DEV_MODE true; backup
+  `capocantiere.script.lua.bak_20261008_v13` nella stessa cartella). Dopo la ricarica: leggere nel log le righe
+  `[CAPOCANTIERE] DIRTEST`.
 - Partita di terzi caricata da Nicolo' (autosave "My 1st Sandbox with mods Final_2082-02-24_2"); punto 0 della
   sezione 7 NON ancora fatto (nessuna sonda eseguita). File neutri nuovi: actions_1_28deba77, actions_34_8d1957db.
 - Percorsi verificati 08.10: il gioco e' su E:\SteamLibrary, ma `userdata` (capocantiere, mods, crash_dump) e'
