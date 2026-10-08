@@ -39,3 +39,19 @@ Il middleware (`game_bridge.py`) va poi allineato alla cartella trovata.
 ## 08.10 sera: copia di diagnosi installata
 Patch applicata alla v13 installata (non alla v14 del repo), backup `capocantiere.script.lua.bak_20261008_v13`.
 In attesa che Nicolo' ricarichi la partita di terzi (lo script si legge solo al caricamento).
+
+## Risultato della diagnosi (partita di terzi ricaricata da Nicolo', 08.10 15:30Z)
+- `getAllUserdata` (lettura) FALLISCE anche su `capocantiere` (con `/`, `./`, percorso assoluto), `save`,
+  `screenshots`, `mods`, `mods/tfcapocantiere_1[/capocantiere]`, `tfcapocantiere_1`, `""`, `"."`.
+- FUNZIONA solo `mod_presets` (n=0 file). Quindi dalla 40420 c'e' una lista di cartelle permesse (quelle del gioco).
+- Funzioni di `app` nella 40420: SaveGameNamespace, debug, deleteSavegame, findAllSavegames, findBuiltinSavegames,
+  getAllBiomes, getAllHeightmaps, getAllUserdata, getGPUCapabilities, getInputActionRep, getModTagTranslation,
+  getProgressMonitor, getRandomTips, getSaveGameStorageInfo, getSavegameComplexity, getSavegameComplexityLimit,
+  getSavegameImage, getSavegameInfo, getSupportedMSAASampleCounts, getUserDataFolder, getUserProfile,
+  isWaitForStartReadyGame, loadGame, loadMission, loadUserdata, makeEmptyMap, openUserDataFolder,
+  openUserDataSubFolder, parseSavegameName, playVoiceOverOrStop, printMemoryStats, quit, refreshMods,
+  removeUserdata, res, restart, saveGame, saveUserdata, setWaitForStartReadyGame, showNodeEditor, startGame2,
+  startGame, startReadyGame, stopGame, writeHeightmap (nessuna funzione nuova per registrare una cartella).
+- Prossima diagnosi: provare `getUserDataFolder()`, le altre cartelle del gioco (biomes, heightmaps, keyframes,
+  recordings, save_maps, towns_industries, staging_area, crash_dump) e una sottocartella `mod_presets/capocantiere`;
+  scrivere fuori da `capocantiere`/`mods` solo con il permesso di Nicolo'.
