@@ -113,3 +113,8 @@ Lezioni:
   `adjust_line_fleet` propone +3 bus sulla linea 89994 (giro 1105 s), camion e treno adeguati; applicato con intervallo
   200 s: 4 bus comprati.
 - v14 dev (`v14-bozza-32c86032`) installata nella cartella della mod (attiva al prossimo caricamento).
+
+## 09.10.2026 ore 08:40 (v14 caricata)
+- Partita salvata come "capocantiere v14 prova" e ricaricata: `modVersion = v14-bozza-32c86032`, `lastActionId = 0`.
+- id 1 (`check_network`): 4 linee controllate, 4 senza problemi. id 2: `adjust_line_fleet` (sola proposta) sulla
+  linea 89994: 6 bus, giro 1193 s, propone -1; `read_map` ok. Percorso: file azioni del middleware, senza sim_eval.

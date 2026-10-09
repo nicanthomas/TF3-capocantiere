@@ -140,9 +140,14 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   Ultimo id usato sulla partita di terzi: 10 (non salvata).
 - Poi caricata la "partita vuota di test" (dalla chat: nel salvataggio va disattivata la mod mancante "Scania R-Series -
   Base set", Mod -> filtro Mancanti -> Disattiva tutto). lastActionId era 0. id 1 = p23, id 2 = lettura: prossimo id 3.
-- **09.10.2026 mattina**: partita "partita vuota di test" ancora aperta (mai ricaricata: i salvataggi automatici delle
-  18:30 sono stati sovrascritti, restano solo quelli della notte). Ultimo id usato: **130**. Gioco IN CORSO a velocita' 4 dall'id 115. Resti delle prove: binari
-  spezzati di strade (innocui); p4, p14, p37 lasciati in gioco (linee funzionanti).
+- **09.10.2026 ore 08:40**: partita salvata come **"capocantiere v14 prova"** (contiene tutte le prove: p2, p4, p8, p14,
+  p37, linee funzionanti) e ricaricata: gira la **v14 dev `v14-bozza-32c86032`** (state.lua: `modVersion`, `speed`).
+  Gioco in PAUSA (speed 0). Con la v14 `lastActionId` riparte da **0** a ogni caricamento (non sta nel salvataggio):
+  id 1 e 2 usati per il collaudo (vedi sotto); prossimo id **3**. File azioni rimasti: solo
+  `capocantiere_actions_24_bf4c0219.lua` con `actions = {}` (innocuo; il middleware lo sposta in `vecchi` all'avvio).
+- ATTENZIONE (09.10.2026): un `device_commit_files` aveva installato una copia VECCHIA della mod (1db6fb1e invece di
+  32c86032, file in outputs non aggiornato al momento dell'invio). Dopo ogni installazione rileggere il file dal PC
+  (`device_stage_files`) e confrontare lo sha1 con dist/.
 - Il permesso di controllo del PC **scade dopo 30 minuti senza azioni sul PC** (e a volte si perde quando il
   collegamento si riconnette): rifarlo (resolve + request) solo quando serve davvero, perche' la richiesta resta
   in attesa finche' Nicolo' non risponde.
@@ -246,12 +251,16 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     DA FARE: nomi dei campi (dai file .lua dell'interfaccia del gioco, cartella res/scripts sotto E:\SteamLibrary:
     chiedere a Nicolo' l'accesso in lettura) e poi usarli in check_line_fleet.
     Elenco completo delle funzioni di api.engine.util: vedi scoperte-api.md (09.10.2026).
-5. **FATTO IN PARTE 09.10.2026**: build v14 (`v14-bozza-32c86032`): `mod/` aggiornata con la bozza (`--check` OK),
-   copia `--dev --bozza` INSTALLATA sul PC di prova (backup della mod di prima:
-   `capocantiere.script.lua.bak_20261009_v13patch` nella cartella della mod; non serve piu' la patch `ensureDir`), zip
-   `--release` creato in locale (dist/ non e' nel repo). La v14 si attiva al prossimo caricamento della partita.
-   DA FARE con Nicolo': caricare la partita, controllare che la mod parta (state.lua con `modVersion`), provare il
-   middleware con `CAPOCANTIERE_BOZZA=1` e misurare il costo di una sessione (contatore token) per il README.
+5. **v14 CARICATA E COLLAUDATA nel protocollo normale (09.10.2026, 08:40)**: build `v14-bozza-32c86032` (`mod/` con
+   DEV_MODE = false nel repo, `--check` OK; copia `--dev --bozza` installata e riletta dal PC: sha1 uguale a dist/).
+   Backup nella cartella della mod: `.bak_20261009_v13patch` (v13 + patch) e `.bak_20261009_v14_1db6fb1e`.
+   Prove con file azioni come quelli del middleware (niente sim_eval): id 1 `check_network` -> 4 linee, 4 ok;
+   id 2 `adjust_line_fleet` (apply = false) sulla linea bus 89994 -> giro 1193 s, 6 bus, propone di toglierne 1;
+   `read_map` -> confini, industrie, quote. Test automatici: middleware 30 OK, mock 65 OK.
+   NON VERIFICATO: il middleware vero sul PC con Claude (serve la chiave API, che solo Nicolo' usa) e il costo di
+   una sessione. DA FARE con Nicolo': `git pull` del repo sul PC, partita "capocantiere v14 prova" aperta,
+   `set CAPOCANTIERE_BOZZA=1` e `middleware\avvia_capocantiere.bat`; 3 richieste di prova (una lettura, un
+   check_line_fleet, una piccola costruzione) e annotare i token stampati dalla console.
 5b. Novita' TF3 da aggiungere dopo la v14 (ognuna: prima sonda o copia di una costruzione fatta a mano):
     - potenziatori di produzione (lavoratori, fertilizzanti...): leggere quali beni potenziano quale industria;
       Claude propone e, su richiesta, costruisce la catena (e' una linea merci normale);

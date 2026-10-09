@@ -36,7 +36,8 @@ Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
 | `build_rail_line` | Stazioni a 2 binari con scambi, binari con passaggi a livello, sovrappassi, sottopassi, ponti e gallerie, deposito, linea e treni tra 2+ citta' | Provato in gioco (1900 e 2300) |
 
 Azioni della v14 (bozza: si attivano con `CAPOCANTIERE_BOZZA=1` e la mod costruita con `--bozza`), provate in gioco
-sulla build 40420 (08-09.10.2026):
+sulla build 40420 (08-09.10.2026). La v14 (`v14-bozza-32c86032`) si carica in gioco e risponde alle azioni del
+middleware (collaudo del 09.10.2026); la console con Claude non e' ancora stata provata con la v14:
 
 | Tool | Cosa fa | Stato |
 |---|---|---|
