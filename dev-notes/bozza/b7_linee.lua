@@ -96,8 +96,7 @@ SIM_ACTIONS.create_line_from_stations = function(a)
 	end
 	local patterns = { pattern }
 	if a.both_directions and pattern == "ring" then patterns[2] = "ring_reverse" end
-	local count = math.max(1, math.min(20, a.count or 2))
-	local lines, vehicles, errs = {}, {}, {}
+	local lines, vehicles, errs, fleets = {}, {}, {}, {}
 	for idx, pt in ipairs(patterns) do
 		local stops = CC.lineStopOrder(groups, pt)
 		local okL, li = CC.createLine((a.name or "Linea") .. (idx == 2 and " (verso opposto)" or ""), stops)
@@ -121,6 +120,11 @@ SIM_ACTIONS.create_line_from_stations = function(a)
 		end
 		if not depot then errs[#errs + 1] = "nessun deposito per la linea: usa build_depot"; break end
 		if kind == "train" then
+			-- treni: la stima e' solo un'indicazione; senza numero esplicito al massimo 2 (binario unico: si bloccherebbero)
+			local est, fleet = CC.initialFleet(stops, nil, "train", a.count, 20)
+			local count = a.count and est or math.min(est, 2)
+			if not a.count and est > count then fleet.note = "stima " .. est .. " treni: messi " .. count .. " (binario unico); aggiungerli su richiesta" end
+			fleets[#fleets + 1] = fleet
 			local loco = CC.pickLocomotive(CC.railEra().catenary)
 			if not loco then errs[#errs + 1] = "nessuna locomotiva disponibile"; break end
 			local models, miss = CC.trainModels(loco, math.max(1, math.min(12, a.num_cars or 4)), cargoId and { cargoId } or nil, a.max_train_len)
@@ -134,13 +138,15 @@ SIM_ACTIONS.create_line_from_stations = function(a)
 			if not folder then errs[#errs + 1] = "tipo di veicolo sconosciuto: " .. tostring(kind); break end
 			local model = cargoId and CC.pickModelForCargo(folder, cargoId) or CC.pickModel(folder, nil, { passengers = true })
 			if not model then errs[#errs + 1] = "nessun veicolo " .. folder .. " disponibile"; break end
+			local count, fleet = CC.initialFleet(stops, model.id, kind, a.count, 20)
+			fleets[#fleets + 1] = fleet
 			local okV, v = CC.buyVehicles(depot, model.id, count, li.line)
 			for _, x in ipairs(v.vehicles or {}) do vehicles[#vehicles + 1] = x end
 			for _, e in ipairs(v.errors or {}) do errs[#errs + 1] = e end
 		end
 	end
 	return { ok = #lines == #patterns and #vehicles > 0 and #errs == 0, line_id = lines[1], line_ids = lines, vehicles = vehicles,
-		vehicle = kind, errors = errs }
+		vehicle = kind, errors = errs, fleet = fleets[1], fleets = fleets }
 end
 
 -- ---------------------------------------------------------------- linee merci a piu' fermate
