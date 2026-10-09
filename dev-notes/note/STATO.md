@@ -39,6 +39,18 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
 - RISPARMIO CREDITI (richiesta 08.10.2026): poche chiamate, piu' prove senza rischio nello stesso file azioni, le
   prove rischiose da sole; screenshot solo se serve (crash); se un servizio non risponde fermarsi e scriverlo invece
   di aspettare; non rileggere file grandi interi.
+- LAVORO DA SOLO / DI NOTTE (regola del 09.10.2026, dopo una notte persa: 6 ore bloccate su una richiesta di
+  permesso e PC lasciato acceso col gioco aperto):
+  1. Quando Nicolo' non c'e' NON fare MAI richieste che aspettano la sua approvazione (permesso del computer,
+     cartelle, cancellazioni): restano ferme finche' lui risponde. Se un permesso manca, andare avanti con quello
+     che si puo' fare senza e scriverlo nelle note.
+  2. Il permesso di controllo del PC SCADE dopo 30 minuti senza azioni sul PC (e puo' sparire quando il collegamento
+     si riconnette): tenerlo vivo con un'azione leggera (screenshot piccolo, `scale` 0.3) almeno ogni 20 minuti, e
+     chiederlo di nuovo SOLO se Nicolo' e' presente.
+  3. Chiusura del gioco a fine lavoro: deve esserci un modo che NON dipende dal permesso del PC (da trovare e provare
+     PRIMA di una notte da solo, es. comando dalla mod). Se a fine lavoro non si puo' chiudere, scriverlo subito a
+     Nicolo' invece di aspettare.
+  4. Prima di lasciare il lavoro a una notte da solo: verificare che i punti 2 e 3 funzionino.
 
 ## 1b. Avvio della chat: chiedere SUBITO tutte le autorizzazioni (una volta sola, all'inizio)
 0. **VERIFICARE I PERCORSI (08.10.2026)**: Nicolo' ha spostato la cartella di INSTALLAZIONE del gioco fuori da C:
