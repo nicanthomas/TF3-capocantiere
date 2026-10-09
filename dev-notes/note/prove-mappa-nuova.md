@@ -112,4 +112,4 @@ Lezioni:
 - id 114-121: gioco fatto correre (velocita' 4 da `lua_eval`), s23/s36 (dati della flotta), **p44 OK**:
   `adjust_line_fleet` propone +3 bus sulla linea 89994 (giro 1105 s), camion e treno adeguati; applicato con intervallo
   200 s: 4 bus comprati.
-- v14 dev (`v14-bozza-1db6fb1e`) installata nella cartella della mod (attiva al prossimo caricamento).
+- v14 dev (`v14-bozza-32c86032`) installata nella cartella della mod (attiva al prossimo caricamento).

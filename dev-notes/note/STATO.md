@@ -129,7 +129,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 - Poi caricata la "partita vuota di test" (dalla chat: nel salvataggio va disattivata la mod mancante "Scania R-Series -
   Base set", Mod -> filtro Mancanti -> Disattiva tutto). lastActionId era 0. id 1 = p23, id 2 = lettura: prossimo id 3.
 - **09.10.2026 mattina**: partita "partita vuota di test" ancora aperta (mai ricaricata: i salvataggi automatici delle
-  18:30 sono stati sovrascritti, restano solo quelli della notte). Ultimo id usato: **121**. Resti delle prove: binari
+  18:30 sono stati sovrascritti, restano solo quelli della notte). Ultimo id usato: **130**. Gioco IN CORSO a velocita' 4 dall'id 115. Resti delle prove: binari
   spezzati di strade (innocui); p4, p14, p37 lasciati in gioco (linee funzionanti).
 - Il permesso di controllo del PC **scade dopo 30 minuti senza azioni sul PC** (e a volte si perde quando il
   collegamento si riconnette): rifarlo (resolve + request) solo quando serve davvero, perche' la richiesta resta
@@ -209,8 +209,11 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
    viene RIFIUTATO senza messaggi (verifica a secco ok, nessuna collisione, ~866k di costo), in ogni orientamento,
    quota (terreno, 2, 0) e distanza dalla riva. Senza moduli si costruisce ma resta senza stazione; senza il molo
    `small_pier` (solo banchina + ingresso) si costruisce, ma 0 stazioni. Serve un porto FATTO A MANO da Nicolo' su
-   questa mappa, poi la sonda s6 per copiarne moduli e posizione rispetto alla riva. Doppio binario con segnali (p13):
-   da rifare con i segnali ora funzionanti.
+   questa mappa, poi la sonda s6 per copiarne moduli e posizione rispetto alla riva. Doppio binario su una linea
+   (p13, `build_rail_line2` con `double_track`, 09.10.2026): fallisce ancora alla diramazione subito fuori dalla
+   stazione ("Costruzione non consentita", 6 varianti). Lo schema dell'anello (binari della stazione non uniti) non
+   basta per i capolinea: un treno che arriva sul binario 2 non puo' ripartire sul binario 1 senza un incrocio
+   (comunicazione) fuori dalla stazione. DA FARE: comunicazione tra i due binari a 200-300 m dal capolinea.
 4. **FATTO 09.10.2026**: p2 (bus tra citta'), p3 (aggiungi/togli/sostituisci veicoli), p8 (allunga linea: nella 40420
    `lc.stops` e' in sola lettura -> linea nuova `api.type.Line.new()` con tutte le fermate + `makeLineUpdateCmd`).
    Gioco fatto correre con `api.cmd.makeGameSetSpeedCmd(4)` da `lua_eval` (0 = pausa): i veicoli si muovono.
@@ -221,10 +224,17 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     `api.engine.util.line.getMaxFrequency`, `calcLineStationThroughput`, `getLineCapacityUsages`,
     `api.engine.util.vehicle.getVehicleCapacities`, `transportVehicleSystem.getLineCargoInfo`.
     Da fare: numero iniziale di veicoli calcolato alla creazione delle linee.
-4c. Puntualita' delle consegne (novita' TF3): s23 NON ha trovato funzioni di ritardo/puntualita' in
-    `api.engine.util.line` (nessun nome con Delay/Punctual/Late/Schedule). Da cercare altrove (componenti delle
-    industrie o della linea) con una sonda dedicata.
-5. **FATTO IN PARTE 09.10.2026**: build v14 (`v14-bozza-1db6fb1e`): `mod/` aggiornata con la bozza (`--check` OK),
+4c. Puntualita'/qualita' delle consegne (novita' TF3), s37 (09.10.2026): le funzioni ci sono ma restituiscono
+    oggetti C++ di cui non conosciamo i campi: `api.engine.util.cargo.getSummarizedCargoQualityDataForLine(linea)` /
+    `...ForStockList(stockList)` / `...ForVehicle(v)` (-> SummarizedCargoQualityData), `cargo.isGoodQuality`,
+    `industry.getIndustryProductivityInfo(industria)` (-> IndustryProductivityInfo),
+    `stock.getProductionRating(stockList)` (numero: 0/1 sulle industrie di prova), `stock.getCargoShippedPerYear`,
+    `getCargoDeliveredPerYear` (numeri). Nella 40420 `INDUSTRY.stockList` vale l'id dell'industria.
+    `getCargoProducedPerYear` e `getCargoQualityDataForLine` vogliono altri argomenti ("can't be cast").
+    DA FARE: nomi dei campi (dai file .lua dell'interfaccia del gioco, cartella res/scripts sotto E:\SteamLibrary:
+    chiedere a Nicolo' l'accesso in lettura) e poi usarli in check_line_fleet.
+    Elenco completo delle funzioni di api.engine.util: vedi scoperte-api.md (09.10.2026).
+5. **FATTO IN PARTE 09.10.2026**: build v14 (`v14-bozza-32c86032`): `mod/` aggiornata con la bozza (`--check` OK),
    copia `--dev --bozza` INSTALLATA sul PC di prova (backup della mod di prima:
    `capocantiere.script.lua.bak_20261009_v13patch` nella cartella della mod; non serve piu' la patch `ensureDir`), zip
    `--release` creato in locale (dist/ non e' nel repo). La v14 si attiva al prossimo caricamento della partita.
@@ -249,6 +259,8 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   xx = -10..20, `tracks=1, length=3, specialization=1`. Altre misure: prima copiarle da uno scalo fatto a mano (s22).
 - Togliere binari insieme alla stazione collegata, o vendere veicoli insieme al deposito, nella stessa chiamata.
 - File azioni rimasti dopo una ricarica (vedi punto 2).
+- Annulla a gioco IN CORSO: gli id liberati vengono riusati subito (persone, veicoli...). `undo` ora tiene solo
+  binari che sono ancora binari e costruzioni ancora del giocatore (09.10.2026); prima rischiava di toccare altro.
 - Segnali: `comp.objects` con id provvisorio diverso da -400000000 - (indice 0-based in edgeObjectsToAdd) ->
   "Unknown exception" nel comando (non crash, ma nessun segnale).
 - Piu' prove rischiose nello stesso file: non si capisce quale ha causato il crash.

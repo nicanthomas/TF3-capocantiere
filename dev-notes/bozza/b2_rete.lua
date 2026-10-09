@@ -311,9 +311,29 @@ SIM_ACTIONS.undo = function(a)
 	-- VERIFICATO (due crash del 07.10.2026): vendere veicoli e togliere il loro deposito nello stesso momento, o togliere
 	-- binari e la stazione a cui sono attaccati insieme, corrompe lo stato del gioco. "Annulla" lavora a fasi, una per
 	-- chiamata: 1) veicoli e linee; 2) binari; 3) costruzioni. Se resta qualcosa, risponde done = false e va richiamato.
-	local existing = function(list) local o = {} for _, x in ipairs(list or {}) do if api.engine.entityExists(x) then o[#o + 1] = x end end return o end
-	local tracks = existing(c.tracks)
-	local cons = existing(c.constructions)
+	-- solo entita' ancora del tipo giusto e del giocatore: a gioco in corso gli id liberati vengono riusati subito
+	-- (VERIFICATO 09.10.2026: dopo la fase dei binari restavano "binari esistenti" che non erano piu' binari)
+	local CT = api.type.ComponentType
+	local player = api.engine.util.getPlayer()
+	local function mine(x) local po = CC.comp(x, CT.PLAYER_OWNED); return po ~= nil and po.player == player end
+	local existing = function(list, kind)
+		local o = {}
+		for _, x in ipairs(list or {}) do
+			if api.engine.entityExists(x) then
+				local good
+				if kind == "track" then
+					local be = CC.comp(x, CT.BASE_EDGE)
+					good = be ~= nil and tostring(be.roadTemplate):find("/track/", 1, true) ~= nil
+				else
+					good = CC.comp(x, CT.CONSTRUCTION) ~= nil and mine(x)
+				end
+				if good then o[#o + 1] = x end
+			end
+		end
+		return o
+	end
+	local tracks = existing(c.tracks, "track")
+	local cons = existing(c.constructions, "construction")
 	if sold > 0 or nL > 0 then
 		log[#log + 1] = "fase 1 fatta (veicoli e linee): binari e costruzioni al prossimo annulla"
 		return { ok = true, done = (#tracks == 0 and #cons == 0), log = log, errors = e1 }

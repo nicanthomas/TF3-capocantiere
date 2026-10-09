@@ -144,3 +144,32 @@ Verificate in gioco durante lo sviluppo. Dove c'e' scritto **CRASH** il gioco si
   spostano la visuale (servono per guardare una costruzione); `game.gui` non esiste nella 40420.
 - Diramazione (2 binari dallo stesso estremo) subito fuori dalla gola di una stazione: "Collisione" / "Costruzione
   non consentita"; in aperta campagna funziona.
+
+## Funzioni di api.engine.util (build 40420, sonda del 09.10.2026)
+- `line`: calcLineStationThroughput, getDetailedLineProblems, getFailedPathReason, getLineCapacityUsages,
+  getLineIssues, getLineProblems, getLineStationProblems, getLineTransportModesUnion, getLinesIssues,
+  getMaxFrequency, getNoRoadConnectionProblems, isLineCompatibleWithAnyCarrier, isLineCompatibleWithCarrier,
+  supportsReservation.
+- `vehicle`: calcPathPosData, findBestDepotForLine, findBestLineAndDepotForVehicle, getAllCargoForCargoTypeSet,
+  getDepreciatedValue, getDirection, getLength, getMaintenance*Penalty, getPartPrice, getPosition, getRunningCost,
+  getSpeed, getVehicleCapacities (tabella per tipo di merce, 1 = passeggeri), getVehicleLoadedCargoTypes,
+  getVehicleMaintenanceState, getVehicleProblems, getVehicleType, getVehicleUnsetCapacities, getVehicles,
+  getVehiclesByCarrier.
+- `cargo` (qualita' delle merci, novita' TF3): getCargoQualityDataAt{Station,StationGroup,Stop,Terminal},
+  getCargoQualityDataFor{Line,Stock,StockList,Vehicle}, getNumCargoPerTypeInVehicle,
+  getSummarizedCargoQualityDataFor{Line,StockList,Vehicle}, isGoodQuality.
+- `stock`: getAdjustedDeliveryTime, getCargoConsumedPerYear, getCargoDeliveredPerYear, getCargoLogPerYearForTarget,
+  getCargoMaxConsumptionPerYear, getCargoMaxProductionPerYear, getCargoOutputPerYear, getCargoProducedPerYear,
+  getCargoShippedPerYear, getCargoTypeDeliveredPerYear, getCargoTypeShippedPerYear, getInputsOutputsFromRules,
+  getProductionRating, getStockCargoTypes, isCargoTypeCurrentlyProduced...
+- `industry`: getClosingIndustries, getEconomyCargoDependencies, getIndustryProductivityInfo.
+- `town`: getTownCapacityUsage, getTownDeliveriesStats, getTownHappinessStats, getTownLineUsage, getTownProblems,
+  getTownReachability, getTownStockCargo, getTownEmission, getClosestTown, getLandUse2CargoTypes...
+- `finance`: getPlayersBalance, calculateBalance, calculateEarnings, computeFinanceTable...
+- `proposal`: makeProposalData, createProposalRemove, createDoubleSlipSwitchProposal, createBridgeOrTunnelProposal,
+  replaceSegment, makeSegmentsRemoveProposal, refreshConstruction...
+- `pathfinding`: findPath, findPathNodeToNode, findDubinsPath, getTargetsByLandUse.
+- Comandi: `api.cmd.makeGameSetSpeedCmd(n)` (0 = pausa; provato da lua_eval), makeGameSetCalendarSpeedCmd,
+  makeGameSetTimeOfDayCmd.
+- Veicolo: `TRANSPORT_VEHICLE.sectionTimes` = secondi per tratta (0 = non misurata), `lineStopDepartures` (ms),
+  `stopIndex`, `state`, `doorsTime`.
