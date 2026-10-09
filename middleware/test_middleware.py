@@ -17,7 +17,8 @@ from unittest import mock
 
 import lua_table
 from conversation import cached_request, trim_history, validate_args
-from game_bridge import GameBridge, find_entities
+import game_bridge
+from game_bridge import GameBridge, GameTimeout, find_entities
 from tools import TOOLS
 
 TOOL = {t["name"]: t for t in TOOLS}
@@ -34,13 +35,18 @@ STATE = {
 class FakeMod(threading.Thread):
     """Fa la parte della mod: legge actions_<id>_*, scrive results e aggiorna lastActionId."""
 
-    def __init__(self, folder, reply=None):
+    def __init__(self, folder, reply=None, result_delay=0.0):
         super().__init__(daemon=True)
         self.folder, self.stop, self.seen = folder, False, []
         self.reply = reply or (lambda a: {"ok": True, "type": a["type"]})
+        self.result_delay = result_delay            # simula un'azione lunga nel lato simulazione
+        self.paused = False                         # partita nel menu: la mod non legge i file
 
     def run(self):
         while not self.stop:
+            if self.paused:
+                time.sleep(0.05)
+                continue
             st = lua_table.load_userdata(os.path.join(self.folder, P + "state.lua"))
             nxt = st["lastActionId"] + 1
             for fn in os.listdir(self.folder):
@@ -51,6 +57,8 @@ class FakeMod(threading.Thread):
                     st["lastActionId"] = nxt
                     lua_table.save_userdata(os.path.join(self.folder, P + "state.lua"), st)
                     res = {"id": nxt, "nonce": req["nonce"], "results": [self.reply(a) for a in req["actions"]]}
+                    if self.result_delay:
+                        time.sleep(self.result_delay)
                     lua_table.save_userdata(os.path.join(self.folder, P + f"results_{nxt}_{req['nonce']}.lua"), res)
             time.sleep(0.05)
 
@@ -148,8 +156,53 @@ class TestBridge(Base):
 
     def test_timeout(self):
         b = GameBridge(self.dir)
-        with self.assertRaises(TimeoutError):
-            b.send([{"type": "ping"}], timeout=1)
+        with mock.patch.object(game_bridge, "WITHDRAW_RECHECK", 0.1):
+            with self.assertRaises(GameTimeout) as cm:
+                b.send([{"type": "ping"}], timeout=1)
+        self.assertEqual(cm.exception.status, "ritirata")     # mod assente: la richiesta non resta in attesa
+        self.assertFalse([f for f in os.listdir(self.dir) if f.startswith(P + "actions_")])
+        self.assertEqual(len(os.listdir(os.path.join(self.dir, P + "vecchi"))), 1)
+
+    def test_stale_same_id_withdrawn(self):
+        stale = os.path.join(self.dir, P + "actions_6_dead.lua")
+        lua_table.save_userdata(stale, {"id": 6, "nonce": "dead", "actions": [{"type": "build_bus_line"}]})
+        mod = FakeMod(self.dir)
+        mod.paused = True                           # il file vecchio e' rimasto perche' la mod non girava
+        mod.start()
+        b = GameBridge(self.dir)
+        real = b._withdraw
+
+        def withdraw_then_resume(*a, **kw):         # la mod riparte subito dopo il ritiro
+            out = real(*a, **kw)
+            mod.paused = False
+            return out
+        try:
+            with mock.patch.object(b, "_withdraw", side_effect=withdraw_then_resume):
+                self.assertEqual(b.send([{"type": "ping"}], timeout=5)[0]["type"], "ping")
+            self.assertEqual([r["actions"][0]["type"] for r in mod.seen], ["ping"])   # il vecchio non e' partito
+            self.assertTrue(os.path.exists(os.path.join(self.dir, P + "vecchi", P + "actions_6_dead.lua")))
+        finally:
+            mod.stop = True
+
+    def test_accepted_late_result(self):
+        mod = FakeMod(self.dir, result_delay=1.5)
+        mod.start()
+        try:
+            b = GameBridge(self.dir)
+            with mock.patch.object(game_bridge, "WITHDRAW_RECHECK", 0.1):
+                with self.assertRaises(GameTimeout) as cm:
+                    b.send([{"type": "build_bus_line"}], timeout=0.6)
+            self.assertEqual(cm.exception.status, "accettata")
+            self.assertEqual(b.late, {6: mod.seen[0]["nonce"]})
+            time.sleep(1.5)
+            mod.result_delay = 0
+            b.send([{"type": "ping"}], timeout=5)            # la pulizia non deve cancellare il risultato tardivo
+            late = b.take_late_results()
+            self.assertEqual(late[6][0]["type"], "build_bus_line")
+            self.assertEqual(b.take_late_results(), {})       # consegnato una volta sola
+            self.assertEqual(len(mod.seen), 2)                # nessun doppione
+        finally:
+            mod.stop = True
 
     def test_archive(self):
         for fn in (P + "actions_241_ab12.lua", P + "actions_242_cd34.lua", P + "results_9_ff.lua"):
@@ -260,6 +313,30 @@ class TestJournal(Base):
                 self.assertEqual(mod.seen[-1]["actions"][0]["created"]["constructions"], [70])
                 again = main.run_game_tool("undo_last_action", {}, GameBridge(self.dir))
                 self.assertFalse(again["ok"])                        # niente altro da annullare
+        finally:
+            mod.stop = True
+
+    def test_late_result_recorded(self):
+        import json
+        import main
+        created = {"vehicles": [11], "lines": [5], "constructions": [70], "tracks": [], "roads": []}
+        mod = FakeMod(self.dir, reply=lambda a: {"ok": True, "type": a["type"], "created": created},
+                      result_delay=1.5)
+        mod.start()
+        try:
+            b = GameBridge(self.dir)
+            with mock.patch.object(main, "confirm", return_value=True), mock.patch("builtins.print"), \
+                    mock.patch.object(game_bridge, "WITHDRAW_RECHECK", 0.1), \
+                    mock.patch.object(b, "send", wraps=lambda acts, timeout: GameBridge.send(b, acts, 0.6)):
+                r = main.run_game_tool("build_bus_line", {"town_id": 101}, b)
+            self.assertEqual(r["request_status"], "accettata")
+            time.sleep(1.5)
+            with mock.patch("builtins.print"):
+                text = main.deliver_late_results(b)
+            self.assertIn("richiesta 6 (build_bus_line)", text)
+            entries = json.load(open(os.path.join(self.data, "journal.json"), encoding="utf-8"))
+            self.assertEqual(entries[0]["created"]["constructions"], [70])      # annullabile anche se in ritardo
+            self.assertEqual(main.deliver_late_results(b), "")
         finally:
             mod.stop = True
 

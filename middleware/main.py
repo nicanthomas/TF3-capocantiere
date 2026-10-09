@@ -35,7 +35,7 @@ import time
 from action_log import log_action
 from collaudo import Collaudo, format_report
 from conversation import cached_request, summarize_history, trim_history, validate_args
-from game_bridge import GameBridge, find_entities, overview
+from game_bridge import GameBridge, GameTimeout, find_entities, overview
 from journal import Journal
 from tools import LOCAL_TOOLS, SPENDING_TOOLS, TOOLS, describe_action
 from tools_bozza import format_plan
@@ -82,6 +82,7 @@ MAX_TOOL_ROUNDS = 12           # limite di sicurezza ai giri di tool per una sin
 MAX_TURNS = 8                  # turni di conversazione tenuti per intero (i piu' vecchi diventano un riassunto)
 UNDO_PHASE_PAUSE = 3.0         # secondi tra le fasi di "annulla" (il gioco deve elaborare la fase prima)
 MAX_AUTO_CHECKS = 5            # collaudi automatici (dopo 1-2 mesi di gioco) per ogni turno dell'utente
+LATE_INFO: dict[int, tuple[str, dict]] = {}   # richieste accettate dalla mod senza risultato: id -> (tool, argomenti)
 
 SYSTEM_PROMPT = """Sei il "Capo Cantiere" di una partita a Transport Fever 3 (l'anno corrente e' in get_overview:
 la mod sceglie da sola veicoli, binari e stazioni adatti all'epoca).
@@ -172,6 +173,10 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
         results = bridge.send([action], timeout=330)   # la mod aspetta fino a 300 s
     except TimeoutError as e:
         result = {"ok": False, "error": str(e)}
+        if isinstance(e, GameTimeout):
+            result["request_status"] = e.status        # "ritirata" = mai eseguita; "accettata" = non ripetere
+            if e.status == "accettata" and not entry:
+                LATE_INFO[e.req_id] = (name, dict(args))
         _log(bridge, name, args, result, time.time() - t0)
         return result
     result = results[0] if results else {"ok": False, "error": "nessun risultato"}
@@ -218,6 +223,26 @@ def schedule_checks(bridge: GameBridge, name: str, result: dict) -> None:
             Collaudo(bridge.data_folder).add(ids, bridge.state(), action=name)
         except (OSError, RuntimeError) as e:
             print(f"  [avviso] collaudo a distanza non programmato per {ids}: {e}")
+
+
+def deliver_late_results(bridge: GameBridge) -> str:
+    """Risultati arrivati dopo un timeout: li registra nel diario (per poterli annullare) e ritorna il testo da
+    aggiungere al messaggio dell'utente, cosi' Claude sa com'e' finita una richiesta che sembrava persa."""
+    lines = []
+    for req_id, results in sorted(bridge.take_late_results().items()):
+        name, args = LATE_INFO.pop(req_id, ("?", {}))
+        result = results[0] if results else {"ok": False, "error": "nessun risultato"}
+        _log(bridge, name, args, result, 0.0)
+        if isinstance(result, dict) and name != "?":
+            Journal(bridge.data_folder).record(name, args, result)
+            result.pop("created", None)
+            if name not in READ_TOOLS:
+                schedule_checks(bridge, name, result)
+        lines.append(f"richiesta {req_id} ({name}): " + json.dumps(result, ensure_ascii=False)[:600])
+    if not lines:
+        return ""
+    print("\n  [Risultati arrivati in ritardo]\n  " + "\n  ".join(lines))
+    return "\n\n[Risultati arrivati in ritardo dal gioco]\n" + "\n".join(lines)
 
 
 def run_due_checks(bridge: GameBridge) -> str:
@@ -365,6 +390,7 @@ def main() -> None:
         except Exception as e:                           # se il riassunto non riesce, li taglio e basta
             print(f"(riassunto non riuscito: {type(e).__name__}; tengo solo gli ultimi turni)")
             trim_history(messages, MAX_TURNS - 1)
+        text += deliver_late_results(bridge)
         if USE_BOZZA:
             text += run_due_checks(bridge)
         n_before = len(messages)

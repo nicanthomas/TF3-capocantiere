@@ -40,46 +40,47 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**Stato:** inizializzazione del workflow condiviso, 09.10.2026. **Nessuna nuova prova nel gioco effettuata per predisporre questo workflow.** Le attività di sviluppo e i test di gioco più recenti sono descritti in `STATO.md`; verificare commit più nuovi prima di proseguire.
+**Stato:** robustezza del middleware ai timeout completata e pubblicata (solo test automatici). **Nessuna prova in TF3 in questa sessione.**
 
 | Campo | Valore |
 | --- | --- |
-| Ultima AI che ha aggiornato il workflow | ChatGPT |
-| Ultimo aggiornamento | 09.10.2026, Europe/Zurich (configurazione workflow) |
+| Ultima AI che ha aggiornato | Claude (Cowork) |
+| Ultimo aggiornamento | 09.10.2026, Europe/Zurich |
 | Branch di riferimento | `main` |
-| Commit base noto prima di questo aggiornamento | `538957c34e9afeb3e85475444b73575cf7ed8afd` |
-| Commit finale del checkpoint | Controllare `main` su GitHub: il commit che aggiorna questa riga non può includere il proprio SHA in modo affidabile |
-| Obiettivo corrente | Rendere il lavoro riprendibile da una chat vuota, senza intervento manuale sui passaggi |
-| Ultimo passo completato | Preparazione delle regole condivise e del prompt di avvio |
-| Accessi | GitHub: verificato nella sessione di preparazione; PC/TF3: **non verificati** |
-| Modifiche locali non pubblicate | **Sconosciute** per le altre postazioni e AI: non inferire mai «nessuna» dal solo GitHub |
+| Commit base prima di questo aggiornamento | `1055c6f` (09.10.2026-03-Workflow multi AI chat nuove) |
+| Commit finale del checkpoint | Controllare `main` su GitHub (commit `09.10.2026-04-...`) |
+| Obiettivo corrente | Middleware robusto senza gioco, in attesa della prova della console Claude reale con Nicolo' |
+| Ultimo passo completato | Timeout sicuri in `GameBridge.send` + risultati tardivi (vedi STATO.md punto 5a) |
+| Accessi in questa sessione | GitHub: lettura via clone, scrittura via Composio. PC: desktop collegato ma **nessuna cartella e nessun controllo del computer richiesti** (non necessari per questo passo). TF3: non usato |
+| Modifiche locali non pubblicate | Nessuna da parte di questa sessione Claude dopo il commit 04 |
 
 ### Lavoro completato e file modificati
 
-- Workflow condiviso: `HANDOFF.md`, `dev-notes/note/STATO.md` e `README.md` (documentazione, nessun codice di gioco cambiato).
-- Da rileggere: `dev-notes/note/STATO.md` (situazione della v14, collaudi reali e lavoro ancora da fare).
+- `middleware/game_bridge.py`: `GameTimeout` (`status` = `ritirata` / `accettata`), ritiro in `vecchi` dei file azioni non presi dalla mod (al timeout e prima di riusare lo stesso id), `late` + `take_late_results()`, `_cleanup` non cancella i risultati tardivi.
+- `middleware/main.py`: `request_status` nel risultato per Claude, `deliver_late_results()` a ogni turno (registro + diario + collaudo).
+- `middleware/test_middleware.py`: 3 test nuovi (timeout ritirato, file vecchio con lo stesso id, risultato tardivo + diario). Totale 33.
+- `dev-notes/note/STATO.md`: punto 5a.
 
-### Verifiche documentate in questa attività
+### Verifiche
 
 | Verifica | Ambiente | Esito |
 | --- | --- | --- |
-| Lettura dei documenti esistenti su GitHub | Repository | Eseguita |
-| Verifica pubblicazione delle modifiche | GitHub | Da attestare dal commit/branch corrente |
-| Test Python / mock Lua | Non eseguiti per questa modifica solo documentale | Non eseguiti |
-| Transport Fever 3 reale | Nessun accesso al gioco utilizzato | Non eseguito |
+| `python middleware/test_middleware.py` | cloud, senza gioco | 33 OK |
+| `python dev-notes/bozza/run_mock.py` | cloud, mock Lua | 65 OK |
+| CI GitHub Actions | GitHub | controllare l'esito del commit 04 |
+| Transport Fever 3 reale | — | **Non eseguito** |
 
 ### Problemi aperti / rischi
 
-- La documentazione tecnica può evolvere mentre un'AI è disconnessa: verificare sempre HEAD prima di scrivere.
-- Senza accesso al PC non si possono certificare prove in TF3.
-- Se crediti o sessione terminano prima della pubblicazione, il checkpoint può essere incompleto.
+- Il nome del passo CI dice ancora «(30)» in `.github/workflows/test.yml` (solo etichetta; non modificato per non toccare i workflow).
+- Ritiro al timeout: piccola finestra di gara se la mod prende il file proprio mentre viene spostato; coperta dal ricontrollo dopo 2 s (`WITHDRAW_RECHECK`), da verificare in gioco.
+- Console Claude reale (chiave API di Nicolo') e costo per sessione: ancora **non verificati** (STATO.md punto 5).
 
 ### Prossima operazione precisa
 
-1. Verificare il commit HEAD remoto e leggere le parti aggiornate di `dev-notes/note/STATO.md`, soprattutto «Da fare», «Stato del gioco» e «Cause di crash».
-2. Verificare se la v14 con la **console Claude reale** sia già stata provata dopo l'ultimo checkpoint documentato. Non ripetere prove già dimostrate.
-3. Se il gioco e i permessi sono disponibili, continuare con la prossima prova concreta indicata da `STATO.md`; altrimenti dedicarsi alla robustezza del middleware (timeout, gestione dello stato, idempotenza delle richieste), con test senza gioco.
-4. Aggiornare questa sezione con risultati effettivi **prima del passo successivo**.
+1. Con Nicolo' presente: prova della console reale (STATO.md punto 5): `git pull` sul PC, partita «capocantiere v14 prova», `set CAPOCANTIERE_BOZZA=1`, `middleware\avvia_capocantiere.bat`, 3 richieste (lettura, `check_line_fleet`, piccola costruzione), annotare i token. Facoltativo: mettere il gioco nel menu durante una richiesta per vedere il messaggio «RITIRATA».
+2. Senza gioco: numero iniziale di veicoli calcolato alla creazione delle linee (STATO.md 4b «Da fare»), prima nella bozza `b2`/`b7` e nel mock (`run_mock.py`), poi test.
+3. Aggiornare questa sezione prima del passo successivo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

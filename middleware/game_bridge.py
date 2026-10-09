@@ -32,6 +32,15 @@ STEAM_USERDATA_GLOBS = [
     r"C:\Program Files\Steam\userdata\*\3493540\local\mod_presets",
 ]
 FILE_PREFIX = "capocantiere_"
+WITHDRAW_RECHECK = 2.0      # s: dopo aver ritirato una richiesta, ricontrollo che la mod non l'abbia presa
+
+
+class GameTimeout(TimeoutError):
+    """Tempo scaduto. status = "ritirata" (mai eseguita, si puo' riprovare) o "accettata" (non ripetere)."""
+
+    def __init__(self, message: str, req_id: int, status: str):
+        super().__init__(message)
+        self.req_id, self.status = req_id, status
 
 
 def prefix_for(folder: str) -> str:
@@ -75,6 +84,8 @@ class GameBridge:
             self.data_folder = self.folder
         self._state: dict | None = None
         self._state_mtime = 0.0
+        self.late: dict[int, str] = {}              # richieste accettate senza risultato: id -> nonce
+        self.late_results: dict[int, list[dict]] = {}
 
     # ------------------------------------------------------------------ percorsi
     def _path(self, name: str) -> str:
@@ -110,29 +121,100 @@ class GameBridge:
         return int(st.get("lastActionId") or 0) + 1
 
     def send(self, actions: list[dict], timeout: float = 30.0) -> list[dict]:
-        """Scrive actions_<id>.lua e aspetta results_<id>.lua. Ritorna la lista dei risultati."""
+        """Scrive actions_<id>.lua e aspetta results_<id>.lua. Ritorna la lista dei risultati.
+
+        Se il tempo scade solleva GameTimeout con lo stato della richiesta:
+          - "ritirata": la mod non l'aveva presa; il file e' stato spostato in 'vecchi' e NON verra' eseguito
+            (si puo' riprovare senza rischio di doppioni);
+          - "accettata": la mod l'ha gia' presa (lastActionId >= id): l'azione e' stata eseguita o e' in corso
+            nel lato simulazione. NON va ripetuta; il risultato, se arriva, si legge con take_late_results().
+        """
+        self._collect_late()
         req_id = self._next_id()
+        self._withdraw(req_id)                      # un file vecchio con lo stesso id verrebbe scelto al posto di questo
         nonce = secrets.token_hex(4)
-        lua_table.save_userdata(self._path(f"actions_{req_id}_{nonce}"),
-                                {"id": req_id, "nonce": nonce, "actions": actions})
+        ap = self._path(f"actions_{req_id}_{nonce}")
+        lua_table.save_userdata(ap, {"id": req_id, "nonce": nonce, "actions": actions})
         deadline = time.time() + timeout
         rp = self._path(f"results_{req_id}_{nonce}")
         while time.time() < deadline:
             time.sleep(0.5)
-            if not os.path.exists(rp):
-                continue
-            try:
-                res = lua_table.load_userdata(rp)
-            except lua_table.LuaParseError:
-                continue                            # file in scrittura, riprovo
-            if isinstance(res, dict) and res.get("id") == req_id and res.get("nonce") == nonce:
+            res = self._read_result(rp, req_id, nonce)
+            if res is not None:
                 self._wait_state_id(req_id)
                 self._cleanup(req_id)
-                out = res.get("results") or []
-                return out if isinstance(out, list) else list(out.values())
-        raise TimeoutError(
-            f"Nessuna risposta dal gioco in {timeout:.0f} s (richiesta {req_id}). "
-            "La partita e' aperta (non in pausa nel menu) e la mod e' attiva?")
+                return res
+        # tempo scaduto: provo a ritirare la richiesta se la mod non l'ha ancora presa
+        if not self._accepted(req_id) and self._withdraw(req_id, nonce):
+            time.sleep(WITHDRAW_RECHECK)            # la mod potrebbe averla letta proprio mentre la spostavo
+            if not self._accepted(req_id):
+                raise GameTimeout(
+                    f"Nessuna risposta dal gioco in {timeout:.0f} s (richiesta {req_id}): richiesta RITIRATA, "
+                    "non e' stata eseguita. La partita e' aperta (non in pausa nel menu) e la mod e' attiva?",
+                    req_id, "ritirata")
+        res = self._read_result(rp, req_id, nonce)  # arrivata proprio ora?
+        if res is not None:
+            self._cleanup(req_id)
+            return res
+        self.late[req_id] = nonce
+        raise GameTimeout(
+            f"La mod ha accettato la richiesta {req_id} ma il risultato non e' arrivato in {timeout:.0f} s. "
+            "NON ripeterla: potrebbe essere ancora in corso. Controlla lo stato del gioco prima di altre azioni.",
+            req_id, "accettata")
+
+    def _read_result(self, rp: str, req_id: int, nonce: str) -> list[dict] | None:
+        if not os.path.exists(rp):
+            return None
+        try:
+            res = lua_table.load_userdata(rp)
+        except (lua_table.LuaParseError, OSError):
+            return None                             # file in scrittura, riprovo
+        if isinstance(res, dict) and res.get("id") == req_id and res.get("nonce") == nonce:
+            out = res.get("results") or []
+            return out if isinstance(out, list) else list(out.values())
+        return None
+
+    def _accepted(self, req_id: int) -> bool:
+        """La mod segna l'id come eseguito (lastActionId) appena prende il file azioni."""
+        try:
+            return int(self.state().get("lastActionId") or 0) >= req_id
+        except (RuntimeError, OSError, ValueError, lua_table.LuaParseError):
+            return False
+
+    def _withdraw(self, req_id: int, nonce: str | None = None) -> list[str]:
+        """Sposta in 'vecchi' i file actions_<req_id>_* (o solo quello col nonce dato). Non cancella nulla."""
+        pat = re.escape(self.prefix) + rf"actions_{req_id}_" + (re.escape(nonce) if nonce else r"[0-9a-f]+") + r"\.lua"
+        moved = []
+        for fn in sorted(os.listdir(self.folder)):
+            if re.fullmatch(pat, fn):
+                try:
+                    self._move_old(fn)
+                    moved.append(fn)
+                except OSError:
+                    pass                            # gia' preso dalla mod
+        return moved
+
+    def _move_old(self, fn: str) -> None:
+        old_dir = os.path.join(self.folder, self.prefix + "vecchi")
+        os.makedirs(old_dir, exist_ok=True)
+        dst = os.path.join(old_dir, fn)
+        if os.path.exists(dst):
+            dst = os.path.join(old_dir, f"{time.strftime('%Y%m%d_%H%M%S')}_{fn}")
+        os.replace(os.path.join(self.folder, fn), dst)
+
+    def _collect_late(self) -> None:
+        """Legge i risultati arrivati in ritardo per richieste accettate (prima che _cleanup li cancelli)."""
+        for req_id, nonce in list(self.late.items()):
+            res = self._read_result(self._path(f"results_{req_id}_{nonce}"), req_id, nonce)
+            if res is not None:
+                self.late_results[req_id] = res
+                del self.late[req_id]
+
+    def take_late_results(self) -> dict[int, list[dict]]:
+        """Risultati arrivati dopo il timeout (id -> risultati); li consegna una volta sola."""
+        self._collect_late()
+        out, self.late_results = self.late_results, {}
+        return out
 
     def _wait_state_id(self, req_id: int, timeout: float = 5.0) -> None:
         """Aspetta che state.lua riporti lastActionId >= req_id (la mod lo riscrive subito)."""
@@ -151,7 +233,7 @@ class GameBridge:
         """Cancella i file results gia' letti."""
         for fn in os.listdir(self.folder):
             m = re.fullmatch(re.escape(self.prefix) + r"results_(\d+)(_[0-9a-f]+)?\.lua", fn)
-            if m and int(m.group(1)) <= upto:
+            if m and int(m.group(1)) <= upto and int(m.group(1)) not in self.late:
                 try:
                     os.remove(os.path.join(self.folder, fn))
                 except OSError:
@@ -162,14 +244,9 @@ class GameBridge:
         mentre aspetta una risposta). Se restassero, la mod potrebbe eseguirli dopo il caricamento di un
         salvataggio. Li sposto nella sottocartella 'vecchi' (non li cancello)."""
         moved = []
-        old_dir = os.path.join(self.folder, self.prefix + "vecchi")
         for fn in sorted(os.listdir(self.folder)):
             if re.fullmatch(re.escape(self.prefix) + r"actions_\d+(_[0-9a-f]+)?\.lua", fn):
-                os.makedirs(old_dir, exist_ok=True)
-                dst = os.path.join(old_dir, fn)
-                if os.path.exists(dst):
-                    dst = os.path.join(old_dir, f"{time.strftime('%Y%m%d_%H%M%S')}_{fn}")
-                os.replace(os.path.join(self.folder, fn), dst)
+                self._move_old(fn)
                 moved.append(fn)
         return moved
 
@@ -177,7 +254,7 @@ class GameBridge:
         try:
             r = self.send([{"type": "ping"}], timeout=8)
             return bool(r and r[0].get("ok"))
-        except TimeoutError:
+        except TimeoutError:                       # anche GameTimeout
             return False
 
 

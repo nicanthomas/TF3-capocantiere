@@ -18,7 +18,7 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
   Restare dentro i confini della mappa.
 - Crash: la partita e' salvata; chiudere il gioco, riaprirlo e ricaricare da soli (sequenza al punto 4).
 - COMMIT: titolo CORTO `gg.mm.aaaa-NR-Descrizione` (max ~70 caratteri), dettagli nel corpo del messaggio.
-  La GitHub Actions (`.github/workflows/test.yml`) lancia a ogni push i 30 test del middleware, i 65 controlli del
+  La GitHub Actions (`.github/workflows/test.yml`) lancia a ogni push i test del middleware (33 dal 09.10.2026), i 65 controlli del
   mock, `build_script.py --check` (solo avviso) e controlla che la mod nel repo abbia DEV_MODE = false.
 - DEV_MODE (08.10.2026): la mod in `mod/` ha DEV_MODE = false. Sonde e prove richiedono DEV_MODE = true: sul PC di
   prova si installa SEMPRE la copia di `python dev-notes/build_script.py --dev [--bozza]` (dist/tfcapocantiere_1_dev,
@@ -261,6 +261,14 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
    una sessione. DA FARE con Nicolo': `git pull` del repo sul PC, partita "capocantiere v14 prova" aperta,
    `set CAPOCANTIERE_BOZZA=1` e `middleware\avvia_capocantiere.bat`; 3 richieste di prova (una lettura, un
    check_line_fleet, una piccola costruzione) e annotare i token stampati dalla console.
+5a. **FATTO 09.10.2026 (Claude, solo test senza gioco)**: robustezza del middleware ai timeout (`game_bridge.py`).
+    Prima un timeout lasciava il file azioni nella cartella: la mod poteva eseguirlo piu' tardi (es. ripresa dal menu)
+    e una seconda richiesta con lo stesso id creava due file `actions_<id>_*` (la mod ne sceglie uno a caso).
+    Ora: prima di scrivere si ritirano in `vecchi` i file con lo stesso id; al timeout, se `lastActionId` < id, il file
+    viene ritirato (`GameTimeout.status = "ritirata"`, si puo' riprovare); se la mod l'aveva gia' preso,
+    `status = "accettata"` (non ripetere) e il risultato tardivo non viene cancellato da `_cleanup`: `main.py` lo
+    consegna a Claude al turno dopo (`deliver_late_results`) e lo registra nel diario (annullabile). Test: 33 OK.
+    NON provato in TF3.
 5b. Novita' TF3 da aggiungere dopo la v14 (ognuna: prima sonda o copia di una costruzione fatta a mano):
     - potenziatori di produzione (lavoratori, fertilizzanti...): leggere quali beni potenziano quale industria;
       Claude propone e, su richiesta, costruisce la catena (e' una linea merci normale);
