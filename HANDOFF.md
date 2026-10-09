@@ -48,13 +48,17 @@ Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_scr
 | Ultima AI che ha aggiornato | Claude (Cowork) |
 | Branch | solo `main` (le branch `lavoro/flotta-iniziale` e `lavoro/avvio-con-gioco` sono unite; PR #2 chiusa) |
 | Mod nel repo | `v14-bozza-399dcf74` (DEV_MODE false) = v14 + numero iniziale di veicoli |
-| PC / gioco (09.10 ~17:50) | installata `v14-bozza-32c86032` (senza flotta iniziale); partita "capocantiere v14 prova" aperta in pausa; console MAI avviata con la v14 |
+| PC / gioco (09.10 ~18:30) | mod installata `v14-bozza-32c86032` (senza flotta iniziale); middleware sul PC in `<dati TF3>\local\capocantiere\middleware` aggiornato a main (backup in `capocantiere\backup\middleware_09.10.2026`); Steam avvia la console con il gioco |
+
+### Provato su Windows il 09.10.2026
+
+- Avvio con il gioco (`avvia_con_gioco.bat` nelle Opzioni di avvio di Steam): la console si apre con il gioco, aspetta
+  nel menu e scrive "console pronta" quando si carica la mappa con la mod. Da verificare: chiusura con il gioco.
+- `avvia_capocantiere.bat` attiva da solo le azioni v14 (`CAPOCANTIERE_BOZZA=1`) se la mod installata e' una "bozza"
+  (non ancora provato).
 
 ### Unito in main, NON ancora provato su Windows/TF3
 
-- Avvio con il gioco: `middleware/avvia_con_gioco.bat` (Opzioni di avvio di Steam:
-  `"...\middleware\avvia_con_gioco.bat" %command%`) + `wait_for_mod` in `main.py` (console in attesa finche' la mappa
-  caricata non ha la mod attiva; si chiude con il gioco).
 - Numero iniziale di veicoli alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet`, ex branch flotta).
 - Middleware: timeout sicuri e risultati tardivi (commit 04).
 
