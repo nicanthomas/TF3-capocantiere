@@ -1,5 +1,9 @@
 # Capo Cantiere – LLM per Transport Fever 3
 
+## Ripresa sviluppo da chat vuota (Claude o ChatGPT)
+
+Se sei un'AI che deve continuare lo sviluppo, apri **[HANDOFF.md](HANDOFF.md)** e poi **[STATO.md](dev-notes/note/STATO.md)**. Il checkpoint va aggiornato e pubblicato dopo ogni passo significativo, **senza attendere un avviso di cambio AI o chat**. Per iniziare una chat completamente nuova usa il **prompt unico** riportato in fondo a `HANDOFF.md`. Queste istruzioni valgono per Claude, ChatGPT e nuove conversazioni della stessa AI; non conferiscono automaticamente accesso a Windows o a TF3.
+
 Dai ordini in italiano ("fammi una linea bus a Lanusei", "collega la cava di argilla al mattonificio")
 e Claude li traduce in costruzioni nel gioco.
 
