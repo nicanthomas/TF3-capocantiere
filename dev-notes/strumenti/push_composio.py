@@ -16,7 +16,8 @@ def push(B, msg, E, owner='nicanthomas', repo='TF3-capocantiere', branch='main')
         if not os.path.exists(p): dels.append(f); continue
         got = subprocess.run(['git', 'hash-object', f], cwd=d, capture_output=True, text=True).stdout.strip()
         if got != h: return f'hash diverso {f}: {got} != {h}'
-        ups.append({'path': f, 'content': open(p, encoding='utf-8').read(), 'encoding': 'utf-8'})
+        # binario + base64: in testo Python trasformava CRLF in LF (09.10.2026: .bat pubblicato con fine riga sbagliati)
+        ups.append({'path': f, 'content': base64.b64encode(open(p, 'rb').read()).decode(), 'encoding': 'base64'})
     args = {'owner': owner, 'repo': repo, 'branch': branch, 'message': msg, 'upserts': ups}
     if dels: args['deletes'] = dels
     res, err = run_composio_tool('GITHUB_COMMIT_MULTIPLE_FILES', args)
