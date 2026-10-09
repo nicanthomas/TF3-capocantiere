@@ -129,7 +129,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 - Poi caricata la "partita vuota di test" (dalla chat: nel salvataggio va disattivata la mod mancante "Scania R-Series -
   Base set", Mod -> filtro Mancanti -> Disattiva tutto). lastActionId era 0. id 1 = p23, id 2 = lettura: prossimo id 3.
 - **09.10.2026 mattina**: partita "partita vuota di test" ancora aperta (mai ricaricata: i salvataggi automatici delle
-  18:30 sono stati sovrascritti, restano solo quelli della notte). Ultimo id usato: **88**. Resti delle prove: binari
+  18:30 sono stati sovrascritti, restano solo quelli della notte). Ultimo id usato: **121**. Resti delle prove: binari
   spezzati di strade (innocui); p4, p14, p37 lasciati in gioco (linee funzionanti).
 - Il permesso di controllo del PC **scade dopo 30 minuti senza azioni sul PC** (e a volte si perde quando il
   collegamento si riconnette): rifarlo (resolve + request) solo quando serve davvero, perche' la richiesta resta
@@ -205,14 +205,31 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     le linee merci usano quelle invece di costruire scali (meno costruzioni, meno rischio di crash).
 2. **FATTO 09.10.2026**: p4 (mancava `CC.cargoFor`, aggiunta in b3) e p14 (binari d'attesa facoltativi: se non c'e'
    spazio, un treno solo con avviso). Segnali: id provvisorio dell'oggetto = -400000000 - posizione 0-based (p39).
-3. Porto (p21), deposito navale; doppio binario con segnali (p13; prima piazzare un segnale a mano e leggerlo con s8).
-4. p3/p8 (aggiungi/sostituisci veicoli, allunga linea); far correre il gioco e verificare che i veicoli si muovano.
-4b. Flotta on-demand (sezione 2b): costruire una linea bus, far correre il gioco, sonda s23; poi numero iniziale
-    di veicoli calcolato alla creazione e strumento `adjust_line_fleet` (solo su richiesta, nessun ciclo automatico).
-4c. Puntualita' delle consegne (novita' TF3): allargare la sonda s23 ai dati di ritardo/puntualita' e usarli in
-    "adegua i veicoli della linea X" (solo su richiesta).
-5. Build v14: `python dev-notes/build_script.py --bozza` (aggiorna mod/, poi `--check` deve dare OK), e per il PC di
-   prova `--dev --bozza`; backup v13, installazione in mods, prova col middleware (contatore token: misurare il costo).
+3. **IN SOSPESO (09.10.2026)**: porto (p21, p40-p43): `harbor_modular.con` con i 5 moduli copiati dal porto di terzi
+   viene RIFIUTATO senza messaggi (verifica a secco ok, nessuna collisione, ~866k di costo), in ogni orientamento,
+   quota (terreno, 2, 0) e distanza dalla riva. Senza moduli si costruisce ma resta senza stazione; senza il molo
+   `small_pier` (solo banchina + ingresso) si costruisce, ma 0 stazioni. Serve un porto FATTO A MANO da Nicolo' su
+   questa mappa, poi la sonda s6 per copiarne moduli e posizione rispetto alla riva. Doppio binario con segnali (p13):
+   da rifare con i segnali ora funzionanti.
+4. **FATTO 09.10.2026**: p2 (bus tra citta'), p3 (aggiungi/togli/sostituisci veicoli), p8 (allunga linea: nella 40420
+   `lc.stops` e' in sola lettura -> linea nuova `api.type.Line.new()` con tutte le fermate + `makeLineUpdateCmd`).
+   Gioco fatto correre con `api.cmd.makeGameSetSpeedCmd(4)` da `lua_eval` (0 = pausa): i veicoli si muovono.
+4b. **FATTO 09.10.2026** (s23, s36, p44): `SIM_ACTIONS.adjust_line_fleet` (b2) misura il giro dai tempi delle tratte
+    dei veicoli (`TRANSPORT_VEHICLE.sectionTimes`, secondi; 0 = non ancora misurata) e calcola i veicoli per un passaggio
+    ogni `interval` s; `apply` compra/vende la differenza; treni solo con `force`. Middleware: tool `check_line_fleet`
+    (lettura) e `adjust_line_fleet` (con conferma) in `tools_bozza.py`. Altre funzioni utili trovate:
+    `api.engine.util.line.getMaxFrequency`, `calcLineStationThroughput`, `getLineCapacityUsages`,
+    `api.engine.util.vehicle.getVehicleCapacities`, `transportVehicleSystem.getLineCargoInfo`.
+    Da fare: numero iniziale di veicoli calcolato alla creazione delle linee.
+4c. Puntualita' delle consegne (novita' TF3): s23 NON ha trovato funzioni di ritardo/puntualita' in
+    `api.engine.util.line` (nessun nome con Delay/Punctual/Late/Schedule). Da cercare altrove (componenti delle
+    industrie o della linea) con una sonda dedicata.
+5. **FATTO IN PARTE 09.10.2026**: build v14 (`v14-bozza-1db6fb1e`): `mod/` aggiornata con la bozza (`--check` OK),
+   copia `--dev --bozza` INSTALLATA sul PC di prova (backup della mod di prima:
+   `capocantiere.script.lua.bak_20261009_v13patch` nella cartella della mod; non serve piu' la patch `ensureDir`), zip
+   `--release` creato in locale (dist/ non e' nel repo). La v14 si attiva al prossimo caricamento della partita.
+   DA FARE con Nicolo': caricare la partita, controllare che la mod parta (state.lua con `modVersion`), provare il
+   middleware con `CAPOCANTIERE_BOZZA=1` e misurare il costo di una sessione (contatore token) per il README.
 5b. Novita' TF3 da aggiungere dopo la v14 (ognuna: prima sonda o copia di una costruzione fatta a mano):
     - potenziatori di produzione (lavoratori, fertilizzanti...): leggere quali beni potenziano quale industria;
       Claude propone e, su richiesta, costruisce la catena (e' una linea merci normale);

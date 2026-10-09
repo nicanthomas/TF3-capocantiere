@@ -160,6 +160,11 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
     else:
         action = {"type": name}
         action.update(args)
+        if name == "check_line_fleet":                 # stessa azione della mod, solo proposta
+            action["type"] = "adjust_line_fleet"
+            action["apply"] = False
+        elif name == "adjust_line_fleet":
+            action["apply"] = True
     if name not in READ_TOOLS:
         print("  (in costruzione: puo' richiedere fino a qualche minuto...)")
     t0 = time.time()

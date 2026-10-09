@@ -66,7 +66,13 @@ function CC.placeTemplate(tpl, x, y, dx, dy, name)
 	local ok, res, ents = CC.send(cmd)
 	if not ok then
 		local pe = CC.proposalErrors(res)
-		return false, "rifiutata: " .. table.concat(pe.msg, "; ") .. (#pe.coll > 0 and (" (" .. #pe.coll .. " collisioni)") or "")
+		local extra = ""
+		-- (09.10.2026: p21 dava "rifiutata: " vuoto) eccezione del comando e messaggi della verifica a secco
+		if CC._last and CC._last.exception then extra = " eccezione: " .. CC._last.exception end
+		local okD, dinf = CC.dryRun(prop)
+		if dinf and dinf.msg and #dinf.msg > 0 then extra = extra .. " verifica: " .. table.concat(dinf.msg, "; ") end
+		if dinf and dinf.exception then extra = extra .. " verifica: " .. dinf.exception end
+		return false, "rifiutata: " .. table.concat(pe.msg, "; ") .. (#pe.coll > 0 and (" (" .. #pe.coll .. " collisioni)") or "") .. extra
 	end
 	local out = { groups = {}, depots = {} }
 	for _, e in ipairs(ents or {}) do

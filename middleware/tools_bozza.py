@@ -12,11 +12,11 @@ SPENDING_TOOLS_BOZZA = {
     "delete_line", "extend_line", "build_cargo_rail_line", "build_air_or_water_line", "build_highway",
     "undo_last_action",
     "build_depot", "build_rail_line2", "build_rail_ring", "build_cargo_rail_network", "create_line_from_stations",
-    "build_rail_station",
+    "build_rail_station", "adjust_line_fleet",
 }
 
 # Tool della bozza che leggono soltanto (nessuna conferma): vanno comunque al gioco.
-READ_TOOLS_BOZZA = {"check_line", "check_network", "read_map"}
+READ_TOOLS_BOZZA = {"check_line", "check_network", "read_map", "check_line_fleet"}
 
 # Tool gestiti dal middleware senza il gioco.
 LOCAL_TOOLS_BOZZA = {"propose_plan"}
@@ -206,6 +206,23 @@ TOOLS_BOZZA = [
             "notes": {"type": "string"}}, "required": ["steps"]},
     },
     {
+        "name": "check_line_fleet",
+        "description": ("Controlla quanti veicoli servono a una linea: tempo di un giro misurato dai veicoli (serve che "
+                        "abbiano gia' fatto un giro), passaggio attuale e numero di veicoli per un passaggio ogni "
+                        "`interval` secondi (default: bus 240, camion 300, treni 480). Solo lettura: propone, non compra."),
+        "input_schema": {"type": "object", "properties": {
+            "line_id": _ID, "interval": {"type": "number", "minimum": 60, "maximum": 3600},
+            "max": {"type": "integer", "minimum": 1, "maximum": 20}}, "required": ["line_id"]},
+    },
+    {
+        "name": "adjust_line_fleet",
+        "description": ("Come check_line_fleet, ma compra o vende la differenza. Solo se l'utente lo chiede. Treni: non "
+                        "aggiunge da solo (binario unico) salvo force=true. Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "line_id": _ID, "interval": {"type": "number", "minimum": 60, "maximum": 3600},
+            "max": {"type": "integer", "minimum": 1, "maximum": 20}, "force": {"type": "boolean"}}, "required": ["line_id"]},
+    },
+    {
         "name": "undo_last_action",
         "description": ("Annulla l'ultima azione che ha costruito qualcosa: vende i veicoli, cancella le linee, toglie "
                         "stazioni, depositi e binari creati. Le strade cittadine modificate restano. Chiede conferma."),
@@ -217,7 +234,9 @@ SYSTEM_PROMPT_BOZZA = """
 Azioni in prova (bozza): build_intercity_bus, connect_station_to_town, add_vehicles, remove_vehicles, replace_vehicles,
 delete_line, extend_line, build_cargo_rail_line, build_air_or_water_line, build_highway, undo_last_action, build_depot,
 build_rail_line2, build_rail_ring, build_cargo_rail_network, create_line_from_stations, build_rail_station, check_line,
-check_network, read_map, propose_plan.
+check_network, read_map, propose_plan, check_line_fleet, adjust_line_fleet.
+Flotta: solo su richiesta dell'utente ("adegua i veicoli della linea X"): prima check_line_fleet, poi, se l'utente
+approva, adjust_line_fleet. Nessun controllo o acquisto automatico.
 Sono nuove: se una fallisce riporta l'errore esatto all'utente. Dopo una ferrovia passeggeri, se la stazione e' lontana
 dal centro, proponi connect_station_to_town per creare il nodo di scambio con il bus.
 
@@ -284,6 +303,9 @@ def describe_bozza(name: str, args: dict, n) -> str | None:
         return (f"Linea {args.get('pattern', 'back_forth')} su " + " - ".join(n(i) for i in args["station_ids"])
                 + f" con {args.get('count', 2)} veicoli {args.get('vehicle', 'auto')}"
                 + (f" ({args['cargo']})" if args.get("cargo") else ""))
+    if name == "adjust_line_fleet":
+        return (f"Adeguare i veicoli della linea {n(args['line_id'])} (passaggio ogni {args.get('interval', 'standard')} s"
+                + (", anche treni" if args.get("force") else "") + ")")
     if name == "build_rail_station":
         return f"Stazione {args.get('kind', 'passengers')} vicino a {n(args['near_id'])}" + (
             " collegata al binario piu' vicino" if args.get("connect", True) else "")

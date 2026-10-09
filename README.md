@@ -35,13 +35,29 @@ Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
 | `connect_industry_to_city` | Merci su strada industria → industria o citta' | Provato in gioco (1900 e 2300) |
 | `build_rail_line` | Stazioni a 2 binari con scambi, binari con passaggi a livello, sovrappassi, sottopassi, ponti e gallerie, deposito, linea e treni tra 2+ citta' | Provato in gioco (1900 e 2300) |
 
+Azioni della v14 (bozza: si attivano con `CAPOCANTIERE_BOZZA=1` e la mod costruita con `--bozza`), provate in gioco
+sulla build 40420 (08-09.10.2026):
+
+| Tool | Cosa fa | Stato |
+|---|---|---|
+| `build_intercity_bus` | Bus tra citta' vicine | Provato (collaudo ok) |
+| `add_vehicles`, `remove_vehicles`, `replace_vehicles` | Veicoli di una linea | Provati |
+| `extend_line` | Allunga una linea su strada fino a un'altra citta' | Provato (build 40420) |
+| `check_line_fleet`, `adjust_line_fleet` | Veicoli necessari per un passaggio ogni N secondi (solo su richiesta) | Provati |
+| `connect_industry_to_city` | Usa la stazione per camion INTEGRATA dell'industria (novita' TF3) | Provato |
+| `build_cargo_rail_line` | Treno merci industria -> industria (scalo vicino alla stazione integrata) | Provato (collaudo ok) |
+| `build_cargo_rail_network` | Rete merci, binari d'attesa se c'e' spazio (altrimenti 1 treno, con avviso) | Provato (collaudo ok) |
+| `build_rail_ring` | Anello ferroviario a binario unico (incrocio nelle stazioni); `double_track` ancora instabile | Binario unico provato |
+| `build_air_or_water_line` | Aerei ed elicotteri provati; navi: porto rifiutato (molo da copiare da un porto fatto a mano) | Parziale |
+| Segnali (interni) | Segnali di percorso a senso unico e a doppio senso sui binari | Provati |
+
 Ogni azione che costruisce o compra chiede conferma prima di essere inviata.
 
 ## Requisiti
 
 Il progetto e' pensato **solo per Windows con Steam** (percorsi, file `.bat`, `setx`):
 
-- Transport Fever 3 (versione Steam, provato con la build 40408), partita in modalita' creativa consigliata;
+- Transport Fever 3 (versione Steam, provato con le build 40408 e 40420), partita in modalita' creativa consigliata;
 - Python 3.10+ con il pacchetto `anthropic`;
 - una chiave API Anthropic (variabile d'ambiente `ANTHROPIC_API_KEY`);
 - modello: configurabile in `middleware/main.py` (`MODEL`); oggi `claude-sonnet-5-5`. Il costo medio di una

@@ -117,6 +117,69 @@ SIM_ACTIONS.remove_vehicles = function(a)
 	return { ok = sold == n, sold = sold, left = #vs - sold, errors = errs }
 end
 
+-- Flotta ON-DEMAND (punto 4b, solo su richiesta di Nicolo'): numero di veicoli per avere un passaggio ogni
+-- `interval` secondi. Giro misurato dai tempi delle tratte dei veicoli (TRANSPORT_VEHICLE.sectionTimes, VERIFICATO s36
+-- 09.10.2026: secondi per tratta, 0 = non ancora misurata). apply = true: compra/vende la differenza; altrimenti propone.
+-- Treni: niente aggiunte automatiche (binario unico: si bloccherebbero) salvo force = true.
+CC.FLEET_INTERVAL = CC.FLEET_INTERVAL or { bus = 240, tram = 240, truck = 300, train = 480, waggon = 480, ship = 900, plane = 900, helicopter = 600 }
+SIM_ACTIONS.adjust_line_fleet = function(a)
+	CC.need(a, { line_id = "int", interval = "num?", apply = "bool?", max = "int?", force = "bool?" })
+	local CT = api.type.ComponentType
+	local vs = CC.lineVehicles(a.line_id)
+	if #vs == 0 then return { ok = false, error = "la linea non ha veicoli" } end
+	local nStops = #(CC.lineGroups(a.line_id) or {})
+	-- media per tratta dei tempi misurati
+	local sum, cnt = {}, {}
+	for _, v in ipairs(vs) do
+		local tv = CC.comp(v, CT.TRANSPORT_VEHICLE)
+		local st = tv and tv.sectionTimes
+		pcall(function()
+			for i, t in ipairs(st) do
+				if t and t > 0 then sum[i] = (sum[i] or 0) + t; cnt[i] = (cnt[i] or 0) + 1 end
+			end
+		end)
+	end
+	local rtt, missing = 0, 0
+	for i = 1, math.max(nStops, 1) do
+		if cnt[i] and cnt[i] > 0 then rtt = rtt + sum[i] / cnt[i] else missing = missing + 1 end
+	end
+	local models = CC.vehicleModels(vs[1])
+	local folder = models[1] and CC.modelFolder(models[1]) or "?"
+	local interval = a.interval or CC.FLEET_INTERVAL[folder] or 300
+	local out = { vehicles = #vs, folder = folder, interval_target = interval, stops = nStops }
+	if missing > 0 then
+		out.ok = false
+		out.error = "tempi del giro non ancora misurati (" .. missing .. " tratte su " .. nStops .. "): far correre il gioco finche' i veicoli hanno fatto un giro intero"
+		return out
+	end
+	local target = math.max(1, math.min(a.max or 20, math.ceil(rtt / interval)))
+	out.round_trip_s = math.floor(rtt)
+	out.interval_now_s = math.floor(rtt / #vs)
+	out.target = target
+	out.change = target - #vs
+	if (folder == "train" or folder == "waggon") and out.change > 0 and not a.force then
+		out.note = "treni: non ne aggiungo da solo (su binario unico si bloccano); con binari d'incrocio o doppio binario usare force = true"
+		out.change_applied = 0
+		out.ok = true
+		return out
+	end
+	if a.apply and out.change ~= 0 then
+		if out.change > 0 then
+			local r = SIM_ACTIONS.add_vehicles({ line_id = a.line_id, count = out.change })
+			out.applied = r
+		else
+			local r = SIM_ACTIONS.remove_vehicles({ line_id = a.line_id, count = -out.change })
+			out.applied = r
+		end
+		out.ok = out.applied and out.applied.ok
+	else
+		out.ok = true
+		out.proposal = (out.change == 0) and "numero di veicoli adeguato"
+			or ((out.change > 0 and ("aggiungere " .. out.change) or ("togliere " .. -out.change)) .. " veicoli (passaggio ogni " .. math.floor(rtt / target) .. " s invece di " .. out.interval_now_s .. " s)")
+	end
+	return out
+end
+
 -- Modello nuovo per un pezzo di veicolo: stesso tipo (cartella), il piu' recente adatto.
 local function newerModel(oldId, catenary)
 	local folder = CC.modelFolder(oldId)
@@ -214,8 +277,15 @@ SIM_ACTIONS.extend_line = function(a)
 	local st = api.type.Line.Stop.new()
 	st.stationGroup = g; st.station = 0; st.terminal = 0
 	stops[#stops + 1] = st
-	lc.stops = stops
-	local ok = CC.send(api.cmd.makeLineUpdateCmd(a.line_id, lc))
+	-- build 40420: lc.stops e' in sola lettura (VERIFICATO p8 09.10.2026: "cannot write to read only member 'stops'"):
+	-- linea nuova con tutte le fermate, poi makeLineUpdateCmd
+	local line = api.type.Line.new()
+	line.stops = stops
+	pcall(function() line.waitingTime = lc.waitingTime end)
+	pcall(function() line.vehicleInfo = lc.vehicleInfo end)
+	local okC, cmd = pcall(api.cmd.makeLineUpdateCmd, a.line_id, line)
+	if not okC then return { ok = false, error = "comando di modifica della linea: " .. tostring(cmd):sub(1, 120) } end
+	local ok = CC.send(cmd)
 	local after = CC.lineGroups(a.line_id) or {}
 	return { ok = ok and #after == #groups + 1, stops_before = #groups, stops_after = #after, new_stop = g }
 end

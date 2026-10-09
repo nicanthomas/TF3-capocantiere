@@ -316,7 +316,7 @@ class TestBozzaTools(unittest.TestCase):
             "add_vehicles": {"line_id": 1, "count": 2}, "remove_vehicles": {"line_id": 1, "count": 1},
             "replace_vehicles": {"line_id": 1}, "delete_line": {"line_id": 1}, "extend_line": {"line_id": 1, "town_id": 2},
             "build_cargo_rail_line": {"industry_id": 1, "target_id": 2}, "build_air_or_water_line": {"town_ids": [1, 2], "kind": "harbor"},
-            "build_highway": {"town_ids": [1, 2]}, "undo_last_action": {},
+            "build_highway": {"town_ids": [1, 2]}, "undo_last_action": {}, "check_line_fleet": {"line_id": 1}, "adjust_line_fleet": {"line_id": 1, "interval": 200},
             "build_depot": {"kind": "rail", "station_id": 4},
             "build_rail_line2": {"town_ids": [1, 2, 3], "double_track": True, "express_town_ids": [1, 3]},
             "build_rail_ring": {"town_ids": [1, 2, 3, 4]},

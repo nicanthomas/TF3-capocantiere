@@ -106,3 +106,10 @@ Lezioni:
   alla stazione 1 impossibile (400 m dritti rifiutati) -> ora si prova 400/250/160 m, poi si va avanti con un treno.
 - id 81-88, segnali: **p39/p38 OK** dopo la correzione dell'id provvisorio dell'oggetto (-400000000 - indice 0-based);
   5 segnali a doppio senso ogni 400 m sulla linea di p14.
+- id 89-107: porto (p21, p40-p43): rifiutato senza messaggi con i moduli copiati; vedi STATO punto 3.
+- id 108-113: **p2 OK** (bus Afforte-Abriola, linea 89994), **p3 OK**, **p8 OK** dopo la correzione di `extend_line`
+  (linea allungata a Stern, 3 fermate).
+- id 114-121: gioco fatto correre (velocita' 4 da `lua_eval`), s23/s36 (dati della flotta), **p44 OK**:
+  `adjust_line_fleet` propone +3 bus sulla linea 89994 (giro 1105 s), camion e treno adeguati; applicato con intervallo
+  200 s: 4 bus comprati.
+- v14 dev (`v14-bozza-1db6fb1e`) installata nella cartella della mod (attiva al prossimo caricamento).
