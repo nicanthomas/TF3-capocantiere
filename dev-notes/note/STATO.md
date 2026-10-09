@@ -128,6 +128,12 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   Ultimo id usato sulla partita di terzi: 10 (non salvata).
 - Poi caricata la "partita vuota di test" (dalla chat: nel salvataggio va disattivata la mod mancante "Scania R-Series -
   Base set", Mod -> filtro Mancanti -> Disattiva tutto). lastActionId era 0. id 1 = p23, id 2 = lettura: prossimo id 3.
+- **09.10.2026 mattina**: partita "partita vuota di test" ancora aperta (mai ricaricata: i salvataggi automatici delle
+  18:30 sono stati sovrascritti, restano solo quelli della notte). Ultimo id usato: **88**. Resti delle prove: binari
+  spezzati di strade (innocui); p4, p14, p37 lasciati in gioco (linee funzionanti).
+- Il permesso di controllo del PC **scade dopo 30 minuti senza azioni sul PC** (e a volte si perde quando il
+  collegamento si riconnette): rifarlo (resolve + request) solo quando serve davvero, perche' la richiesta resta
+  in attesa finche' Nicolo' non risponde.
 ## 6. Cosa funziona (provato in gioco)
 | Funzione | Prova | Note |
 |---|---|---|
@@ -140,6 +146,10 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 | Collaudo linee (percorsi, veicoli, deposito, bacino) | p15/s14 | 93/94 sulla rete di terzi |
 | Annulla a fasi (veicoli -> binari -> costruzioni) | mock + middleware | evita il crash dell'hangar |
 | Confini mappa `CC.mapBox` / `CC.inMap` | s20, s21 | -8192..8192 su questa mappa |
+| Linea merci su strada con le stazioni INTEGRATE delle industrie (`connect_industry_to_city`) | p37 | 09.10, collaudo ok |
+| Treno merci industria -> industria (`build_cargo_rail_line`) | p4 | 09.10, collaudo ok (5944 m) |
+| Rete merci (`build_cargo_rail_network`), binario d'attesa facoltativo | p14 | 09.10, collaudo ok, 1 treno |
+| Segnali da script a senso unico e a doppio senso (`CC.placeSignals`/`CC.addSignals`) | p34, p38, p39 | 09.10: 5 segnali su una linea |
 
 ## 7. Da fare (in ordine)
 0. **FATTO 08.10.2026** (risultati in `dev-notes/schemi_terzi/`). Era: studio COMPLETO del salvataggio di terzi (accesso UNA SOLA VOLTA, sola lettura). Nel primo studio (07.10)
@@ -181,10 +191,20 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
        2 linee (una per senso), piu' treni per senso; collaudo e far correre il gioco;
     3. opzione B: binario unico + `CC.buildPassingLoop` (b6) fuori dalle stazioni, con segnali agli scambi.
     Ripiego senza segnali: binario unico con stazioni a 2 binari (incrocio in stazione), valido con pochi treni.
-1b. **Stazioni integrate nei siti industriali (novita' TF3)**: sonda (sola lettura) per capire se le industrie hanno
+    **Stato 09.10.2026 mattina**: binario 2 parallelo con strade spezzate nella stessa proposta (OK: 7 strade
+    spezzate), lati degli estremi decisi sulle direzioni vere (`linkDouble`); il binario 1 pero' si costruisce solo a
+    volte (5,2-5,8 km con 21-41 ponti: "Curvatura eccessiva"/"Costruzione non consentita" a seconda degli estremi) e il
+    parallelo urta altre strade di campagna. DA RIPRENDERE con una mappa pulita; intanto l'anello a binario unico
+    (incrocio nelle stazioni, p12/p24/p25) resta la soluzione che funziona, ora con i segnali disponibili.
+1b. **FATTO 09.10.2026 (s35 + p37)**: ogni industria a terra ha una stazione per CAMION integrata (non del giocatore);
+    piattaforme petrolifere e aree di pesca hanno stazioni per NAVI (e un eliporto); nessuna stazione ferroviaria
+    integrata. `connect_industry_to_city` le usa gia' (p37 ok). Per i treni: scalo merci cercato vicino alla stazione
+    integrata (`CC.industryAnchor`), non al centro dell'industria (per le fattorie era troppo lontano).
+    Era: **Stazioni integrate nei siti industriali (novita' TF3)**: sonda (sola lettura) per capire se le industrie hanno
     gia' una stazione propria utilizzabile in una linea (gruppo/stazione/terminali, mezzi serviti, bacino). Se si':
     le linee merci usano quelle invece di costruire scali (meno costruzioni, meno rischio di crash).
-2. Se tiene: p4 (treno merci industria -> industria, `build_cargo_rail_line`) e p14 (rete merci).
+2. **FATTO 09.10.2026**: p4 (mancava `CC.cargoFor`, aggiunta in b3) e p14 (binari d'attesa facoltativi: se non c'e'
+   spazio, un treno solo con avviso). Segnali: id provvisorio dell'oggetto = -400000000 - posizione 0-based (p39).
 3. Porto (p21), deposito navale; doppio binario con segnali (p13; prima piazzare un segnale a mano e leggerlo con s8).
 4. p3/p8 (aggiungi/sostituisci veicoli, allunga linea); far correre il gioco e verificare che i veicoli si muovano.
 4b. Flotta on-demand (sezione 2b): costruire una linea bus, far correre il gioco, sonda s23; poi numero iniziale
@@ -212,4 +232,6 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   xx = -10..20, `tracks=1, length=3, specialization=1`. Altre misure: prima copiarle da uno scalo fatto a mano (s22).
 - Togliere binari insieme alla stazione collegata, o vendere veicoli insieme al deposito, nella stessa chiamata.
 - File azioni rimasti dopo una ricarica (vedi punto 2).
+- Segnali: `comp.objects` con id provvisorio diverso da -400000000 - (indice 0-based in edgeObjectsToAdd) ->
+  "Unknown exception" nel comando (non crash, ma nessun segnale).
 - Piu' prove rischiose nello stesso file: non si capisce quale ha causato il crash.

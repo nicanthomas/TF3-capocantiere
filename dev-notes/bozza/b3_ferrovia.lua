@@ -110,11 +110,26 @@ function CC.linkStations(stations, log, builtEdges, built, loco, opts)
 		used[ea.node] = true; used[eb.node] = true
 		for _, w in ipairs({ { i, "a" }, { i + 1, "b" } }) do
 			if opts.waitLoops and opts.waitLoops[w[1]] then
-				local okW, W = CC.buildPassingLoop(w[2] == "a" and ea or eb, opts.waitLen)
-				if not okW then return false, "binario d'attesa alla stazione " .. w[1] .. ": " .. tostring(W.error) end
-				for _, e in ipairs(W.edges) do builtEdges[#builtEdges + 1] = e end
-				if w[2] == "a" then ea = W.exit else eb = W.exit end
-				log[#log + 1] = "binario d'attesa fuori dalla stazione " .. w[1] .. (W.warning and (" (" .. W.warning .. ")") or "")
+				-- piu' lunghezze; se non c'e' spazio si va avanti SENZA binario d'attesa (avviso: un treno solo)
+				-- (VERIFICATO p14 09.10.2026: 400 m dritti fuori dallo scalo -> "prolungamento rifiutato")
+				local okW, W
+				for _, wl in ipairs({ opts.waitLen or 400, 250, 160 }) do
+					okW, W = CC.buildPassingLoop(w[2] == "a" and ea or eb, wl)
+					if okW then break end
+					-- pezzi gia' fatti (diramazione, un ramo): via subito, cosi' l'estremo della stazione torna libero
+					if W.edges and #W.edges > 0 and not CC.removeEdges(W.edges) then
+						for _, e in ipairs(W.edges) do builtEdges[#builtEdges + 1] = e end
+						break
+					end
+				end
+				if okW then
+					for _, e in ipairs(W.edges) do builtEdges[#builtEdges + 1] = e end
+					if w[2] == "a" then ea = W.exit else eb = W.exit end
+					log[#log + 1] = "binario d'attesa fuori dalla stazione " .. w[1] .. (W.warning and (" (" .. W.warning .. ")") or "")
+				else
+					opts.waitLoopsFailed = (opts.waitLoopsFailed or 0) + 1
+					log[#log + 1] = "binario d'attesa alla stazione " .. w[1] .. " non costruito: " .. tostring(W.error)
+				end
 			end
 		end
 		local ok, info
@@ -320,6 +335,46 @@ function CC.buyCargoTrain(depot, line, cargo, nCars, loco, stopIndex)
 	return true, { vehicle = veh, cars = #models - 1, warning = warn }
 end
 
+-- Punto da cui si cerca il posto per lo scalo: la stazione per camion integrata dell'industria (TF3: e' il punto di
+-- carico della merce), altrimenti la posizione dell'industria (VERIFICATO p4 09.10.2026: per una fattoria la posizione
+-- dell'industria e' lontana dal bacino: 10 posti scartati). Per citta' e altro: CC.posOf.
+function CC.industryAnchor(e)
+	if CC.comp(e, api.type.ComponentType.INDUSTRY) then
+		local g = CC.industryRoadStation(e)
+		local p = g and CC.posOf(g)
+		if p then return p end
+	end
+	return CC.posOf(e)
+end
+
+-- Merce che l'industria ind produce e che target (industria o citta') usa: cargo, oppure nil, errore.
+-- (VERIFICATO p4 09.10.2026: mancava, la linea merci si fermava con "attempt to call field 'cargoFor'")
+function CC.cargoFor(ind, target)
+	local CT = api.type.ComponentType
+	if not CC.comp(ind, CT.INDUSTRY) then return nil, tostring(ind) .. " non e' un'industria" end
+	local _, outs = CC.industryCargo(ind)
+	if #outs == 0 then return nil, (CC.nameOf(ind) or "l'industria") .. " non produce merci" end
+	if CC.comp(target, CT.INDUSTRY) then
+		local ins = CC.industryCargo(target)
+		for _, o in ipairs(outs) do
+			for _, i in ipairs(ins) do if o == i then return o end end
+		end
+		return nil, (CC.nameOf(target) or "la destinazione") .. " non usa le merci di " .. (CC.nameOf(ind) or "questa industria")
+	elseif CC.comp(target, CT.TOWN) then
+		local accepted = {}
+		pcall(function()
+			for _, list in pairs(api.engine.util.town.getLandUse2CargoTypes()) do
+				for _, id in ipairs(CC.each(list)) do accepted[id] = true end
+			end
+		end)
+		for _, o in ipairs(outs) do if accepted[o] then return o end end
+		local names = {}
+		for _, o in ipairs(outs) do names[#names + 1] = CC.cargoName(o) end
+		return nil, "le citta' non accettano " .. table.concat(names, ", ") .. ": va portato prima a un'industria che le lavora"
+	end
+	return nil, tostring(target) .. " non e' ne' una citta' ne' un'industria"
+end
+
 -- ---------------------------------------------------------------- linea ferroviaria merci
 -- Stazione merci vicino all'industria (deve "vedere" l'industria nel bacino), stazione all'arrivo (industria o
 -- citta'), binari, deposito, linea e treni merci. Se fallisce, toglie quello che ha costruito.
@@ -333,7 +388,7 @@ local function buildCargoRail(a, built, builtEdges)
 	if not mods then return { ok = false, error = merr } end
 	local n1 = (CC.nameOf(ind) or "Industria") .. " scalo merci"
 	local n2 = (CC.nameOf(target) or "Arrivo") .. " scalo merci"
-	local P1, P2 = CC.posOf(ind), CC.posOf(target)
+	local P1, P2 = CC.industryAnchor(ind), CC.industryAnchor(target)
 	if not P1 or not P2 then return { ok = false, error = "posizione di partenza o arrivo non trovata" } end
 	local dx, dy = unit(P2.x - P1.x, P2.y - P1.y)
 	local log, stations = {}, {}

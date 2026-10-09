@@ -90,3 +90,19 @@ Lezioni:
 - Studio della partita di terzi completato: `dev-notes/schemi_terzi/`.
 - partita vuota di test, id 1: **p23 scalo merci OK** (Raffineria di petrolio di Maretto, costruzione 89548, gruppo 89601,
   2 estremi, posto a R 180 m / 60 gradi dopo 2 posti rifiutati). Nessun crash.
+- id 24-54 (notte): anello a doppio binario p35, molte prove. Binario 2 parallelo: strade di campagna spezzate nella
+  STESSA proposta (uno splitStreet separato prima era rifiutato, "Costruzione non consentita"); estremi della stazione
+  d'arrivo scambiati quando il lato non corrisponde. Il binario 1 (5-6 km, molti ponti) riesce solo con alcuni estremi;
+  il parallelo urta altre strade. Non finito.
+
+## 09.10.2026 mattina
+- id 57-58, s35: stazioni integrate delle industrie (camion per tutte le industrie a terra; navi + eliporto per
+  piattaforme petrolifere; navi per aree di pesca; nessuna ferroviaria).
+- id 59-60, **p37 OK**: argilla in camion Cava -> Mattonificio di Castelgrande con le stazioni integrate (linea 89641,
+  deposito costruito, 2 camion, collaudo ok).
+- id 61-67, **p4 OK** dopo due correzioni (`CC.cargoFor` mancante; scalo cercato vicino alla stazione integrata):
+  cereali in treno Azienda agricola di Centauro -> Allevamento di Abriola, 5944 m, linea 90082, collaudo ok.
+- id 68-80, **p14 OK** (argilla, Cava -> Mattonificio di Castelgrande, linea 89873, collaudo ok): binario d'attesa
+  alla stazione 1 impossibile (400 m dritti rifiutati) -> ora si prova 400/250/160 m, poi si va avanti con un treno.
+- id 81-88, segnali: **p39/p38 OK** dopo la correzione dell'id provvisorio dell'oggetto (-400000000 - indice 0-based);
+  5 segnali a doppio senso ogni 400 m sulla linea di p14.

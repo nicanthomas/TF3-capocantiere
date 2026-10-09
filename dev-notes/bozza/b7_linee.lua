@@ -189,8 +189,8 @@ local function buildCargoNet(a, built, builtEdges)
 	-- ordine: raccolta, poi consegna
 	local ents, pts = {}, {}
 	local pP, pD = {}, {}
-	for i, e in ipairs(P) do pP[i] = CC.posOf(e) end
-	for i, e in ipairs(D) do pD[i] = CC.posOf(e) end
+	for i, e in ipairs(P) do pP[i] = CC.industryAnchor(e) end
+	for i, e in ipairs(D) do pD[i] = CC.industryAnchor(e) end
 	for _, i in ipairs(nearestChain(pP, pP[1])) do ents[#ents + 1] = P[i]; pts[#pts + 1] = pP[i] end
 	for _, i in ipairs(nearestChain(pD, pts[#pts])) do ents[#ents + 1] = D[i]; pts[#pts + 1] = pD[i] end
 	local n = #ents
@@ -239,8 +239,13 @@ local function buildCargoNet(a, built, builtEdges)
 	-- treni in piu' dei binari dei capolinea: binario d'attesa fuori dai capolinea
 	local waitLoops
 	if nTrains > plan.tracks then waitLoops = { [1] = true, [n] = true }; notes[#notes + 1] = "binari d'attesa fuori dai capolinea" end
-	local okL, link = CC.linkStations(stations, log, builtEdges, built, loco, { waitLoops = waitLoops })
+	local lopts = { waitLoops = waitLoops }
+	local okL, link = CC.linkStations(stations, log, builtEdges, built, loco, lopts)
 	if not okL then return { ok = false, error = link, log = log } end
+	if (lopts.waitLoopsFailed or 0) > 0 and nTrains > plan.tracks then
+		notes[#notes + 1] = "niente spazio per i binari d'attesa: " .. plan.tracks .. " treno/i invece di " .. nTrains .. " (si possono aggiungere dopo un binario d'incrocio)"
+		nTrains = plan.tracks
+	end
 	local groups = {}
 	for i, st in ipairs(stations) do groups[i] = st.group end
 	local stops = CC.lineStopOrder(groups, "back_forth")

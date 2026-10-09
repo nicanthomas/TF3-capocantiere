@@ -32,7 +32,8 @@ function T.townPair(dmin, dmax, ideal, skip)
 end
 
 -- Coppia industria che produce -> industria che usa quella merce, a distanza tra dmin e dmax.
-function T.industryPair(dmin, dmax)
+function T.industryPair(dmin, dmax, exclude)
+	exclude = exclude or {}
 	local inds = {}
 	for _, e in ipairs(CC.each(api.engine.getEntitiesWithComponent(CT.INDUSTRY))) do
 		local p = CC.posOf(e)
@@ -52,7 +53,7 @@ function T.industryPair(dmin, dmax)
 	local best, bd
 	for _, a in ipairs(inds) do
 		for _, b in ipairs(inds) do
-			if a.id ~= b.id and #a.outs > 0 then
+			if a.id ~= b.id and #a.outs > 0 and not exclude[a.id] and not exclude[b.id] then
 				local d = dist(a, b)
 				if d >= dmin and d <= dmax then
 					for _, o in ipairs(a.outs) do

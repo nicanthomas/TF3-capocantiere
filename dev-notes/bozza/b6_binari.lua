@@ -166,7 +166,7 @@ end
 
 -- Segnali su binari ESISTENTI. items = { { edge = id, param = 0..1, left = bool, oneWay = bool }, ... }
 -- (un segnale per binario). Ritorna ok, { signals = n, edges = { vecchio -> nuovo } }.
-function CC.placeSignals(items)
+local function placeSignalsBatch(items)
 	local CT = api.type.ComponentType
 	local model = CC.signalModel()
 	if not model then return false, { error = "costruzione del segnale non trovata: " .. tostring(CC.SIGNAL_CON) } end
@@ -182,7 +182,9 @@ function CC.placeSignals(items)
 			sg.entity = -k; sg.type = 1; sg.comp = be
 			local po = CC.comp(it.edge, CT.PLAYER_OWNED)
 			if po then sg.playerOwned = po end
-			list[#list + 1] = { -400000000 - k, api.type.enum.EdgeObjectType.SIGNAL }
+			-- id provvisorio dell'oggetto = -400000000 - (posizione 0-based in edgeObjectsToAdd) (VERIFICATO p39 09.10.2026:
+			-- con -400000000 - k, k da 1, il comando da' "Unknown exception"; p34 usava -400000000 per il primo)
+			list[#list + 1] = { -400000000 - #objs, api.type.enum.EdgeObjectType.SIGNAL }
 			sg.comp.objects = list
 			local o = api.type.SimpleStreetProposal.EdgeObject.new()
 			o.edgeEntity = -k; o.param = it.param or 0.5; o.oneWay = it.oneWay == true; o.left = it.left == true
@@ -207,6 +209,23 @@ function CC.placeSignals(items)
 		end)
 	end
 	return true, { signals = #objs, edges = map }
+end
+
+-- Un segnale per comando (VERIFICATO p14 09.10.2026: due binari nella stessa proposta -> "Unknown exception" nel
+-- comando; il caso a un binario e' quello verificato in p34).
+function CC.placeSignals(items)
+	local total, map, errs = 0, {}, {}
+	for _, it in ipairs(items or {}) do
+		local ok, r = placeSignalsBatch({ it })
+		if ok then
+			total = total + (r.signals or 0)
+			for k, v in pairs(r.edges or {}) do map[k] = v end
+		else
+			errs[#errs + 1] = tostring(r.error)
+		end
+	end
+	if total == 0 and #errs > 0 then return false, { error = errs[1], edges = map } end
+	return true, { signals = total, edges = map, warning = (#errs > 0) and (#errs .. " segnali non messi: " .. errs[1]) or nil }
 end
 
 -- I binari con un segnale nuovo cambiano id: aggiorna una lista (per l'annulla) con la mappa vecchio -> nuovo.
