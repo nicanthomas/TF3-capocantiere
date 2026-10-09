@@ -22,7 +22,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 - **Una sola AI modifica il lavoro attivo per volta**. Non presumere che l'altra sia ferma: verificare lo stato remoto immediatamente prima di scrivere; se la branch è cambiata, integrare e riconciliare prima. Non eseguire force-push.
 - Entrambe possono sviluppare Python, Lua, test e documentazione e pubblicare usando **gli strumenti GitHub effettivamente collegati e autorizzati nella sessione**. La procedura Composio documentata in `STATO.md` resta valida per Claude dove disponibile; ChatGPT può usare il proprio connettore GitHub. Non assumere capacità di scrittura se il connettore è solo lettura.
-- Il merge e i commit delle attività richieste possono essere effettuati direttamente, quando non comportano decisioni rischiose non autorizzate. Rispettare formato commit, verifiche e vincoli esistenti; non unire codice instabile a `main` solo per creare un checkpoint: usare branch e commit di lavoro dichiarati.
+- **Niente pull request (regola di Nicolo', 09.10.2026)**: l'AI che sta lavorando (Claude o ChatGPT) fa da sola commit, push e merge in `main`, senza aprire PR e senza chiedere. Prima del merge: test automatici verdi e controllo che `main` remoto non sia cambiato nel frattempo (se e' cambiato, integrare prima). Una branch di lavoro serve solo durante il passo e va unita a `main` appena il passo e' concluso. Nelle note si dichiara sempre cosa NON e' ancora provato in TF3.
 - L'accesso a GitHub **non equivale** a controllo del PC. Verificare ogni volta accesso a Windows, Steam, file locali, salvataggi e TF3. Permessi temporanei di una chat precedente non sono validi automaticamente.
 - Non descrivere come testato in gioco qualcosa esaminato staticamente o provato soltanto con mock/CI. Non inventare API, esiti, commit o stato della partita.
 - Non eseguire nel gioco azioni autonome non richieste; il sistema Capo Cantiere opera soltanto su direttive esplicite di Nicolo'. Mantenere approvazioni e restrizioni in `STATO.md`.
@@ -40,32 +40,31 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**Stato:** 09.10.2026 sera (Claude). Richiesta di Nicolo': la console resta FUORI dal gioco ma deve aprirsi insieme
-al gioco e attivarsi solo quando la mappa caricata ha la mod attiva. Fatto su branch, **non provato su Windows/TF3**.
+**Stato:** 09.10.2026 sera (Claude). Tutto unito in `main` (regola nuova: niente pull request, merge fatto dall'AI).
+Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_script.py --check --bozza` OK.
 
 | Campo | Valore |
 | --- | --- |
 | Ultima AI che ha aggiornato | Claude (Cowork) |
-| Branch | `main` (stabile, 05.2) + `lavoro/flotta-iniziale` (05.1, da provare) + `lavoro/avvio-con-gioco` (06, da provare) |
-| PC / gioco (verificati 09.10 ~17:50) | gioco aperto, "capocantiere v14 prova", mod `v14-bozza-32c86032` (sha1 = build di main), IN PAUSA, lastActionId 2; console MAI avviata con la v14 |
-| Accessi in questa sessione | GitHub via Composio; cartelle `mod_presets`/`mods` lette; controllo del PC non usato in questa parte |
+| Branch | solo `main` (le branch `lavoro/flotta-iniziale` e `lavoro/avvio-con-gioco` sono unite; PR #2 chiusa) |
+| Mod nel repo | `v14-bozza-399dcf74` (DEV_MODE false) = v14 + numero iniziale di veicoli |
+| PC / gioco (09.10 ~17:50) | installata `v14-bozza-32c86032` (senza flotta iniziale); partita "capocantiere v14 prova" aperta in pausa; console MAI avviata con la v14 |
 
-### Lavoro completato (branch `lavoro/avvio-con-gioco`, commit 06)
+### Unito in main, NON ancora provato su Windows/TF3
 
-- `middleware/avvia_con_gioco.bat` (nuovo): da mettere nelle Opzioni di avvio di Steam
-  (`"...\middleware\avvia_con_gioco.bat" %command%`); apre la console in una finestra "Capo Cantiere", avvia il
-  gioco, aspetta la chiusura di `transportfever3.exe` e chiude la console.
-- `middleware/main.py`: `wait_for_mod` — all'avvio e prima di ogni richiesta a Claude aspetta che `state.lua` sia
-  piu' recente di 30 s (= partita con la mod attiva); nel menu o con una mappa senza la mod resta in attesa.
-- Test: middleware 37 OK (4 nuovi su `wait_for_mod`), mock 65 OK. **Non provato su Windows/Steam/TF3.**
-- main, commit 07: `dev-notes/strumenti/push_composio.py` carica i file in base64 (in testo i `.bat` perdevano i
-  fine riga Windows CRLF; il `.bat` della branch e' stato ricaricato a parte, commit 06.1, sha verificato).
+- Avvio con il gioco: `middleware/avvia_con_gioco.bat` (Opzioni di avvio di Steam:
+  `"...\middleware\avvia_con_gioco.bat" %command%`) + `wait_for_mod` in `main.py` (console in attesa finche' la mappa
+  caricata non ha la mod attiva; si chiude con il gioco).
+- Numero iniziale di veicoli alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet`, ex branch flotta).
+- Middleware: timeout sicuri e risultati tardivi (commit 04).
 
 ### Prossima operazione precisa
 
-1. Con Nicolo': impostare l'opzione di avvio di Steam, avviare il gioco da Steam e verificare: console aperta in
-   attesa nel menu; si attiva caricando "capocantiere v14 prova"; si chiude chiudendo il gioco. Se ok: merge in main.
-2. Poi la prova della console reale e il costo per sessione (STATO.md punto 5), poi la branch `lavoro/flotta-iniziale`.
+1. Installare sul PC la build `--dev --bozza` di `main` (backup prima, rilettura sha1 dal PC), ricaricare la partita.
+2. Con Nicolo': opzione di avvio di Steam, avvio del gioco da Steam -> console in attesa -> "console pronta" caricando
+   la partita -> chiusura insieme al gioco.
+3. Prova della console reale (3 richieste) e costo per sessione (STATO.md punto 5); linea bus senza `num_vehicles` ->
+   confrontare `fleet` stimato con `check_line_fleet` dopo un giro.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

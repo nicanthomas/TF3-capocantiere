@@ -331,6 +331,32 @@ def ask_claude(client, messages: list, bridge: GameBridge) -> None:
     print("\n(Troppi passaggi di tool per una sola richiesta: mi fermo qui.)")
 
 
+MOD_FRESH_S = 30          # state.lua piu' recente di cosi' = partita aperta con la mod attiva (la mod lo riscrive ~10 s)
+
+
+def wait_for_mod(bridge: GameBridge, poll: float = 3.0, max_wait: float | None = None,
+                 sleep=time.sleep, say=print) -> bool:
+    """Aspetta una partita con la mod attiva (state.lua aggiornato di recente).
+
+    Avviata insieme al gioco (avvia_con_gioco.bat), la console resta in attesa nel menu e anche se si carica una
+    mappa senza la mod; si attiva da sola appena la mod scrive state.lua. Ritorna False se l'attesa viene
+    interrotta (Ctrl+C) o supera max_wait."""
+    if bridge.state_age_seconds() <= MOD_FRESH_S:
+        return True
+    say("In attesa di una partita con la mod Capo Cantiere attiva (carica la mappa nel gioco; Ctrl+C per uscire)...")
+    waited = 0.0
+    try:
+        while bridge.state_age_seconds() > MOD_FRESH_S:
+            if max_wait is not None and waited >= max_wait:
+                return False
+            sleep(poll)
+            waited += poll
+    except KeyboardInterrupt:
+        return False
+    say("Mod Capo Cantiere attiva: console pronta.")
+    return True
+
+
 def main() -> None:
     try:
         import anthropic
@@ -342,6 +368,8 @@ def main() -> None:
         sys.exit(1)
 
     bridge = GameBridge()
+    if not wait_for_mod(bridge):
+        sys.exit(0)
     moved = bridge.archive_stale_actions()
     if moved:
         print(f"Spostati in 'vecchi' {len(moved)} file azioni rimasti da sessioni precedenti: {', '.join(moved)}")
@@ -367,6 +395,11 @@ def main() -> None:
             break
         if not text:
             continue
+        if not text.startswith("/") and bridge.state_age_seconds() > MOD_FRESH_S:
+            # partita chiusa, tornati al menu o mappa senza la mod: aspetto prima di chiamare Claude
+            if not wait_for_mod(bridge):
+                print("Richiesta non inviata: nessuna partita con la mod attiva.")
+                continue
         if text in ("/esci", "/exit", "/quit"):
             print(usage_line())
             break
