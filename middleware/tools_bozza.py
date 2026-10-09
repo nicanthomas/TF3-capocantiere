@@ -29,7 +29,7 @@ TOOLS_BOZZA = [
         "description": "Linea bus tra 2 o piu' citta' vicine (riusa le fermate gia' presenti in centro). Chiede conferma.",
         "input_schema": {"type": "object", "properties": {
             "town_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 6},
-            "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 10, "default": 2},
+            "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 10, "description": "Ometti per la stima automatica della mod (passaggio ogni ~4 min per bus, ~15 per aerei/navi); indica un numero solo se l'utente lo chiede."},
             "name": {"type": "string"}}, "required": ["town_ids"]},
     },
     {
@@ -39,7 +39,7 @@ TOOLS_BOZZA = [
         "input_schema": {"type": "object", "properties": {
             "station_id": {"type": "integer", "description": "Id del gruppo di stazioni."},
             "town_id": {"type": "integer"},
-            "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 6, "default": 2}}, "required": ["station_id"]},
+            "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 6, "description": "Ometti per la stima automatica della mod (passaggio ogni ~4 min per bus, ~15 per aerei/navi); indica un numero solo se l'utente lo chiede."}}, "required": ["station_id"]},
     },
     {
         "name": "add_vehicles",
@@ -86,7 +86,7 @@ TOOLS_BOZZA = [
             "town_ids": {"type": "array", "items": _ID, "minItems": 2, "maxItems": 4},
             "kind": {"type": "string", "enum": ["airfield", "airport", "heliport", "helipad", "harbor", "harbor_large"]},
             "cargo": {"type": "boolean", "default": False},
-            "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 10, "default": 2},
+            "num_vehicles": {"type": "integer", "minimum": 1, "maximum": 10, "description": "Ometti per la stima automatica della mod (passaggio ogni ~4 min per bus, ~15 per aerei/navi); indica un numero solo se l'utente lo chiede."},
             "name": {"type": "string"}}, "required": ["town_ids", "kind"]},
     },
     {
@@ -159,7 +159,7 @@ TOOLS_BOZZA = [
             "pattern": {"type": "string", "enum": ["back_forth", "ring"], "default": "back_forth"},
             "both_directions": {"type": "boolean", "default": False},
             "vehicle": {"type": "string", "enum": ["auto", "bus", "tram", "truck", "train", "ship", "plane"], "default": "auto"},
-            "count": {"type": "integer", "minimum": 1, "maximum": 20, "default": 2},
+            "count": {"type": "integer", "minimum": 1, "maximum": 20, "description": "Veicoli per linea. Ometti per la stima automatica (treni: al massimo 2 senza numero esplicito)."},
             "num_cars": {"type": "integer", "minimum": 1, "maximum": 12, "default": 4},
             "cargo": {"type": "string"},
             "name": {"type": "string"}}, "required": ["station_ids"]},
@@ -258,7 +258,7 @@ Come lavori (bozza):
 
 def describe_bozza(name: str, args: dict, n) -> str | None:
     if name == "build_intercity_bus":
-        return "Bus tra " + " - ".join(n(i) for i in args["town_ids"]) + f" con {args.get('num_vehicles', 2)} veicoli"
+        return "Bus tra " + " - ".join(n(i) for i in args["town_ids"]) + (f" con {args['num_vehicles']} veicoli" if args.get('num_vehicles') else " (veicoli: stima automatica)")
     if name == "connect_station_to_town":
         return f"Navetta bus dalla stazione {n(args['station_id'])} al centro"
     if name == "add_vehicles":
@@ -301,7 +301,7 @@ def describe_bozza(name: str, args: dict, n) -> str | None:
                 + ", ".join(n(i) for i in args["delivery_ids"]) + f"; {args.get('num_trains', 1)} treni")
     if name == "create_line_from_stations":
         return (f"Linea {args.get('pattern', 'back_forth')} su " + " - ".join(n(i) for i in args["station_ids"])
-                + f" con {args.get('count', 2)} veicoli {args.get('vehicle', 'auto')}"
+                + (f" con {args['count']} veicoli" if args.get('count') else " (veicoli: stima automatica)") + f" {args.get('vehicle', 'auto')}"
                 + (f" ({args['cargo']})" if args.get("cargo") else ""))
     if name == "adjust_line_fleet":
         return (f"Adeguare i veicoli della linea {n(args['line_id'])} (passaggio ogni {args.get('interval', 'standard')} s"

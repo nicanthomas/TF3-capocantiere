@@ -182,4 +182,20 @@ check(c3.vehicles_moving == 1 and c3.vehicles_still == 0, "collaudo: veicolo che
 local cn = SIM_ACTIONS.check_network({})
 check(cn.ok == true and type(cn.lines_with_problems) == "table", "controlla la rete: risponde anche senza linee del giocatore")
 
+-- flotta iniziale stimata alla creazione delle linee (calcolo puro)
+do
+	local n1, f1 = CC.estimateFleet({ { x = 0, y = 0 }, { x = 6000, y = 0 } }, nil, "bus")
+	-- 12000 m * 1.35 / (22 * 0.65) = 1132.9 s + 2 * 25 = 1182 s -> 1182 / 240 = 4.9 -> 5 bus
+	check(n1 == 5 and f1.round_trip_s == 1182 and f1.estimated, "flotta: 6 km tra due citta' -> 5 bus (" .. n1 .. ", " .. f1.round_trip_s .. " s)")
+	local n2 = CC.estimateFleet({ { x = 0, y = 0 }, { x = 300, y = 0 } }, nil, "bus")
+	check(n2 == 1, "flotta: linea cortissima -> almeno 1 veicolo (" .. n2 .. ")")
+	local n3, f3 = CC.estimateFleet({ { x = 0, y = 0 }, { x = 200000, y = 0 } }, nil, "bus")
+	check(n3 == CC.FLEET_MAX.bus and f3.max == CC.FLEET_MAX.bus, "flotta: linea lunghissima limitata al massimo (" .. n3 .. ")")
+	local n4, f4 = CC.estimateFleet({ { x = 0, y = 0 }, { x = 6000, y = 0 } }, 44, "bus")
+	check(n4 == 3 and f4.speed_from_model, "flotta: veicolo piu' veloce (velocita' del modello) -> meno veicoli (" .. n4 .. ")")
+	local n5, f5 = CC.initialFleet({ 1, 2 }, nil, "bus", 7, 6)
+	check(n5 == 6 and f5.estimated == false, "flotta: il numero chiesto vince sulla stima, nei limiti (" .. n5 .. ")")
+	check(CC.modelTopSpeed(12345) == nil, "flotta: velocita' del modello assente -> nil, senza errori")
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))

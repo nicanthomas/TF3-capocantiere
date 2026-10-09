@@ -13,6 +13,62 @@ function CC.townStop(town, name, reuseR)
 	return info.group, nil, true
 end
 
+-- ---------------------------------------------------------------- flotta iniziale (punto 4b/2b.1)
+-- Alla CREAZIONE di una linea, se Nicolo' non ha indicato il numero di veicoli, la mod stima il giro dalla distanza
+-- tra le fermate (in linea d'aria x fattore percorso), dalla velocita' massima del modello (ridotta per accelerazioni,
+-- curve e centri abitati) e dalla sosta alle fermate; poi mette i veicoli per un passaggio ogni CC.FLEET_INTERVAL.
+-- Stima soltanto: dopo un giro vero `check_line_fleet` misura i tempi reali. NON VERIFICATO IN GIOCO: il campo
+-- metadata.<tipo>Vehicle.topSpeed (m/s in TF2) va confermato in TF3; se manca si usa CC.FLEET_SPEED.
+CC.FLEET_INTERVAL = CC.FLEET_INTERVAL or { bus = 240, tram = 240, truck = 300, train = 480, waggon = 480, ship = 900, plane = 900, helicopter = 600 }
+CC.FLEET_SPEED = CC.FLEET_SPEED or { bus = 22, tram = 17, truck = 22, train = 33, waggon = 33, ship = 12, plane = 100, helicopter = 60 }   -- m/s
+CC.FLEET_DETOUR = CC.FLEET_DETOUR or { bus = 1.35, tram = 1.35, truck = 1.35, train = 1.2, waggon = 1.2, ship = 1.3, plane = 1.05, helicopter = 1.05 }
+CC.FLEET_DWELL = CC.FLEET_DWELL or { bus = 25, tram = 25, truck = 40, train = 45, waggon = 60, ship = 90, plane = 120, helicopter = 60 }   -- s per fermata
+CC.FLEET_SPEED_FACTOR = CC.FLEET_SPEED_FACTOR or 0.65   -- velocita' media / velocita' massima
+CC.FLEET_MAX = CC.FLEET_MAX or { bus = 10, tram = 10, truck = 10, train = 4, waggon = 4, ship = 6, plane = 6, helicopter = 6 }
+
+-- Velocita' massima del modello in m/s (metadata), oppure nil.
+function CC.modelTopSpeed(modelId)
+	local v
+	pcall(function()
+		local md = api.res.modelRep.get(modelId).metadata
+		for _, k in ipairs({ "roadVehicle", "railVehicle", "waterVehicle", "airVehicle" }) do
+			local t = md[k] and md[k].topSpeed
+			if type(t) == "number" and t > 0 then v = t; return end
+		end
+	end)
+	return v
+end
+
+-- Calcolo puro (testabile senza gioco): pos = posizioni {x,y} delle fermate nell'ordine della linea (la linea torna
+-- dall'ultima alla prima), speed = velocita' massima in m/s o nil. Ritorna numero di veicoli e dettagli.
+function CC.estimateFleet(pos, speed, folder, opts)
+	opts = opts or {}
+	local dist = 0
+	local n = #pos
+	for i = 1, n do
+		local a, b = pos[i], pos[i % n + 1]
+		if a and b and a ~= b then dist = dist + math.sqrt((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2) end
+	end
+	local top = speed or CC.FLEET_SPEED[folder] or 20
+	local vAvg = top * CC.FLEET_SPEED_FACTOR
+	local rtt = dist * (CC.FLEET_DETOUR[folder] or 1.3) / vAvg + n * (CC.FLEET_DWELL[folder] or 30)
+	local interval = opts.interval or CC.FLEET_INTERVAL[folder] or 300
+	local maxN = opts.max or CC.FLEET_MAX[folder] or 10
+	local count = math.max(1, math.min(maxN, math.ceil(rtt / interval)))
+	return count, { estimated = true, round_trip_s = math.floor(rtt), route_m = math.floor(dist), interval_target = interval,
+		top_speed_ms = math.floor(top * 10) / 10, speed_from_model = speed ~= nil, count = count, max = maxN }
+end
+
+-- Numero iniziale di veicoli per una linea con le fermate `stops` (gruppi, nell'ordine della linea).
+-- requested = numero chiesto da Nicolo' (vince sempre, nei limiti `hardMax`).
+function CC.initialFleet(stops, modelId, folder, requested, hardMax)
+	if requested then return math.max(1, math.min(hardMax or 20, requested)), { estimated = false, count = requested } end
+	local pos = {}
+	for i, g in ipairs(stops) do pos[i] = CC.posOf(g) end
+	if #pos < #stops then return 2, { estimated = false, count = 2, error = "posizioni delle fermate non trovate: 2 veicoli" } end
+	return CC.estimateFleet(pos, modelId and CC.modelTopSpeed(modelId), folder, { max = hardMax and math.min(hardMax, CC.FLEET_MAX[folder] or hardMax) })
+end
+
 -- ---------------------------------------------------------------- bus tra citta'
 SIM_ACTIONS.build_intercity_bus = function(a)
 	CC.need(a, { town_ids = "ints", num_vehicles = "int?", name = "str?" })
@@ -41,9 +97,10 @@ SIM_ACTIONS.build_intercity_bus = function(a)
 	if not okL then return { ok = false, error = li.error, stations = groups, depot_id = depot, log = log } end
 	local model = CC.pickModel("bus", nil, { passengers = true })
 	if not model then return { ok = false, error = "nessun bus disponibile quest'anno", line_id = li.line } end
-	local okV, v = CC.buyVehicles(depot, model.id, math.max(1, math.min(10, a.num_vehicles or 2)), li.line)
+	local n, fleet = CC.initialFleet(groups, model.id, "bus", a.num_vehicles, 10)
+	local okV, v = CC.buyVehicles(depot, model.id, n, li.line)
 	return { ok = okV and #v.errors == 0, line_id = li.line, stations = groups, depot_id = depot, depot_built = builtD,
-		vehicles = v.vehicles, model = model.name, errors = v.errors, log = log }
+		vehicles = v.vehicles, model = model.name, errors = v.errors, log = log, fleet = fleet }
 end
 
 -- ---------------------------------------------------------------- navetta stazione - centro (nodo di scambio)
@@ -80,9 +137,10 @@ SIM_ACTIONS.connect_station_to_town = function(a)
 	local okL, li = CC.createLine("Navetta " .. (CC.nameOf(town) or "") .. " stazione", { gS, gC })
 	if not okL then return { ok = false, error = li.error, log = log } end
 	local model = CC.pickModel("bus", nil, { passengers = true })
-	local okV, v = CC.buyVehicles(depot, model.id, math.max(1, math.min(6, a.num_vehicles or 2)), li.line)
+	local n, fleet = CC.initialFleet({ gS, gC }, model.id, "bus", a.num_vehicles, 6)
+	local okV, v = CC.buyVehicles(depot, model.id, n, li.line)
 	return { ok = okV and #v.errors == 0, line_id = li.line, stations = { gS, gC }, depot_id = depot, depot_built = builtD,
-		vehicles = v.vehicles, errors = v.errors, log = log }
+		vehicles = v.vehicles, errors = v.errors, log = log, fleet = fleet }
 end
 
 -- ---------------------------------------------------------------- veicoli di una linea
@@ -121,7 +179,6 @@ end
 -- `interval` secondi. Giro misurato dai tempi delle tratte dei veicoli (TRANSPORT_VEHICLE.sectionTimes, VERIFICATO s36
 -- 09.10.2026: secondi per tratta, 0 = non ancora misurata). apply = true: compra/vende la differenza; altrimenti propone.
 -- Treni: niente aggiunte automatiche (binario unico: si bloccherebbero) salvo force = true.
-CC.FLEET_INTERVAL = CC.FLEET_INTERVAL or { bus = 240, tram = 240, truck = 300, train = 480, waggon = 480, ship = 900, plane = 900, helicopter = 600 }
 SIM_ACTIONS.adjust_line_fleet = function(a)
 	CC.need(a, { line_id = "int", interval = "num?", apply = "bool?", max = "int?", force = "bool?" })
 	local CT = api.type.ComponentType

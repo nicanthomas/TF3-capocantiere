@@ -240,7 +240,13 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     (lettura) e `adjust_line_fleet` (con conferma) in `tools_bozza.py`. Altre funzioni utili trovate:
     `api.engine.util.line.getMaxFrequency`, `calcLineStationThroughput`, `getLineCapacityUsages`,
     `api.engine.util.vehicle.getVehicleCapacities`, `transportVehicleSystem.getLineCargoInfo`.
-    Da fare: numero iniziale di veicoli calcolato alla creazione delle linee.
+    Numero iniziale di veicoli alla creazione delle linee: SCRITTO 09.10.2026 sulla branch `lavoro/flotta-iniziale`
+    (non ancora su main, NON provato in gioco): `CC.estimateFleet` / `CC.initialFleet` in b2 (distanza tra le fermate x
+    fattore percorso, `metadata.<tipo>Vehicle.topSpeed` del modello o `CC.FLEET_SPEED`, sosta per fermata, passaggio
+    ogni `CC.FLEET_INTERVAL`, limiti `CC.FLEET_MAX`); usata da build_intercity_bus, connect_station_to_town, linee di
+    b4 (aerei/elicotteri/navi) e create_line_from_stations (treni: al massimo 2 senza numero esplicito). Il numero chiesto
+    da Nicolo' vince sempre. Risultato con `fleet` (stima, giro, velocita'). Mock 71 OK. Prova in gioco: una linea bus
+    senza num_vehicles, poi `check_line_fleet` dopo un giro per confrontare stima e misura; verificare `topSpeed`.
 4c. Puntualita'/qualita' delle consegne (novita' TF3), s37 (09.10.2026): le funzioni ci sono ma restituiscono
     oggetti C++ di cui non conosciamo i campi: `api.engine.util.cargo.getSummarizedCargoQualityDataForLine(linea)` /
     `...ForStockList(stockList)` / `...ForVehicle(v)` (-> SummarizedCargoQualityData), `cargo.isGoodQuality`,

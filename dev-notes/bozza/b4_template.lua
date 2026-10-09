@@ -305,9 +305,11 @@ SIM_ACTIONS.build_air_or_water_line = function(a)
 		end
 	end)
 	if not model then return { ok = false, error = "nessun veicolo '" .. folder .. "' disponibile quest'anno", line_id = li.line, log = log } end
-	local okV, v = CC.buyVehicles(depot, model.id, math.max(1, math.min(10, a.num_vehicles or 2)), li.line)
+	local fk = (folder == CC.VEHICLE_FOLDERS.heli) and "helicopter" or (tpl.kind == "water" and "ship" or "plane")
+	local n, fleet = CC.initialFleet(groups, model.id, fk, a.num_vehicles, 10)
+	local okV, v = CC.buyVehicles(depot, model.id, n, li.line)
 	return { ok = okV and #v.errors == 0, line_id = li.line, stations = groups, depot_id = depot, vehicles = v.vehicles,
-		model = model.name, errors = v.errors, log = log }
+		model = model.name, errors = v.errors, log = log, fleet = fleet }
 end
 
 -- ---------------------------------------------------------------- superstrade tra citta'
