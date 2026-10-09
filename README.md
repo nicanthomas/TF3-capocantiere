@@ -82,6 +82,11 @@ Il progetto e' pensato **solo per Windows con Steam** (percorsi, file `.bat`, `s
 
 Comandi della console: `/stato`, `/ping`, `/reset`, `/esci`.
 
+**Console che si apre insieme al gioco** (facoltativo, da provare): in Steam -> Transport Fever 3 -> Proprieta' ->
+Opzioni di avvio scrivere `"C:\percorso\TF3-capocantiere\middleware\avvia_con_gioco.bat" %command%`.
+La console si apre in una finestra a parte con il gioco, aspetta finche' carichi una partita con la mod attiva (nel
+menu o in una mappa senza la mod non chiama Claude) e si chiude quando chiudi il gioco.
+
 ## Note
 
 - La mod scrive solo file `capocantiere_*.lua` nella cartella `mod_presets` dei dati utente: dalla build 40420

@@ -40,46 +40,30 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**Stato:** due passi senza gioco completati il 09.10.2026 (Claude). **Nessuna prova in TF3 in questa sessione.**
+**Stato:** 09.10.2026 sera (Claude). Richiesta di Nicolo': la console resta FUORI dal gioco ma deve aprirsi insieme
+al gioco e attivarsi solo quando la mappa caricata ha la mod attiva. Fatto su branch, **non provato su Windows/TF3**.
 
 | Campo | Valore |
 | --- | --- |
 | Ultima AI che ha aggiornato | Claude (Cowork) |
-| Ultimo aggiornamento | 09.10.2026, Europe/Zurich |
-| Branch | `main` (stabile) + `lavoro/flotta-iniziale` (codice non provato in gioco) |
-| Commit noti | main `1813592` (04, timeout sicuri, CI verde); branch `2430411` (05.1, flotta iniziale); questo handoff = 05.2 su main |
-| Obiettivo corrente | Middleware/bozza pronti per la prova reale con Nicolo' |
-| Accessi in questa sessione | GitHub: clone + scrittura via Composio. PC: desktop collegato ma **nessuna cartella e nessun controllo del computer richiesti**. TF3: non usato |
-| Modifiche locali non pubblicate | Nessuna da parte di questa sessione Claude |
+| Branch | `main` (stabile, 05.2) + `lavoro/flotta-iniziale` (05.1, da provare) + `lavoro/avvio-con-gioco` (06, da provare) |
+| PC / gioco (verificati 09.10 ~17:50) | gioco aperto, "capocantiere v14 prova", mod `v14-bozza-32c86032` (sha1 = build di main), IN PAUSA, lastActionId 2; console MAI avviata con la v14 |
+| Accessi in questa sessione | GitHub via Composio; cartelle `mod_presets`/`mods` lette; controllo del PC non usato in questa parte |
 
-### Lavoro completato
+### Lavoro completato (branch `lavoro/avvio-con-gioco`, commit 06)
 
-1. **main, commit 04** — `middleware/game_bridge.py` + `main.py`: timeout sicuri (`GameTimeout` `ritirata`/`accettata`), ritiro dei file azioni non presi dalla mod, risultati tardivi consegnati e registrati nel diario. STATO.md punto 5a. Test 33 OK, CI verde.
-2. **branch `lavoro/flotta-iniziale`, commit 05.1** — numero iniziale di veicoli stimato alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet` in `b2`, usati in b2/b4/b7; treni max 2 senza numero esplicito); `tools_bozza.py` senza default su `num_vehicles`/`count`; `mod/` ricostruita con `--bozza` (`v14-bozza-399dcf74`, DEV_MODE false). Mock 71 OK, test 33 OK. Dettagli in STATO.md della branch (punto 4b).
-
-### Verifiche
-
-| Verifica | Ambiente | Esito |
-| --- | --- | --- |
-| `middleware/test_middleware.py` | cloud | 33 OK (main e branch) |
-| `dev-notes/bozza/run_mock.py` | cloud, mock Lua | main 65 OK; branch 71 OK |
-| `build_script.py --check --bozza`, `luachk.py` | cloud | branch: allineato, sintassi OK |
-| CI GitHub Actions | GitHub | commit 04: success |
-| Transport Fever 3 reale | — | **Non eseguito** |
-
-### Problemi aperti / rischi
-
-- La branch NON va unita a `main` prima della prova in gioco: `metadata.<tipo>Vehicle.topSpeed` (m/s in TF2) e' da verificare in TF3; se manca la stima usa `CC.FLEET_SPEED`.
-- La v14 installata sul PC e' `32c86032` (= `main`): la branch richiede una nuova installazione (`build_script.py --dev --bozza`, backup prima, rilettura sha1 dal PC).
-- Console Claude reale e costo per sessione: ancora **non verificati** (STATO.md punto 5).
-- Etichetta «(30)» nel passo CI di `.github/workflows/test.yml`: solo nome, non modificata.
+- `middleware/avvia_con_gioco.bat` (nuovo): da mettere nelle Opzioni di avvio di Steam
+  (`"...\middleware\avvia_con_gioco.bat" %command%`); apre la console in una finestra "Capo Cantiere", avvia il
+  gioco, aspetta la chiusura di `transportfever3.exe` e chiude la console.
+- `middleware/main.py`: `wait_for_mod` — all'avvio e prima di ogni richiesta a Claude aspetta che `state.lua` sia
+  piu' recente di 30 s (= partita con la mod attiva); nel menu o con una mappa senza la mod resta in attesa.
+- Test: middleware 37 OK (4 nuovi su `wait_for_mod`), mock 65 OK. **Non provato su Windows/Steam/TF3.**
 
 ### Prossima operazione precisa
 
-1. Con Nicolo' presente (serve lui per chiave API e permessi PC): prova della console reale su `main` (STATO.md punto 5), annotare i token.
-2. Poi, sulla partita «capocantiere v14 prova»: installare la build `--dev --bozza` della branch, una linea bus tra due citta' SENZA `num_vehicles` -> leggere `fleet` nel risultato; far correre il gioco un giro e lanciare `check_line_fleet`: confrontare stima e misura, correggere `CC.FLEET_*`. Se ok: merge della branch in `main` + CI.
-3. Senza gioco, se Nicolo' non c'e': idee piccole da STATO.md 5b (solo lettura/proposte, es. rapporto «stato delle citta'» nel middleware) oppure aggiornare l'etichetta CI.
-4. Aggiornare questa sezione prima del passo successivo.
+1. Con Nicolo': impostare l'opzione di avvio di Steam, avviare il gioco da Steam e verificare: console aperta in
+   attesa nel menu; si attiva caricando "capocantiere v14 prova"; si chiude chiudendo il gioco. Se ok: merge in main.
+2. Poi la prova della console reale e il costo per sessione (STATO.md punto 5), poi la branch `lavoro/flotta-iniziale`.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

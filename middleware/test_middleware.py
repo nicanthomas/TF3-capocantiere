@@ -550,5 +550,42 @@ class TestServices(Base):
             mod.stop = True
 
 
+class TestWaitForMod(unittest.TestCase):
+    """Console avviata con il gioco: aspetta una partita con la mod attiva (state.lua recente)."""
+
+    class FakeBridge:
+        def __init__(self, ages):
+            self.ages = list(ages)
+
+        def state_age_seconds(self):
+            return self.ages.pop(0) if len(self.ages) > 1 else self.ages[0]
+
+    def test_mod_gia_attiva(self):
+        import main
+        msgs = []
+        self.assertTrue(main.wait_for_mod(self.FakeBridge([5]), sleep=lambda s: None, say=msgs.append))
+        self.assertEqual(msgs, [])
+
+    def test_aspetta_poi_attiva(self):
+        import main
+        msgs, naps = [], []
+        b = self.FakeBridge([float("inf"), 900, 400, 8])
+        self.assertTrue(main.wait_for_mod(b, sleep=naps.append, say=msgs.append))
+        self.assertEqual(len(naps), 2)   # controlli: inf (iniziale), 900, 400 -> attesa x2, poi 8
+        self.assertIn("In attesa", msgs[0])
+        self.assertIn("pronta", msgs[-1])
+
+    def test_attesa_massima(self):
+        import main
+        b = self.FakeBridge([float("inf")])
+        self.assertFalse(main.wait_for_mod(b, poll=3, max_wait=9, sleep=lambda s: None, say=lambda m: None))
+
+    def test_ctrl_c(self):
+        import main
+        def stop(_):
+            raise KeyboardInterrupt
+        self.assertFalse(main.wait_for_mod(self.FakeBridge([float("inf")]), sleep=stop, say=lambda m: None))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
