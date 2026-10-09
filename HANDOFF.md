@@ -40,47 +40,46 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**Stato:** robustezza del middleware ai timeout completata e pubblicata (solo test automatici). **Nessuna prova in TF3 in questa sessione.**
+**Stato:** due passi senza gioco completati il 09.10.2026 (Claude). **Nessuna prova in TF3 in questa sessione.**
 
 | Campo | Valore |
 | --- | --- |
 | Ultima AI che ha aggiornato | Claude (Cowork) |
 | Ultimo aggiornamento | 09.10.2026, Europe/Zurich |
-| Branch di riferimento | `main` |
-| Commit base prima di questo aggiornamento | `1055c6f` (09.10.2026-03-Workflow multi AI chat nuove) |
-| Commit finale del checkpoint | Controllare `main` su GitHub (commit `09.10.2026-04-...`) |
-| Obiettivo corrente | Middleware robusto senza gioco, in attesa della prova della console Claude reale con Nicolo' |
-| Ultimo passo completato | Timeout sicuri in `GameBridge.send` + risultati tardivi (vedi STATO.md punto 5a) |
-| Accessi in questa sessione | GitHub: lettura via clone, scrittura via Composio. PC: desktop collegato ma **nessuna cartella e nessun controllo del computer richiesti** (non necessari per questo passo). TF3: non usato |
-| Modifiche locali non pubblicate | Nessuna da parte di questa sessione Claude dopo il commit 04 |
+| Branch | `main` (stabile) + `lavoro/flotta-iniziale` (codice non provato in gioco) |
+| Commit noti | main `1813592` (04, timeout sicuri, CI verde); branch `2430411` (05.1, flotta iniziale); questo handoff = 05.2 su main |
+| Obiettivo corrente | Middleware/bozza pronti per la prova reale con Nicolo' |
+| Accessi in questa sessione | GitHub: clone + scrittura via Composio. PC: desktop collegato ma **nessuna cartella e nessun controllo del computer richiesti**. TF3: non usato |
+| Modifiche locali non pubblicate | Nessuna da parte di questa sessione Claude |
 
-### Lavoro completato e file modificati
+### Lavoro completato
 
-- `middleware/game_bridge.py`: `GameTimeout` (`status` = `ritirata` / `accettata`), ritiro in `vecchi` dei file azioni non presi dalla mod (al timeout e prima di riusare lo stesso id), `late` + `take_late_results()`, `_cleanup` non cancella i risultati tardivi.
-- `middleware/main.py`: `request_status` nel risultato per Claude, `deliver_late_results()` a ogni turno (registro + diario + collaudo).
-- `middleware/test_middleware.py`: 3 test nuovi (timeout ritirato, file vecchio con lo stesso id, risultato tardivo + diario). Totale 33.
-- `dev-notes/note/STATO.md`: punto 5a.
+1. **main, commit 04** — `middleware/game_bridge.py` + `main.py`: timeout sicuri (`GameTimeout` `ritirata`/`accettata`), ritiro dei file azioni non presi dalla mod, risultati tardivi consegnati e registrati nel diario. STATO.md punto 5a. Test 33 OK, CI verde.
+2. **branch `lavoro/flotta-iniziale`, commit 05.1** — numero iniziale di veicoli stimato alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet` in `b2`, usati in b2/b4/b7; treni max 2 senza numero esplicito); `tools_bozza.py` senza default su `num_vehicles`/`count`; `mod/` ricostruita con `--bozza` (`v14-bozza-399dcf74`, DEV_MODE false). Mock 71 OK, test 33 OK. Dettagli in STATO.md della branch (punto 4b).
 
 ### Verifiche
 
 | Verifica | Ambiente | Esito |
 | --- | --- | --- |
-| `python middleware/test_middleware.py` | cloud, senza gioco | 33 OK |
-| `python dev-notes/bozza/run_mock.py` | cloud, mock Lua | 65 OK |
-| CI GitHub Actions | GitHub | controllare l'esito del commit 04 |
+| `middleware/test_middleware.py` | cloud | 33 OK (main e branch) |
+| `dev-notes/bozza/run_mock.py` | cloud, mock Lua | main 65 OK; branch 71 OK |
+| `build_script.py --check --bozza`, `luachk.py` | cloud | branch: allineato, sintassi OK |
+| CI GitHub Actions | GitHub | commit 04: success |
 | Transport Fever 3 reale | — | **Non eseguito** |
 
 ### Problemi aperti / rischi
 
-- Il nome del passo CI dice ancora «(30)» in `.github/workflows/test.yml` (solo etichetta; non modificato per non toccare i workflow).
-- Ritiro al timeout: piccola finestra di gara se la mod prende il file proprio mentre viene spostato; coperta dal ricontrollo dopo 2 s (`WITHDRAW_RECHECK`), da verificare in gioco.
-- Console Claude reale (chiave API di Nicolo') e costo per sessione: ancora **non verificati** (STATO.md punto 5).
+- La branch NON va unita a `main` prima della prova in gioco: `metadata.<tipo>Vehicle.topSpeed` (m/s in TF2) e' da verificare in TF3; se manca la stima usa `CC.FLEET_SPEED`.
+- La v14 installata sul PC e' `32c86032` (= `main`): la branch richiede una nuova installazione (`build_script.py --dev --bozza`, backup prima, rilettura sha1 dal PC).
+- Console Claude reale e costo per sessione: ancora **non verificati** (STATO.md punto 5).
+- Etichetta «(30)» nel passo CI di `.github/workflows/test.yml`: solo nome, non modificata.
 
 ### Prossima operazione precisa
 
-1. Con Nicolo' presente: prova della console reale (STATO.md punto 5): `git pull` sul PC, partita «capocantiere v14 prova», `set CAPOCANTIERE_BOZZA=1`, `middleware\avvia_capocantiere.bat`, 3 richieste (lettura, `check_line_fleet`, piccola costruzione), annotare i token. Facoltativo: mettere il gioco nel menu durante una richiesta per vedere il messaggio «RITIRATA».
-2. Senza gioco: numero iniziale di veicoli calcolato alla creazione delle linee (STATO.md 4b «Da fare»), prima nella bozza `b2`/`b7` e nel mock (`run_mock.py`), poi test.
-3. Aggiornare questa sezione prima del passo successivo.
+1. Con Nicolo' presente (serve lui per chiave API e permessi PC): prova della console reale su `main` (STATO.md punto 5), annotare i token.
+2. Poi, sulla partita «capocantiere v14 prova»: installare la build `--dev --bozza` della branch, una linea bus tra due citta' SENZA `num_vehicles` -> leggere `fleet` nel risultato; far correre il gioco un giro e lanciare `check_line_fleet`: confrontare stima e misura, correggere `CC.FLEET_*`. Se ok: merge della branch in `main` + CI.
+3. Senza gioco, se Nicolo' non c'e': idee piccole da STATO.md 5b (solo lettura/proposte, es. rapporto «stato delle citta'» nel middleware) oppure aggiornare l'etichetta CI.
+4. Aggiornare questa sezione prima del passo successivo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
