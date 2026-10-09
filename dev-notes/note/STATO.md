@@ -1,19 +1,19 @@
 # STATO DEL PROGETTO — leggere per primo (aggiornato 08.10.2026)
 
-Questo file permette a una chat nuova di ripartire senza rileggere le conversazioni precedenti.
-Struttura del repo (dal 08.10.2026): nella radice solo `mod/`, `middleware/`, `README.md`, `LICENSE`; tutto lo
+Questo file permette a una chat nuova di ripartire senza rileggere le conversazioni precedenti. **All'avvio di QUALSIASI chat Claude o ChatGPT leggere prima `HANDOFF.md` dalla branch GitHub aggiornata**: contiene il checkpoint operativo, il prompt unico di avvio e le regole di aggiornamento continuo senza preavviso al cambio AI/chat. Poi leggere questo file per le regole vincolanti e lo stato tecnico. Questa procedura riguarda lo sviluppo e non introduce automazioni nel gioco.
+Struttura del repo (dal 09.10.2026): nella radice anche `HANDOFF.md` oltre a `mod/`, `middleware/`, `README.md`, `LICENSE`; tutto lo
 sviluppo e' in `dev-notes/` (codice: `cc_lib.lua`, `build_script.py`, `bozza/`, `sonde/`, `prove/`, `strumenti/`;
 note: `dev-notes/note/`, compreso questo file). I comandi di questo file usano questi percorsi.
 Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/note/studio-salvataggio-terzi.md` e `dev-notes/note/scoperte-api.md`
 (API verificate), `dev-notes/bozza/README.md` (cosa c'e' in ogni file della bozza).
 
 ## 1. Regole di Nicolo' (vincolanti)
+- WORKFLOW MULTI-AI (09.10.2026): Claude, ChatGPT e loro nuove conversazioni possono subentrare **senza preavviso** alla fine di crediti o contesto. Ogni AI deve leggere `HANDOFF.md` all'avvio e aggiornare/pubblicare un checkpoint **dopo ogni passo significativo** durante la sessione, non solo alla fine. Aggiornare lo stato tecnico qui quando cambia. Non presumere che l'altra AI abbia completato attività non pubblicate. Nessun processo in background è autorizzato per gli handoff.
 - Rispondere in italiano, al massimo una domanda per volta, lavorare in autonomia. Non inventare l'API: provarla.
 - Sul PC scrivere SOLO nella cartella `mods` e in `capocantiere` (dati utente). Backup prima di modificare un file
   esistente. Non cancellare nulla. Chiedere prima di toccare altre cartelle.
 - Chiave API: mai usarla ne' ripeterla (Nicolo' ha impostato ANTHROPIC_API_KEY da solo).
-- GitHub: push SOLO via Composio (`GITHUB_COMMIT_MULTIPLE_FILES`, owner `nicanthomas`, repo `TF3-capocantiere`,
-  branch `main`); titolo commit `gg.mm.aaaa-NR-Descrizione`; verificare gli SHA dei blob dopo il push.
+- GitHub: Claude usa Composio (`GITHUB_COMMIT_MULTIPLE_FILES`) quando disponibile; ChatGPT usa il proprio connettore GitHub autorizzato quando disponibile. Repository `nicanthomas/TF3-capocantiere`; branch di riferimento `main`. Titolo commit `gg.mm.aaaa-NR-Descrizione`; verificare SHA dei blob/commit dopo la pubblicazione. Non usare un'API o un accesso non realmente disponibili e non sovrascrivere commit altrui. Per checkpoint di codice instabile usare branch di lavoro, evitando merge prematuri su `main`.
 - Partita: modalita' creativa, anno >= 2020. Tutto quello che si piazza deve FUNZIONARE (anche i depositi).
   Restare dentro i confini della mappa.
 - Crash: la partita e' salvata; chiudere il gioco, riaprirlo e ricaricare da soli (sequenza al punto 4).
