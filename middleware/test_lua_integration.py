@@ -74,3 +74,31 @@ class LuaIntegrationTests(unittest.TestCase):
             local n, info = CC.initialFleet({1, 2, 3, 4}, nil, "bus", nil, 6)
             assert(n == 2 and info.count == 2 and not info.estimated and info.error, "posizione mancante ignorata")
         """)
+
+    def test_cargo_quality_uses_explicit_fields_on_real_lua_userdata(self):
+        self.fleet_check("""
+            local obj = io.stdout
+            local original = debug.getmetatable(obj)
+            local reads = 0
+            debug.setmetatable(obj, {
+                __index = function(_, key)
+                    reads = reads + 1
+                    if key == "countBad" then return 0 end
+                    if key == "countTotal" then return 1 end
+                    if key == "isVeryBad" then return false end
+                    if key == "averageQuality" then return nil end
+                    error("campo non dichiarato")
+                end,
+                __pairs = function() error("non enumerare userdata") end,
+                __tostring = function() error("non convertire userdata") end
+            })
+            local ok, result = pcall(function()
+                return CC.normalizeCargoQuality({passengers=obj, cargo=obj})
+            end)
+            debug.setmetatable(obj, original)
+            assert(ok, "normalizzazione userdata non riuscita")
+            assert(reads == 8 and result.available and result.passengers.available
+                and result.cargo.available and result.passengers.isVeryBad == false
+                and result.cargo.averageQuality == nil,
+                "campi userdata espliciti o valore false persi")
+        """)
