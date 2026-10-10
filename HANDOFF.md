@@ -42,7 +42,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 **Stato:** 10.10.2026 (Codex locale Windows). Installazione Git tramite winget autorizzata e riuscita: `git version 2.55.0.windows.5`. Unico checkout creato in `E:\Sviluppo\TF3-capocantiere`; prima della clonazione non esistevano ne' la destinazione ne' il genitore E:\Sviluppo. Nessun file preesistente sovrascritto.
 Checkout pulito su main; HEAD locale e main remoto entrambi `8e03c1434974f1757017ddaf370ce4ef9b06c40d`, origin corretto. Nessun AGENTS.md trovato nel checkout o nei genitori controllati.
-Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, con fixtures solo in work/tf3-python-isolated, API disabilitata, rete e accessi Steam bloccati da audit hook: 37 test, 36 OK, 1 errore. test_log_schedule_and_due_checks fallisce in lua_table.save_userdata/os.replace con WinError 5 durante scrittura state.lua del mock; possibile concorrenza lettore/scrittore su Windows, da verificare. Non dichiarare suite verde. Nessun sorgente del repository modificato per questo test. Nessuna modifica a mod installata, salvataggi o file del gioco; nessuna azione inviata al gioco.
+Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, con fixtures solo in work/tf3-python-isolated, API disabilitata, rete e accessi Steam bloccati da audit hook. Ultima esecuzione: **37/37 OK**, 14,478 s, zero errori/fallimenti. Primo giro: 36 OK e 1 WinError 5 in test_log_schedule_and_due_checks. Diagnosi su file separato: os.replace fallisce con un lettore Windows aperto e riesce dopo la sua chiusura; il mock legge/scrive state.lua da due thread senza sincronizzazione. Problema intermittente NON corretto: il secondo giro verde non dimostra stabilita' su Windows. Nessun sorgente del repository o bridge installato modificato. Nessuna modifica a mod installata, salvataggi o file del gioco; nessuna azione inviata al gioco.
 
 | Campo | Valore |
 | --- | --- |
@@ -53,7 +53,7 @@ Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, co
 
 ### Capacita' verificate in questa sessione (10.10.2026)
 
-- **File locali, sola lettura: OK** tramite PowerShell. Verificate cartelle dati `capocantiere`, `capocantiere/middleware`, `mods/tfcapocantiere_1`, `mod_presets`, `crash_dump`. Scrittura locale NON provata: questa fase e' limitata a controlli non distruttivi; mantenere backup e autorizzazioni del progetto.
+- **File locali, sola lettura: OK** tramite PowerShell. Verificate cartelle dati `capocantiere`, `capocantiere/middleware`, `mods/tfcapocantiere_1`, `mod_presets`, `crash_dump`. Scrittura verificata nel checkout E: e nelle fixtures di test autorizzate; nessuna scrittura nei dati del gioco. Mantenere backup e autorizzazioni del progetto.
 - **Terminale e Node REPL: ora OK anche nel sandbox ordinario**, riprovati dopo aver liberato spazio, senza cambiare configurazioni. PowerShell 5.1.26100.9444. Il precedente errore MXC non si riproduce nel controllo attuale: non modificare il sandbox preventivamente.
 - **Python: OK**, 3.10.10, interprete e launcher `py` funzionanti. Pacchetto `anthropic` presente; `pytest` e `lupa` non rilevati. Nessuna chiave API letta/usata e nessun pacchetto installato.
 - **Git locale ora installato e funzionante**, 2.55.0.windows.5, via winget autorizzato. **Unico checkout completo:** `E:\Sviluppo\TF3-capocantiere`, separato dai dati del gioco, main allineato al remoto e pulito dopo clonazione.
@@ -107,7 +107,7 @@ Vincoli: installazioni, modifiche ai file del gioco e operazioni rischiose richi
 
 ### Prossima operazione precisa
 
-Diagnosticare l'errore Windows della suite completa in isolamento, senza modificare il bridge installato; poi pubblicare esito e verificare controllo grafico. Poi verifiche non distruttive del controllo grafico Steam/TF3. Installazione mod, salvataggi e scritture nei dati del gioco NON autorizzate.
+Proseguire con verifiche non distruttive del controllo grafico Steam/TF3. Tenere aperto il problema intermittente WinError 5 del mock: futura correzione da testare su Windows senza cambiare il bridge installato. Poi verifiche non distruttive del controllo grafico Steam/TF3. Installazione mod, salvataggi e scritture nei dati del gioco NON autorizzate.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
