@@ -270,8 +270,13 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     Nella sonda storica 40420 INDUSTRY.stockList valeva l'id dell'industria: non riverificato.
     Nota qualita-merci-tipi-tf3.md con fonte, hash, firme e limiti. Percorso res/scripts inesistente
     in questa installazione; nessun file gioco modificato/estratto, nessun salvataggio letto.
-    DA FARE sui sorgenti: progettare normalizzazione protetta dei userdata e regressioni mock
-    (nil/errori/zero countTotal), poi integrazione di lettura in check_line_fleet. Non inventare
+    FATTO 10.10.2026 sui sorgenti: normalizzazione protetta CC.normalizeCargoQuality/lineCargoQuality
+    in b8 e cargo_quality nel controllo flotta b2 solo per apply falso/assente, anche senza misura giro.
+    Accessi espliciti pcall, nessuna enumerazione userdata/raw error, numeri finiti, zero/nil/false distinti.
+    Tredici nuovi casi mock; un userdata Lua sintetico, NON C++ TF3. RED 38048874590 poi GREEN
+    38049081989: Ubuntu 89 test/1 skip Windows, Windows 80/1 classe Lua skip, mock 84 ok/0 falliti.
+    Locale isolato 80 OK/classe Lua skip. Nessun comando aggiunto, mod non rigenerata/installata.
+    Linee senza veicoli mantengono il ritorno anticipato senza cargo_quality. Non inventare
     percentuali o moltiplicatori. Campi e semantica runtime ancora da sondare con partita autorizzata.
     Elenco delle funzioni api.engine.util: scoperte-api.md (09.10.2026).
 5. **v14 CARICATA E COLLAUDATA nel protocollo normale (09.10.2026, 08:40)**: build `v14-bozza-32c86032` (`mod/` con

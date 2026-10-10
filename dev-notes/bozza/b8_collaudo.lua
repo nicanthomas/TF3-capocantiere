@@ -9,6 +9,82 @@
 -- in quel caso il movimento risulta "non ancora verificabile").
 CC._samples = CC._samples or {}
 
+
+-- Qualita' TF3: campi dalle definizioni api/tealdef, NON verificati su userdata C++.
+-- Accessi espliciti: niente pairs/clone/dump o messaggi raw delle eccezioni.
+local function qualityField(value, name)
+    local ok, field = pcall(function() return value[name] end)
+    return ok, field
+end
+
+local function qualityFinite(value)
+    return type(value) == "number" and value == value
+        and value ~= math.huge and value ~= -math.huge
+end
+
+local function qualityDatum(value)
+    local out = { available = false, errors = {} }
+    if type(value) ~= "table" and type(value) ~= "userdata" then
+        out.errors[1] = "dato assente o non leggibile"
+        return out
+    end
+    for _, name in ipairs({ "countBad", "countTotal", "averageQuality", "isVeryBad" }) do
+        local ok, field = qualityField(value, name)
+        if not ok then
+            out.errors[#out.errors + 1] = name .. ": accesso non riuscito"
+        elseif name == "averageQuality" and field == nil then
+            -- Campo opzionale: assente non significa zero.
+        else
+            local valid
+            if name == "isVeryBad" then
+                valid = type(field) == "boolean"
+            elseif name == "averageQuality" then
+                valid = qualityFinite(field)
+            else
+                valid = qualityFinite(field) and field >= 0 and math.floor(field) == field
+            end
+            if valid then out[name] = field
+            else out.errors[#out.errors + 1] = name .. ": valore assente o tipo non valido" end
+        end
+    end
+    out.available = out.countBad ~= nil and out.countTotal ~= nil and out.isVeryBad ~= nil
+    if out.countBad ~= nil and out.countTotal ~= nil then
+        if out.countBad > out.countTotal then
+            out.available = false
+            out.errors[#out.errors + 1] = "countBad maggiore di countTotal"
+        elseif out.countTotal > 0 then
+            out.bad_fraction = out.countBad / out.countTotal
+        end
+    end
+    return out
+end
+
+function CC.normalizeCargoQuality(summary)
+    local out = { available = false, errors = {} }
+    for _, name in ipairs({ "passengers", "cargo" }) do
+        local ok, datum = qualityField(summary, name)
+        if not ok then
+            out.errors[#out.errors + 1] = name .. ": accesso non riuscito"
+            datum = nil
+        end
+        out[name] = qualityDatum(datum)
+        out.available = out.available or out[name].available
+    end
+    return out
+end
+
+function CC.lineCargoQuality(lineId)
+    local ok, summary = pcall(function()
+        return api.engine.util.cargo.getSummarizedCargoQualityDataForLine(lineId)
+    end)
+    if not ok then
+        local out = CC.normalizeCargoQuality(nil)
+        out.errors = { "API qualita' linea non disponibile" }
+        return out
+    end
+    return CC.normalizeCargoQuality(summary)
+end
+
 -- Stato del veicolo come testo (IN_DEPOT, EN_ROUTE, AT_TERMINAL, GOING_TO_DEPOT ...). DA VERIFICARE i nomi.
 function CC.vehicleState(v)
 	local tv = CC.comp(v, api.type.ComponentType.TRANSPORT_VEHICLE)

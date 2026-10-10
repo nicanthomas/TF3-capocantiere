@@ -198,6 +198,115 @@ do
 	check(CC.modelTopSpeed(12345) == nil, "flotta: velocita' del modello assente -> nil, senza errori")
 end
 
+
+-- Qualita' merci: soli campi dichiarati, dato opzionale e lettura senza comandi.
+do
+    local valid = { countBad = 2, countTotal = 8, averageQuality = 25, isVeryBad = false }
+    local zero = { countBad = 0, countTotal = 0, isVeryBad = false }
+    local q = CC.normalizeCargoQuality({ passengers = valid, cargo = zero })
+    check(q.available and q.passengers.available and q.cargo.available
+        and q.passengers.averageQuality == 25 and q.passengers.bad_fraction == 0.25
+        and q.passengers.isVeryBad == false, "qualita': rami separati, numero raw e falso preservati")
+    check(q.cargo.countTotal == 0 and q.cargo.countBad == 0
+        and q.cargo.averageQuality == nil and q.cargo.bad_fraction == nil,
+        "qualita': zero e nil senza inventare misura o dividere per zero")
+
+    local proxy = setmetatable({}, {
+        __index = function(_, key)
+            if key == "averageQuality" then error("fixture-sensitive-message") end
+            if key == "countBad" then return 0 end
+            if key == "countTotal" then return 3 end
+            if key == "isVeryBad" then return false end
+            error("campo non dichiarato")
+        end,
+        __pairs = function() error("vietata enumerazione") end,
+        __tostring = function() error("vietato dump") end
+    })
+    local p = CC.normalizeCargoQuality({ passengers = proxy, cargo = zero }).passengers
+    check(p.countTotal == 3 and p.isVeryBad == false and p.averageQuality == nil
+        and #p.errors > 0 and not table.concat(p.errors, " "):find("fixture-sensitive-message", 1, true),
+        "qualita': accesso protetto e messaggio eccezione non esportato")
+
+    local bad = CC.normalizeCargoQuality({ passengers = {
+        countBad = -1, countTotal = "8", averageQuality = false, isVeryBad = 1
+    } }).passengers
+    check(not bad.available and bad.countBad == nil and bad.countTotal == nil
+        and bad.averageQuality == nil and bad.isVeryBad == nil and #bad.errors > 0,
+        "qualita': tipi errati e contatori negativi non esportati")
+
+    local decimal = CC.normalizeCargoQuality({ passengers = {
+        countBad = 0.5, countTotal = 8.25, isVeryBad = false
+    } }).passengers
+    check(not decimal.available and decimal.countBad == nil and decimal.countTotal == nil,
+        "qualita': contatori decimali non accettati come interi")
+
+    local nf = CC.normalizeCargoQuality({ passengers = {
+        countBad = math.huge, countTotal = 0/0, averageQuality = -math.huge, isVeryBad = false
+    } }).passengers
+    check(not nf.available and nf.countBad == nil and nf.countTotal == nil
+        and nf.averageQuality == nil and nf.isVeryBad == false,
+        "qualita': numeri non finiti esclusi dal risultato")
+
+    local incoherent = CC.normalizeCargoQuality({ passengers = {
+        countBad = 3, countTotal = 2, isVeryBad = true
+    } }).passengers
+    check(incoherent.countBad == 3 and incoherent.countTotal == 2
+        and incoherent.bad_fraction == nil and #incoherent.errors > 0,
+        "qualita': contatori incoerenti conservati senza rapporto ingannevole")
+
+    local partial = setmetatable({}, { __index = function(_, key)
+        if key == "passengers" then return valid end
+        error("fixture-sensitive-message")
+    end })
+    local pq = CC.normalizeCargoQuality(partial)
+    check(pq.available and pq.passengers.countTotal == 8 and not pq.cargo.available
+        and #pq.errors > 0, "qualita': ramo guasto non perde il ramo leggibile")
+
+    local Lq = newEnt({ LINE = { stops = V({ {stationGroup = grp}, {stationGroup = grpB} }) } })
+    local Vq = newEnt({ TRANSPORT_VEHICLE = { line = Lq, state = 1, sectionTimes = {120, 180},
+        transportVehicleConfig = { vehicles = V({ {part = {modelId = 501}} }) } } })
+    local oldCargo = api.engine.util.cargo
+    local calls, sentBefore = 0, #W.sent
+    api.engine.util.cargo = { getSummarizedCargoQualityDataForLine = function(id, ...)
+        assert(id == Lq and select("#", ...) == 0, "firma riepilogo linea")
+        calls = calls + 1
+        return { passengers = valid, cargo = zero }
+    end }
+    local fleet = SIM_ACTIONS.adjust_line_fleet({line_id=Lq, apply=false, interval=100})
+    check(fleet.ok and fleet.round_trip_s == 300 and fleet.change == 2
+        and fleet.cargo_quality.passengers.countTotal == 8 and calls == 1 and #W.sent == sentBefore,
+        "qualita': check flotta legge una volta e non invia comandi")
+
+    local measured = W.comps[Vq].TRANSPORT_VEHICLE.sectionTimes
+    W.comps[Vq].TRANSPORT_VEHICLE.sectionTimes = {}
+    local pending = SIM_ACTIONS.adjust_line_fleet({line_id=Lq, apply=false, interval=100})
+    check(not pending.ok and pending.cargo_quality.available and calls == 2 and #W.sent == sentBefore,
+        "qualita': leggibile anche prima della misura del giro")
+    W.comps[Vq].TRANSPORT_VEHICLE.sectionTimes = measured
+
+    api.engine.util.cargo = { getSummarizedCargoQualityDataForLine = function()
+        error("fixture-sensitive-message")
+    end }
+    local fallback = SIM_ACTIONS.adjust_line_fleet({line_id=Lq, apply=false, interval=100})
+    check(fallback.ok and fallback.round_trip_s == 300 and fallback.change == 2
+        and not fallback.cargo_quality.available
+        and not table.concat(fallback.cargo_quality.errors, " "):find("fixture-sensitive-message", 1, true)
+        and #W.sent == sentBefore, "qualita': API guasta non altera stima o esporta eccezione")
+
+    api.engine.util.cargo = { getSummarizedCargoQualityDataForLine = function()
+        calls = calls + 1
+        error("non deve leggere per apply=true")
+    end }
+    local noRead = SIM_ACTIONS.adjust_line_fleet({line_id=Lq, apply=true, interval=300})
+    check(noRead.ok and noRead.change == 0 and noRead.cargo_quality == nil
+        and calls == 2 and #W.sent == sentBefore, "qualita': integrazione limitata al controllo senza apply")
+    api.engine.util.cargo = nil
+    local absent = CC.lineCargoQuality(Lq)
+    check(not absent.available and #absent.errors > 0 and #W.sent == sentBefore,
+        "qualita': famiglia API assente gestita senza comandi")
+    api.engine.util.cargo = oldCargo
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.

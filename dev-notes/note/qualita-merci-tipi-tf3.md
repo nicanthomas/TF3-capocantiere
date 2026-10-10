@@ -55,3 +55,9 @@ Modifica circoscritta: CC.normalizeCargoQuality(summary) restituisce una tabella
 CC.lineCargoQuality legge soltanto getSummarizedCargoQualityDataForLine(line_id), una chiamata protetta; API assente o guasta diventa risultato non disponibile. b2 aggiunge cargo_quality al risultato di adjust_line_fleet solo per apply falso/assente (check_line_fleet nel middleware). Anche con tempi giro mancanti la qualita' resta leggibile, senza cambiare il giudizio/stima della flotta. Nessun comando, acquisto, modifica o azione automatica aggiunto.
 
 Prima del codice: casi mock RED in CI, poi GREEN; verificare campo opzionale, falso/zero, tipi errati, numeri non finiti, proxy con accessor guasto/pairs vietato e API assente/errore senza leak messaggi. Un userdata Lua sintetico verifica gli accessi espliciti; non dimostra compatibilita' del userdata C++ TF3. Nessuna mod rigenerata/installata. Bozza NON provata in partita.
+
+## Esito dello sviluppo sorgenti
+
+Adattatore e integrazione completati, 10.10.2026. RED nativo CI 38048874590 confermato prima del codice; GREEN 38049081989: Ubuntu 89 test (1 skip Windows), Windows 80 (classe Lua skip), mock normale 84 ok/0 falliti. Il test di fallimento intenzionale del mock produce 84 ok/1 fallito e viene atteso dalla suite; non e' un errore del normale collaudo. Locale isolato 80 OK, classe Lua saltata per DLL fidata assente. Revisione indipendente senza blocchi.
+
+Il nuovo test usa un vero userdata Lua sintetico, ripristinandone il metatable anche in errore: non dimostra leggibilita' o semantica dei userdata C++ TF3. Le linee senza veicoli mantengono il ritorno anticipato precedente, senza dato aggiuntivo. IndustryProductivityInfo resta sola ricerca, non implementato. build --check --bozza resta DIVERSO: nessuna rigenerazione o installazione della mod, nessun collaudo in partita.
