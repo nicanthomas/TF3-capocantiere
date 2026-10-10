@@ -49,8 +49,9 @@ Opzioni Steam lette senza modificarle: avvia_con_gioco.bat con %command%. La cop
 
 ### Risultato del passo completato
 
-Corretto middleware/lua_table.py: il lettore chiude il file prima del parsing; sostituzione atomica con attesa massima nominale 0,5 s (25 pause da 20 ms) solo per WinError 5/32/33. Errori persistenti propagati, file precedente conservato, temporaneo eliminato. Nessuna modifica al bridge installato.
-Regressioni test_lua_atomic.py: primo giro 3 errori attesi sul codice precedente; dopo la correzione intera suite **42/42 OK**, 14,654 s. Include lock Windows reale rilasciato da altro thread, lock persistente, errori non Windows e chiusura del lettore prima del parsing. CI usa discovery per includere tutte le regressioni Python.
+Lua portabile: dev-notes/lua_runtime.py condiviso da run_mock.py, luachk.py e build_script.py. Ricerca librerie di sistema Linux/macOS; Windows richiede CAPOCANTIERE_LUA_LIB con percorso assoluto di DLL fidata 5.3/5.4 della stessa architettura Python. Nessuna ricerca nei dati del gioco, nessuna installazione. Prototipi ctypes espliciti, stato sempre chiuso anche su errori, controllo sintassi senza esecuzione. Runner importabile senza esecuzione implicita.
+Intera suite locale isolata **50/50 OK**, 14,681 s: 37 precedenti, 5 regressioni scritture atomiche, 8 wrapper Lua (ABI simulata, non runtime Lua reale). Mock Windows tentato: errore esplicito libreria mancante, NON eseguiti controlli Lua. build_script.py --check --bozza: sintassi saltata per libreria assente e codice 1, script repo non allineato; e' l'avviso gia' previsto dalla CI, non generata/copiata alcuna mod.
+Correzione lock Windows gia' pubblicata: lettore chiuso prima del parsing, sostituzione atomica con massimo 25 pause da 20 ms per WinError 5/32/33; file precedente preservato su errore definitivo. Include test con lock Windows reale. CI ora include job Windows Python oltre a Ubuntu; esiti CI da rileggere dopo pubblicazione.
 
 ### Capacita' e prove precedenti da conservare
 
@@ -59,7 +60,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Rendere run_mock.py e luachk.py compatibili con ricerca librerie Lua 5.3/5.4 su Windows/Linux e rilascio stati, con regressioni e nessuna installazione. Se manca DLL Windows documentare il limite e usare CI Linux come prova distinta. Poi trasformare il probe grafico in helper con identificazione dinamica, controlli espliciti (mai assert per sicurezza) e test senza input reale. Risolvere il blocco dell'avviatore solo con autorizzazione compatibile; non modificare opzioni o file installati in questa sessione.
+Sviluppare dev-notes/strumenti/windows_pc.py dal probe grafico: identificazione dinamica, verifica identita'/focus esplicita anche con Python -O, screenshot della sola finestra, input limitati e test senza gioco. Verificare CI Ubuntu/Windows del checkpoint; sistemare nota grafica con testo UTF-8 corretto. TF3 resta bloccato dal wrapper installato, da risolvere con autorizzazione distinta prima dell'avvio. Non modificare opzioni/file installati e non usare Taskkill o Anthropic.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

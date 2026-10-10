@@ -18,10 +18,21 @@ jobs:
       - name: Test Python del middleware
         working-directory: middleware
         run: python -m unittest discover -p 'test_*.py'
-      - name: Mock della bozza Lua (65 controlli)
+      - name: Mock della bozza Lua
         run: python dev-notes/bozza/run_mock.py
       - name: Script della mod allineato ai sorgenti (solo avviso finche' la v14 non e' provata in gioco)
         continue-on-error: true
         run: python dev-notes/build_script.py --check
       - name: La mod nel repo ha DEV_MODE spento
         run: grep -q '^local DEV_MODE = false' mod/tfcapocantiere_1/content/capocantiere/capocantiere.script.lua
+
+  windows-python:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Regressioni Python e lock reali Windows (senza gioco o DLL Lua)
+        working-directory: middleware
+        run: python -m unittest discover -p 'test_*.py'

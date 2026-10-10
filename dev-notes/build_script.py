@@ -150,19 +150,14 @@ def set_version(script: str, version: str) -> str:
 
 
 def lua_syntax_ok(code: str) -> tuple[bool, str]:
-    libs = glob.glob("/usr/lib/x86_64-linux-gnu/liblua5.*.so*") + glob.glob("/usr/lib/liblua5.*.so*")
-    if not libs:
-        return True, "liblua non trovata: controllo sintassi saltato"
-    import ctypes
-    lua = ctypes.CDLL(sorted(libs)[-1])
-    lua.luaL_newstate.restype = ctypes.c_void_p
-    lua.luaL_loadbufferx.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p]
-    lua.lua_tolstring.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
-    lua.lua_tolstring.restype = ctypes.c_char_p
-    L = lua.luaL_newstate()
-    b = code.encode("utf-8")
-    r = lua.luaL_loadbufferx(L, b, len(b), b"capocantiere.script", b"t")
-    return r == 0, "" if r == 0 else lua.lua_tolstring(L, -1, None).decode("utf-8", "replace")
+    from lua_runtime import LuaError, LuaUnavailable, run
+    try:
+        run(code, execute=False)
+    except LuaUnavailable as exc:
+        return True, "Controllo sintassi saltato: " + str(exc)
+    except LuaError as exc:
+        return False, str(exc)
+    return True, ""
 
 
 DIST = os.path.join(ROOT, "dist")
