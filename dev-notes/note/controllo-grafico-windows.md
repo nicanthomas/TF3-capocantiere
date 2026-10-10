@@ -1,0 +1,15 @@
+# Procedura di avvio e chiusura TF3 � da collaudare
+
+Il 10.10.2026 sono stati verificati screenshot della sola finestra Steam, focus, clic nella ricerca, digitazione e cancellazione del testo di prova. La ricerca e la pagina iniziale sono state ripristinate. La pagina di Transport Fever 3 � stata aperta con un singolo clic; il pulsante Gioca non � stato premuto. TF3 � rimasto chiuso.
+
+Gli input nativi SendInput sono globali: i controlli del target e del focus prima/dopo ogni evento sono una protezione applicativa, non un confinamento imposto da Windows. Durante le prove non usare contemporaneamente mouse/tastiera per altre finestre. Se il focus, il PID, il rettangolo o il punto del clic cambiano, fermarsi e acquisire una nuova immagine. Non riutilizzare HWND o coordinate della prova senza identificarli di nuovo.
+
+1. **Autorizzazione successiva:** avvio e chiusura di TF3 per una prova limitata al menu principale, senza caricare partite, modificare impostazioni, mod o salvataggi. L'autorizzazione al controllo Steam non autorizza l'avvio di TF3.
+2. **Preparazione:** verificare che TF3 sia chiuso, individuare Steam tramite processo/titolo/classe e acquisire un'immagine aggiornata. Aprire la pagina TF3 con un singolo clic. Leggere le Opzioni di avvio gi� configurate senza modificarle: il progetto documenta un avviatore che pu� aprire anche la console Capo Cantiere. Non inviare direttive alla console e non usare chiavi API.
+3. **Avvio:** dopo l'autorizzazione e il controllo del comportamento dell'avviatore, identificare visivamente il pulsante Gioca e fare un solo clic. Attendere con timeout limitato; individuare il nuovo processo transportfever3.exe e verificare il percorso E:\SteamLibrary\steamapps\common\Transport Fever 3\transportfever3.exe. Identificare la sua finestra e acquisirne uno screenshot. Non ripetere il clic se l'avvio tarda.
+4. **Prova al menu:** verificare finestra, focus e schermata principale. Nessun caricamento partita, nessuna azione Lua, nessuna costruzione. La cattura di una finestra di gioco e la sua risposta agli input non sono ancora state collaudate: se la cattura risulta nera, usare la cattura della porzione di schermo occupata dal gioco, senza cambiare impostazioni grafiche.
+5. **Chiusura:** identificare dalla schermata il comando di uscita ordinaria e usarlo nella sola finestra TF3, dopo controllo del focus. Verificare scomparsa del processo e ritorno del pulsante Gioca in Steam. Verificare separatamente l'eventuale console aperta dall'avviatore. Se compare un dialogo inatteso o la chiusura non riesce, fermarsi e documentarlo; nessun taskkill forzato o intervento sui salvataggi.
+
+Il wrapper avvia_con_gioco.bat attualmente documentato usa taskkill /t /f per la console: questo comportamento non � stato collaudato e deve essere valutato prima di una prova di chiusura automatica. Nessun file del wrapper � stato modificato.
+
+Resta separato il problema intermittente dei test Python su Windows: os.replace pu� fallire quando un lettore tiene aperto il file. Non � stato corretto durante il collaudo grafico.

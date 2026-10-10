@@ -62,14 +62,19 @@ Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, co
 - **Installazione effettiva letta:** mod `v14-bozza-32c86032`, `DEV_MODE = true`; avviatore `avvia_capocantiere.bat` ancora 435 byte, coerente col precedente handoff. State.lua residuo: stessa versione, lastActionId 1, speed 0; dato storico a gioco chiuso, NON una misura della partita attuale.
 - **Spazio ultimo controllo:** C: 27,28 GB, E: 709,99 GB (decimali). Suite completa nel venv: ultimo giro 37/37 OK, con incidente intermittente Windows descritto sopra. Nessuna chiave API usata, nessuna azione o scrittura nei dati reali del gioco. Il bridge vivo e il mock Lua locale non sono stati eseguiti.
 
-- **Desktop Windows nativo:** screenshot desktop in memoria OK (3440x1440). Ulteriore prova in sola lettura: finestra Steam SDL_app visibile, rettangolo (0,0)-(1720,1392), cattura della sola finestra via PrintWindow OK (1008 colori distinti campionati), senza focus/input e senza salvare immagini. UI Automation vede solo 4 discendenti, zero InvokePattern e nessuna etichetta TF3: non offre pulsanti Steam utilizzabili semanticamente. Per interagire serve controllo guidato dalle immagini + Win32, ancora da collaudare. Processi Steam visibili solo fuori sandbox; TF3 non avviato.
-- **Input:** entrypoint Win32 SendInput/SetForegroundWindow/EnumWindows/PostMessageW presenti, ma NESSUN clic, tasto, cambio focus o comando di chiusura provato. PIL presente; pyautogui, pywinauto e mcp non rilevati. Nessun tool computer-use dedicato esposto; due ricerche plugin non hanno trovato un'integrazione pertinente (catalogo non esaustivo). Una piccola interfaccia locale via Win32/UI Automation puo' colmare il divario, ma deve essere implementata/testata prima di dichiarare parita' con Claude.
+- **Desktop Windows nativo:** screenshot desktop in memoria OK (3440x1440). Ulteriore prova in sola lettura: finestra Steam SDL_app visibile, rettangolo (0,0)-(1720,1392), cattura della sola finestra via PrintWindow OK (1008 colori distinti campionati), senza focus/input e senza salvare immagini. UI Automation vede solo 4 discendenti, zero InvokePattern e nessuna etichetta TF3: non offre pulsanti Steam utilizzabili semanticamente. Controllo per immagini + focus/mouse/tastiera Win32 ora collaudato su Steam, con limiti e prove nella sezione dedicata. Processi Steam visibili solo fuori sandbox; TF3 non avviato.
+- **Input:** focus, clic e tastiera SendInput ora provati su Steam; chiusura e input TF3 NON provati. PIL presente; pyautogui, pywinauto e mcp non rilevati. Nessun tool computer-use dedicato esposto; due ricerche plugin non hanno trovato un'integrazione pertinente (catalogo non esaustivo). La prova usa script temporanei Win32 e immagini; non esiste ancora un'interfaccia di produzione e non dichiarare parita' completa con Claude in TF3.
 - **Mock Lua locale:** run_mock.py letto da main carica soltanto /usr/lib/x86_64-linux-gnu/liblua5.*.so*. Non funziona direttamente su Windows; non basta installare lua.exe. Lua standalone non trovato nel PATH. Occorre un runner compatibile Windows + DLL Lua autorizzata, oppure usare la CI Linux dichiarandola CI, non test locale.
 
-### Collaudo grafico Steam autorizzato (10.10.2026)
+### Collaudo grafico Steam autorizzato (10.10.2026): RIUSCITO
 
-Finestra identificata per PID, titolo Steam e classe SDL_app; screenshot PrintWindow acquisito/letto localmente. Focus SetForegroundWindow riuscito, GetForegroundWindow conferma il target. Tentativo mouse/tastiera con PostMessageW indirizzato al solo HWND Steam: API accetta ma Steam ignora gli eventi, screenshot invariato e campo ricerca vuoto. Non dichiarare riusciti gli input. Nessun processo TF3 avviato, nessuna modifica ai dati del gioco; immagini solo nell'area work, non pubblicate.
-Prossima prova autorizzata: SendInput nativo con controllo HWND/PID/focus e finestra al punto del clic prima di ogni evento, interazione limitata alla ricerca libreria. SendInput e' un'API globale: questi controlli riducono la finestra di rischio ma non costituiscono un confinamento OS; abortire se il focus cambia. Nessun hotkey globale, nessun Invio su un gioco.
+- Finestra Steam identificata tramite processo, titolo e classe SDL_app; screenshot PrintWindow acquisiti e ispezionati localmente. SetForegroundWindow riesce e GetForegroundWindow conferma Steam.
+- PostMessageW verso il solo HWND Steam accetta i messaggi ma Steam li ignora: non usarlo come prova di input riuscito.
+- Input nativi SendInput funzionano: clic nella ricerca vuota, digitazione di `zzcodexprobe` verificata visivamente (libreria filtrata), 11 Backspace con ripristino della ricerca vuota. Controllo target/PID/focus prima e dopo ogni coppia di eventi; controllo della finestra sotto il punto del clic. Nessun hotkey globale o Invio su giochi.
+- Blocco in caso di focus diverso: test con perdita focus SIMULATA, zero chiamate SendInput; nessun evento inviato a un'altra app durante il test. SendInput resta un'API globale: protezione applicativa verificata, NON confinamento imposto dal sistema operativo. Fermarsi se il focus cambia o c'e' input concorrente.
+- Singolo clic sulla voce TF3 della libreria: pagina con pulsante Gioca osservata, pulsante NON premuto. Ripristinata Pagina iniziale. TF3 assente ai controlli prima/durante/dopo, nessuna modifica a mod/salvataggi/file del gioco, nessun acquisto/installazione/disinstallazione.
+- Prove temporanee in work della chat, non strumenti di produzione: HWND e coordinate usati nel test non vanno riutilizzati senza identificazione aggiornata. Screenshot solo locali; nessuna immagine o dato dell'account pubblicati nel repo.
+- Procedura successiva, NON eseguita: `dev-notes/note/controllo-grafico-windows.md`. Richiede nuova autorizzazione per avviare/chiudere TF3, prima prova solo menu senza partite.
 
 ### Provato su Windows il 09.10.2026
 
@@ -112,9 +117,9 @@ Vincoli: installazioni, modifiche ai file del gioco e operazioni rischiose richi
 
 ### Prossima operazione precisa
 
-Il setup autorizzato e' completato: Git installato, unico checkout E:\Sviluppo\TF3-capocantiere pulito/allineato, suite completa eseguita e checkpoint pubblicati.
-Proseguire con controllo grafico guidato dalle immagini della sola finestra Steam (UI Automation non espone pulsanti), iniziando con letture/catture senza input. Clic/tastiera e avvio/caricamento/chiusura TF3 restano non collaudati. Concordare le prove effettive sul gioco prima di eseguirle; mod installata, salvataggi e file del gioco NON autorizzati alla modifica.
-Problema tecnico da tenere aperto: letture concorrenti Windows possono impedire os.replace dei file Lua; non dichiararlo risolto dal solo giro verde. Mock Lua Linux-only ancora da adattare/installare con autorizzazioni pertinenti.
+Collaudo grafico Steam riuscito, ricerca e Pagina iniziale ripristinate. Ottenere autorizzazione esplicita per un primo avvio/chiusura TF3 limitato al menu principale, seguendo `dev-notes/note/controllo-grafico-windows.md`: prima leggere le Opzioni di avvio senza modificarle e valutare l'eventuale console avviata dal wrapper esistente; nessuna chiave API usata, nessun caricamento partita.
+Rimangono NON autorizzate modifiche a mod installata, salvataggi e file del gioco. Nessuna chiusura forzata o modifica impostazioni.
+Problema intermittente Windows os.replace e mock Lua Linux-only restano aperti, separati da questo collaudo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
