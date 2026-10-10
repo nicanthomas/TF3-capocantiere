@@ -9,7 +9,7 @@ TF3 build 40420: finestra SDL_app da eseguibile esatto E:\SteamLibrary\steamapps
 
 ## Strumento nel repository
 
-dev-notes/strumenti/windows_pc.py usa solo stdlib e DLL Windows di sistema. Non avvia programmi e non carica configurazioni Steam, salvataggi, mod o credenziali. Comandi: list, screenshot BMP, focus, click con coordinate client, text stampabile e backspace. Nessun hotkey o Invio. Ogni uso effettivo resta soggetto alle autorizzazioni della sessione.
+dev-notes/strumenti/windows_pc.py usa solo stdlib e DLL Windows di sistema. Non avvia programmi e non carica configurazioni Steam, salvataggi, mod o credenziali. Comandi: list, screenshot BMP, focus, click con coordinate client, text stampabile, backspace e key --key escape/tab a scancode fisici. Nessuna combinazione di tasti o Invio. Identita'/focus/input premuti ricontrollati prima e dopo ciascuna coppia di eventi. Ogni uso effettivo resta soggetto alle autorizzazioni della sessione.
 
 Da PowerShell, nel checkout:
 
@@ -45,3 +45,9 @@ Clic CLI richiede --rect LEFT TOP RIGHT BOTTOM corrispondente al rettangolo dell
 Riferimenti API: [ctypes Python](https://docs.python.org/3/library/ctypes.html), [gestione stati Lua](https://www.lua.org/manual/5.4/manual.html#lua_close).
 
 Riferimento scancode: [Microsoft KEYBDINPUT](https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-keybdinput). Con KEYEVENTF_SCANCODE il campo wScan identifica il tasto; wVk e' ignorato. L'effetto concreto sopra e' una prova locale TF3, non una promessa per ogni pannello o applicazione.
+
+## Tasti fisici nell'helper
+
+Comando key con --key escape oppure tab, stessi --target/--tf3-exe/--hwnd/--pid dell'identificazione recente. Solo questi due nomi sono ammessi dal controller e dal backend; gli altri rifiutati prima degli eventi. Native emette KEYEVENTF_SCANCODE 0x0008 per pressione e 0x000A per rilascio, wVk=0, wScan=0x01 per Esc o 0x0F per Tab. Nessuna automazione del campo Steam o del gioco introdotta.
+
+Otto regressioni nuove su focus, identita', input premuto, nomi non consentiti, CLI esplicita e layout delle coppie di eventi attraverso SendInput simulato. GREEN 22/22 anche -O, suite locale isolata 80 OK/classe Lua skip. Il comportamento reale Esc e' stato osservato nel probe temporaneo precedente con la stessa codifica; la nuova CLI non e' stata rieseguita nel gioco dopo il ripristino delle opzioni. Tab non ha una nuova prova visibile in TF3.
