@@ -62,13 +62,31 @@ Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_scr
 - Numero iniziale di veicoli alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet`, ex branch flotta).
 - Middleware: timeout sicuri e risultati tardivi (commit 04).
 
+### Console reale provata (10.10.2026, Claude, crediti finiti a meta')
+
+- Avvio da Steam: OK (console in attesa nel menu, "console pronta" alla mappa). Chiusura con il gioco: non verificata.
+- Richiesta 1 "panoramica della mappa": OK, 13'143 token (8'300 di scrittura cache al primo giro).
+- Richiesta 2 "linea bus a Lissone": **BLOCCATA da un falso "partita in pausa"**. `main.py` (`run_game_tool`) rifiuta se
+  `state.speed == 0`; la mod (lato GUI, `buildState`) esporta `speed` da `GAME_SPEED.speedup`, che vale **0 anche con
+  il gioco che scorre** (state.lua fresco: speed = 0, gameTime 6010800 alle 08:44:46 UTC). Nessuna azione e' stata
+  inviata al gioco (lastActionId 0). Sessione: 21'148 token dopo 2 richieste.
+  **Correzione da fare**: in `main.py` non fidarsi di `speed` (togliere il blocco o usarlo solo se `gameTime` non avanza
+  tra due state.lua); stessa cosa per `main.py` riga ~257 e per l'avviso `CC.gameSpeed()==0` della mod. Verificare in
+  gioco quale campo di `GAME_SPEED` dice davvero la pausa (sonda lua_eval con la build dev). Test + push + copiare
+  `main.py` sul PC.
+- File gia' pronto ma NON installato sul PC: `middleware/avvia_capocantiere.bat` di main (attiva da solo
+  `CAPOCANTIERE_BOZZA=1`): la copia sul PC e' ancora la vecchia (435 byte, nuova 798). Va copiata a gioco chiuso
+  (un .bat in esecuzione non si modifica). Attenzione: un commit verso il PC con lo stesso stagedPath di prima ha scritto
+  il contenuto vecchio: usare sempre un percorso nuovo e rileggere dal PC.
+- Middleware sul PC: `<dati TF3>\local\capocantiere\middleware` (= main, tranne il .bat sopra).
+
 ### Prossima operazione precisa
 
-1. Installare sul PC la build `--dev --bozza` di `main` (backup prima, rilettura sha1 dal PC), ricaricare la partita.
-2. Con Nicolo': opzione di avvio di Steam, avvio del gioco da Steam -> console in attesa -> "console pronta" caricando
-   la partita -> chiusura insieme al gioco.
-3. Prova della console reale (3 richieste) e costo per sessione (STATO.md punto 5); linea bus senza `num_vehicles` ->
-   confrontare `fleet` stimato con `check_line_fleet` dopo un giro.
+1. Correggere il falso "in pausa" (sopra), test, push su main, copiare `main.py` sul PC (backup, rilettura).
+2. A gioco chiuso: copiare `avvia_capocantiere.bat`; riprovare "fammi una linea bus a Lissone" e una 3a richiesta;
+   annotare costo della sessione.
+3. Installare la build `--dev --bozza` di main (399dcf74, flotta iniziale) sul PC; confrontare flotta stimata con
+   `check_line_fleet`.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
