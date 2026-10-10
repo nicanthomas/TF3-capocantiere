@@ -68,9 +68,9 @@ class LuaIntegrationTests(unittest.TestCase):
             assert(n == 1 and info.count == 1 and not info.estimated and info.error, "fallback supera hardMax")
         """)
 
-    def test_fleet_missing_first_position_does_not_estimate_partial_route(self):
+    def test_fleet_missing_middle_position_does_not_estimate_partial_route(self):
         self.fleet_check("""
-            CC.posOf = function(id) if id ~= 1 then return { x = id * 1000, y = 0 } end end
-            local n, info = CC.initialFleet({1, 2, 3}, nil, "bus", nil, 6)
+            CC.posOf = function(id) if id ~= 2 then return { x = id * 1000, y = 0 } end end
+            local n, info = CC.initialFleet({1, 2, 3, 4}, nil, "bus", nil, 6)
             assert(n == 2 and info.count == 2 and not info.estimated and info.error, "posizione mancante ignorata")
         """)
