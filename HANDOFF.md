@@ -42,10 +42,11 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 **10.10.2026, Codex locale Windows.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
-### Autorizzazioni e blocco TF3
+### Autorizzazioni e collaudo TF3 della nuova sessione
 
-Autorizzati sviluppo sorgenti nel checkout, test, pubblicazione, avvio TF3 via Steam, input nel solo menu e chiusura normale. Vietati caricamenti/salvataggi/costruzioni, modifiche a mod installata o gioco, installazioni, chiave Anthropic e Taskkill/chiusure forzate.
-Opzioni Steam lette senza modificarle: avvia_con_gioco.bat con %command%. La copia installata avvia la console che legge la chiave Anthropic e termina la console con taskkill /t /f. TF3 NON avviato: queste opzioni contraddicono i vincoli attuali. File installati e opzioni invariati; nessuna chiave letta/usata. Prova reale menu/focus/input/chiusura TF3 ancora da fare.
+10.10.2026, nuova autorizzazione esplicita: leggere e salvare le sole opzioni TF3, disattivare temporaneamente il wrapper in Steam, avvio normale senza chiave/Taskkill, input nel menu, uscita normale e ripristino verificato. NON modificare file wrapper, gioco, mod installata, salvataggi o chiavi; niente installazioni, partite/costruzioni o bridge vivo.
+Opzioni originali ancora attive: avvia_con_gioco.bat con %command%. Doppia copia privata recuperabile del solo valore LaunchOptions, riletta e confrontata, impronta verificata; nessun valore privato pubblicato. Dialogo proprieta' TF3 identificato come Steam steamwebhelper.exe, non finestra del gioco. Il normale helper esclude tale dialogo; probe temporaneo con HWND/PID/percorso/titolo/classe/geometria esatti.
+TF3 non ancora avviato. Backup nell'area work privata della chat, steam-launch-options-session2/original.json e recovery-copy.json. Recupero: riportare soltanto launch_options nel campo Steam, nessuna sostituzione dell'intero localconfig.vdf.
 
 ### Risultato del passo completato
 
@@ -65,7 +66,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Prossimo passo sicuro: progettare sui sorgenti la normalizzazione della qualita' merci (nota qualita-merci-tipi-tf3.md), proteggere lettura userdata e casi nil/zero/errori con mock prima dell'integrazione di lettura in check_line_fleet. Nessuna percentuale o moltiplicatore dedotto. Per il collaudo TF3 serve prima autorizzazione distinta a risolvere le opzioni Steam/wrapper che usa chiave e Taskkill; non modificarli con i permessi attuali. DLL Lua Windows fidata assente, nessuna installazione autorizzata. Menu/input/chiusura TF3, bridge vivo e flotta in gioco NON provati. Conservare il checkout unico e la distinzione CI/prove reali. Una richiesta di elenco con escalation e' scaduta nel controllo automatico senza esecuzione; lettura ordinaria riuscita, nessun blocco residuo.
+Doppio backup opzioni validato e originali ancora attive. Ora svuotare il solo campo Opzioni di avvio TF3 nel dialogo Steam verificato; chiudere il dialogo e rileggere selettivamente LaunchOptions per confermare vuoto. Avviare via Gioca una volta, restare nel menu, screenshot/focus/input innocuo, uscire dal menu senza chiusure forzate, verificare processo terminato. Ripristinare esattamente il valore privato salvato tramite Steam e confrontare con entrambe le copie. In caso di ambiguita' non avviare. Poi normalizzazione qualita' merci sui sorgenti/mock come nota qualita-merci-tipi-tf3.md. DLL Lua Windows assente; nessuna installazione autorizzata. Bridge vivo e flotta in gioco NON provati.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
