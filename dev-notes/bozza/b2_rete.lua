@@ -208,13 +208,21 @@ SIM_ACTIONS.adjust_line_fleet = function(a)
 		local st = tv and tv.sectionTimes
 		pcall(function()
 			for i, t in ipairs(st) do
-				if t and t > 0 then sum[i] = (sum[i] or 0) + t; cnt[i] = (cnt[i] or 0) + 1 end
+				if type(t) == "number" and t > 0 and t < math.huge then
+					sum[i] = (sum[i] or 0) + t; cnt[i] = (cnt[i] or 0) + 1
+				end
 			end
 		end)
 	end
 	local rtt, missing = 0, 0
 	for i = 1, math.max(nStops, 1) do
-		if cnt[i] and cnt[i] > 0 then rtt = rtt + sum[i] / cnt[i] else missing = missing + 1 end
+		if cnt[i] and cnt[i] > 0 then
+			local section = sum[i] / cnt[i]
+			local nextRtt = rtt + section
+			-- Anche somme di tempi finiti possono traboccare: misura mancante, mai stima infinita.
+			if section < math.huge and nextRtt < math.huge then rtt = nextRtt
+			else missing = missing + 1 end
+		else missing = missing + 1 end
 	end
 	local models = CC.vehicleModels(vs[1])
 	local folder = models[1] and CC.modelFolder(models[1]) or "?"
