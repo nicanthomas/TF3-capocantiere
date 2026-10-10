@@ -46,7 +46,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 10.10.2026, nuova autorizzazione esplicita: leggere e salvare le sole opzioni TF3, disattivare temporaneamente il wrapper in Steam, avvio normale senza chiave/Taskkill, input nel menu, uscita normale e ripristino verificato. NON modificare file wrapper, gioco, mod installata, salvataggi o chiavi; niente installazioni, partite/costruzioni o bridge vivo.
 Opzioni originali ancora attive: avvia_con_gioco.bat con %command%. Doppia copia privata recuperabile del solo valore LaunchOptions, riletta e confrontata, impronta verificata; nessun valore privato pubblicato. Dialogo proprieta' TF3 identificato come Steam steamwebhelper.exe, non finestra del gioco. Il normale helper esclude tale dialogo; probe temporaneo con HWND/PID/percorso/titolo/classe/geometria esatti.
-TF3 non ancora avviato. Backup nell'area work privata della chat, steam-launch-options-session2/original.json e recovery-copy.json. Recupero: riportare soltanto launch_options nel campo Steam, nessuna sostituzione dell'intero localconfig.vdf.
+Campo Opzioni di avvio svuotato tramite Steam e confermato vuoto sia visivamente sia con lettura selettiva del VDF; backup integro, file wrapper intatto. TF3 non ancora avviato. Backup nell'area work privata della chat, steam-launch-options-session2/original.json e recovery-copy.json. Recupero: riportare soltanto launch_options nel campo Steam, nessuna sostituzione dell'intero localconfig.vdf.
 
 ### Risultato del passo completato
 
@@ -66,7 +66,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Doppio backup opzioni validato e originali ancora attive. Ora svuotare il solo campo Opzioni di avvio TF3 nel dialogo Steam verificato; chiudere il dialogo e rileggere selettivamente LaunchOptions per confermare vuoto. Avviare via Gioca una volta, restare nel menu, screenshot/focus/input innocuo, uscire dal menu senza chiusure forzate, verificare processo terminato. Ripristinare esattamente il valore privato salvato tramite Steam e confrontare con entrambe le copie. In caso di ambiguita' non avviare. Poi normalizzazione qualita' merci sui sorgenti/mock come nota qualita-merci-tipi-tf3.md. DLL Lua Windows assente; nessuna installazione autorizzata. Bridge vivo e flotta in gioco NON provati.
+ATTENZIONE: opzioni temporaneamente VUOTE; due backup privati integri disponibili. Ora chiudere il dialogo proprieta' e avviare TF3 normalmente via Steam. Se il collaudo e' interrotto, priorita' al ripristino del solo valore launch_options tramite proprieta' Steam. Avviare via Gioca una volta, restare nel menu, screenshot/focus/input innocuo, uscire dal menu senza chiusure forzate, verificare processo terminato. Ripristinare esattamente il valore privato salvato tramite Steam e confrontare con entrambe le copie. In caso di ambiguita' non avviare. Poi normalizzazione qualita' merci sui sorgenti/mock come nota qualita-merci-tipi-tf3.md. DLL Lua Windows assente; nessuna installazione autorizzata. Bridge vivo e flotta in gioco NON provati.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
