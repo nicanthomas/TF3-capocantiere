@@ -48,3 +48,29 @@ class LuaIntegrationTests(unittest.TestCase):
         # is patched, never real files. No mock of run() or error handling.
         with patch.object(Path, "read_text", inject_failed_check):
             self.assertEqual(runner.main(), 1)
+
+    def fleet_check(self, assertion):
+        parts = [DEV / "bozza/test_mock_pre.lua", DEV / "cc_lib.lua", DEV / "cc_actions.lua"]
+        parts += sorted((DEV / "bozza").glob("b[0-9]_*.lua"))
+        source = "\n".join(path.read_text(encoding="utf-8") for path in parts)
+        lua_runtime.run(source + "\n" + assertion, library=self.library, name="flotta-regressione")
+
+    def test_fleet_clamped_count_matches_details(self):
+        self.fleet_check("""
+            local n, info = CC.initialFleet({1, 2}, nil, "bus", 7, 6)
+            assert(n == 6 and info.count == 6 and not info.estimated, "dettagli count diversi dalla flotta limitata")
+        """)
+
+    def test_fleet_missing_positions_respect_limit(self):
+        self.fleet_check("""
+            CC.posOf = function() return nil end
+            local n, info = CC.initialFleet({1, 2}, nil, "train", nil, 1)
+            assert(n == 1 and info.count == 1 and not info.estimated and info.error, "fallback supera hardMax")
+        """)
+
+    def test_fleet_missing_first_position_does_not_estimate_partial_route(self):
+        self.fleet_check("""
+            CC.posOf = function(id) if id ~= 1 then return { x = id * 1000, y = 0 } end end
+            local n, info = CC.initialFleet({1, 2, 3}, nil, "bus", nil, 6)
+            assert(n == 2 and info.count == 2 and not info.estimated and info.error, "posizione mancante ignorata")
+        """)
