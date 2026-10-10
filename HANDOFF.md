@@ -66,6 +66,11 @@ Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, co
 - **Input:** entrypoint Win32 SendInput/SetForegroundWindow/EnumWindows/PostMessageW presenti, ma NESSUN clic, tasto, cambio focus o comando di chiusura provato. PIL presente; pyautogui, pywinauto e mcp non rilevati. Nessun tool computer-use dedicato esposto; due ricerche plugin non hanno trovato un'integrazione pertinente (catalogo non esaustivo). Una piccola interfaccia locale via Win32/UI Automation puo' colmare il divario, ma deve essere implementata/testata prima di dichiarare parita' con Claude.
 - **Mock Lua locale:** run_mock.py letto da main carica soltanto /usr/lib/x86_64-linux-gnu/liblua5.*.so*. Non funziona direttamente su Windows; non basta installare lua.exe. Lua standalone non trovato nel PATH. Occorre un runner compatibile Windows + DLL Lua autorizzata, oppure usare la CI Linux dichiarandola CI, non test locale.
 
+### Collaudo grafico Steam autorizzato (10.10.2026)
+
+Finestra identificata per PID, titolo Steam e classe SDL_app; screenshot PrintWindow acquisito/letto localmente. Focus SetForegroundWindow riuscito, GetForegroundWindow conferma il target. Tentativo mouse/tastiera con PostMessageW indirizzato al solo HWND Steam: API accetta ma Steam ignora gli eventi, screenshot invariato e campo ricerca vuoto. Non dichiarare riusciti gli input. Nessun processo TF3 avviato, nessuna modifica ai dati del gioco; immagini solo nell'area work, non pubblicate.
+Prossima prova autorizzata: SendInput nativo con controllo HWND/PID/focus e finestra al punto del clic prima di ogni evento, interazione limitata alla ricerca libreria. SendInput e' un'API globale: questi controlli riducono la finestra di rischio ma non costituiscono un confinamento OS; abortire se il focus cambia. Nessun hotkey globale, nessun Invio su un gioco.
+
 ### Provato su Windows il 09.10.2026
 
 - Avvio con il gioco (`avvia_con_gioco.bat` nelle Opzioni di avvio di Steam): la console si apre con il gioco, aspetta
