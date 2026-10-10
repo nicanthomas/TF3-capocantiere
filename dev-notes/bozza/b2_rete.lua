@@ -62,10 +62,19 @@ end
 -- Numero iniziale di veicoli per una linea con le fermate `stops` (gruppi, nell'ordine della linea).
 -- requested = numero chiesto da Nicolo' (vince sempre, nei limiti `hardMax`).
 function CC.initialFleet(stops, modelId, folder, requested, hardMax)
-	if requested then return math.max(1, math.min(hardMax or 20, requested)), { estimated = false, count = requested } end
+	if requested then
+		local count = math.max(1, math.min(hardMax or 20, requested))
+		return count, { estimated = false, count = count }
+	end
 	local pos = {}
-	for i, g in ipairs(stops) do pos[i] = CC.posOf(g) end
-	if #pos < #stops then return 2, { estimated = false, count = 2, error = "posizioni delle fermate non trovate: 2 veicoli" } end
+	for i, g in ipairs(stops) do
+		local p = CC.posOf(g)
+		if not p then
+			local count = math.max(1, math.min(2, hardMax or 2))
+			return count, { estimated = false, count = count, error = "posizioni delle fermate non trovate: " .. count .. " veicoli" }
+		end
+		pos[i] = p
+	end
 	return CC.estimateFleet(pos, modelId and CC.modelTopSpeed(modelId), folder, { max = hardMax and math.min(hardMax, CC.FLEET_MAX[folder] or hardMax) })
 end
 

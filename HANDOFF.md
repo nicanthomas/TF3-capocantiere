@@ -61,7 +61,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Branch lavoro/flotta-regressioni: RED CI run38045214689: due bug confermati (count richiesto invece di limitato, fallback oltre hardMax). Verifica aggiuntiva posizione intermedia mancante su tabella con quattro fermate. Nessuna modifica a flotta in gioco o mod installata; main resta al checkpoint verde del mock. Dopo RED correggere soltanto CC.initialFleet, verificare GREEN CI e unire senza PR.
+Branch lavoro/flotta-regressioni: RED CI run38045214689: due bug confermati (count richiesto invece di limitato, fallback oltre hardMax). RED run38045331676 conferma anche posizione intermedia mancante:3errori attesi su72test/1skip. Corretto CC.initialFleet: count coerente, fallback entro hardMax e controllo esplicito di ciascuna posizione. GREEN CI da verificare prima dell'unione. Nessuna modifica a flotta in gioco o mod installata; main resta al checkpoint verde del mock. Dopo RED correggere soltanto CC.initialFleet, verificare GREEN CI e unire senza PR.
 
 Mock corretto e testato in CI prima dell'unione in main, senza PR/force. Verificare CI nuovo main; proseguire sui casi limite della flotta iniziale (solo sorgenti/mock, nessuna costruzione): dettagli count devono corrispondere al numero effettivamente limitato, posizioni mancanti non devono produrre una stima incompleta. Usare regressioni Lua in CI Ubuntu, dato che Windows manca DLL. Non rigenerare/installare la mod e non avviare TF3 con wrapper attuale. Ancora non provati menu/input/chiusura TF3, bridge vivo e flotta iniziale in gioco.
 
