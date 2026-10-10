@@ -132,3 +132,35 @@ class LuaIntegrationTests(unittest.TestCase):
                 end
             end
         """)
+
+    def test_fleet_nonfinite_measurements_never_propose_or_apply(self):
+        self.fleet_check("""
+            local times, attempts = {}, 0
+            local originalComp = CC.comp
+            CC.lineVehicles = function() return {101, 102} end
+            CC.lineGroups = function() return {1, 2} end
+            CC.comp = function(id, kind)
+                if id == 101 or id == 102 then return {sectionTimes=times[id]} end
+                return originalComp(id, kind)
+            end
+            CC.vehicleModels = function() return {501} end
+            CC.modelFolder = function() return "bus" end
+            CC.lineCargoQuality = function() return {available=false, errors={}} end
+            SIM_ACTIONS.add_vehicles = function() attempts=attempts+1; return {ok=true} end
+            SIM_ACTIONS.remove_vehicles = function() attempts=attempts+1; return {ok=true} end
+            local cases = {
+                {[101]={math.huge, 180}, [102]={math.huge, 180}},
+                {[101]={1e308, 180}, [102]={1e308, 180}},
+                {[101]={1e308, 1e308}, [102]={}}
+            }
+            for _, sample in ipairs(cases) do
+                times=sample
+                for _, apply in ipairs({false, true}) do
+                    local out=SIM_ACTIONS.adjust_line_fleet({line_id=1, apply=apply})
+                    assert(not out.ok and out.error:find("non ancora misurati", 1, true)
+                        and out.round_trip_s == nil and out.interval_now_s == nil
+                        and out.target == nil and out.proposal == nil and attempts == 0,
+                        "misura non finita genera stima o tentativo di modifica")
+                end
+            end
+        """)
