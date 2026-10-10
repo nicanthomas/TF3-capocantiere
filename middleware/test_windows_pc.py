@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 from dataclasses import replace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "dev-notes/strumenti"))
 import windows_pc as pc
@@ -13,6 +14,7 @@ class Backend:
         self.foreground = 100
         self.cover = 100
         self.busy = False
+        self.cursor = (0, 0)
         self.events = []
     def inspect(self, handle, kind):
         return self.current
@@ -26,7 +28,12 @@ class Backend:
         return (x, y)
     def root_at(self, x, y):
         return self.cover
+    def cursor_point(self):
+        return self.cursor
+    def windows(self, kind):
+        return [self.current]
     def move(self, x, y):
+        self.cursor = (x, y)
         self.events.append(("move", x, y))
     def mouse_pair(self):
         self.events.append(("click",))
@@ -109,4 +116,29 @@ class WindowControlTests(unittest.TestCase):
             self.backend.current = changed
             with self.assertRaises(pc.ControlError):
                 self.controller.backspace(1)
+        self.assertEqual(self.backend.events, [])
+
+    def test_native_side_mouse_buttons_block_input(self):
+        native = pc.Native.__new__(pc.Native)
+        for pressed in (5, 6):
+            class User32:
+                GetAsyncKeyState = staticmethod(lambda key: 0x8000 if key == pressed else 0)
+            native.u = User32()
+            self.assertTrue(native.input_busy())
+
+    def test_pointer_drift_within_target_blocks_click(self):
+        original = self.backend.move
+        def concurrent_move(x, y):
+            original(x, y)
+            self.backend.cursor = (x + 50, y)
+        self.backend.move = concurrent_move
+        with self.assertRaises(pc.ControlError):
+            self.controller.click(20, 30)
+        self.assertEqual(self.backend.events, [("move", 20, 30)])
+
+    def test_cli_click_requires_recent_geometry(self):
+        args = ["windows_pc", "click", "--hwnd", "100", "--pid", "200", "--x", "20", "--y", "30"]
+        with patch.object(pc, "Native", return_value=self.backend), patch.object(sys, "argv", args):
+            with self.assertRaises(pc.ControlError):
+                pc.main()
         self.assertEqual(self.backend.events, [])

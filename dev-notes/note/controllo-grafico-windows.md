@@ -27,7 +27,7 @@ SendInput globale mantiene race tra controllo e invio: niente input concorrente,
 
 ## Prove reali Steam
 
-Nuovo helper: identificazione dinamica, screenshot ispezionato, focus, clic ricerca, testo zzcodexprobe visibile. Ripristino con 12 Backspace totali (prima 11, screenshot mostrava un residuo, poi rimosso), Pagina iniziale e ricerca vuota verificate visivamente. Nessun Gioca/installazione/acquisto/disinstallazione. Screenshot soltanto locali; TF3 assente. Undici regressioni controller su backend simulato, anche -O; intera suite isolata 61/61 OK. Non sono prove TF3. PostMessage ignorato da Steam nel probe precedente.
+Nuovo helper: identificazione dinamica, screenshot ispezionato, focus, clic ricerca, testo zzcodexprobe visibile. Ripristino con 12 Backspace totali (prima 11, screenshot mostrava un residuo, poi rimosso), Pagina iniziale e ricerca vuota verificate visivamente. Nessun Gioca/installazione/acquisto/disinstallazione. Screenshot soltanto locali; TF3 assente. Quattordici regressioni controller su backend simulato, anche -O; intera suite isolata 64/64 OK. Non sono prove TF3. PostMessage ignorato da Steam nel probe precedente.
 
 ## Procedura TF3 dopo risoluzione autorizzata del blocco
 
@@ -36,3 +36,8 @@ Nuovo helper: identificazione dinamica, screenshot ispezionato, focus, clic rice
 3. Identificare finestra TF3 da eseguibile esatto, screenshot e focus. Solo menu principale e input innocui ispezionati; niente Carica/Continua, Lua o costruzioni.
 4. Usare Esci dalla schermata corrente con controlli target/focus; verificare processo terminato e Gioca tornato in Steam. Verificare separatamente eventuale console, senza chiavi o chiusure forzate.
 5. Se non risponde, fermare input, documentare schermata/processi e passare a sorgenti/test. Nessun Taskkill, modifica impostazioni o intervento sui salvataggi.
+
+## Rafforzamento dopo revisione
+
+Clic CLI richiede --rect LEFT TOP RIGHT BOTTOM corrispondente al rettangolo dello screenshot recente (riportato nel JSON): se la finestra si e' mossa, catturare di nuovo prima di scegliere coordinate. Controlla anche posizione effettiva del puntatore prima del clic, per fermarsi su drift da input concorrente dentro la stessa finestra. Blocco include pulsanti laterali XBUTTON1/2, testati separatamente. Rimane la race SendInput documentata.
+Riferimenti API: [ctypes Python](https://docs.python.org/3/library/ctypes.html), [gestione stati Lua](https://www.lua.org/manual/5.4/manual.html#lua_close).

@@ -67,6 +67,8 @@ class Controller:
         self.validate()
         if self.backend.root_at(*point) != self.window.hwnd:
             raise ControlError("Finestra sotto il puntatore cambiata")
+        if self.backend.cursor_point() != point:
+            raise ControlError("Puntatore spostato da input concorrente")
         self.backend.mouse_pair()
         self.validate()
 
@@ -124,6 +126,7 @@ class Native:
             bind(self.u, name, w.BOOL, w.HWND, c.POINTER(w.RECT))
         bind(self.u, "ClientToScreen", w.BOOL, w.HWND, c.POINTER(w.POINT))
         bind(self.u, "WindowFromPoint", w.HWND, w.POINT)
+        bind(self.u, "GetCursorPos", w.BOOL, c.POINTER(w.POINT))
         bind(self.u, "SetCursorPos", w.BOOL, c.c_int, c.c_int)
         bind(self.u, "GetAsyncKeyState", c.c_short, c.c_int)
         bind(self.k, "OpenProcess", w.HANDLE, w.DWORD, w.BOOL, w.DWORD)
@@ -200,7 +203,7 @@ class Native:
         return self.u.GetAncestor(self.u.GetForegroundWindow(), 2)
 
     def input_busy(self):
-        return any(self.u.GetAsyncKeyState(key) & 0x8000 for key in (1, 2, 4, 16, 17, 18, 91, 92))
+        return any(self.u.GetAsyncKeyState(key) & 0x8000 for key in (1, 2, 4, 5, 6, 16, 17, 18, 91, 92))
 
     def focus(self, hwnd):
         self.u.SetForegroundWindow(hwnd)  # Controller verifies actual foreground.
@@ -219,6 +222,12 @@ class Native:
 
     def root_at(self, x, y):
         return self.u.GetAncestor(self.u.WindowFromPoint(w.POINT(x, y)), 2)
+
+    def cursor_point(self):
+        point = w.POINT()
+        if not self.u.GetCursorPos(c.byref(point)):
+            raise ControlError("Posizione puntatore non verificabile")
+        return (point.x, point.y)
 
     def move(self, x, y):
         if not self.u.SetCursorPos(x, y):
@@ -288,6 +297,7 @@ def main():
     parser.add_argument("--pid", type=int)
     parser.add_argument("--x", type=int)
     parser.add_argument("--y", type=int)
+    parser.add_argument("--rect", type=int, nargs=4, metavar=("LEFT", "TOP", "RIGHT", "BOTTOM"))
     parser.add_argument("--text")
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--output")
@@ -312,6 +322,8 @@ def main():
     elif args.action == "click":
         if args.x is None or args.y is None:
             raise ControlError("Specificare coordinate client --x e --y")
+        if args.rect is None or tuple(args.rect) != window.rect:
+            raise ControlError("Per clic serve --rect corrispondente allo screenshot recente")
         controller.click(args.x, args.y)
     elif args.action == "text":
         if args.text is None:
