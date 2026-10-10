@@ -76,15 +76,17 @@ Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e
    `cd dev-notes/bozza && python3 run_mock.py` (deve dare 65 ok).
 Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 
-## 1c. Configurazione locale Codex su Windows (verificata 10.10.2026)
+## 1c. Configurazione locale Codex su Windows (10.10.2026)
 
-- Checkpoint corrente e piano dettagliato: HANDOFF.md. Le autorizzazioni storiche di Cowork non si trasferiscono a questa chat: installazioni, modifiche ai file del gioco e operazioni rischiose richiedono autorizzazione esplicita.
-- Dopo spazio liberato da Nicolo', PowerShell e Node REPL funzionano nel sandbox senza modificare la configurazione. Ultimo controllo: C: circa 28,07 GB liberi, E: circa 709,99 GB (decimali; valori variabili).
-- Python 3.10.10, anthropic 1.11.0 presente. Suite middleware completa nel venv isolato dal gioco: ultimo giro 37/37 OK; primo giro 1 WinError 5 intermittente durante os.replace del mock. File aperto in lettura impedisce la sostituzione Windows (riprodotto separatamente): problema non ancora corretto, nessun sorgente modificato. Rete/accessi Steam bloccati nei test; nessuna API o azione sul gioco reale.
-- Git 2.55.0.windows.5 installato via winget con autorizzazione del 10.10.2026. Unico checkout completo E:\Sviluppo\TF3-capocantiere, separato dai dati del gioco, main allineato al remoto. Destinazione assente prima della clonazione. Nessun AGENTS.md trovato nei percorsi controllati. Test e venv nell'area work della chat, non nei dati TF3. PATH persistente registrato; app/terminale gia' aperti conservano PATH precedente: percorso completo o PATH della sola sessione fino alla riapertura.
-- Desktop: PrintWindow cattura Steam; UI Automation espone 4 discendenti e zero InvokePattern. Collaudo grafico Steam autorizzato riuscito: focus, clic ricerca, testo di prova, cancellazione e ripristino pagina iniziale. PostMessageW ignorato da Steam, SendInput nativo funziona con controllo target/focus prima e dopo ogni evento. Perdita focus SIMULATA blocca gli input; SendInput globale non e' confinato dal sistema operativo. Processi Steam monitorati fuori sandbox. TF3 non avviato; input/caricamento/chiusura in gioco non provati. Procedura: dev-notes/note/controllo-grafico-windows.md.
-- Mock bozza: `dev-notes/bozza/run_mock.py` cerca una libreria Linux .so in /usr/lib; per test locali Windows serve adattamento del runner e DLL Lua, non semplicemente lua.exe. GitHub Actions su Ubuntu resta distinta dai test locali.
-- GameBridge.send() elimina risultati gia' letti: prima dei test vivi conciliare tale pulizia con il divieto di cancellazione; in questa verifica non e' stato chiamato.
+Unico checkout E:\Sviluppo\TF3-capocantiere; Git 2.55.0.windows.5, Python 3.10.10 e PowerShell funzionanti. Sviluppo checkout autorizzato; venv stdlib/fixtures nell'area work della chat, rete/subprocess/accessi Steam bloccati durante suite. Usare percorso completo Git se PATH app ancora precedente all'installazione.
+
+Helper dev-notes/strumenti/windows_pc.py: stdlib, identificazione dinamica target/PID/eseguibile, screenshot BMP senza overwrite, focus/clic/testo/backspace. Guardie esplicite attive anche -O. Nessun avvio automatico, chiave o Taskkill. Test reale Steam: screenshot, focus, ricerca con zzcodexprobe visibile, ripristino con 12 Backspace totali, ricerca vuota/Pagina iniziale verificati. Screenshot solo locali; alcuni frame incompleti durante ridisegno richiedono ricattura. TF3 processo assente dopo test.
+Intera suite isolata **61/61 OK**, 14,669 s: 37 precedenti, 5 lock Lua (anche Windows reale), 8 wrapper Lua ABI simulata, 11 guardie desktop senza eventi. Guardie anche -O: 11/11. CI checkpoint14 verde Ubuntu e Windows, run 38043985896, mock Lua reale verde Ubuntu. Nuovo checkpoint grafico da verificare in CI dopo pubblicazione.
+Mock Windows non eseguito: manca DLL fidata Lua 5.3/5.4 della stessa architettura Python, da specificare via CAPOCANTIERE_LUA_LIB assoluta; nessuna installazione. build --check --bozza locale: sintassi saltata, DIVERSO/codice1 (avviso previsto CI). Nessuna mod generata/installata. Correzione lock solo sorgenti: lettore chiuso prima parsing e retry atomico nominale 0,5 s per WinError5/32/33, vecchio file preservato su errore definitivo. Nessun bridge installato modificato.
+TF3 autorizzato ma avvio bloccato: wrapper installato legge chiave Anthropic e usa Taskkill, vietati in questa sessione. Opzioni/file installati invariati. Menu/input/chiusura TF3 NON provati. Nessun salvataggio/mod/gioco modificato.
+
+SendInput globale mantiene race: evitare input concorrente. UI Automation Steam non espone pulsanti; processi visibili fuori sandbox. Procedura e prove: controllo-grafico-windows.md.
+GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto di cancellazione prima di test vivi; non chiamato sui dati reali.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
@@ -250,8 +252,8 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     (lettura) e `adjust_line_fleet` (con conferma) in `tools_bozza.py`. Altre funzioni utili trovate:
     `api.engine.util.line.getMaxFrequency`, `calcLineStationThroughput`, `getLineCapacityUsages`,
     `api.engine.util.vehicle.getVehicleCapacities`, `transportVehicleSystem.getLineCargoInfo`.
-    Numero iniziale di veicoli alla creazione delle linee: SCRITTO 09.10.2026 sulla branch `lavoro/flotta-iniziale`
-    (non ancora su main, NON provato in gioco): `CC.estimateFleet` / `CC.initialFleet` in b2 (distanza tra le fermate x
+    Numero iniziale di veicoli alla creazione delle linee: UNITO in main il 09.10.2026
+    (NON ancora provato in gioco): `CC.estimateFleet` / `CC.initialFleet` in b2 (distanza tra le fermate x
     fattore percorso, `metadata.<tipo>Vehicle.topSpeed` del modello o `CC.FLEET_SPEED`, sosta per fermata, passaggio
     ogni `CC.FLEET_INTERVAL`, limiti `CC.FLEET_MAX`); usata da build_intercity_bus, connect_station_to_town, linee di
     b4 (aerei/elicotteri/navi) e create_line_from_stations (treni: al massimo 2 senza numero esplicito). Il numero chiesto

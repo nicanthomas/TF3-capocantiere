@@ -49,9 +49,10 @@ Opzioni Steam lette senza modificarle: avvia_con_gioco.bat con %command%. La cop
 
 ### Risultato del passo completato
 
-Lua portabile: dev-notes/lua_runtime.py condiviso da run_mock.py, luachk.py e build_script.py. Ricerca librerie di sistema Linux/macOS; Windows richiede CAPOCANTIERE_LUA_LIB con percorso assoluto di DLL fidata 5.3/5.4 della stessa architettura Python. Nessuna ricerca nei dati del gioco, nessuna installazione. Prototipi ctypes espliciti, stato sempre chiuso anche su errori, controllo sintassi senza esecuzione. Runner importabile senza esecuzione implicita.
-Intera suite locale isolata **50/50 OK**, 14,681 s: 37 precedenti, 5 regressioni scritture atomiche, 8 wrapper Lua (ABI simulata, non runtime Lua reale). Mock Windows tentato: errore esplicito libreria mancante, NON eseguiti controlli Lua. build_script.py --check --bozza: sintassi saltata per libreria assente e codice 1, script repo non allineato; e' l'avviso gia' previsto dalla CI, non generata/copiata alcuna mod.
-Correzione lock Windows gia' pubblicata: lettore chiuso prima del parsing, sostituzione atomica con massimo 25 pause da 20 ms per WinError 5/32/33; file precedente preservato su errore definitivo. Include test con lock Windows reale. CI ora include job Windows Python oltre a Ubuntu; esiti CI da rileggere dopo pubblicazione.
+Helper dev-notes/strumenti/windows_pc.py: stdlib, identificazione dinamica target/PID/eseguibile, screenshot BMP senza overwrite, focus/clic/testo/backspace. Guardie esplicite attive anche -O. Nessun avvio automatico, chiave o Taskkill. Test reale Steam: screenshot, focus, ricerca con zzcodexprobe visibile, ripristino con 12 Backspace totali, ricerca vuota/Pagina iniziale verificati. Screenshot solo locali; alcuni frame incompleti durante ridisegno richiedono ricattura. TF3 processo assente dopo test.
+Intera suite isolata **61/61 OK**, 14,669 s: 37 precedenti, 5 lock Lua (anche Windows reale), 8 wrapper Lua ABI simulata, 11 guardie desktop senza eventi. Guardie anche -O: 11/11. CI checkpoint14 verde Ubuntu e Windows, run 38043985896, mock Lua reale verde Ubuntu. Nuovo checkpoint grafico da verificare in CI dopo pubblicazione.
+Mock Windows non eseguito: manca DLL fidata Lua 5.3/5.4 della stessa architettura Python, da specificare via CAPOCANTIERE_LUA_LIB assoluta; nessuna installazione. build --check --bozza locale: sintassi saltata, DIVERSO/codice1 (avviso previsto CI). Nessuna mod generata/installata. Correzione lock solo sorgenti: lettore chiuso prima parsing e retry atomico nominale 0,5 s per WinError5/32/33, vecchio file preservato su errore definitivo. Nessun bridge installato modificato.
+TF3 autorizzato ma avvio bloccato: wrapper installato legge chiave Anthropic e usa Taskkill, vietati in questa sessione. Opzioni/file installati invariati. Menu/input/chiusura TF3 NON provati. Nessun salvataggio/mod/gioco modificato.
 
 ### Capacita' e prove precedenti da conservare
 
@@ -60,7 +61,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Sviluppare dev-notes/strumenti/windows_pc.py dal probe grafico: identificazione dinamica, verifica identita'/focus esplicita anche con Python -O, screenshot della sola finestra, input limitati e test senza gioco. Verificare CI Ubuntu/Windows del checkpoint; sistemare nota grafica con testo UTF-8 corretto. TF3 resta bloccato dal wrapper installato, da risolvere con autorizzazione distinta prima dell'avvio. Non modificare opzioni/file installati e non usare Taskkill o Anthropic.
+Verificare CI del checkpoint grafico e rivedere casi limite dei nuovi strumenti (output screenshot, librerie Lua, timeout file). Continuare test sicuri STATO senza gioco. TF3 richiede soluzione autorizzata al wrapper: opzioni/file installati invariati, nessun avvio che usi chiave o Taskkill. DLL Lua Windows richiede autorizzazione distinta se comporta installazione. Ancora non provati TF3 menu/input/chiusura, bridge vivo, flotta iniziale in gioco.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
