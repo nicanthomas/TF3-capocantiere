@@ -61,7 +61,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Passo attivo: verificata lacuna preesistente nel mock Lua, che stampa fails senza sollevare errore e quindi puo' dare CI verde falsa. Test di integrazione reale preparato (fallimento intenzionale solo nel testo in memoria). Windows senza DLL: skip esplicito, non prova superata. Usare branch lavoro/regressione-mock-lua per RED in CI Ubuntu; main resta verde. Dopo RED, errore Lua su fails>0, GREEN e unione autonoma in main senza PR. Nessuna installazione locale.
+Branch lavoro/regressione-mock-lua: test RED in CI atteso, sorgente non corretto ancora. Passo attivo: verificata lacuna preesistente nel mock Lua, che stampa fails senza sollevare errore e quindi puo' dare CI verde falsa. Test di integrazione reale preparato (fallimento intenzionale solo nel testo in memoria). Windows senza DLL: skip esplicito, non prova superata. Usare branch lavoro/regressione-mock-lua per RED in CI Ubuntu; main resta verde. Dopo RED, errore Lua su fails>0, GREEN e unione autonoma in main senza PR. Nessuna installazione locale.
 
 Verificare CI del checkpoint grafico e rivedere casi limite dei nuovi strumenti (output screenshot, librerie Lua, timeout file). Continuare test sicuri STATO senza gioco. TF3 richiede soluzione autorizzata al wrapper: opzioni/file installati invariati, nessun avvio che usi chiave o Taskkill. DLL Lua Windows richiede autorizzazione distinta se comporta installazione. Ancora non provati TF3 menu/input/chiusura, bridge vivo, flotta iniziale in gioco.
 
