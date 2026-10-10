@@ -199,3 +199,6 @@ do
 end
 
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
+
+-- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
+if fails > 0 then error(string.format("Mock Lua: %d controlli falliti", fails)) end
