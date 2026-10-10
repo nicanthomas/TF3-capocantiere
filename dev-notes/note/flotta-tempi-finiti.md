@@ -15,3 +15,7 @@ CI 38050006467: Ubuntu 92 test/1 errore/1 skip Windows; errore nativo misura non
 Il primo GREEN 38050123124 non e' sufficiente per il merge: la revisione ha trovato che sum parte da 0 intero. In Lua 5.3/5.4 somme di interi traboccano con wraparound, non infinito ([manuale ufficiale Lua 5.4, 2.1/3.4.1](https://www.lua.org/manual/5.4/manual.html#3.4.1)). Due tempi math.maxinteger possono produrre sum=-2 e un giro negativo; controllare soltanto < math.huge non basta.
 
 Prima della correzione aggiunti un test nativo e un quinto mock con due veicoli/due tratte math.maxinteger: risultato matematico positivo in virgola mobile e nessuna vendita dovuta al wraparound. Le modifiche apply=true restano fixture intercettate, mai gioco reale. Attendere RED dedicato, poi avviare l'accumulo da 0.0; nessuna nuova soglia dei tempi.
+
+## RED dedicato interi e correzione
+
+CI 38050265270 conferma il rilievo: Ubuntu 93 test/1 errore/1 skip Windows, nuovo test overflow intero altera il giro o vende veicoli in errore e quinto mock fallito. Solo dopo questo RED accumulo inizializzato con 0.0, evitando wraparound dell'addizione intera; guardia media/giro richiede anche valori positivi. Dato grande finito conserva risultato matematico float e target coerente; nessuna soglia inventata. GREEN finale/revisione in attesa.

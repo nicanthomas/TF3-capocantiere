@@ -209,7 +209,7 @@ SIM_ACTIONS.adjust_line_fleet = function(a)
 		pcall(function()
 			for i, t in ipairs(st) do
 				if type(t) == "number" and t > 0 and t < math.huge then
-					sum[i] = (sum[i] or 0) + t; cnt[i] = (cnt[i] or 0) + 1
+					sum[i] = (sum[i] or 0.0) + t; cnt[i] = (cnt[i] or 0) + 1
 				end
 			end
 		end)
@@ -220,7 +220,7 @@ SIM_ACTIONS.adjust_line_fleet = function(a)
 			local section = sum[i] / cnt[i]
 			local nextRtt = rtt + section
 			-- Anche somme di tempi finiti possono traboccare: misura mancante, mai stima infinita.
-			if section < math.huge and nextRtt < math.huge then rtt = nextRtt
+			if section > 0 and section < math.huge and nextRtt > 0 and nextRtt < math.huge then rtt = nextRtt
 			else missing = missing + 1 end
 		else missing = missing + 1 end
 	end
