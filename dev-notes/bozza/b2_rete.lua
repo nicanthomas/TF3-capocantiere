@@ -213,6 +213,12 @@ SIM_ACTIONS.adjust_line_fleet = function(a)
 	local folder = models[1] and CC.modelFolder(models[1]) or "?"
 	local interval = a.interval or CC.FLEET_INTERVAL[folder] or 300
 	local out = { vehicles = #vs, folder = folder, interval_target = interval, stops = nStops }
+	-- Solo controllo senza apply (check_line_fleet): dato aggiuntivo, mai comandi o giudizi sulla flotta.
+	if not a.apply then
+		local okQ, quality = pcall(CC.lineCargoQuality, a.line_id)
+		out.cargo_quality = okQ and type(quality) == "table" and quality
+			or { available = false, errors = { "lettura qualita' linea non disponibile" } }
+	end
 	if missing > 0 then
 		out.ok = false
 		out.error = "tempi del giro non ancora misurati (" .. missing .. " tratte su " .. nStops .. "): far correre il gioco finche' i veicoli hanno fatto un giro intero"

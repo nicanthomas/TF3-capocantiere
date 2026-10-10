@@ -50,7 +50,7 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 ### Risultato del passo completato
 
-Passo lavoro/qualita-merci: scritte tredici nuove verifiche nel mock e una regressione Lua su userdata sintetico, prima del codice. Locale senza DLL non puo' eseguire RED Lua: pubblicare sulla branch e attendere CI Ubuntu prima dell'implementazione. Nessun C++ TF3, gioco chiuso/opzioni ripristinate; main conserva piano verde.
+Passo lavoro/qualita-merci: scritte tredici nuove verifiche nel mock e una regressione Lua su userdata sintetico, prima del codice. RED CI nativa 38048874590 confermato: normalizzatore mancante nel mock, regressione userdata in errore; Ubuntu 89 test/1 errore/1 skip Windows, Windows verde con classe Lua skip. Implementazione minima b8+b2 ora presente; locale isolato 80 OK/1 classe Lua skip, 15,761 s. Verificare GREEN nativo in CI e revisione prima di unire: il verde Python locale non prova i nuovi casi Lua. Nessun C++ TF3, gioco chiuso/opzioni ripristinate; main conserva piano verde.
 
 Tasti Windows completati: Controller.key/Native.key_pair e CLI key --key escape/tab a scancode. Otto regressioni nuove RED poi GREEN; 22/22 controller anche -O, DLL simulate, nessun input desktop nei test. Locale isolato 80 OK/classe Lua skip, 15,770 s. CI GREEN 38048277232: Ubuntu 88 test/1 skip Windows, 14,007 s; Windows 80/1 classe Lua skip, 14,501 s; mock normale 71 ok/0 falliti. RED CI precedente 38048150135. Revisione indipendente senza blocchi; integrazione main dopo confronto remoto. Nuova CLI non rieseguita in TF3 dopo ripristino; codifica Esc osservata nel probe precedente, Tab non provato visibilmente.
 
