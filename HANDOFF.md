@@ -40,6 +40,13 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
+### Sessione autonoma: avvio TF3 bloccato da opzioni incompatibili (10.10.2026)
+
+Autorizzati avvio/chiusura normale TF3, input nel solo menu, sviluppo nel checkout E: e pubblicazione. Restano vietati chiave Anthropic, chiusure forzate, installazioni e modifiche a gioco/mod/salvataggi.
+Le opzioni Steam, lette senza modificarle, richiamano avvia_con_gioco.bat con %command%. Il wrapper installato avvia una console che legge la chiave Anthropic e alla fine usa taskkill /t /f. Avviare tramite queste opzioni violerebbe i vincoli correnti: TF3 NON avviato, opzioni e file installati invariati. Nessuna chiave letta/usata. Il collaudo TF3 resta da eseguire dopo una soluzione autorizzata dell'avviatore; il precedente collaudo Steam resta valido.
+Prossima operazione: regressione deterministica del blocco Windows di os.replace, correzione limitata nel sorgente con attesa bounded e test isolati; poi mock Lua compatibili Windows e strumenti grafici. Nessuna installazione.
+
+
 **Stato:** 10.10.2026 (Codex locale Windows). Installazione Git tramite winget autorizzata e riuscita: `git version 2.55.0.windows.5`. Unico checkout creato in `E:\Sviluppo\TF3-capocantiere`; prima della clonazione non esistevano ne' la destinazione ne' il genitore E:\Sviluppo. Nessun file preesistente sovrascritto.
 Checkout pulito su main, origin corretto; ultimo confronto prima di questo checkpoint: HEAD locale e main remoto entrambi `179ad13b57e14d23a233a2dd513c29d97f37fc53` (08). CI 08 verde, run 38042444275. Pubblicazione via connettore GitHub seguita da fetch/fast-forward locale, senza PR/force-push. Nessun AGENTS.md trovato nel checkout o nei genitori controllati.
 Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, con fixtures solo in work/tf3-python-isolated, API disabilitata, rete e accessi Steam bloccati da audit hook. Ultima esecuzione: **37/37 OK**, 14,478 s, zero errori/fallimenti. Primo giro: 36 OK e 1 WinError 5 in test_log_schedule_and_due_checks. Diagnosi su file separato: os.replace fallisce con un lettore Windows aperto e riesce dopo la sua chiusura; il mock legge/scrive state.lua da due thread senza sincronizzazione. Problema intermittente NON corretto: il secondo giro verde non dimostra stabilita' su Windows. Nessun sorgente del repository o bridge installato modificato. Nessuna modifica a mod installata, salvataggi o file del gioco; nessuna azione inviata al gioco.
