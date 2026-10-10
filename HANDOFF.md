@@ -62,18 +62,16 @@ Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_scr
 - Numero iniziale di veicoli alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet`, ex branch flotta).
 - Middleware: timeout sicuri e risultati tardivi (commit 04).
 
-### Console reale provata (10.10.2026, Claude, crediti finiti a meta')
+### Console reale provata (10.10.2026, Claude, aggiornato dopo la prova riuscita)
 
 - Avvio da Steam: OK (console in attesa nel menu, "console pronta" alla mappa). Chiusura con il gioco: non verificata.
 - Richiesta 1 "panoramica della mappa": OK, 13'143 token (8'300 di scrittura cache al primo giro).
-- Richiesta 2 "linea bus a Lissone": **BLOCCATA da un falso "partita in pausa"**. `main.py` (`run_game_tool`) rifiuta se
-  `state.speed == 0`; la mod (lato GUI, `buildState`) esporta `speed` da `GAME_SPEED.speedup`, che vale **0 anche con
-  il gioco che scorre** (state.lua fresco: speed = 0, gameTime 6010800 alle 08:44:46 UTC). Nessuna azione e' stata
-  inviata al gioco (lastActionId 0). Sessione: 21'148 token dopo 2 richieste.
-  **Correzione da fare**: in `main.py` non fidarsi di `speed` (togliere il blocco o usarlo solo se `gameTime` non avanza
-  tra due state.lua); stessa cosa per `main.py` riga ~257 e per l'avviso `CC.gameSpeed()==0` della mod. Verificare in
-  gioco quale campo di `GAME_SPEED` dice davvero la pausa (sonda lua_eval con la build dev). Test + push + copiare
-  `main.py` sul PC.
+- Richiesta 2 "linea bus a Lissone": il primo tentativo e' stato rifiutato con "partita in pausa" (state.lua: speed = 0);
+  Nicolo' ha poi riavviato e ridato il comando **dalla console aperta con il gioco gia' in movimento: linea costruita e
+  collaudo OK** (linea "Lissone Bus" id 74233, 4 fermate, nuovo deposito, 2 eCitaro). Il controllo della pausa quindi
+  FUNZIONA quando il gioco scorre; resta da capire perche' il primo tentativo leggeva 0 (gioco forse ancora in pausa
+  dopo il caricamento, o velocita' non aggiornata subito). Non e' un errore confermato: solo da osservare.
+  Costo: 30'790 token per la sessione con 2 richieste (7 chiamate).
 - File gia' pronto ma NON installato sul PC: `middleware/avvia_capocantiere.bat` di main (attiva da solo
   `CAPOCANTIERE_BOZZA=1`): la copia sul PC e' ancora la vecchia (435 byte, nuova 798). Va copiata a gioco chiuso
   (un .bat in esecuzione non si modifica). Attenzione: un commit verso il PC con lo stesso stagedPath di prima ha scritto
@@ -82,9 +80,9 @@ Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_scr
 
 ### Prossima operazione precisa
 
-1. Correggere il falso "in pausa" (sopra), test, push su main, copiare `main.py` sul PC (backup, rilettura).
-2. A gioco chiuso: copiare `avvia_capocantiere.bat`; riprovare "fammi una linea bus a Lissone" e una 3a richiesta;
-   annotare costo della sessione.
+1. Messaggio della console piu' chiaro se la pausa e' sospetta (es. ricontrollare dopo qualche secondo prima di
+   rifiutare). Facoltativo.
+2. A gioco chiuso: copiare `avvia_capocantiere.bat` sul PC; 3a richiesta (azione v14) e costo della sessione.
 3. Installare la build `--dev --bozza` di main (399dcf74, flotta iniziale) sul PC; confrontare flotta stimata con
    `check_line_fleet`.
 
