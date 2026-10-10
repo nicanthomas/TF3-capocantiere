@@ -40,8 +40,8 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**Stato:** 10.10.2026 (ChatGPT/Codex locale Windows). Verifica iniziale non distruttiva completata; sviluppo e installazioni non iniziati: C: riporta 0 byte liberi. Nessun file locale modificato dall'agente, nessun salvataggio letto/modificato e nessuna azione inviata al gioco.
-Head remoto verificato prima del checkpoint: `19ee5c8fe66416fa50c5cd17eb7fc713ce6d05dd` (10.10.2026-02). Il commit 02 corregge il checkpoint 01: la pausa NON e' un bug confermato. CI di questo head: successo, run `38032270281`; nessun test locale del progetto eseguito in questa sessione. Risultati storici dopo i merge, riportati da Claude: middleware 37 OK, mock 71 OK, `build_script.py --check --bozza` OK.
+**Stato:** 10.10.2026 (ChatGPT/Codex locale Windows). Ricontrollo non distruttivo dopo spazio liberato da Nicolo': C: 28.310.061.056 byte liberi (28,3 GB), E: 709.994.942.464 byte (710,0 GB). Blocco disco risolto al controllo; nessuna installazione effettuata. Nessun file locale modificato dall'agente, nessun salvataggio letto/modificato e nessuna azione inviata al gioco.
+Head remoto verificato prima del checkpoint: `e9f1946a85fb9d2ebce804f9d90f968e73d717b3` (10.10.2026-03). Il commit 02 corregge il checkpoint 01: la pausa NON e' un bug confermato. CI di questo head: successo, run `38032270281`; 8 test locali esistenti (parser Lua, validazione, cronologia) OK sul middleware installato, senza file scritti e senza API. Lettura tramite GameBridge.state() OK; nessuna chiamata send()/ping(). Risultati storici dopo i merge, riportati da Claude: middleware 37 OK, mock 71 OK, `build_script.py --check --bozza` OK.
 
 | Campo | Valore |
 | --- | --- |
@@ -52,14 +52,14 @@ Head remoto verificato prima del checkpoint: `19ee5c8fe66416fa50c5cd17eb7fc713ce
 
 ### Capacita' verificate in questa sessione (10.10.2026)
 
-- **File locali, sola lettura: OK** tramite PowerShell con esecuzione fuori sandbox approvata dal controllo automatico. Verificate cartelle dati `capocantiere`, `capocantiere/middleware`, `mods/tfcapocantiere_1`, `mod_presets`, `crash_dump`. Scrittura locale NON provata: C: pieno; mantenere backup e autorizzazioni del progetto.
-- **Terminale: OK fuori sandbox**. Terminale ordinario nel sandbox: KO, `MXC launcher: native MXC is unavailable on this Windows build`. Anche Node REPL KO, con errore MXC e spazio disco insufficiente (os error 112). Non confondere il blocco del sandbox con assenza di accesso al PC.
+- **File locali, sola lettura: OK** tramite PowerShell. Verificate cartelle dati `capocantiere`, `capocantiere/middleware`, `mods/tfcapocantiere_1`, `mod_presets`, `crash_dump`. Scrittura locale NON provata: questa fase e' limitata a controlli non distruttivi; mantenere backup e autorizzazioni del progetto.
+- **Terminale e Node REPL: ora OK anche nel sandbox ordinario**, riprovati dopo aver liberato spazio, senza cambiare configurazioni. PowerShell 5.1.26100.9444. Il precedente errore MXC non si riproduce nel controllo attuale: non modificare il sandbox preventivamente.
 - **Python: OK**, 3.10.10, interprete e launcher `py` funzionanti. Pacchetto `anthropic` presente; `pytest` e `lupa` non rilevati. Nessuna chiave API letta/usata e nessun pacchetto installato.
-- **Git locale: non disponibile nei controlli effettuati**, assente dal PATH e dai percorsi standard di sistema/utente, Scoop e Chocolatey. Nessun checkout trovato nella cartella della chat, sotto Documents/Codex, o nella ricerca dei file HANDOFF.md in Documents/Desktop/Downloads. Una copia altrove non e' esclusa.
+- **Git e checkout locale: non trovati** nel PATH e nella ricerca circoscritta (19.465 cartelle, profondita' massima 6) sotto profilo utente, Program Files/ProgramData e dischi D:/E:/F:/G:. Esclusi contenuti Steam, cartelle di sistema/cache e percorsi inaccessibili. Nessuna ricerca prova l'assenza assoluta: nessuna copia clonata per evitare duplicati. Middleware installato presente, ma non e' un checkout completo. Winget disponibile; proposta Git ufficiale, NON installato.
 - **GitHub: lettura OK**, connettore riporta permesso push; la pubblicazione di questo checkpoint costituisce la prova di scrittura e deve essere riletta dopo il commit. Niente PR e niente force-push.
-- **Steam: eseguibile presente e processo attivo**. **TF3: manifest ed eseguibile presenti** nella libreria `E:\\SteamLibrary`, ma nessun processo `transportfever3` rilevato. Controllo grafico/clic non disponibile fra gli strumenti esposti: avvio, caricamento e chiusura del gioco NON provati.
+- **Steam: eseguibile presente e processo attivo**. **TF3: manifest ed eseguibile presenti** nella libreria `E:\SteamLibrary`, ma nessun processo `transportfever3` rilevato. Controllo grafico/clic non disponibile fra gli strumenti esposti: avvio, caricamento e chiusura del gioco NON provati.
 - **Installazione effettiva letta:** mod `v14-bozza-32c86032`, `DEV_MODE = true`; avviatore `avvia_capocantiere.bat` ancora 435 byte, coerente col precedente handoff. State.lua residuo: stessa versione, lastActionId 1, speed 0; dato storico a gioco chiuso, NON una misura della partita attuale.
-- **Blocco principale: C: = 0 byte liberi**, confermato due volte; E: ha circa 710 GB liberi al controllo. Nessuna cancellazione, spostamento, installazione o modifica alla configurazione eseguita.
+- **Spazio liberato confermato:** C: 28,3 GB, E: 710,0 GB (unita' decimali). Test Python locali: 8 OK; lettura dello state residuo tramite bridge OK (11 citta', 5 linee; file vecchio di circa 159 min al controllo), serializzazione richiesta Lua OK. TF3 chiuso: scambio vivo Python -> Lua -> Python NON provato. Nessuna cancellazione, spostamento, installazione o modifica alla configurazione eseguita.
 
 ### Provato su Windows il 09.10.2026
 
@@ -91,11 +91,11 @@ Head remoto verificato prima del checkpoint: `19ee5c8fe66416fa50c5cd17eb7fc713ce
 
 ### Prossima operazione precisa
 
-1. Ripristinare spazio su C: con intervento esplicitamente autorizzato da Nicolo', senza cancellazioni automatiche. Ripetere il controllo spazio prima di qualunque backup/scrittura nei dati del gioco.
-2. Ripristinare il sandbox Windows: l'errore MXC e' distinto dal disco pieno. Le indicazioni ufficiali prevedono `elevated` come fallback quando MXC non e' disponibile; non cambiare configurazioni o installazioni senza autorizzazione. Fonte: https://learn.chatgpt.com/docs/windows/windows-sandbox .
-3. Individuare un Git gia' presente oppure configurare Git per Windows e un checkout locale in una cartella scelta/autorizzata; lo sviluppo e' stato richiesto sul PC, non sostituirlo con sviluppo remoto. Verificare stato locale, regole AGENTS.md e head remoto prima di modificare.
-4. A gioco chiuso e con spazio sufficiente: backup, copia di `middleware/avvia_capocantiere.bat` da main, rilettura e confronto. Poi build `--dev --bozza` (flotta iniziale), backup/installazione/rilettura secondo i permessi del progetto. Non usare la chiave API dell'utente.
-5. Prove reali ancora da fare: chiusura console con il gioco, terza richiesta v14 con costo, confronto flotta stimata/misurata con `check_line_fleet`, timeout/risultati tardivi. Nessuna di queste verifiche e' stata eseguita in questa sessione. Messaggio della pausa facoltativo; non rimuovere protezioni sulla base del checkpoint 01 superato.
+1. Completare controlli in sola lettura degli strumenti nativi di avvio/interazione Windows e preparare piano operativo con autorizzazioni separate; non avviare ancora TF3, non usare la chiave API.
+2. Proporre Git for Windows: `winget install --id Git.Git -e --source winget` (https://git-scm.com/install/windows). Installare solo dopo autorizzazione esplicita, poi verificare `git --version`.
+3. Dopo scelta/autorizzazione cartella e ultima ricerca duplicati, creare un unico checkout completo, leggere AGENTS.md, verificare head e test Python/mock Lua/build. Lua standalone non trovato nel PATH; prima verificare i requisiti del mock del repo.
+4. Con autorizzazione a modificare i file del gioco: a gioco chiuso, backup e aggiornamento avviatore; poi build `--dev --bozza`, backup/installazione/rilettura. Permessi per `mod_presets` da confermare prima di scrivere una richiesta, anche di sola lettura.
+5. Prove vive ancora da fare: ping/lettura senza costruzioni, chiusura console con gioco, terza richiesta v14 e costo, flotta stimata/misurata, timeout tardivi. Non rimuovere il controllo pausa sulla base del checkpoint 01 superato.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
