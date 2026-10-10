@@ -47,3 +47,11 @@ Preparare una normalizzazione in Lua con accessi espliciti protetti da pcall ai 
 Prima dell'integrazione in check_line_fleet: concordare il formato, aggiungere mock dei campi opzionali/errori di accesso e casi con zero elementi, poi testare in CI. L'effettiva leggibilita' dei userdata e il significato dei valori restano da verificare in una partita autorizzata. Nessuna sonda live e' stata eseguita in questa sessione.
 
 Ricerca nelle sorgenti testuali base/content e base/tealdef: non trovata implementazione che chiarisca l'unita' di averageQuality. base/tealdef/gui/main/cargo_react_util.d.tl dichiara getFrownyIconLayout con CargoQualityData ma non chiarisce il valore. Non ispezionati salvataggi, chiavi o contenuti binari.
+
+## Design del passo sorgenti (sessione autonoma 10.10.2026)
+
+Modifica circoscritta: CC.normalizeCargoQuality(summary) restituisce una tabella serializzabile con available/errors e i due rami passengers/cargo, ciascuno con available/errors e campi dichiarati leggibili. Ogni accesso e' protetto da pcall, senza pairs/clone/tostring del dato o dell'eccezione. nil/false/zero restano distinti; averageQuality e' copiato solo se numero finito, senza conversioni o soglie. Contatori non negativi interi; contatori incoerenti conservati ma rapporto omesso/errore segnalato. bad_fraction solo con countTotal positivo e contatori coerenti, mai presentato come percentuale o misura di ritardo.
+
+CC.lineCargoQuality legge soltanto getSummarizedCargoQualityDataForLine(line_id), una chiamata protetta; API assente o guasta diventa risultato non disponibile. b2 aggiunge cargo_quality al risultato di adjust_line_fleet solo per apply falso/assente (check_line_fleet nel middleware). Anche con tempi giro mancanti la qualita' resta leggibile, senza cambiare il giudizio/stima della flotta. Nessun comando, acquisto, modifica o azione automatica aggiunto.
+
+Prima del codice: casi mock RED in CI, poi GREEN; verificare campo opzionale, falso/zero, tipi errati, numeri non finiti, proxy con accessor guasto/pairs vietato e API assente/errore senza leak messaggi. Un userdata Lua sintetico verifica gli accessi espliciti; non dimostra compatibilita' del userdata C++ TF3. Nessuna mod rigenerata/installata. Bozza NON provata in partita.
