@@ -42,7 +42,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 **Stato:** 10.10.2026 (Codex locale Windows). Installazione Git tramite winget autorizzata e riuscita: `git version 2.55.0.windows.5`. Unico checkout creato in `E:\Sviluppo\TF3-capocantiere`; prima della clonazione non esistevano ne' la destinazione ne' il genitore E:\Sviluppo. Nessun file preesistente sovrascritto.
 Checkout pulito su main; HEAD locale e main remoto entrambi `8e03c1434974f1757017ddaf370ce4ef9b06c40d`, origin corretto. Nessun AGENTS.md trovato nel checkout o nei genitori controllati.
-Prossimo passo: intera suite Python con cartelle temporanee dedicate lontano dai dati reali TF3. Non ancora eseguita in questo passo. Restano valide le 8 prove senza I/O del precedente checkpoint. Nessuna modifica a mod installata, salvataggi o file del gioco; nessuna azione inviata al gioco.
+Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, con fixtures solo in work/tf3-python-isolated, API disabilitata, rete e accessi Steam bloccati da audit hook: 37 test, 36 OK, 1 errore. test_log_schedule_and_due_checks fallisce in lua_table.save_userdata/os.replace con WinError 5 durante scrittura state.lua del mock; possibile concorrenza lettore/scrittore su Windows, da verificare. Non dichiarare suite verde. Nessun sorgente del repository modificato per questo test. Nessuna modifica a mod installata, salvataggi o file del gioco; nessuna azione inviata al gioco.
 
 | Campo | Valore |
 | --- | --- |
@@ -107,7 +107,7 @@ Vincoli: installazioni, modifiche ai file del gioco e operazioni rischiose richi
 
 ### Prossima operazione precisa
 
-Eseguire l'intera suite Python dal checkout E:\Sviluppo\TF3-capocantiere con dati temporanei isolati; pubblicare subito risultato e handoff e sincronizzare il checkout. Poi verifiche non distruttive del controllo grafico Steam/TF3. Installazione mod, salvataggi e scritture nei dati del gioco NON autorizzate.
+Diagnosticare l'errore Windows della suite completa in isolamento, senza modificare il bridge installato; poi pubblicare esito e verificare controllo grafico. Poi verifiche non distruttive del controllo grafico Steam/TF3. Installazione mod, salvataggi e scritture nei dati del gioco NON autorizzate.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
