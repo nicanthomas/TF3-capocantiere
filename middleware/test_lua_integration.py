@@ -164,3 +164,28 @@ class LuaIntegrationTests(unittest.TestCase):
                 end
             end
         """)
+
+    def test_fleet_large_integer_times_do_not_wrap_or_sell(self):
+        self.fleet_check("""
+            local adds, removes = 0, 0
+            local originalComp = CC.comp
+            CC.lineVehicles=function() return {101,102} end
+            CC.lineGroups=function() return {1,2} end
+            CC.comp=function(id,kind)
+                if id == 101 or id == 102 then return {sectionTimes={math.maxinteger,math.maxinteger}} end
+                return originalComp(id,kind)
+            end
+            CC.vehicleModels=function() return {501} end
+            CC.modelFolder=function() return "bus" end
+            CC.lineCargoQuality=function() return {available=false,errors={}} end
+            SIM_ACTIONS.add_vehicles=function(a) adds=adds+1; assert(a.count==18); return {ok=true} end
+            SIM_ACTIONS.remove_vehicles=function() removes=removes+1; return {ok=true} end
+            for _,apply in ipairs({false,true}) do
+                local out=SIM_ACTIONS.adjust_line_fleet({line_id=1,apply=apply})
+                assert(out.ok and out.round_trip_s == (math.maxinteger+0.0)*2
+                    and out.round_trip_s > 0 and out.round_trip_s < math.huge
+                    and out.target==20 and out.change==18 and removes==0,
+                    "overflow intero altera il giro o vende veicoli")
+            end
+            assert(adds==1 and removes==0, "applicazione fixture non coerente")
+        """)

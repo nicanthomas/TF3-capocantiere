@@ -378,6 +378,17 @@ do
     local good=SIM_ACTIONS.adjust_line_fleet({line_id=1, apply=false, interval=100})
     check(good.ok and good.round_trip_s == 300 and good.target == 3 and good.change == 1
         and attempts == 0 and #W.sent == sent, "flotta: conserva misure finite dell'altro veicolo")
+    local adds,removes,integerValid=0,0,true
+    times={[101]={math.maxinteger,math.maxinteger},[102]={math.maxinteger,math.maxinteger}}
+    SIM_ACTIONS.add_vehicles=function(a) adds=adds+1; return {ok=a.count==18} end
+    SIM_ACTIONS.remove_vehicles=function() removes=removes+1; return {ok=true} end
+    for _,apply in ipairs({false,true}) do
+        local out=SIM_ACTIONS.adjust_line_fleet({line_id=1,apply=apply})
+        if not out.ok or out.round_trip_s ~= (math.maxinteger+0.0)*2
+            or out.target ~= 20 or out.change ~= 18 or removes ~= 0 then integerValid=false end
+    end
+    check(integerValid and adds==1 and removes==0 and #W.sent==sent,
+        "flotta: tempi interi grandi non traboccano o vendono per wraparound")
     CC.lineVehicles,CC.lineGroups,CC.comp=old.vehicles,old.groups,old.comp
     CC.vehicleModels,CC.modelFolder,CC.lineCargoQuality=old.models,old.folder,old.quality
     SIM_ACTIONS.add_vehicles,SIM_ACTIONS.remove_vehicles=old.add,old.remove
