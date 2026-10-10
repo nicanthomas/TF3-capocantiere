@@ -50,6 +50,8 @@ Campo Opzioni di avvio svuotato tramite Steam e confermato vuoto sia visivamente
 
 ### Risultato del passo completato
 
+Primo ciclo TF3 reale: avvio normale via Steam con opzioni vuote, menu principale build 40420, screenshot PrintWindow leggibile e focus verificato. Clic su icona Esci termina direttamente senza conferma; processo assente verificato. Tab inviato con guardie focus ma senza effetto visibile: tastiera funzionale non ancora dichiarata provata. Nessuna partita/caricamento/costruzione/chiave/Taskkill. Opzioni ancora temporaneamente vuote; backup privati integri. Prossimo: secondo ciclo breve per Esc nel pannello del menu, poi ripristino prioritario.
+
 Tipi qualita' merci chiariti con sola lettura delle definizioni distribuite api/tealdef/api/engine/util.d.tl: countBad/countTotal, averageQuality opzionale, isVeryBad; riepilogo passengers/cargo; industria con tre booleani. Due funzioni richiedono cargoTypeId obbligatorio. Nota qualita-merci-tipi-tf3.md e STATO4c aggiornati. Unita'/intervalli e comportamento dei userdata NON provati in TF3, nessun file gioco modificato/estratto o salvataggio letto.
 Main con flotta/runner verde dopo merge (CI 38046140194); checkpoint tipi merci verde (CI 38046537561). Rilettura GitHub dei tre documenti identica, checkout unico allineato/pulito. Revisione finale indipendente senza blocchi: distinte dichiarazioni statiche da prove runtime. Verifica conclusiva: processo TF3 assente; C: 23,75 GiB ed E: 661,23 GiB liberi. Rapporto e screenshot solo negli outputs locali della chat.
 
