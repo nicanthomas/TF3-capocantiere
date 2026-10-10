@@ -264,6 +264,13 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     RED 38049622568, GREEN 38049721158: Ubuntu 91 test/1 skip Windows, Windows 80/classe Lua skip,
     mock 87 ok/0 falliti; locale isolato 80 OK. Nessun comando per input rifiutati. Wrapper b9 puo' ancora
     leggere gameSpeed: non dichiarare zero letture API. Nota flotta-convalida-argomenti.md; NON provato in TF3.
+    FATTO 10.10.2026 sui sorgenti: tempi tratta non numerici/non positivi/non finiti esclusi;
+    overflow di somma/media/giro diventa misura mancante, senza proposta/apply. Accumulo float 0.0
+    evita wraparound intero; dati finiti dell'altro veicolo conservati, nessuna soglia fisica inventata.
+    Due regressioni native e cinque mock; RED float 38050006467 e intero 38050265270, GREEN finale
+    38050352916: Ubuntu 93 test/1 skip Windows, Windows 80/classe Lua skip, mock 92 ok/0 falliti.
+    Locale isolato 80 OK/classe Lua skip; revisione finale senza blocchi. Nota flotta-tempi-finiti.md.
+    NON provato in TF3, nessuna mod rigenerata/installata.
 4c. Puntualita'/qualita' delle consegne: sonde storiche s37 (09.10.2026), nessuna nuova prova in gioco.
     FATTO 10.10.2026, sola lettura locale: api/tealdef/api/engine/util.d.tl dichiara CargoQualityData
     (countBad, countTotal integer; averageQuality number oppure nil; isVeryBad boolean),

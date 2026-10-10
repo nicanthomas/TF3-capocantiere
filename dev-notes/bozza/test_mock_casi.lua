@@ -340,6 +340,60 @@ do
     check(valid, "flotta: estremi schema e default accettati senza comandi")
 end
 
+-- Non usare tempi non finiti/overflow per stime o modifiche: solo fixture.
+do
+    local old = {vehicles=CC.lineVehicles, groups=CC.lineGroups, comp=CC.comp,
+        models=CC.vehicleModels, folder=CC.modelFolder, quality=CC.lineCargoQuality,
+        add=SIM_ACTIONS.add_vehicles, remove=SIM_ACTIONS.remove_vehicles}
+    local times, attempts, sent = {}, 0, #W.sent
+    CC.lineVehicles = function() return {101,102} end
+    CC.lineGroups = function() return {1,2} end
+    CC.comp = function(id, kind)
+        if id == 101 or id == 102 then return {sectionTimes=times[id]} end
+        return old.comp(id, kind)
+    end
+    CC.vehicleModels = function() return {501} end
+    CC.modelFolder = function() return "bus" end
+    CC.lineCargoQuality = function() return {available=false, errors={}} end
+    SIM_ACTIONS.add_vehicles = function() attempts=attempts+1; return {ok=true} end
+    SIM_ACTIONS.remove_vehicles = function() attempts=attempts+1; return {ok=true} end
+    local cases = {
+        {[101]={math.huge,180}, [102]={math.huge,180}},
+        {[101]={1e308,180}, [102]={1e308,180}},
+        {[101]={1e308,1e308}, [102]={}}
+    }
+    for i, sample in ipairs(cases) do
+        times=sample
+        local valid=true
+        for _, apply in ipairs({false,true}) do
+            local out=SIM_ACTIONS.adjust_line_fleet({line_id=1, apply=apply})
+            if out.ok or not (out.error and out.error:find("non ancora misurati", 1, true))
+                or out.round_trip_s ~= nil or out.interval_now_s ~= nil or out.target ~= nil
+                or out.proposal ~= nil or attempts ~= 0 or #W.sent ~= sent then valid=false end
+        end
+        check(valid, "flotta: misura non finita/overflow " .. i .. " senza stima/comandi")
+    end
+    attempts=0
+    times={[101]={math.huge, 0/0}, [102]={120,180}}
+    local good=SIM_ACTIONS.adjust_line_fleet({line_id=1, apply=false, interval=100})
+    check(good.ok and good.round_trip_s == 300 and good.target == 3 and good.change == 1
+        and attempts == 0 and #W.sent == sent, "flotta: conserva misure finite dell'altro veicolo")
+    local adds,removes,integerValid=0,0,true
+    times={[101]={math.maxinteger,math.maxinteger},[102]={math.maxinteger,math.maxinteger}}
+    SIM_ACTIONS.add_vehicles=function(a) adds=adds+1; return {ok=a.count==18} end
+    SIM_ACTIONS.remove_vehicles=function() removes=removes+1; return {ok=true} end
+    for _,apply in ipairs({false,true}) do
+        local out=SIM_ACTIONS.adjust_line_fleet({line_id=1,apply=apply})
+        if not out.ok or out.round_trip_s ~= (math.maxinteger+0.0)*2
+            or out.target ~= 20 or out.change ~= 18 or removes ~= 0 then integerValid=false end
+    end
+    check(integerValid and adds==1 and removes==0 and #W.sent==sent,
+        "flotta: tempi interi grandi non traboccano o vendono per wraparound")
+    CC.lineVehicles,CC.lineGroups,CC.comp=old.vehicles,old.groups,old.comp
+    CC.vehicleModels,CC.modelFolder,CC.lineCargoQuality=old.models,old.folder,old.quality
+    SIM_ACTIONS.add_vehicles,SIM_ACTIONS.remove_vehicles=old.add,old.remove
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
