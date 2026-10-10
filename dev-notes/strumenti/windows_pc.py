@@ -84,6 +84,13 @@ class Controller:
             self.backend.unicode_pair(unit)
             self.validate()
 
+    def key(self, name):
+        if not isinstance(name, str) or name not in ("escape", "tab"):
+            raise ControlError("Solo tasti di navigazione escape/tab")
+        self.validate()
+        self.backend.key_pair(name)
+        self.validate()
+
     def backspace(self, count):
         if not 1 <= count <= 100:
             raise ControlError("Backspace limitato a 1..100")
@@ -245,6 +252,13 @@ class Native:
     def unicode_pair(self, code):
         self.pair(self.Input(1, self.Union(key=self.Key(0, code, 4, 0, 0))), self.Input(1, self.Union(key=self.Key(0, code, 6, 0, 0))))
 
+    def key_pair(self, name):
+        if not isinstance(name, str) or name not in ("escape", "tab"):
+            raise ControlError("Solo tasti di navigazione escape/tab")
+        scan = {"escape": 0x01, "tab": 0x0F}[name]
+        self.pair(self.Input(1, self.Union(key=self.Key(0, scan, 8, 0, 0))),
+                  self.Input(1, self.Union(key=self.Key(0, scan, 10, 0, 0))))
+
     def backspace_pair(self):
         self.pair(self.Input(1, self.Union(key=self.Key(8, 0, 0, 0, 0))), self.Input(1, self.Union(key=self.Key(8, 0, 2, 0, 0))))
 
@@ -289,7 +303,7 @@ class Native:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("list", "focus", "screenshot", "click", "text", "backspace"))
+    parser.add_argument("action", choices=("list", "focus", "screenshot", "click", "text", "backspace", "key"))
     parser.add_argument("--target", choices=("steam", "tf3"), default="steam")
     parser.add_argument("--steam-root", default=r"C:\Program Files (x86)\Steam")
     parser.add_argument("--tf3-exe")
@@ -299,6 +313,7 @@ def main():
     parser.add_argument("--y", type=int)
     parser.add_argument("--rect", type=int, nargs=4, metavar=("LEFT", "TOP", "RIGHT", "BOTTOM"))
     parser.add_argument("--text")
+    parser.add_argument("--key", choices=("escape", "tab"))
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--output")
     args = parser.parse_args()
@@ -331,6 +346,10 @@ def main():
         controller.text(args.text)
     elif args.action == "backspace":
         controller.backspace(args.count)
+    elif args.action == "key":
+        if args.key is None:
+            raise ControlError("Specificare --key escape/tab")
+        controller.key(args.key)
     print(json.dumps({"action": args.action, "target": asdict(window)}, ensure_ascii=True))
 
 
