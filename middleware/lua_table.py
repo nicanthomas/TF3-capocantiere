@@ -25,6 +25,7 @@ from __future__ import annotations
 import os
 import re
 import tempfile
+import time
 from typing import Any
 
 
@@ -204,7 +205,8 @@ def loads(text: str) -> Any:
 
 def load_userdata(path: str) -> Any:
     with open(path, "r", encoding="utf-8", errors="replace") as f:
-        return loads(f.read())
+        text = f.read()
+    return loads(text)
 
 
 # --------------------------------------------------------------------------- scrittura
@@ -288,7 +290,16 @@ def save_userdata(path: str, obj: Any) -> None:
     try:
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)
-        os.replace(tmp, path)
+        # Windows readers may briefly deny delete/rename sharing. Keep the
+        # old file intact, retry only these errors, and bound waiting to 0.5 s.
+        for attempt in range(26):
+            try:
+                os.replace(tmp, path)
+                break
+            except OSError as exc:
+                if getattr(exc, "winerror", None) not in (5, 32, 33) or attempt == 25:
+                    raise
+                time.sleep(0.02)
     except BaseException:
         if os.path.exists(tmp):
             os.remove(tmp)

@@ -40,93 +40,26 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-### Sessione autonoma: avvio TF3 bloccato da opzioni incompatibili (10.10.2026)
+**10.10.2026, Codex locale Windows.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
-Autorizzati avvio/chiusura normale TF3, input nel solo menu, sviluppo nel checkout E: e pubblicazione. Restano vietati chiave Anthropic, chiusure forzate, installazioni e modifiche a gioco/mod/salvataggi.
-Le opzioni Steam, lette senza modificarle, richiamano avvia_con_gioco.bat con %command%. Il wrapper installato avvia una console che legge la chiave Anthropic e alla fine usa taskkill /t /f. Avviare tramite queste opzioni violerebbe i vincoli correnti: TF3 NON avviato, opzioni e file installati invariati. Nessuna chiave letta/usata. Il collaudo TF3 resta da eseguire dopo una soluzione autorizzata dell'avviatore; il precedente collaudo Steam resta valido.
-Prossima operazione: regressione deterministica del blocco Windows di os.replace, correzione limitata nel sorgente con attesa bounded e test isolati; poi mock Lua compatibili Windows e strumenti grafici. Nessuna installazione.
+### Autorizzazioni e blocco TF3
 
+Autorizzati sviluppo sorgenti nel checkout, test, pubblicazione, avvio TF3 via Steam, input nel solo menu e chiusura normale. Vietati caricamenti/salvataggi/costruzioni, modifiche a mod installata o gioco, installazioni, chiave Anthropic e Taskkill/chiusure forzate.
+Opzioni Steam lette senza modificarle: avvia_con_gioco.bat con %command%. La copia installata avvia la console che legge la chiave Anthropic e termina la console con taskkill /t /f. TF3 NON avviato: queste opzioni contraddicono i vincoli attuali. File installati e opzioni invariati; nessuna chiave letta/usata. Prova reale menu/focus/input/chiusura TF3 ancora da fare.
 
-**Stato:** 10.10.2026 (Codex locale Windows). Installazione Git tramite winget autorizzata e riuscita: `git version 2.55.0.windows.5`. Unico checkout creato in `E:\Sviluppo\TF3-capocantiere`; prima della clonazione non esistevano ne' la destinazione ne' il genitore E:\Sviluppo. Nessun file preesistente sovrascritto.
-Checkout pulito su main, origin corretto; ultimo confronto prima di questo checkpoint: HEAD locale e main remoto entrambi `179ad13b57e14d23a233a2dd513c29d97f37fc53` (08). CI 08 verde, run 38042444275. Pubblicazione via connettore GitHub seguita da fetch/fast-forward locale, senza PR/force-push. Nessun AGENTS.md trovato nel checkout o nei genitori controllati.
-Intera suite Python eseguita dal checkout in venv senza pacchetti aggiuntivi, con fixtures solo in work/tf3-python-isolated, API disabilitata, rete e accessi Steam bloccati da audit hook. Ultima esecuzione: **37/37 OK**, 14,478 s, zero errori/fallimenti. Primo giro: 36 OK e 1 WinError 5 in test_log_schedule_and_due_checks. Diagnosi su file separato: os.replace fallisce con un lettore Windows aperto e riesce dopo la sua chiusura; il mock legge/scrive state.lua da due thread senza sincronizzazione. Problema intermittente NON corretto: il secondo giro verde non dimostra stabilita' su Windows. Nessun sorgente del repository o bridge installato modificato. Nessuna modifica a mod installata, salvataggi o file del gioco; nessuna azione inviata al gioco.
+### Risultato del passo completato
 
-| Campo | Valore |
-| --- | --- |
-| Ultima AI che ha aggiornato | ChatGPT / Codex desktop, controlli locali Windows |
-| Branch | solo `main` (le branch `lavoro/flotta-iniziale` e `lavoro/avvio-con-gioco` sono unite; PR #2 chiusa) |
-| Mod nel repo | `v14-bozza-399dcf74` (DEV_MODE false) = v14 + numero iniziale di veicoli |
-| PC / gioco (09.10 ~18:30) | mod installata `v14-bozza-32c86032` (senza flotta iniziale); middleware sul PC in `<dati TF3>\local\capocantiere\middleware` aggiornato a main (backup in `capocantiere\backup\middleware_09.10.2026`); Steam avvia la console con il gioco |
+Corretto middleware/lua_table.py: il lettore chiude il file prima del parsing; sostituzione atomica con attesa massima nominale 0,5 s (25 pause da 20 ms) solo per WinError 5/32/33. Errori persistenti propagati, file precedente conservato, temporaneo eliminato. Nessuna modifica al bridge installato.
+Regressioni test_lua_atomic.py: primo giro 3 errori attesi sul codice precedente; dopo la correzione intera suite **42/42 OK**, 14,654 s. Include lock Windows reale rilasciato da altro thread, lock persistente, errori non Windows e chiusura del lettore prima del parsing. CI usa discovery per includere tutte le regressioni Python.
 
-### Capacita' verificate in questa sessione (10.10.2026)
+### Capacita' e prove precedenti da conservare
 
-- **File locali, sola lettura: OK** tramite PowerShell. Verificate cartelle dati `capocantiere`, `capocantiere/middleware`, `mods/tfcapocantiere_1`, `mod_presets`, `crash_dump`. Scrittura verificata nel checkout E: e nelle fixtures di test autorizzate; nessuna scrittura nei dati del gioco. Mantenere backup e autorizzazioni del progetto.
-- **Terminale e Node REPL: ora OK anche nel sandbox ordinario**, riprovati dopo aver liberato spazio, senza cambiare configurazioni. PowerShell 5.1.26100.9444. Il precedente errore MXC non si riproduce nel controllo attuale: non modificare il sandbox preventivamente.
-- **Python: OK**, 3.10.10, interprete e launcher `py` funzionanti. Pacchetto `anthropic` presente; `pytest` e `lupa` non rilevati. Nessuna chiave API letta/usata e nessun pacchetto installato.
-- **Git locale ora installato e funzionante**, 2.55.0.windows.5, via winget autorizzato. Installato in C:\Program Files\Git; PATH persistente registrato, ma l'app gia' aperta conserva il PATH vecchio: usare percorso completo o aggiunta al PATH della sola sessione, oppure riaprire l'app/terminale. **Unico checkout completo:** `E:\Sviluppo\TF3-capocantiere`, separato dai dati del gioco, main allineato al remoto e pulito dopo clonazione.
-- **GitHub: lettura OK**, connettore riporta permesso push; la pubblicazione di questo checkpoint costituisce la prova di scrittura e deve essere riletta dopo il commit. Niente PR e niente force-push.
-- **Steam: eseguibile, protocollo steam:// e processo attivi**. Finestra Steam trovata tramite UI Automation fuori sandbox, visibile e abilitata. **TF3: manifest ed eseguibile presenti** in `E:\SteamLibrary`, processo assente. Start-Process disponibile: avvio possibile da preparare, NON eseguito.
-- **Installazione effettiva letta:** mod `v14-bozza-32c86032`, `DEV_MODE = true`; avviatore `avvia_capocantiere.bat` ancora 435 byte, coerente col precedente handoff. State.lua residuo: stessa versione, lastActionId 1, speed 0; dato storico a gioco chiuso, NON una misura della partita attuale.
-- **Spazio ultimo controllo:** C: 27,28 GB, E: 709,99 GB (decimali). Suite completa nel venv: ultimo giro 37/37 OK, con incidente intermittente Windows descritto sopra. Nessuna chiave API usata, nessuna azione o scrittura nei dati reali del gioco. Il bridge vivo e il mock Lua locale non sono stati eseguiti.
-
-- **Desktop Windows nativo:** screenshot desktop in memoria OK (3440x1440). Ulteriore prova in sola lettura: finestra Steam SDL_app visibile, rettangolo (0,0)-(1720,1392), cattura della sola finestra via PrintWindow OK (1008 colori distinti campionati), senza focus/input e senza salvare immagini. UI Automation vede solo 4 discendenti, zero InvokePattern e nessuna etichetta TF3: non offre pulsanti Steam utilizzabili semanticamente. Controllo per immagini + focus/mouse/tastiera Win32 ora collaudato su Steam, con limiti e prove nella sezione dedicata. Processi Steam visibili solo fuori sandbox; TF3 non avviato.
-- **Input:** focus, clic e tastiera SendInput ora provati su Steam; chiusura e input TF3 NON provati. PIL presente; pyautogui, pywinauto e mcp non rilevati. Nessun tool computer-use dedicato esposto; due ricerche plugin non hanno trovato un'integrazione pertinente (catalogo non esaustivo). La prova usa script temporanei Win32 e immagini; non esiste ancora un'interfaccia di produzione e non dichiarare parita' completa con Claude in TF3.
-- **Mock Lua locale:** run_mock.py letto da main carica soltanto /usr/lib/x86_64-linux-gnu/liblua5.*.so*. Non funziona direttamente su Windows; non basta installare lua.exe. Lua standalone non trovato nel PATH. Occorre un runner compatibile Windows + DLL Lua autorizzata, oppure usare la CI Linux dichiarandola CI, non test locale.
-
-### Collaudo grafico Steam autorizzato (10.10.2026): RIUSCITO
-
-- Finestra Steam identificata tramite processo, titolo e classe SDL_app; screenshot PrintWindow acquisiti e ispezionati localmente. SetForegroundWindow riesce e GetForegroundWindow conferma Steam.
-- PostMessageW verso il solo HWND Steam accetta i messaggi ma Steam li ignora: non usarlo come prova di input riuscito.
-- Input nativi SendInput funzionano: clic nella ricerca vuota, digitazione di `zzcodexprobe` verificata visivamente (libreria filtrata), 11 Backspace con ripristino della ricerca vuota. Controllo target/PID/focus prima e dopo ogni coppia di eventi; controllo della finestra sotto il punto del clic. Nessun hotkey globale o Invio su giochi.
-- Blocco in caso di focus diverso: test con perdita focus SIMULATA, zero chiamate SendInput; nessun evento inviato a un'altra app durante il test. SendInput resta un'API globale: protezione applicativa verificata, NON confinamento imposto dal sistema operativo. Fermarsi se il focus cambia o c'e' input concorrente.
-- Singolo clic sulla voce TF3 della libreria: pagina con pulsante Gioca osservata, pulsante NON premuto. Ripristinata Pagina iniziale. TF3 assente ai controlli prima/durante/dopo, nessuna modifica a mod/salvataggi/file del gioco, nessun acquisto/installazione/disinstallazione.
-- Prove temporanee in work della chat, non strumenti di produzione: HWND e coordinate usati nel test non vanno riutilizzati senza identificazione aggiornata. Screenshot solo locali; nessuna immagine o dato dell'account pubblicati nel repo.
-- Procedura successiva, NON eseguita: `dev-notes/note/controllo-grafico-windows.md`. Richiede nuova autorizzazione per avviare/chiudere TF3, prima prova solo menu senza partite.
-
-### Provato su Windows il 09.10.2026
-
-- Avvio con il gioco (`avvia_con_gioco.bat` nelle Opzioni di avvio di Steam): la console si apre con il gioco, aspetta
-  nel menu e scrive "console pronta" quando si carica la mappa con la mod. Da verificare: chiusura con il gioco.
-- `avvia_capocantiere.bat` attiva da solo le azioni v14 (`CAPOCANTIERE_BOZZA=1`) se la mod installata e' una "bozza"
-  (non ancora provato).
-
-### Unito in main, NON ancora provato su Windows/TF3
-
-- Numero iniziale di veicoli alla creazione delle linee (`CC.estimateFleet`/`CC.initialFleet`, ex branch flotta).
-- Middleware: timeout sicuri e risultati tardivi (commit 04).
-
-### Console reale provata (10.10.2026, Claude, aggiornato dopo la prova riuscita)
-
-- Avvio da Steam: OK (console in attesa nel menu, "console pronta" alla mappa). Chiusura con il gioco: non verificata.
-- Richiesta 1 "panoramica della mappa": OK, 13'143 token (8'300 di scrittura cache al primo giro).
-- Richiesta 2 "linea bus a Lissone": il primo tentativo e' stato rifiutato con "partita in pausa" (state.lua: speed = 0);
-  Nicolo' ha poi riavviato e ridato il comando **dalla console aperta con il gioco gia' in movimento: linea costruita e
-  collaudo OK** (linea "Lissone Bus" id 74233, 4 fermate, nuovo deposito, 2 eCitaro). Il controllo della pausa quindi
-  FUNZIONA quando il gioco scorre; resta da capire perche' il primo tentativo leggeva 0 (gioco forse ancora in pausa
-  dopo il caricamento, o velocita' non aggiornata subito). Non e' un errore confermato: solo da osservare.
-  Costo: 30'790 token per la sessione con 2 richieste (7 chiamate).
-- File gia' pronto ma NON installato sul PC: `middleware/avvia_capocantiere.bat` di main (attiva da solo
-  `CAPOCANTIERE_BOZZA=1`): la copia sul PC e' ancora la vecchia (435 byte, nuova 798). Va copiata a gioco chiuso
-  (un .bat in esecuzione non si modifica). Attenzione: un commit verso il PC con lo stesso stagedPath di prima ha scritto
-  il contenuto vecchio: usare sempre un percorso nuovo e rileggere dal PC.
-- Middleware sul PC: `<dati TF3>\local\capocantiere\middleware` (= main, tranne il .bat sopra).
-
-### Piano concreto per parita' operativa con Claude sul PC
-
-Vincoli: installazioni, modifiche ai file del gioco e operazioni rischiose richiedono autorizzazione esplicita in questa chat; backup prima di modificare file esistenti. Nessuna chiave API usata/letta, nessuna costruzione automatica, nessun salvataggio modificato. Pubblicare un handoff dopo ogni passo.
-
-1. **Git e unico checkout: COMPLETATO su autorizzazione di Nicolo'.** Git assente anche dalle chiavi registro GitForWindows controllate. Installazione proposta: `winget install --id Git.Git -e --source winget`, fonte https://git-scm.com/install/windows . Destinazione scelta/autorizzata da Nicolo': `E:\Sviluppo\TF3-capocantiere`, distinta dal middleware installato. Prima ricontrollare che non esista; dopo installazione verificare `git --version`, clonare una sola volta, leggere AGENTS.md se presente, controllare `git status`, origin e head contro main remoto. Non cambiare identita' Git globale senza richiesta.
-2. **Test Python completi: ESEGUITI in venv isolato.** Ultimo giro 37/37 OK; primo giro 36 OK e 1 errore Windows di lock riprodotto, da correggere senza cambiare il bridge installato. Preparare esecuzione del mock Windows adattando `dev-notes/bozza/run_mock.py` alla DLL Lua, con dipendenza installata solo dopo autorizzazione. Verificare mock 71 controlli secondo checkpoint storico e `python dev-notes/build_script.py --check --bozza`; distinguere conteggi reali dai titoli obsoleti della CI. Nessuna patch al runner gia' fatta.
-3. **Controllo PC nativo, senza nuova dipendenza se sufficiente.** Preparare helper locale proposto `dev-notes/strumenti/windows_pc.py`: screenshot della sola finestra target, elenco/focus di finestre Steam/TF3, avvio Steam e TF3, input limitato alle finestre target. Utilizzare Win32/UI Automation e PIL gia' disponibili; autorizzare le azioni effettive prima delle prove. Primo collaudo: screenshot Steam + selezione target, nessun comando sulla partita. Fare riferimento alle dimensioni reali, non riusare coordinate del vecchio handoff. Verificare chiusura ordinaria, non taskkill forzato.
-4. **Bridge vivo senza costruzioni.** Dopo autorizzazione ad avviare/caricare la partita e a scrivere nella cartella `mod_presets`: controllare file azioni residui e stato fresco, poi richiesta ping/lettura con nonce nuovo e risultato corrispondente. Non chiamare main.py/Anthropic. ATTENZIONE: GameBridge.send() pulisce/elimina risultati gia' letti; rispettare il divieto di cancellazione del progetto usando conservazione dei file di prova o autorizzazione esplicita alla sola pulizia dei file generati. Verificare due aggiornamenti dello state, senza confondere file residui con partita attiva.
-5. **Allineamento installazione (autorizzazione separata).** A gioco chiuso, backup e confronto impronte prima/dopo: aggiornare il .bat da 435 byte alla copia main, produrre build dev/bozza e installarla solo nelle cartelle ammesse. Rileggere dal PC, verificare versione e DEV_MODE; non modificare installazione Steam, res/scripts o salvataggi. Prima di usare il vecchio avvia_con_gioco.bat considerare che chiude la console con taskkill /t /f: questa chiusura e' ancora non provata e non va lanciata implicitamente dal test.
-6. **Collaudo operativo con Nicolo'.** Avvio/caricamento/lettura/uscita, chiusura console con gioco e riavvio dopo crash su test autorizzato (non provocare crash). Solo dopo: terza richiesta v14 e confronto flotta stimata/misurata. Le richieste di costruzione richiedono sua direttiva esplicita. La console Claude resta distinta da Codex: stesso bridge/file/mod e controllo PC possono fornire parita' operativa senza usare la chiave Anthropic.
+Steam: PrintWindow e focus/input SendInput provati su ricerca, cancellazione e ripristino; PostMessage ignorato. UI Automation non espone pulsanti. Controlli HWND/PID/titolo/focus e finestra sotto il clic; SendInput globale resta soggetto a race, nessuna garanzia OS di esclusivita'. Processi Steam visibili fuori sandbox. Screenshot solo locali, nessun dato account pubblicato. Procedura dev-notes/note/controllo-grafico-windows.md.
+Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MODE true (lettura precedente), non aggiornata. Console Claude: panoramica e linea Lissone provate da Claude, non ripetute da Codex; numero iniziale flotta non ancora provato in gioco. Il .bat installato e' ancora la versione precedente da 435 byte; non copiarlo senza autorizzazione distinta. Bridge vivo non provato; GameBridge.send elimina risultati letti, incompatibile con divieto di cancellazione senza accordo specifico.
 
 ### Prossima operazione precisa
 
-Collaudo grafico Steam riuscito, ricerca e Pagina iniziale ripristinate. Ottenere autorizzazione esplicita per un primo avvio/chiusura TF3 limitato al menu principale, seguendo `dev-notes/note/controllo-grafico-windows.md`: prima leggere le Opzioni di avvio senza modificarle e valutare l'eventuale console avviata dal wrapper esistente; nessuna chiave API usata, nessun caricamento partita.
-Rimangono NON autorizzate modifiche a mod installata, salvataggi e file del gioco. Nessuna chiusura forzata o modifica impostazioni.
-Problema intermittente Windows os.replace e mock Lua Linux-only restano aperti, separati da questo collaudo.
+Rendere run_mock.py e luachk.py compatibili con ricerca librerie Lua 5.3/5.4 su Windows/Linux e rilascio stati, con regressioni e nessuna installazione. Se manca DLL Windows documentare il limite e usare CI Linux come prova distinta. Poi trasformare il probe grafico in helper con identificazione dinamica, controlli espliciti (mai assert per sicurezza) e test senza input reale. Risolvere il blocco dell'avviatore solo con autorizzazione compatibile; non modificare opzioni o file installati in questa sessione.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
