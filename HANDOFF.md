@@ -40,15 +40,26 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**Stato:** 09.10.2026 sera (Claude). Tutto unito in `main` (regola nuova: niente pull request, merge fatto dall'AI).
-Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_script.py --check --bozza` OK.
+**Stato:** 10.10.2026 (ChatGPT/Codex locale Windows). Verifica iniziale non distruttiva completata; sviluppo e installazioni non iniziati: C: riporta 0 byte liberi. Nessun file locale modificato dall'agente, nessun salvataggio letto/modificato e nessuna azione inviata al gioco.
+Head remoto verificato prima del checkpoint: `19ee5c8fe66416fa50c5cd17eb7fc713ce6d05dd` (10.10.2026-02). Il commit 02 corregge il checkpoint 01: la pausa NON e' un bug confermato. CI di questo head: successo, run `38032270281`; nessun test locale del progetto eseguito in questa sessione. Risultati storici dopo i merge, riportati da Claude: middleware 37 OK, mock 71 OK, `build_script.py --check --bozza` OK.
 
 | Campo | Valore |
 | --- | --- |
-| Ultima AI che ha aggiornato | Claude (Cowork) |
+| Ultima AI che ha aggiornato | ChatGPT / Codex desktop, controlli locali Windows |
 | Branch | solo `main` (le branch `lavoro/flotta-iniziale` e `lavoro/avvio-con-gioco` sono unite; PR #2 chiusa) |
 | Mod nel repo | `v14-bozza-399dcf74` (DEV_MODE false) = v14 + numero iniziale di veicoli |
 | PC / gioco (09.10 ~18:30) | mod installata `v14-bozza-32c86032` (senza flotta iniziale); middleware sul PC in `<dati TF3>\local\capocantiere\middleware` aggiornato a main (backup in `capocantiere\backup\middleware_09.10.2026`); Steam avvia la console con il gioco |
+
+### Capacita' verificate in questa sessione (10.10.2026)
+
+- **File locali, sola lettura: OK** tramite PowerShell con esecuzione fuori sandbox approvata dal controllo automatico. Verificate cartelle dati `capocantiere`, `capocantiere/middleware`, `mods/tfcapocantiere_1`, `mod_presets`, `crash_dump`. Scrittura locale NON provata: C: pieno; mantenere backup e autorizzazioni del progetto.
+- **Terminale: OK fuori sandbox**. Terminale ordinario nel sandbox: KO, `MXC launcher: native MXC is unavailable on this Windows build`. Anche Node REPL KO, con errore MXC e spazio disco insufficiente (os error 112). Non confondere il blocco del sandbox con assenza di accesso al PC.
+- **Python: OK**, 3.10.10, interprete e launcher `py` funzionanti. Pacchetto `anthropic` presente; `pytest` e `lupa` non rilevati. Nessuna chiave API letta/usata e nessun pacchetto installato.
+- **Git locale: non disponibile nei controlli effettuati**, assente dal PATH e dai percorsi standard di sistema/utente, Scoop e Chocolatey. Nessun checkout trovato nella cartella della chat, sotto Documents/Codex, o nella ricerca dei file HANDOFF.md in Documents/Desktop/Downloads. Una copia altrove non e' esclusa.
+- **GitHub: lettura OK**, connettore riporta permesso push; la pubblicazione di questo checkpoint costituisce la prova di scrittura e deve essere riletta dopo il commit. Niente PR e niente force-push.
+- **Steam: eseguibile presente e processo attivo**. **TF3: manifest ed eseguibile presenti** nella libreria `E:\\SteamLibrary`, ma nessun processo `transportfever3` rilevato. Controllo grafico/clic non disponibile fra gli strumenti esposti: avvio, caricamento e chiusura del gioco NON provati.
+- **Installazione effettiva letta:** mod `v14-bozza-32c86032`, `DEV_MODE = true`; avviatore `avvia_capocantiere.bat` ancora 435 byte, coerente col precedente handoff. State.lua residuo: stessa versione, lastActionId 1, speed 0; dato storico a gioco chiuso, NON una misura della partita attuale.
+- **Blocco principale: C: = 0 byte liberi**, confermato due volte; E: ha circa 710 GB liberi al controllo. Nessuna cancellazione, spostamento, installazione o modifica alla configurazione eseguita.
 
 ### Provato su Windows il 09.10.2026
 
@@ -80,11 +91,11 @@ Test automatici su `main` dopo i merge: middleware 37 OK, mock 71 OK, `build_scr
 
 ### Prossima operazione precisa
 
-1. Messaggio della console piu' chiaro se la pausa e' sospetta (es. ricontrollare dopo qualche secondo prima di
-   rifiutare). Facoltativo.
-2. A gioco chiuso: copiare `avvia_capocantiere.bat` sul PC; 3a richiesta (azione v14) e costo della sessione.
-3. Installare la build `--dev --bozza` di main (399dcf74, flotta iniziale) sul PC; confrontare flotta stimata con
-   `check_line_fleet`.
+1. Ripristinare spazio su C: con intervento esplicitamente autorizzato da Nicolo', senza cancellazioni automatiche. Ripetere il controllo spazio prima di qualunque backup/scrittura nei dati del gioco.
+2. Ripristinare il sandbox Windows: l'errore MXC e' distinto dal disco pieno. Le indicazioni ufficiali prevedono `elevated` come fallback quando MXC non e' disponibile; non cambiare configurazioni o installazioni senza autorizzazione. Fonte: https://learn.chatgpt.com/docs/windows/windows-sandbox .
+3. Individuare un Git gia' presente oppure configurare Git per Windows e un checkout locale in una cartella scelta/autorizzata; lo sviluppo e' stato richiesto sul PC, non sostituirlo con sviluppo remoto. Verificare stato locale, regole AGENTS.md e head remoto prima di modificare.
+4. A gioco chiuso e con spazio sufficiente: backup, copia di `middleware/avvia_capocantiere.bat` da main, rilettura e confronto. Poi build `--dev --bozza` (flotta iniziale), backup/installazione/rilettura secondo i permessi del progetto. Non usare la chiave API dell'utente.
+5. Prove reali ancora da fare: chiusura console con il gioco, terza richiesta v14 con costo, confronto flotta stimata/misurata con `check_line_fleet`, timeout/risultati tardivi. Nessuna di queste verifiche e' stata eseguita in questa sessione. Messaggio della pausa facoltativo; non rimuovere protezioni sulla base del checkpoint 01 superato.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
