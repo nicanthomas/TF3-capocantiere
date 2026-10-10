@@ -190,6 +190,13 @@ end
 -- Treni: niente aggiunte automatiche (binario unico: si bloccherebbero) salvo force = true.
 SIM_ACTIONS.adjust_line_fleet = function(a)
 	CC.need(a, { line_id = "int", interval = "num?", apply = "bool?", max = "int?", force = "bool?" })
+	-- Stessi limiti dei tool middleware, prima di leggere il mondo o inviare comandi.
+	if a.interval ~= nil and (a.interval ~= a.interval or a.interval < 60 or a.interval > 3600) then
+		error("argomento interval: atteso un numero finito tra 60 e 3600 secondi", 0)
+	end
+	if a.max ~= nil and (a.max ~= a.max or a.max < 1 or a.max > 20) then
+		error("argomento max: atteso un numero intero tra 1 e 20", 0)
+	end
 	local CT = api.type.ComponentType
 	local vs = CC.lineVehicles(a.line_id)
 	if #vs == 0 then return { ok = false, error = "la linea non ha veicoli" } end

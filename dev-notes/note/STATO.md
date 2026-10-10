@@ -259,6 +259,11 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     b4 (aerei/elicotteri/navi) e create_line_from_stations (treni: al massimo 2 senza numero esplicito). Il numero chiesto
     da Nicolo' vince sempre. Risultato con `fleet` (stima, giro, velocita'). Mock 71 OK. Prova in gioco: una linea bus
     senza num_vehicles, poi `check_line_fleet` dopo un giro per confrontare stima e misura; verificare `topSpeed`.
+    FATTO 10.10.2026 sui sorgenti: adjust_line_fleet rifiuta interval fuori 60..3600 s e max fuori
+    1..20/non finiti prima di leggere la linea, coerente con schema middleware; default ed estremi preservati.
+    RED 38049622568, GREEN 38049721158: Ubuntu 91 test/1 skip Windows, Windows 80/classe Lua skip,
+    mock 87 ok/0 falliti; locale isolato 80 OK. Nessun comando per input rifiutati. Wrapper b9 puo' ancora
+    leggere gameSpeed: non dichiarare zero letture API. Nota flotta-convalida-argomenti.md; NON provato in TF3.
 4c. Puntualita'/qualita' delle consegne: sonde storiche s37 (09.10.2026), nessuna nuova prova in gioco.
     FATTO 10.10.2026, sola lettura locale: api/tealdef/api/engine/util.d.tl dichiara CargoQualityData
     (countBad, countTotal integer; averageQuality number oppure nil; isVeryBad boolean),
