@@ -311,3 +311,7 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
 - Segnali: `comp.objects` con id provvisorio diverso da -400000000 - (indice 0-based in edgeObjectsToAdd) ->
   "Unknown exception" nel comando (non crash, ma nessun segnale).
 - Piu' prove rischiose nello stesso file: non si capisce quale ha causato il crash.
+
+## Correzione runner mock (10.10.2026)
+
+Controlli Lua falliti ora causano errore/exit1. Regres?sione reale Ubuntu RED poi GREEN, run38044823330/38044947518:69 test1skip e mock normale71ok/0falliti. Windows locale64 test OK, integrazione Lua skip di classe per DLL assente; nessun runtime installato. Ubuntu richiede libreria con CAPOCANTIERE_REQUIRE_LUA=1. Workflow include discovery e Windows CI. Queste sono prove mock/CI, non TF3. Warning build --check --bozza continua a indicare script repo DIVERSO; mod non rigenerata/installata.
