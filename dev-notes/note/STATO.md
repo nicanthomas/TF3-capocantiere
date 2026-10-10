@@ -259,16 +259,21 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     b4 (aerei/elicotteri/navi) e create_line_from_stations (treni: al massimo 2 senza numero esplicito). Il numero chiesto
     da Nicolo' vince sempre. Risultato con `fleet` (stima, giro, velocita'). Mock 71 OK. Prova in gioco: una linea bus
     senza num_vehicles, poi `check_line_fleet` dopo un giro per confrontare stima e misura; verificare `topSpeed`.
-4c. Puntualita'/qualita' delle consegne (novita' TF3), s37 (09.10.2026): le funzioni ci sono ma restituiscono
-    oggetti C++ di cui non conosciamo i campi: `api.engine.util.cargo.getSummarizedCargoQualityDataForLine(linea)` /
-    `...ForStockList(stockList)` / `...ForVehicle(v)` (-> SummarizedCargoQualityData), `cargo.isGoodQuality`,
-    `industry.getIndustryProductivityInfo(industria)` (-> IndustryProductivityInfo),
-    `stock.getProductionRating(stockList)` (numero: 0/1 sulle industrie di prova), `stock.getCargoShippedPerYear`,
-    `getCargoDeliveredPerYear` (numeri). Nella 40420 `INDUSTRY.stockList` vale l'id dell'industria.
-    `getCargoProducedPerYear` e `getCargoQualityDataForLine` vogliono altri argomenti ("can't be cast").
-    DA FARE: nomi dei campi (dai file .lua dell'interfaccia del gioco, cartella res/scripts sotto E:\SteamLibrary:
-    chiedere a Nicolo' l'accesso in lettura) e poi usarli in check_line_fleet.
-    Elenco completo delle funzioni di api.engine.util: vedi scoperte-api.md (09.10.2026).
+4c. Puntualita'/qualita' delle consegne: sonde storiche s37 (09.10.2026), nessuna nuova prova in gioco.
+    FATTO 10.10.2026, sola lettura locale: api/tealdef/api/engine/util.d.tl dichiara CargoQualityData
+    (countBad, countTotal integer; averageQuality number oppure nil; isVeryBad boolean),
+    SummarizedCargoQualityData (passengers e cargo) e IndustryProductivityInfo
+    (producing, boostFromRule, boostFromPersonCapacity boolean). I campi non sono piu' ignoti;
+    unita'/intervallo di averageQuality e getProductionRating non dichiarati.
+    getCargoProducedPerYear(stockListEntity, cargoTypeId) e getCargoQualityDataForLine(lineEntity,
+    cargoTypeId) richiedono entrambi gli argomenti: possibile spiegazione statica dei precedenti can't be cast.
+    Nella sonda storica 40420 INDUSTRY.stockList valeva l'id dell'industria: non riverificato.
+    Nota qualita-merci-tipi-tf3.md con fonte, hash, firme e limiti. Percorso res/scripts inesistente
+    in questa installazione; nessun file gioco modificato/estratto, nessun salvataggio letto.
+    DA FARE sui sorgenti: progettare normalizzazione protetta dei userdata e regressioni mock
+    (nil/errori/zero countTotal), poi integrazione di lettura in check_line_fleet. Non inventare
+    percentuali o moltiplicatori. Campi e semantica runtime ancora da sondare con partita autorizzata.
+    Elenco delle funzioni api.engine.util: scoperte-api.md (09.10.2026).
 5. **v14 CARICATA E COLLAUDATA nel protocollo normale (09.10.2026, 08:40)**: build `v14-bozza-32c86032` (`mod/` con
    DEV_MODE = false nel repo, `--check` OK; copia `--dev --bozza` installata e riletta dal PC: sha1 uguale a dist/).
    Backup nella cartella della mod: `.bak_20261009_v13patch` (v13 + patch) e `.bak_20261009_v14_1db6fb1e`.

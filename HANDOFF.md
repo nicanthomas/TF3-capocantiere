@@ -49,6 +49,9 @@ Opzioni Steam lette senza modificarle: avvia_con_gioco.bat con %command%. La cop
 
 ### Risultato del passo completato
 
+Tipi qualita' merci chiariti con sola lettura delle definizioni distribuite api/tealdef/api/engine/util.d.tl: countBad/countTotal, averageQuality opzionale, isVeryBad; riepilogo passengers/cargo; industria con tre booleani. Due funzioni richiedono cargoTypeId obbligatorio. Nota qualita-merci-tipi-tf3.md e STATO4c aggiornati. Unita'/intervalli e comportamento dei userdata NON provati in TF3, nessun file gioco modificato/estratto o salvataggio letto.
+Main con flotta/runner verificato verde anche dopo merge: CI 38046140194. Checkout unico allineato e pulito prima di questo aggiornamento documentale.
+
 Flotta sorgenti corretta: count e dettagli coerenti dopo limite, fallback entro hardMax, ogni posizione controllata senza lunghezza di tabella sparsa. RED 3 errori Lua reali run 38045331676; GREEN 38045453402: Ubuntu 72 test/1 skip Windows, 14,349 s, mock normale 71 ok/0 falliti; Windows verde. Revisione senza blocchi. Mod non generata/installata, flotta NON provata in TF3.
 Runner riproducibile test_isolati.py: venv -I -B obbligatori, fixtures uniche autorizzate, audit Python scritture/rete/processi/Steam, JSON espone skip/motivi. Locale **72 test OK**, 14,681 s, zero errori/fallimenti, 1 classe Lua skip per DLL assente; 8 nuove regressioni policy. Guardie non sandbox OS per codice nativo. Nota test-isolati-windows.md. CI completa verde run 38045943923: Ubuntu 80 test/1 skip, 15,233 s, Windows 72 test e classe Lua skip, mock normale 71 ok/0 falliti. Flotta e runner verificati prima di unire in main.
 Gia' verificati: lock Lua Windows (5 regressioni incluso lettore Windows reale), wrapper ctypes (8 test ABI simulata), guardie desktop 14 anche -O; Steam screenshot/focus/ricerca/testo/ripristino provati, 12 Backspace totali, ricerca vuota/Pagina iniziale e frame stabile ispezionati. --rect CLI da screenshot recente, blocco anche pulsanti laterali e drift puntatore. SendInput globale mantiene race.
@@ -62,7 +65,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Flotta e runner verificati in CI e uniti in main senza PR/force; checkout unico da allineare dopo pubblicazione. Proseguire in sola lettura sui tipi qualita' merci STATO4c: percorso reale api/tealdef e base/content, non vecchio res/scripts. Lettura nel sandbox ordinario riuscita; una richiesta di elenco con escalation e' scaduta nel controllo automatico senza eseguire l'azione, non una valutazione di rischio. Nessun file gioco modificato/estratto. TF3 bloccato dal wrapper e DLL Lua Windows assente; nuove installazioni/modifiche richiedono autorizzazione distinta. Menu/input/chiusura TF3, bridge vivo e flotta in gioco NON provati.
+Prossimo passo sicuro: progettare sui sorgenti la normalizzazione della qualita' merci (nota qualita-merci-tipi-tf3.md), proteggere lettura userdata e casi nil/zero/errori con mock prima dell'integrazione di lettura in check_line_fleet. Nessuna percentuale o moltiplicatore dedotto. Per il collaudo TF3 serve prima autorizzazione distinta a risolvere le opzioni Steam/wrapper che usa chiave e Taskkill; non modificarli con i permessi attuali. DLL Lua Windows fidata assente, nessuna installazione autorizzata. Menu/input/chiusura TF3, bridge vivo e flotta in gioco NON provati. Conservare il checkout unico e la distinzione CI/prove reali. Una richiesta di elenco con escalation e' scaduta nel controllo automatico senza esecuzione; lettura ordinaria riuscita, nessun blocco residuo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
