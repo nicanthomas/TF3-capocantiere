@@ -12,4 +12,4 @@ Sequenza: svuotare soltanto Opzioni di avvio; chiudere il dialogo; controllare v
 
 Recupero manuale anche se la chat termina: aprire original.json localmente, riportare solo launch_options nel campo Steam di TF3. Non importare gli altri campi nel client e non sostituire l'intera configurazione. Conservare entrambi i backup. Prima del collaudo verificare che esistano e che il dialogo sia controllabile; se il recupero non e' disponibile, non cambiare le opzioni.
 
-Stato di questo checkpoint: originali ancora attive, backup verificato, gioco non avviato. Esiti successivi nel HANDOFF aggiornato.
+Esito: due cicli TF3 nel solo menu completati; uscita normale e processo terminato. Valore originale RIPRISTINATO esattamente, confrontato dopo la chiusura delle proprieta'; due copie e impronta integre. Nessuna modifica al file wrapper. I dialoghi ricreati hanno HWND diverso: identificarli di nuovo, non riusare handle. Guardie hanno rifiutato il vecchio handle senza input. Conservare i backup privati; wrapper originale nuovamente attivo.
