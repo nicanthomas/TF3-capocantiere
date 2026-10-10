@@ -102,3 +102,33 @@ class LuaIntegrationTests(unittest.TestCase):
                 and result.cargo.averageQuality == nil,
                 "campi userdata espliciti o valore false persi")
         """)
+
+    def test_fleet_invalid_intervals_rejected_before_world_reads(self):
+        self.fleet_check("""
+            local reads, sent = 0, #W.sent
+            CC.lineVehicles = function() reads = reads + 1; error("unexpected-world-read") end
+            for _, value in ipairs({0, -1, 59, 3601, math.huge, -math.huge, 0/0}) do
+                for _, apply in ipairs({false, true}) do
+                    local ok, result = pcall(SIM_ACTIONS.adjust_line_fleet,
+                        {line_id=1, interval=value, apply=apply})
+                    local message = ok and type(result) == "table" and result.error or result
+                    assert(type(message) == "string" and message:find("interval", 1, true)
+                        and reads == 0 and #W.sent == sent, "interval non rifiutato prima della lettura")
+                end
+            end
+        """)
+
+    def test_fleet_invalid_caps_rejected_before_world_reads(self):
+        self.fleet_check("""
+            local reads, sent = 0, #W.sent
+            CC.lineVehicles = function() reads = reads + 1; error("unexpected-world-read") end
+            for _, value in ipairs({0, -1, 21, math.huge, -math.huge, 0/0, 1.5}) do
+                for _, apply in ipairs({false, true}) do
+                    local ok, result = pcall(SIM_ACTIONS.adjust_line_fleet,
+                        {line_id=1, max=value, apply=apply})
+                    local message = ok and type(result) == "table" and result.error or result
+                    assert(type(message) == "string" and message:find("max", 1, true)
+                        and reads == 0 and #W.sent == sent, "max non rifiutato prima della lettura")
+                end
+            end
+        """)

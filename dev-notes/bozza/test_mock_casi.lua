@@ -307,6 +307,39 @@ do
     api.engine.util.cargo = oldCargo
 end
 
+-- Limiti gia' dichiarati dai tool middleware: nessuna lettura/comando per input invalidi.
+do
+    local original, reads, sent = CC.lineVehicles, 0, #W.sent
+    CC.lineVehicles = function() reads = reads + 1; error("unexpected-world-read") end
+    for _, field in ipairs({"interval", "max"}) do
+        local values = field == "interval" and {0, -1, 59, 3601, math.huge, -math.huge, 0/0}
+            or {0, -1, 21, math.huge, -math.huge, 0/0, 1.5}
+        local valid = true
+        for _, value in ipairs(values) do
+            for _, apply in ipairs({false, true}) do
+                local args = {line_id=1, apply=apply}; args[field] = value
+                local ok, result = pcall(SIM_ACTIONS.adjust_line_fleet, args)
+                local message = ok and type(result) == "table" and result.error or result
+                if type(message) ~= "string" or not message:find(field, 1, true)
+                    or reads ~= 0 or #W.sent ~= sent then valid = false end
+            end
+        end
+        check(valid, "flotta: " .. field .. " invalido rifiutato prima delle letture/comandi")
+    end
+    CC.lineVehicles = function() reads = reads + 1; return {} end
+    local valid = true
+    for _, args in ipairs({
+        {line_id=1, interval=60, max=1}, {line_id=1, interval=3600, max=20}, {line_id=1}
+    }) do
+        local before = reads
+        local ok, result = pcall(SIM_ACTIONS.adjust_line_fleet, args)
+        if not ok or type(result) ~= "table" or result.error ~= "la linea non ha veicoli"
+            or reads ~= before + 1 or #W.sent ~= sent then valid = false end
+    end
+    CC.lineVehicles = original
+    check(valid, "flotta: estremi schema e default accettati senza comandi")
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
