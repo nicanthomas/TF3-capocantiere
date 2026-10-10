@@ -78,15 +78,15 @@ Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 
 ## 1c. Configurazione locale Codex su Windows (10.10.2026)
 
-Unico checkout E:\Sviluppo\TF3-capocantiere; Git 2.55.0.windows.5, Python 3.10.10 e PowerShell funzionanti. Sviluppo checkout autorizzato; venv stdlib/fixtures nell'area work della chat, rete/subprocess/accessi Steam bloccati durante suite. Usare percorso completo Git se PATH app ancora precedente all'installazione.
+Unico checkout E:\Sviluppo\TF3-capocantiere; Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Sviluppo checkout autorizzato, nessuna nuova installazione. Venv/fixtures nell'area work. Procedure controllo-grafico-windows.md/test-isolati-windows.md.
 
-Helper dev-notes/strumenti/windows_pc.py: stdlib, identificazione dinamica target/PID/eseguibile, screenshot BMP senza overwrite, focus/clic/testo/backspace. Guardie esplicite attive anche -O. Nessun avvio automatico, chiave o Taskkill. Test reale Steam: screenshot, focus, ricerca con zzcodexprobe visibile, ripristino con 12 Backspace totali, ricerca vuota/Pagina iniziale verificati. Screenshot solo locali; alcuni frame incompleti durante ridisegno richiedono ricattura. TF3 processo assente dopo test.
-Intera suite isolata **64/64 OK**, 14,671 s: 37 precedenti, 5 lock Lua (anche Windows reale), 8 wrapper Lua ABI simulata, 14 guardie desktop senza eventi. Guardie anche -O: 14/14. CI checkpoint14 verde Ubuntu e Windows, run 38043985896, mock Lua reale verde Ubuntu. CI checkpoint15 verde Ubuntu e Windows, run 38044425365. Revisionati lock/ABI/guardie senza difetti critici; corretti pulsanti laterali mouse, drift puntatore e coordinate CLI da screenshot (--rect). Tre nuove regressioni fallite prima della correzione, poi verdi anche -O.
-Mock Windows non eseguito: manca DLL fidata Lua 5.3/5.4 della stessa architettura Python, da specificare via CAPOCANTIERE_LUA_LIB assoluta; nessuna installazione. build --check --bozza locale: sintassi saltata, DIVERSO/codice1 (avviso previsto CI). Nessuna mod generata/installata. Correzione lock solo sorgenti: lettore chiuso prima parsing e retry atomico nominale 0,5 s per WinError5/32/33, vecchio file preservato su errore definitivo. Nessun bridge installato modificato.
-TF3 autorizzato ma avvio bloccato: wrapper installato legge chiave Anthropic e usa Taskkill, vietati in questa sessione. Opzioni/file installati invariati. Menu/input/chiusura TF3 NON provati. Nessun salvataggio/mod/gioco modificato.
+Flotta sorgenti corretta: count e dettagli coerenti dopo limite, fallback entro hardMax, ogni posizione controllata senza lunghezza di tabella sparsa. RED 3 errori Lua reali run 38045331676; GREEN 38045453402: Ubuntu 72 test/1 skip Windows, 14,349 s, mock normale 71 ok/0 falliti; Windows verde. Revisione senza blocchi. Mod non generata/installata, flotta NON provata in TF3.
+Runner riproducibile test_isolati.py: venv -I -B obbligatori, fixtures uniche autorizzate, audit Python scritture/rete/processi/Steam, JSON espone skip/motivi. Locale **72 test OK**, 14,681 s, zero errori/fallimenti, 1 classe Lua skip per DLL assente; 8 nuove regressioni policy. Guardie non sandbox OS per codice nativo. Nota test-isolati-windows.md. CI runner da verificare prima dell'unione completa in main.
+Gia' verificati: lock Lua Windows (5 regressioni incluso lettore Windows reale), wrapper ctypes (8 test ABI simulata), guardie desktop 14 anche -O; Steam screenshot/focus/ricerca/testo/ripristino provati, 12 Backspace totali, ricerca vuota/Pagina iniziale e frame stabile ispezionati. --rect CLI da screenshot recente, blocco anche pulsanti laterali e drift puntatore. SendInput globale mantiene race.
+Falso verde mock corretto: fallimenti ora error/exit1; RED 38044823330 e GREEN 38044947518. Lua reale obbligatoria in CI Ubuntu. Windows manca DLL fidata 5.3/5.4 stessa architettura Python: nessuna installazione e nessun mock reale locale.
+TF3 autorizzato ma NON avviato: wrapper installato legge chiave Anthropic e usa Taskkill, vietati. Opzioni/gioco/mod/salvataggi invariati, nessuna chiave letta/usata. TF3 assente dopo Steam. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
-SendInput globale mantiene race: evitare input concorrente. UI Automation Steam non espone pulsanti; processi visibili fuori sandbox. Procedura e prove: controllo-grafico-windows.md.
-GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto di cancellazione prima di test vivi; non chiamato sui dati reali.
+GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto cancellazione prima di test vivi; non chiamato sui dati reali. UI Automation Steam senza pulsanti; processi fuori sandbox. Screenshot privati solo locali.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
@@ -312,6 +312,3 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   "Unknown exception" nel comando (non crash, ma nessun segnale).
 - Piu' prove rischiose nello stesso file: non si capisce quale ha causato il crash.
 
-## Correzione runner mock (10.10.2026)
-
-Controlli Lua falliti ora causano errore/exit1. Regres?sione reale Ubuntu RED poi GREEN, run38044823330/38044947518:69 test1skip e mock normale71ok/0falliti. Windows locale64 test OK, integrazione Lua skip di classe per DLL assente; nessun runtime installato. Ubuntu richiede libreria con CAPOCANTIERE_REQUIRE_LUA=1. Workflow include discovery e Windows CI. Queste sono prove mock/CI, non TF3. Warning build --check --bozza continua a indicare script repo DIVERSO; mod non rigenerata/installata.

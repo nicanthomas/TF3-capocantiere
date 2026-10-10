@@ -49,10 +49,11 @@ Opzioni Steam lette senza modificarle: avvia_con_gioco.bat con %command%. La cop
 
 ### Risultato del passo completato
 
-Corretto falso verde preesistente del mock Lua: i check falliti ora sollevano errore, runner ritorna1. Regres?sione con Lua REALE in CI Ubuntu e check(false) iniettato soltanto nel testo in memoria. RED run38044823330:71ok/1fallito e AssertionError0!=1. GREEN run38044947518: Ubuntu69 test,1skip Windows,13,937s; mock normale71ok/0falliti. Windows CI verde senza runtime Lua, integrazione dichiarata skip. Ubuntu richiede CAPOCANTIERE_REQUIRE_LUA=1: DLL mancante non puo' nascondere regressioni via skip. Revisione indipendente senza blocchi.
-Suite Windows locale isolata **64/64 OK**,14,693s,1skip di classe Lua per DLL assente. Test ABI Lua simulata8, guardie Windows14 anche -O, regressioni lock5 incluso lock Windows reale. Helper Steam provato: screenshot/focus/ricerca/testo/ripristino riusciti,12Backspace totali; frame finale stabile ispezionato. Nessun TF3 avviato, processo assente.
-Correzione lock solo sorgenti: parsing dopo chiusura lettore, retry atomico nominale0,5s per WinError5/32/33, vecchio file preservato su errore definitivo. Helper controlla anche pulsanti laterali mouse, drift puntatore e --rect da screenshot recente. SendInput globale resta soggetto a race; niente input concorrente.
-Mock Lua Windows reale non eseguito per DLL mancante: libreria fidata5.3/5.4 stessa architettura Python via percorso assoluto, nessuna installazione. build --check --bozza: sintassi locale saltata, confronto DIVERSO/codice1 (anche avviso previsto CI), nessuna mod generata/installata. TF3 bloccato da wrapper installato che legge chiave e usa Taskkill; opzioni/file installati invariati. Nessuna chiave/mod/salvataggio/file gioco usati o modificati.
+Flotta sorgenti corretta: count e dettagli coerenti dopo limite, fallback entro hardMax, ogni posizione controllata senza lunghezza di tabella sparsa. RED 3 errori Lua reali run 38045331676; GREEN 38045453402: Ubuntu 72 test/1 skip Windows, 14,349 s, mock normale 71 ok/0 falliti; Windows verde. Revisione senza blocchi. Mod non generata/installata, flotta NON provata in TF3.
+Runner riproducibile test_isolati.py: venv -I -B obbligatori, fixtures uniche autorizzate, audit Python scritture/rete/processi/Steam, JSON espone skip/motivi. Locale **72 test OK**, 14,681 s, zero errori/fallimenti, 1 classe Lua skip per DLL assente; 8 nuove regressioni policy. Guardie non sandbox OS per codice nativo. Nota test-isolati-windows.md. CI runner da verificare prima dell'unione completa in main.
+Gia' verificati: lock Lua Windows (5 regressioni incluso lettore Windows reale), wrapper ctypes (8 test ABI simulata), guardie desktop 14 anche -O; Steam screenshot/focus/ricerca/testo/ripristino provati, 12 Backspace totali, ricerca vuota/Pagina iniziale e frame stabile ispezionati. --rect CLI da screenshot recente, blocco anche pulsanti laterali e drift puntatore. SendInput globale mantiene race.
+Falso verde mock corretto: fallimenti ora error/exit1; RED 38044823330 e GREEN 38044947518. Lua reale obbligatoria in CI Ubuntu. Windows manca DLL fidata 5.3/5.4 stessa architettura Python: nessuna installazione e nessun mock reale locale.
+TF3 autorizzato ma NON avviato: wrapper installato legge chiave Anthropic e usa Taskkill, vietati. Opzioni/gioco/mod/salvataggi invariati, nessuna chiave letta/usata. TF3 assente dopo Steam. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
 ### Capacita' e prove precedenti da conservare
 
@@ -61,9 +62,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Branch lavoro/flotta-regressioni: RED CI run38045214689: due bug confermati (count richiesto invece di limitato, fallback oltre hardMax). RED run38045331676 conferma anche posizione intermedia mancante:3errori attesi su72test/1skip. Corretto CC.initialFleet: count coerente, fallback entro hardMax e controllo esplicito di ciascuna posizione. GREEN CI da verificare prima dell'unione. Nessuna modifica a flotta in gioco o mod installata; main resta al checkpoint verde del mock. Dopo RED correggere soltanto CC.initialFleet, verificare GREEN CI e unire senza PR.
-
-Mock corretto e testato in CI prima dell'unione in main, senza PR/force. Verificare CI nuovo main; proseguire sui casi limite della flotta iniziale (solo sorgenti/mock, nessuna costruzione): dettagli count devono corrispondere al numero effettivamente limitato, posizioni mancanti non devono produrre una stima incompleta. Usare regressioni Lua in CI Ubuntu, dato che Windows manca DLL. Non rigenerare/installare la mod e non avviare TF3 con wrapper attuale. Ancora non provati menu/input/chiusura TF3, bridge vivo e flotta iniziale in gioco.
+Branch lavoro/flotta-regressioni comprende flotta e runner: verificare CI, poi unire main senza PR/force e allineare checkout unico. Proseguire in sola lettura su schemi qualita' merci STATO4c: res/scripts nel percorso precedente non trovato, verificare disposizione reale. Non estrarre/scrivere nei file installati. TF3 bloccato da wrapper; soluzione e installazione DLL richiedono autorizzazione distinta. Menu/input/chiusura TF3, bridge vivo/flotta in gioco NON provati.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
