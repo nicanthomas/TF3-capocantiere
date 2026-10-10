@@ -76,6 +76,16 @@ Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e
    `cd dev-notes/bozza && python3 run_mock.py` (deve dare 65 ok).
 Se qualcosa manca, dirlo subito in un solo messaggio, non a meta' lavoro.
 
+## 1c. Configurazione locale Codex su Windows (verificata 10.10.2026)
+
+- Checkpoint corrente e piano dettagliato: HANDOFF.md. Le autorizzazioni storiche di Cowork non si trasferiscono a questa chat: installazioni, modifiche ai file del gioco e operazioni rischiose richiedono autorizzazione esplicita.
+- Dopo spazio liberato da Nicolo', PowerShell e Node REPL funzionano nel sandbox senza modificare la configurazione. Ultimo controllo: C: circa 28,07 GB liberi, E: circa 709,99 GB (decimali; valori variabili).
+- Python 3.10.10, anthropic 1.11.0 presente; 8 test esistenti senza I/O OK e GameBridge.state() legge lo state residuo. Nessuna API chiamata, nessun send/ping reale, nessun test in TF3 eseguito in questa verifica.
+- Git/checkout completo non trovati nella ricerca circoscritta; middleware installato presente. Non clonare duplicati senza controllo e autorizzazione alla destinazione.
+- Desktop: screenshot in memoria e UI Automation funzionano; finestra Steam visibile fuori sandbox. I processi Steam non risultano visibili dal sandbox: monitorarli da contesto autorizzato fuori sandbox. Win32 per input presente, clic/tasti/avvio/chiusura non ancora provati.
+- Mock bozza: `dev-notes/bozza/run_mock.py` cerca una libreria Linux .so in /usr/lib; per test locali Windows serve adattamento del runner e DLL Lua, non semplicemente lua.exe. GitHub Actions su Ubuntu resta distinta dai test locali.
+- GameBridge.send() elimina risultati gia' letti: prima dei test vivi conciliare tale pulizia con il divieto di cancellazione; in questa verifica non e' stato chiamato.
+
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
 - Bozza delle funzioni nuove in `dev-notes/bozza/b1..b9` (provata in gioco con `sim_eval`, DEV_MODE). Diventera' v14 con
