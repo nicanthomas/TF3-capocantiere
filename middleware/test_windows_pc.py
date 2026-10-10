@@ -142,3 +142,96 @@ class WindowControlTests(unittest.TestCase):
             with self.assertRaises(pc.ControlError):
                 pc.main()
         self.assertEqual(self.backend.events, [])
+
+
+class NavigationTests(unittest.TestCase):
+    def setUp(self):
+        self.backend = Backend()
+        self.backend.key_pair = lambda name: self.backend.events.append(("key", name))
+        self.controller = pc.Controller(self.backend, self.backend.current)
+
+    def test_only_escape_and_tab_are_dispatched(self):
+        self.controller.key("escape")
+        self.controller.key("tab")
+        self.assertEqual(self.backend.events, [("key", "escape"), ("key", "tab")])
+
+    def test_unknown_or_activation_keys_never_dispatch(self):
+        for name in ("enter", "alt-f4", "ctrl-a", "f1", "ESC", "", None):
+            with self.subTest(name=name):
+                with self.assertRaises(pc.ControlError):
+                    self.controller.key(name)
+        self.assertEqual(self.backend.events, [])
+
+    def test_foreign_focus_and_held_input_block_navigation(self):
+        self.backend.foreground = 999
+        with self.assertRaises(pc.ControlError):
+            self.controller.key("escape")
+        self.backend.foreground = 100
+        self.backend.busy = True
+        with self.assertRaises(pc.ControlError):
+            self.controller.key("tab")
+        self.assertEqual(self.backend.events, [])
+
+    def test_identity_change_blocks_navigation(self):
+        self.backend.current = replace(self.backend.current, pid=201)
+        with self.assertRaises(pc.ControlError):
+            self.controller.key("escape")
+        self.assertEqual(self.backend.events, [])
+
+    def test_focus_loss_after_key_is_detected_without_more_input(self):
+        def one(name):
+            self.backend.events.append(("key", name))
+            self.backend.foreground = 999
+        self.backend.key_pair = one
+        with self.assertRaises(pc.ControlError):
+            self.controller.key("escape")
+        self.assertEqual(self.backend.events, [("key", "escape")])
+
+    def test_cli_key_requires_explicit_name(self):
+        args = ["windows_pc", "key", "--hwnd", "100", "--pid", "200"]
+        with patch.object(pc, "Native", return_value=self.backend), patch.object(sys, "argv", args):
+            with self.assertRaises(pc.ControlError):
+                pc.main()
+        self.assertEqual(self.backend.events, [])
+
+
+class NativeNavigationTests(unittest.TestCase):
+    def make_native(self):
+        from types import SimpleNamespace
+        import ctypes
+        received = []
+        class Function:
+            def __init__(self, name):
+                self.name = name
+            def __call__(self, *args):
+                if self.name == "SendInput":
+                    count, events, size = args
+                    received.extend((events[i].kind, events[i].data.key.vk,
+                                     events[i].data.key.scan, events[i].data.key.flags)
+                                    for i in range(count))
+                    return count
+                return 1
+        class DLL:
+            def __init__(self):
+                self.functions = {}
+            def __getattr__(self, name):
+                return self.functions.setdefault(name, Function(name))
+        with patch.object(pc, "os", SimpleNamespace(name="nt")), \
+             patch.object(pc.c, "WinDLL", return_value=DLL(), create=True), \
+             patch.object(pc.c, "WINFUNCTYPE", ctypes.CFUNCTYPE, create=True):
+            native = pc.Native(steam_root=str(Path(__file__).parent))
+        return native, received
+
+    def test_escape_and_tab_emit_physical_press_release(self):
+        for name, scan in (("escape", 0x01), ("tab", 0x0F)):
+            with self.subTest(name=name):
+                native, received = self.make_native()
+                with patch.object(pc.time, "sleep"):
+                    native.key_pair(name)
+                self.assertEqual(received, [(1, 0, scan, 8), (1, 0, scan, 10)])
+
+    def test_native_unknown_key_emits_no_events(self):
+        native, received = self.make_native()
+        with self.assertRaises(pc.ControlError):
+            native.key_pair("enter")
+        self.assertEqual(received, [])
