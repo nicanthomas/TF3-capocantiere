@@ -40,7 +40,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**11.10.2026, Codex locale Windows, ripresa autorizzata da continua.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
+**11.10.2026, Codex locale Windows, ripresa autorizzata da continua.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, terminale PowerShell 7.6.5 funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
 ### Autorizzazioni e stato TF3
 
@@ -50,12 +50,14 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 ### Risultati verificati della ripresa 11.10.2026
 
-Quattro passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
+Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
 
 - Indicatori industrie: tre booleani protetti, false distinto da assenza, productivity nelle industrie posizionate di read_map; API assente/guasta preserva mappa/ok, nessun comando. Dodici mock e un userdata Lua sintetico, RED prima del codice. GREEN 38134484171 (Ubuntu 94 test, Windows 80, mock 104/0). Nota produttivita-industrie.md. C++ TF3/significato boost NON provati.
 - Barriera Lua: export lua_isinteger richiesto prima dello stato, standard 5.2 respinto; una regressione ABI simulata RED poi GREEN 38134989337 (Ubuntu 95, Windows 81, mock 104/0). Locale 81 OK/classe Lua skip. Non certifica versione esatta/provenienza/architettura/DLL custom; nessuna Lua 5.2 reale caricata. Nota abi-lua-versioni.md.
 - Diagnosi PE: nove regressioni sintetiche RED poi GREEN 38135628133 (Ubuntu 104, Windows 90, mock 104/0); locale 90 OK/classe Lua skip, 16,114 s; revisione senza blocchi. Tool stdlib solo header bounded Python/candidato esplicito; I386/AMD64/ARM64 distinti anche stessa bitness, nessuna ricerca/ambiente/LoadLibrary/scrittura. Prova Python reale senza candidato: AMD64 64 bit, errors=[], runtime_loaded=false. JSON privato negli outputs. Nessuna DLL candidata reale ispezionata. Nota diagnosi-lua-windows.md: NON certifica DLL, export, versione, dipendenze o fiducia.
 - Descrizioni Python: read_map/check_line_fleet e prompt bozza allineati ai dati facoltativi; available/errors per ramo, false/zero distinti da assenza, niente moltiplicatori/unita'/automazioni inventati. Schemi/routing/conferme/Lua invariati. Locale isolato 90 test OK/classe Lua skip, 16,120 s; GREEN 38136433834 Ubuntu 104 test/1 skip Windows, 14,154 s; Windows 90/classe Lua skip, 14,162 s; mock normale 104/0. Revisione statica senza problemi, nessuna chiamata al modello/vecchia mod. Nota descrizioni-dati-bozza.md.
+
+- Runner Lua obbligatoria: --require-lua opt-in, default skip conservato, JSON lua_required; tre regressioni bootstrap policy reale/loader simulato RED 38136828824 prima del codice. GREEN 38136991438 Ubuntu 107 test/1 skip Windows, 13,974 s; Windows 93/classe Lua skip, 15,003 s; mock 104/0. Locale default 93 OK/classe Lua skip, 16,212 s. Prova opt-in reale senza runtime exit1 atteso, 93 test/1 LuaUnavailable/zero skip, 16,111 s: nessuna DLL caricata. Revisione senza blocchi; guardie/isolamento invariati. Nota lua-obbligatoria-isolata.md.
 
 DLL Lua Windows fidata ancora assente: la classe nativa locale e Windows CI e' SKIP, non una prova superata; Lua reale obbligatoria in Ubuntu CI. build --check --bozza ancora DIVERSO/avviso, non dichiarare verde o rigenerare/installare senza nuova autorizzazione.
 
@@ -72,7 +74,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Passi della ripresa verificati/integrati, configurazione nativa resta senza DLL Lua 5.3/5.4 fidata AMD64. Prossimo sviluppo sicuro: valutare modalita' esplicita --require-lua nel runner isolato, per impedire che un futuro collaudo di parita' locale passi con classe Lua saltata; oggi il runner forza REQUIRE_LUA=0. Prima test RED/CI senza dipendenze nuove, preservare default/isolamento e rendere lo stato richiesto visibile nel JSON. Nessun caricamento candidato reale o installazione prima di autorizzazione distinta e verifica della provenienza. Bridge vivo/partite/costruzioni/mod installata fuori scope; GameBridge.send elimina risultati letti, da conciliare con divieto cancellazione. TF3 chiuso/opzioni originali ripristinate nel collaudo precedente.
+Cinque passi della ripresa verificati/integrati. Prossimo sviluppo sicuro senza gioco: progettare una sonda bridge standalone di sola lettura e su percorso esplicito, verificata prima con fixture; evitare import/scansione Steam, GameBridge.__init__ (puo' creare cartella dati), send/cleanup (scritture/cancellazioni). Non eseguirla sui dati reali senza ambito concordato; bridge vivo/partite/costruzioni/mod installata restano fuori scope. Configurazione nativa manca DLL Lua 5.3/5.4 fidata AMD64: autorizzazione distinta prima di installazioni, provenienza verificata, diagnosi PE esplicita, ambiente solo processo e futura suite --require-lua che deve passare senza skip nativo. Nessuna DLL candidata reale ispezionata/installata in questa sessione. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente; wrapper resta attivo, non cliccare Gioca senza ciclo autorizzato.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

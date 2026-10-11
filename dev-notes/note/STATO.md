@@ -102,10 +102,17 @@ available/errors per ramo, false/zero distinti da assenza, niente moltiplicatori
 inventati. Schemi/conferme/routing/Lua invariati. Locale 90 OK/classe Lua skip; GREEN 38136433834
 Ubuntu 104 test/1 skip Windows, Windows 90/classe Lua skip, mock 104 ok/0 falliti; revisione statica
 senza problemi. Nota descrizioni-dati-bozza.md, nessuna chiamata al modello o alla mod reale.
+Runner isolato --require-lua opt-in FATTO 11.10.2026: default skip conservato, flag rende runtime
+mancante errore/exit1, JSON lua_required. Tre bootstrap regression con policy setUpClass reale e
+loader simulato: RED 38136828824 prima del codice; GREEN 38136991438 Ubuntu 107 test/1 skip Windows,
+Windows 93/classe Lua skip, mock 104/0; locale default 93 OK/classe Lua skip, 16,212 s.
+Prova reale flag senza runtime: exit1 atteso, 93 test/1 LuaUnavailable/zero skip, 16,111 s;
+nessuna DLL caricata. Revisione senza problemi, isolamento/conferme invariati.
+Nota lua-obbligatoria-isolata.md: manca ancora runtime nativo Windows fidato, non dire parita' raggiunta.
 
 TF3 menu reale collaudato 10.10.2026 dopo autorizzazione distinta al ciclo opzioni Steam: doppio backup privato, wrapper disattivato temporaneamente nel campo, avvio normale, screenshot/focus/mouse, Esc a scancode torna al menu (virtual-key scan=0 senza effetto), uscita dall'icona Esci senza conferma, processo terminato. Due cicli senza partite/costruzioni; impostazioni del pannello non cambiate. Opzioni ORIGINALI ripristinate con confronto esatto dopo chiusura, wrapper/file gioco/mod/salvataggi non modificati dall'agente, nessuna chiave/Taskkill. Il wrapper originale resta attivo: non avviare senza ripetere il ciclo autorizzato. Note ripristino-opzioni-steam.md e controllo-grafico-windows.md. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
-GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto cancellazione prima di test vivi; non chiamato sui dati reali. UI Automation Steam senza pulsanti; processi fuori sandbox. Screenshot privati solo locali.
+GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto cancellazione prima di test vivi; non chiamato sui dati reali. Anche GameBridge.__init__ puo' creare la cartella dati con os.makedirs quando il prefisso e' attivo (lettura statica 11.10.2026): una sonda senza scritture deve evitare il costruttore, non basta evitare send. UI Automation Steam senza pulsanti; processi fuori sandbox. Screenshot privati solo locali.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).

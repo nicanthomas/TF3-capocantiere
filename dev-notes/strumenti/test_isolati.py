@@ -60,6 +60,8 @@ def make_guard(root, writes):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fixtures-root", required=True, type=Path)
+    parser.add_argument("--require-lua", action="store_true",
+                        help="Fallire se il runtime Lua fidato non e' disponibile, invece di saltare la classe")
     args = parser.parse_args()
     if os.name != "nt":
         parser.error("Questo runner isolato e' per Windows; su Linux usare suite/CI con Lua reale")
@@ -75,7 +77,7 @@ def main():
     os.environ["CAPOCANTIERE_DIR"] = str(root / "unused-exchange")
     os.environ["ANTHROPIC_API_KEY"] = ""  # Child process only: never read the real key.
     os.environ["CAPOCANTIERE_BOZZA"] = "0"
-    os.environ["CAPOCANTIERE_REQUIRE_LUA"] = "0"
+    os.environ["CAPOCANTIERE_REQUIRE_LUA"] = "1" if args.require_lua else "0"
     repo = Path(__file__).resolve().parents[2]
     sys.path.insert(0, str(repo / "middleware"))
     original_glob = glob.glob
@@ -94,7 +96,7 @@ def main():
                       "errors": len(result.errors), "skips": len(result.skipped),
                       "skip_reasons": [reason for _, reason in result.skipped],
                       "success": result.wasSuccessful(), "fixture_write_targets": len(writes),
-                      "venv": True, "python_audit_guards": True}, ensure_ascii=True))
+                      "venv": True, "python_audit_guards": True, "lua_required": args.require_lua}, ensure_ascii=True))
     return 0 if result.wasSuccessful() else 1
 
 
