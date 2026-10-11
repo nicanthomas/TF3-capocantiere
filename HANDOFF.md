@@ -40,7 +40,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**10.10.2026, Codex locale Windows.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
+**11.10.2026, Codex locale Windows, ripresa autorizzata da continua.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
 ### Autorizzazioni e stato TF3
 
@@ -49,6 +49,8 @@ Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dial
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
 ### Risultato del passo completato
+
+Indicatori industria completati sui sorgenti: CC.normalizeIndustryProductivity/industryProductivity in b8, productivity nelle sole industrie posizionate di read_map. Tre booleani dichiarati copiati esplicitamente con pcall, false/nil distinti; API assente/guasta preserva ok/dati mappa e non invia comandi, niente raw error. Dodici nuovi mock e una regressione userdata Lua sintetico. RED CI 38134377278 poi GREEN 38134484171: Ubuntu 94 test/1 skip Windows, 14,433 s; Windows 80/1 classe Lua skip, 14,334 s; mock normale 104 ok/0 falliti. Locale isolato 80 OK/classe Lua skip, 15,956 s. Revisione senza blocchi. Fonte statica, userdata C++ e significato boost NON provati in TF3, nessun moltiplicatore dedotto. Nota produttivita-industrie.md. Nessuna nuova operazione Steam, mod/gioco/salvataggi invariati dall'agente.
 
 Tempi flotta finiti completati sui sorgenti: due regressioni Lua native e cinque mock, RED prima di ciascuna correzione. Tempo inf/somma tratta o giro traboccata diventa misura mancante e ritorno prima di proposta/apply; misure finite di altro veicolo restano utilizzabili. Accumulo da 0.0 evita wraparound intero, media/giro soltanto positivi e finiti, nessuna soglia fisica inventata. Primo RED 38050006467, rilievo revisione overflow intero poi RED dedicato 38050265270. GREEN finale 38050352916: Ubuntu 93 test/1 skip Windows, 14,223 s; Windows 80/1 classe Lua skip, 14,152 s; mock normale 92 ok/0 falliti. Locale isolato 80 OK/classe Lua skip, 15,770 s. Revisione finale senza blocchi. apply=true solo fixture add/remove intercettati, NON gioco. Nota flotta-tempi-finiti.md. build --check --bozza ancora DIVERSO/avviso, mod invariata.
 
@@ -72,9 +74,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Sessione autonoma di collaudo/sviluppo conclusa: TF3 chiuso, opzioni Steam originali ripristinate e backup privati integri. Tasti Windows, qualita' merci, limiti e tempi flotta verificati/uniti; suite finale locale 80 OK/classe Lua skip, CI Ubuntu 93/1 skip Windows, Windows 80/classe Lua skip, mock 92 ok/0 falliti. Ricontrollare main remoto prima di riprendere.
-
-Prossimo passo sicuro sui sorgenti STATO4c/5b: progettare una lettura protetta di IndustryProductivityInfo (producing, boostFromRule, boostFromPersonCapacity boolean) con mock false/nil/accessor guasto prima del codice, senza inventare moltiplicatori o automatizzare catene/produzione. Fonte e firma dichiarata nella nota qualita-merci-tipi-tf3.md; userdata C++ e semantica runtime NON provati. Per il collaudo nativo Windows manca DLL Lua fidata: proporre configurazione e ottenere autorizzazione prima di installazioni, non caricare DLL del gioco. Bridge vivo, flotta/qualita' in partita e installazione della mod aggiornata richiedono autorizzazione distinta; GameBridge.send elimina risultati. Nessuna partita o costruzione permessa. Unico checkout, niente PR/force-push.
+Indicatori industrie verificati/uniti, TF3 chiuso e nessuna nuova operazione Steam. Prossimo passo sicuro: controllare la barriera ABI di dev-notes/lua_runtime.py. Il wrapper dichiara Lua 5.3/5.4 ma verifica soltanto simboli condivisi anche con 5.2; verificare nelle fonti ufficiali e con regressione simulata che una libreria senza lua_isinteger venga rifiutata prima di creare uno stato. Non caricare DLL non fidate/percorso relativo o librerie del gioco; nessuna installazione. Se confermato, guardia minima di capacita' + test RED/GREEN, Lua nativa in CI Ubuntu obbligatoria. Bridge reale/partite/costruzioni/mod installata ancora fuori autorizzazione. Opzioni originali ripristinate nel precedente collaudo; non avviare con wrapper attivo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

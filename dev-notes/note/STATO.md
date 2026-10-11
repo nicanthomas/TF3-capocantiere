@@ -290,6 +290,13 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
     Locale isolato 80 OK/classe Lua skip. Nessun comando aggiunto, mod non rigenerata/installata.
     Linee senza veicoli mantengono il ritorno anticipato senza cargo_quality. Non inventare
     percentuali o moltiplicatori. Campi e semantica runtime ancora da sondare con partita autorizzata.
+    FATTO 11.10.2026 sui sorgenti: CC.normalizeIndustryProductivity/industryProductivity in b8,
+    tre booleani producing/boostFromRule/boostFromPersonCapacity protetti, false valido e nil/errori distinti.
+    read_map aggiunge productivity alle industrie posizionate; API guasta/assente non cambia ok/mappa,
+    nessun comando. Dodici mock e un userdata Lua sintetico, NON C++ TF3: RED 38134377278,
+    GREEN 38134484171 Ubuntu 94 test/1 skip Windows, Windows 80/classe Lua skip, mock 104 ok/0 falliti.
+    Locale isolato 80 OK/classe Lua skip, revisione senza blocchi. Nota produttivita-industrie.md.
+    Significato boost e comportamento userdata ancora NON provati; mod non rigenerata/installata.
     Elenco delle funzioni api.engine.util: scoperte-api.md (09.10.2026).
 5. **v14 CARICATA E COLLAUDATA nel protocollo normale (09.10.2026, 08:40)**: build `v14-bozza-32c86032` (`mod/` con
    DEV_MODE = false nel repo, `--check` OK; copia `--dev --bozza` installata e riletta dal PC: sha1 uguale a dist/).

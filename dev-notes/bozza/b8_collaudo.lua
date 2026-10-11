@@ -85,6 +85,41 @@ function CC.lineCargoQuality(lineId)
     return CC.normalizeCargoQuality(summary)
 end
 
+-- Indicatori dalle definizioni TF3: solo booleani, NON moltiplicatori o decisioni automatiche.
+-- Userdata C++ non provato: stessi accessi espliciti protetti della qualita'.
+function CC.normalizeIndustryProductivity(value)
+    local out = { available = false, errors = {} }
+    if type(value) ~= "table" and type(value) ~= "userdata" then
+        out.errors[1] = "dato produttivita' assente o non leggibile"
+        return out
+    end
+    for _, name in ipairs({ "producing", "boostFromRule", "boostFromPersonCapacity" }) do
+        local ok, field = qualityField(value, name)
+        if not ok then
+            out.errors[#out.errors + 1] = name .. ": accesso non riuscito"
+        elseif type(field) == "boolean" then
+            out[name] = field
+        else
+            out.errors[#out.errors + 1] = name .. ": valore assente o tipo non valido"
+        end
+    end
+    out.available = out.producing ~= nil and out.boostFromRule ~= nil
+        and out.boostFromPersonCapacity ~= nil
+    return out
+end
+
+function CC.industryProductivity(industryId)
+    local ok, value = pcall(function()
+        return api.engine.util.industry.getIndustryProductivityInfo(industryId)
+    end)
+    if not ok then
+        local out = CC.normalizeIndustryProductivity(nil)
+        out.errors = { "API produttivita' industria non disponibile" }
+        return out
+    end
+    return CC.normalizeIndustryProductivity(value)
+end
+
 -- Stato del veicolo come testo (IN_DEPOT, EN_ROUTE, AT_TERMINAL, GOING_TO_DEPOT ...). DA VERIFICARE i nomi.
 function CC.vehicleState(v)
 	local tv = CC.comp(v, api.type.ComponentType.TRANSPORT_VEHICLE)
@@ -292,7 +327,8 @@ SIM_ACTIONS.read_map = function(a)
 		local inN, outN = {}, {}
 		for _, c in ipairs(ins or {}) do inN[#inN + 1] = CC.cargoName(c) end
 		for _, c in ipairs(outs or {}) do outN[#outN + 1] = CC.cargoName(c) end
-		if p then inds[#inds + 1] = { id = e, name = CC.nameOf(e), x = math.floor(p.x), y = math.floor(p.y), inputs = inN, outputs = outN } end
+		if p then inds[#inds + 1] = { id = e, name = CC.nameOf(e), x = math.floor(p.x), y = math.floor(p.y),
+			inputs = inN, outputs = outN, productivity = CC.industryProductivity(e) } end
 	end
 	if not minX then return { ok = false, error = "mappa vuota?" } end
 	local pad = 1500

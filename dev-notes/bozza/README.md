@@ -13,7 +13,7 @@ tranne dove indicato.
 | `b5_stazioni.lua` | Dimensionamento delle stazioni (`CC.planStation`: lunghezza dai treni, binari da linee/treni, transito, scali per merce), stazioni con N binari e lunghezza variabile (`CC.buildRailStationN`), ripieghi in caso di conflitto di spazio (`CC.placeStationSmart`, mai demolizioni), treni mai piu' lunghi del marciapiede, `build_depot` | alto: parametro "length", posizioni dei moduli, lunghezza dei modelli (sonda s10) |
 | `b6_binari.lua` | Diramazioni, doppio binario con segnali a senso unico (`CC.linkStationsDouble`), binari d'incrocio/attesa (`CC.buildPassingLoop`), segnali (`CC.addSignals`), anello nei due sensi (`build_rail_ring`) | alto: come si piazza un segnale da script (sonda s8) |
 | `b7_linee.lua` | Ordine delle fermate (avanti e indietro, anello e verso opposto), `create_line_from_stations`, merci a piu' fermate con ritorno e vagoni misti (`build_cargo_rail_network`), raccordo su un binario esistente (`CC.branchFromTrack`) e `build_rail_station` (traffico misto) | medio-alto: divisione di un binario esistente |
-| `b8_collaudo.lua` | Collaudo (`CC.checkLine`, `check_line`, `check_network`: percorsi, veicoli fermi, deposito, bacino, statistiche), `read_map` per pianificare | medio: stato/posizione dei veicoli e statistiche (sonda s9) |
+| `b8_collaudo.lua` | Collaudo (`CC.checkLine`, `check_line`, `check_network`: percorsi, veicoli fermi, deposito, bacino, statistiche), `read_map` per pianificare; normalizzatori qualita' merci/indicatori produttivita', accessi protetti (userdata C++ e semantica NON provati) | medio: stato/posizione dei veicoli e statistiche (sonda s9) |
 | `b9_avvolgi.lua` | Avvolge tutte le azioni: controllo degli argomenti anche per le azioni vecchie, registro -> `result.created`, pulizia dopo i fallimenti delle azioni su strada, collaudo subito dopo la costruzione (`result.collaudo`), avviso pausa | basso |
 
 `cc_lib.lua` ha ricevuto una sola modifica compatibile: `buildCurvedTrack` legge `CC.CURVE_SEG_TYPE` e
@@ -21,9 +21,9 @@ tranne dove indicato.
 
 ## Test senza gioco
 
-`python3 dev-notes/bozza/run_mock.py`: 64 controlli con un finto `api` (registro, annidamento, annulla, pulizia, verifica
+`python3 dev-notes/bozza/run_mock.py`: 104 controlli con un finto `api` (registro, annidamento, annulla, pulizia, verifica
 a secco, argomenti, copia della composizione dei veicoli, piano delle stazioni, disposizione dei binari, ordine delle
-fermate, giro dell'anello, collaudo con veicolo fermo/in movimento). Non sostituisce le prove in gioco.
+fermate, giro dell'anello, collaudo con veicolo fermo/in movimento, flotta/tempi finiti, qualita' merci e indicatori industrie). Non sostituisce le prove in gioco.
 
 ## Prove in gioco (stasera)
 

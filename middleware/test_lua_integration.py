@@ -189,3 +189,26 @@ class LuaIntegrationTests(unittest.TestCase):
             end
             assert(adds==1 and removes==0, "applicazione fixture non coerente")
         """)
+
+    def test_industry_productivity_uses_explicit_real_lua_userdata_fields(self):
+        self.fleet_check("""
+            local obj, reads = io.stdout, 0
+            local original = debug.getmetatable(obj)
+            debug.setmetatable(obj, {
+                __index=function(_,key)
+                    reads=reads+1
+                    if key=="producing" then return false end
+                    if key=="boostFromRule" then return true end
+                    if key=="boostFromPersonCapacity" then return false end
+                    error("campo non dichiarato")
+                end,
+                __pairs=function() error("non enumerare userdata") end,
+                __tostring=function() error("non convertire userdata") end
+            })
+            local ok,out=pcall(function() return CC.normalizeIndustryProductivity(obj) end)
+            debug.setmetatable(obj,original)
+            assert(ok and reads==3 and out.available and out.producing==false
+                and out.boostFromRule==true and out.boostFromPersonCapacity==false
+                and getmetatable(out)==nil and #out.errors==0,
+                "indicatori userdata non copiati esplicitamente o false perso")
+        """)
