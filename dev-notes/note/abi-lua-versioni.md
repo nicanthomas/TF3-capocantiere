@@ -9,3 +9,7 @@ Questa barriera esclude standard 5.2 e runtime senza sottotipo intero; non certi
 ## RED locale
 
 Runner isolato: 81 test, 1 fallimento (LuaUnavailable non sollevata), 1 classe Lua skip; 15,906 s. Il runtime produttivo ancora invariato accetta la libreria simulata senza export interi. Nessuna DLL reale usata nella regressione. Checkpoint RED prima della correzione.
+
+## RED CI e guardia
+
+RED CI 38134872906: Ubuntu 95 test/1 fallimento/1 skip Windows, 13,920 s; Windows 81/1 fallimento/1 classe Lua skip, 14,315 s. Stesso difetto del locale: LuaUnavailable non sollevata. Solo dopo la prova aggiunta come prima firma configure lua_isinteger (lua_State*, int -> int); nessuna invocazione, tutti i simboli controllati prima di luaL_newstate. La regressione simula gli export vecchi, non carica davvero Lua 5.2. GREEN/revisione in attesa.
