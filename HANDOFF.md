@@ -66,6 +66,8 @@ Terminatori Windows completati: long literal e newline breve escapato normalizza
 
 Chiavi userdata completate: reader rifiuta bool/nil/table prima assegnazione, writer bool prima file temporaneo; booleani VALORI/chiavi supportate invariati. Quattro regressioni RED 38140623855 prima codice; locale 127 OK/classe Lua skip, 16,280 s; GREEN 38140784177 Ubuntu 141/1 skip Windows, 14,072 s; Windows 127/classe Lua skip, 14,236 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-chiavi.md: chiavi bool legali Lua ma non rappresentabili nel subset Python, floatkeys reader-only come prima. Doc API corretta dumps/save_userdata. Mai dati reali.
 
+Passo attivo lavoro/argomenti-finiti: tre regressioni funzioni pure prima codice su schemi flotta/nesting/nonfiniti/validi/interi enormi. Guardie previste schema number+float non finito, errore percorso fisso prima bounds, niente conversione int. Backup privato, nota argomenti-numeri-finiti.md. RED locale130/7 fallimenti/1 classe Lua skip, 16,332 s; sorgente invariato, CI RED prima fix; mai main/SDK/modello/bridge reale.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
