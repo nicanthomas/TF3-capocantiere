@@ -58,7 +58,7 @@ Parser numeri/separatori completato: cinque regressioni RED locale 109/11 fallim
 
 Parser Unicode completato: testo letterale preservato, buffer soltanto escape numerici UTF-8/fallback Latin-1 per run, byte 0..255 e hex2 cifre. Rilievo revisione z risolto con settima regressione RED 38139382189 prima fix; locale finale 116 OK/classe Lua skip, 16,254 s; GREEN finale 38139535647 Ubuntu 130/1 skip Windows, 14,803 s; Windows 116/classe Lua skip, 14,494 s; mock 104/0, revisione approvata. Nota parser-lua-unicode.md: subset testuale, non API byte o grammatica Lua generale. Mai file reali.
 
-Passo attivo lavoro/screenshot-gdi: tre regressioni API simulate prima codice, riproduzione restituisce BMP/leak nel modello se ripristino fallisce. Design verifica deselect prima GetDIBits e cleanup DeleteDC memoria prima DeleteObject; nessuna API reale/input. Backup privato, nota screenshot-gdi-risorse.md. RED locale 119 test/3 fallimenti/1 classe Lua skip, 16,324 s, coerenti con riproduzione; sorgente capture invariato. CI RED prima fix.
+Passo attivo lavoro/screenshot-gdi: tre regressioni API simulate prima codice, riproduzione restituisce BMP/leak nel modello se ripristino fallisce. Design verifica deselect prima GetDIBits e cleanup DeleteDC memoria prima DeleteObject; nessuna API reale/input. Backup privato, nota screenshot-gdi-risorse.md. RED locale 119 test/3 fallimenti/1 classe Lua skip, 16,324 s, coerenti con riproduzione; sorgente capture invariato. CI RED 38139758423: Ubuntu 133/3 fallimenti/1 skip Windows, 14,115 s; Windows 119/3 fallimenti/1 classe Lua skip, 14,492 s. Solo dopo RED applicata verifica restore/ordine cleanup; Locale GREEN 119 OK/1 classe Lua skip, 16,280 s; revisione/CI GREEN in corso.
 
 ### Risultati verificati della ripresa 11.10.2026
 

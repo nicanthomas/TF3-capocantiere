@@ -281,7 +281,9 @@ class Native:
                 raise ControlError("Selezione bitmap fallita")
             if not self.u.PrintWindow(window.hwnd, memory, 2):
                 raise ControlError("PrintWindow fallito")
-            self.g.SelectObject(memory, previous)
+            restored = self.g.SelectObject(memory, previous)
+            if not restored or restored == c.c_void_p(-1).value:
+                raise ControlError("Ripristino bitmap fallito: lettura rifiutata")
             previous = None
             size = width * height * 4
             info = c.create_string_buffer(struct.pack("<IiiHHIIiiII", 40, width, -height, 1, 32, 0, size, 0, 0, 0, 0))
@@ -293,10 +295,12 @@ class Native:
         finally:
             if previous:
                 self.g.SelectObject(memory, previous)
-            if bitmap:
-                self.g.DeleteObject(bitmap)
+            # Destroy the private DC first: a failed deselect must not leave
+            # the bitmap selected when DeleteObject is attempted.
             if memory:
                 self.g.DeleteDC(memory)
+            if bitmap:
+                self.g.DeleteObject(bitmap)
             if dc:
                 self.u.ReleaseDC(window.hwnd, dc)
 

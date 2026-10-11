@@ -9,3 +9,7 @@ Tre regressioni prima codice: BMP top-down/handle grandi/lettura dopo deselect/r
 Fonti Microsoft: [GetDIBits](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdibits) richiede bitmap non selezionata; [DeleteObject](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject) fallisce se oggetto selezionato; [DeleteDC](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deletedc) per DC creato, ReleaseDC per quello finestra.
 
 RED locale: 119 test/3 fallimenti/1 classe Lua skip, 16,324 s; due ripristini accettati e bitmap rimasta in cleanup dopo PrintWindow+restore guasti.
+
+RED CI 38139758423 confermato: Ubuntu 133/3 fallimenti/1 skip Windows, Windows 119/3 fallimenti/1 classe Lua skip. Solo dopo RED modifica minima restore e cleanup.
+
+Locale GREEN 119 OK/1 classe Lua skip, 16,280 s; CI e revisione prima merge.
