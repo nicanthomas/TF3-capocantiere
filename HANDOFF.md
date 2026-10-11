@@ -42,6 +42,8 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 **11.10.2026, Codex locale Windows, ripresa autorizzata da continua.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, terminale PowerShell 7.6.5 funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
+Verifica sola lettura corrente: TF3 processi zero; spazio libero C: 9,62 GiB, E: 661,20 GiB.
+
 ### Autorizzazioni e stato TF3
 
 10.10.2026, nuova autorizzazione esplicita al ciclo temporaneo delle sole opzioni Steam, backup/ripristino, avvio senza wrapper, menu e uscita normale. NON modificare file wrapper, gioco, mod installata, salvataggi o chiavi; niente installazioni, partite/costruzioni o bridge vivo. Sviluppo sorgenti e test senza gioco autorizzati.
@@ -59,6 +61,8 @@ Parser numeri/separatori completato: cinque regressioni RED locale 109/11 fallim
 Parser Unicode completato: testo letterale preservato, buffer soltanto escape numerici UTF-8/fallback Latin-1 per run, byte 0..255 e hex2 cifre. Rilievo revisione z risolto con settima regressione RED 38139382189 prima fix; locale finale 116 OK/classe Lua skip, 16,254 s; GREEN finale 38139535647 Ubuntu 130/1 skip Windows, 14,803 s; Windows 116/classe Lua skip, 14,494 s; mock 104/0, revisione approvata. Nota parser-lua-unicode.md: subset testuale, non API byte o grammatica Lua generale. Mai file reali.
 
 Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC privato prima bitmap; tre regressioni RED 38139758423 prima fix. Locale 119 OK/classe Lua skip, 16,280 s; GREEN 38139928172 Ubuntu 133/1 skip Windows, 14,040 s; Windows 119/classe Lua skip, 14,389 s; mock 104/0; revisione senza blocchi. Prova reale successiva SOLO screenshot Steam: cinque BMP 3456x1408, immagine ispezionata utilizzabile, conteggi GDI processo probe [0,0,0,0,0,0], focus invariato, nessun input/avvio TF3. Screenshot/JSON privati negli outputs, niente account pubblicati. Non certifica driver o recupero se le API cleanup stesse falliscono. Nota screenshot-gdi-risorse.md.
+
+Passo attivo lavoro/parser-terminatori: quattro regressioni stringhe prima codice su long newline iniziale/contenuto, escaped newline breve e formati/Unicode invariati. Nota parser-lua-terminatori.md, backup privato. RED locale 123 test/7 fallimenti/1 classe Lua skip, 16,272 s, coerenti con riproduzioni. Parser produttivo invariato; CI RED prima fix.
 
 ### Risultati verificati della ripresa 11.10.2026
 
