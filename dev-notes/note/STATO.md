@@ -115,6 +115,11 @@ prima file troncati/wrapper errati o statement successivi apparivano validi. Qua
 mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
 Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
 Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
+Chiavi userdata FATTO 11.10.2026: bool/nil/table rifiutati dal reader prima assegnazione, bool
+rifiutati dal writer prima temp file. Bool VALORI preservati. Quattro regressioni RED 38140623855,
+GREEN 38140784177 Ubuntu 141/1 skip Windows, 14,072 s; Windows 127/classe Lua skip, 14,236 s; mock 104/0, locale 127 OK/classe Lua skip, 16,280 s; revisione senza blocchi.
+Nota parser-lua-chiavi.md: limite subset Python, boolkeys legali Lua ma collisioni True/1 e False/0;
+floatkeys leggibili, writer int/stringa come prima. Solo fixture e stringhe; doc API corrette.
 Terminatori Windows parser FATTO 11.10.2026: long literal normalizzati e primo newline ignorato
 una sola volta, backslash+CRLF/LFCR normalizzato. Quattro regressioni RED 38140208979 prima codice,
 GREEN 38140372898 Ubuntu 137/1 skip Windows, 14,028 s; Windows 123/classe Lua skip, 14,238 s; mock 104/0, locale 123 OK/classe Lua skip, 16,313 s; revisione senza blocchi.

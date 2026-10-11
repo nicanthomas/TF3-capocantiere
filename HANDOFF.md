@@ -64,6 +64,8 @@ Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC 
 
 Terminatori Windows completati: long literal e newline breve escapato normalizzano CRLF/LFCR/CR, primo newline long ignorato soltanto una volta. Quattro regressioni RED 38140208979 prima codice; locale 123 OK/classe Lua skip, 16,313 s; GREEN 38140372898 Ubuntu 137/1 skip Windows, 14,028 s; Windows 123/classe Lua skip, 14,238 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-terminatori.md: non cambia altri escape o grammatica generale. Solo stringhe sintetiche, nessun file del gioco.
 
+Chiavi userdata completate: reader rifiuta bool/nil/table prima assegnazione, writer bool prima file temporaneo; booleani VALORI/chiavi supportate invariati. Quattro regressioni RED 38140623855 prima codice; locale 127 OK/classe Lua skip, 16,280 s; GREEN 38140784177 Ubuntu 141/1 skip Windows, 14,072 s; Windows 127/classe Lua skip, 14,236 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-chiavi.md: chiavi bool legali Lua ma non rappresentabili nel subset Python, floatkeys reader-only come prima. Doc API corretta dumps/save_userdata. Mai dati reali.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
@@ -90,7 +92,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Prossimo passo sicuro: chiavi userdata riprodotte solo su stringhe. {[true]='fixture'} diventa lista, {[nil]='fixture'} accettato, tablekey TypeError; dumps accetta bool come int. Prima quattro regressioni RED/pubblicazione, poi rifiuto esplicito chiavi non rappresentabili dal subset Python/revisione/CI. Booleani VALORI devono restare supportati, chiavi numeriche/stringa gia' valide invariate. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
+Prossimo passo sicuro: validazione numeri finiti in conversation.validate_args, riprodotto NaN accettato come interval anche con minimum/maximum. Prima tre regressioni pure su schemi flotta/nesting/valori finiti e interi grandi, poi guardia su float senza convertire int a float, GREEN/revisione/CI. Nessun modello/SDK/bridge da avviare. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
