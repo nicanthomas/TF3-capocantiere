@@ -93,3 +93,5 @@ Prossimo passo sicuro: regressioni Unicode del parser, riprodotte solo su string
 ## Manutenzione
 
 **Sostituire** il contenuto di «CHECKPOINT OPERATIVO CORRENTE» a ogni checkpoint, senza accumulare un diario cronologico infinito. Non eliminare le regole, il prompt o evidenze tecniche custodite altrove. La cronologia completa resta nei commit GitHub e nelle note sotto `dev-notes/note/`.
+
+Rilievo revisione prima merge: flush prima di escape z spezza UTF-8 nonostante z non produca byte. Settima regressione aggiunta prima fix su decimal/hex/z con newline; prima correzione NON integrare. RED locale dedicato 116 test/3 fallimenti/zero errori/1 classe Lua skip, 16,265 s. CI RED dedicato prima fix.

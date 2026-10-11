@@ -39,3 +39,9 @@ class LuaParserUnicodeTests(unittest.TestCase):
     def test_utf8_runs_separated_by_literal_text_remain_independent(self):
         self.assertEqual(lua_table.loads(r'"\195\169/\226\130\172"'),chr(233)+'/'+chr(8364))
         self.assertEqual(lua_table.loads(r'"\255/\195\169"'),chr(255)+'/'+chr(233))
+
+    def test_z_skips_whitespace_without_breaking_numeric_utf8_run(self):
+        for body in [r'\195\z   \169',r'\xC3\z\xA9','\\226\\z \n\t \\130\\172']:
+            with self.subTest(body=body):
+                expected=chr(8364) if body.startswith(r'\226') else chr(233)
+                self.assertEqual(lua_table.loads('"'+body+'"'),expected)
