@@ -48,6 +48,10 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dialogo, impronta e due copie private integre. TF3 TERMINATO. Backup privati work/steam-launch-options-session2/original.json e recovery-copy.json nella chat; copia recupero privata negli outputs. Nessun valore sensibile pubblicato. Nessuna scrittura diretta al VDF o al wrapper.
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
+### Passo attivo
+
+Branch lavoro/lua-obbligatoria-isolata: tre regressioni bootstrap prima del codice per --require-lua opt-in, policy setUpClass reale con loader simulato. Default skip conservato, richiesta obbligatoria assente deve fallire, JSON lua_required. Ambiente sintetico, nessuna DLL/chiave/gioco. Nota lua-obbligatoria-isolata.md. RED locale corretto 93 test/3 errori da campo JSON/argomento mancanti, 1 classe Lua skip, 16,136 s. Attendere RED CI prima del codice; non integrare prima di GREEN/revisione.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Quattro passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
