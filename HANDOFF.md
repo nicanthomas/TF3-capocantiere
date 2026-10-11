@@ -64,6 +64,8 @@ Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC 
 
 Terminatori Windows completati: long literal e newline breve escapato normalizzano CRLF/LFCR/CR, primo newline long ignorato soltanto una volta. Quattro regressioni RED 38140208979 prima codice; locale 123 OK/classe Lua skip, 16,313 s; GREEN 38140372898 Ubuntu 137/1 skip Windows, 14,028 s; Windows 123/classe Lua skip, 14,238 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-terminatori.md: non cambia altri escape o grammatica generale. Solo stringhe sintetiche, nessun file del gioco.
 
+Passo attivo lavoro/parser-chiavi: quattro regressioni prima codice; reader chiavi numeriche/stringa, bool/nil/table rifiutati prima assegnazione, writer int/stringa esclusi bool. Booleani VALORI invariati. Nota parser-lua-chiavi.md: chiavi bool legali Lua ma non rappresentabili senza collisioni nel subset Python. Backup privato; RED locale 127/7 fallimenti/2 errori/1 classe Lua skip, 16,280 s; sorgente invariato, CI RED prima fix.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
