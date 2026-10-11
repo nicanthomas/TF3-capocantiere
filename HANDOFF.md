@@ -50,7 +50,9 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 ### Continuazione autonoma richiesta da Nicolo'
 
-Pubblicare checkpoint frequenti e prima di fermarsi; crediti/interruzione non prevedibili. Parser userdata completato: wrapper function/data/return/end esatti e consumo documento completo, formati dichiarati e commenti invariati. Quattro regressioni, RED 38137476301 prima del codice, GREEN 38137669139 Ubuntu 111/1 skip Windows, 14,299 s; Windows 97/classe Lua skip, 14,309 s; mock 104/0. Locale 97 OK/classe Lua skip, 16,133 s; revisione senza blocchi. Nota parser-lua-completo.md; nessun Lua eseguito o dato reale letto. Non parser Lua generale, statement terminatori/formati alternativi esclusi. Prossimo passo sonda standalone su fixture.
+Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non prevedibile. Parser completo gia' verificato/integrato, RED 38137476301 e GREEN 38137669139, locale 97 OK/classe Lua skip, revisione senza blocchi; nota parser-lua-completo.md.
+
+Passo attivo lavoro/sonda-bridge-lettura: sette regressioni fixture prima del tool. CLI percorso assoluto locale esplicito/nome stato, file regolare/8 MiB/read bounded/cambio file, parser senza Lua; JSON solo conteggi/validita' e errori fissi, nessun nome/coordinate/percorso raw. Nessun game_bridge, ambiente, ricerca, DLL, write/mkdir/send/cleanup. RED locale 104 test/17 errori da tool assente, 1 classe Lua skip, 16,246 s. RED CI prima del codice poi GREEN/revisione. Nota sonda-bridge-lettura.md. Non provare sui dati reali.
 
 ### Risultati verificati della ripresa 11.10.2026
 
