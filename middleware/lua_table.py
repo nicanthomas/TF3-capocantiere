@@ -89,6 +89,12 @@ def _unescape(body: str) -> str:
                 raise LuaParseError("escape hex richiede due cifre")
             escaped.append(int(digits, 16))
             i += 3
+        elif e in ("\r", "\n"):
+            flush_bytes()
+            out.append("\n")
+            i += 1
+            if i < len(body) and body[i] in ("\r", "\n") and body[i] != e:
+                i += 1
         elif e == "z":                 # no output byte: keep pending UTF-8 run
             i += 1
             while i < len(body) and body[i].isspace():
@@ -147,8 +153,9 @@ class _Parser:
         if kind == "str":
             return _unescape(v[1:-1])
         if kind == "long":
-            m = re.match(r"\[(=*)\[\n?(.*)\]\1\]", v, re.DOTALL)
-            return m.group(2)
+            m = re.match(r"\[(=*)\[(.*)\]\1\]", v, re.DOTALL)
+            body = re.sub(r"\r\n|\n\r|\r", "\n", m.group(2))
+            return body[1:] if body.startswith("\n") else body
         if kind == "num":
             if v.lower().startswith(("0x", "-0x")):
                 return int(v, 16)

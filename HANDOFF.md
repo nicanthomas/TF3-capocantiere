@@ -42,6 +42,8 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 **11.10.2026, Codex locale Windows, ripresa autorizzata da continua.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, terminale PowerShell 7.6.5 funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
+Verifica sola lettura corrente: TF3 processi zero; spazio libero C: 9,62 GiB, E: 661,20 GiB.
+
 ### Autorizzazioni e stato TF3
 
 10.10.2026, nuova autorizzazione esplicita al ciclo temporaneo delle sole opzioni Steam, backup/ripristino, avvio senza wrapper, menu e uscita normale. NON modificare file wrapper, gioco, mod installata, salvataggi o chiavi; niente installazioni, partite/costruzioni o bridge vivo. Sviluppo sorgenti e test senza gioco autorizzati.
@@ -59,6 +61,8 @@ Parser numeri/separatori completato: cinque regressioni RED locale 109/11 fallim
 Parser Unicode completato: testo letterale preservato, buffer soltanto escape numerici UTF-8/fallback Latin-1 per run, byte 0..255 e hex2 cifre. Rilievo revisione z risolto con settima regressione RED 38139382189 prima fix; locale finale 116 OK/classe Lua skip, 16,254 s; GREEN finale 38139535647 Ubuntu 130/1 skip Windows, 14,803 s; Windows 116/classe Lua skip, 14,494 s; mock 104/0, revisione approvata. Nota parser-lua-unicode.md: subset testuale, non API byte o grammatica Lua generale. Mai file reali.
 
 Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC privato prima bitmap; tre regressioni RED 38139758423 prima fix. Locale 119 OK/classe Lua skip, 16,280 s; GREEN 38139928172 Ubuntu 133/1 skip Windows, 14,040 s; Windows 119/classe Lua skip, 14,389 s; mock 104/0; revisione senza blocchi. Prova reale successiva SOLO screenshot Steam: cinque BMP 3456x1408, immagine ispezionata utilizzabile, conteggi GDI processo probe [0,0,0,0,0,0], focus invariato, nessun input/avvio TF3. Screenshot/JSON privati negli outputs, niente account pubblicati. Non certifica driver o recupero se le API cleanup stesse falliscono. Nota screenshot-gdi-risorse.md.
+
+Terminatori Windows completati: long literal e newline breve escapato normalizzano CRLF/LFCR/CR, primo newline long ignorato soltanto una volta. Quattro regressioni RED 38140208979 prima codice; locale 123 OK/classe Lua skip, 16,313 s; GREEN 38140372898 Ubuntu 137/1 skip Windows, 14,028 s; Windows 123/classe Lua skip, 14,238 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-terminatori.md: non cambia altri escape o grammatica generale. Solo stringhe sintetiche, nessun file del gioco.
 
 ### Risultati verificati della ripresa 11.10.2026
 
@@ -86,7 +90,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Prossimo passo sicuro: terminatori Windows del parser Lua, gia' riprodotti solo su stringhe. Long string iniziale CR/CRLF e normalizzazione CRLF/CR/LFCR errate; anche backslash+CRLF conserva CRLF invece di newline Lua. Prima quattro regressioni RED/pubblicazione, poi correzione circoscritta/revisione/CI; non cambiare file/mod installata. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
+Prossimo passo sicuro: chiavi userdata riprodotte solo su stringhe. {[true]='fixture'} diventa lista, {[nil]='fixture'} accettato, tablekey TypeError; dumps accetta bool come int. Prima quattro regressioni RED/pubblicazione, poi rifiuto esplicito chiavi non rappresentabili dal subset Python/revisione/CI. Booleani VALORI devono restare supportati, chiavi numeriche/stringa gia' valide invariate. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
