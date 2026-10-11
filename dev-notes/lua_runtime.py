@@ -19,6 +19,8 @@ class LuaError(RuntimeError):
 def configure(library):
     pointer = ctypes.c_void_p
     signatures = {
+        # Integer subtype export distinguishes supported API from standard Lua 5.2.
+        "lua_isinteger": ([pointer, ctypes.c_int], ctypes.c_int),
         "luaL_newstate": ([], pointer),
         "luaL_openlibs": ([pointer], None),
         "luaL_loadbufferx": ([pointer, ctypes.c_char_p, ctypes.c_size_t,

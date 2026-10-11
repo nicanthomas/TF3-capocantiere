@@ -19,6 +19,7 @@ class Library:
         self.closed = []
         self.executed = []
         self.sources = []
+        self.lua_isinteger = Function(lambda *args: 0)
         self.luaL_newstate = Function(lambda: state)
         self.luaL_openlibs = Function(lambda state: None)
         self.luaL_loadbufferx = Function(self.load)
@@ -85,3 +86,16 @@ class LuaRuntimeTests(unittest.TestCase):
             lua_runtime.run("return 1", library=library)
         self.assertEqual(library.sources, [])
         self.assertEqual(library.closed, [])
+
+    def test_pre53_exports_rejected_before_state_creation(self):
+        # 5.2 shares loadbufferx/pcallk but has no integer subtype or lua_isinteger.
+        legacy = Library()
+        del legacy.lua_isinteger
+        created = []
+        legacy.luaL_newstate = Function(lambda: created.append(123) or 123)
+        with self.assertRaisesRegex(lua_runtime.LuaUnavailable, "ABI Lua incompatibile"):
+            lua_runtime.run("return 1", library=legacy)
+        self.assertEqual(created, [])
+        self.assertEqual(legacy.closed, [])
+        self.assertEqual(legacy.sources, [])
+        self.assertEqual(legacy.executed, [])
