@@ -50,7 +50,11 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 ### Continuazione autonoma richiesta da Nicolo'
 
-Pubblicare checkpoint frequenti e prima di fermarsi; crediti/interruzione non prevedibili. Parser userdata completato: wrapper function/data/return/end esatti e consumo documento completo, formati dichiarati e commenti invariati. Quattro regressioni, RED 38137476301 prima del codice, GREEN 38137669139 Ubuntu 111/1 skip Windows, 14,299 s; Windows 97/classe Lua skip, 14,309 s; mock 104/0. Locale 97 OK/classe Lua skip, 16,133 s; revisione senza blocchi. Nota parser-lua-completo.md; nessun Lua eseguito o dato reale letto. Non parser Lua generale, statement terminatori/formati alternativi esclusi. Prossimo passo sonda standalone su fixture.
+Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non prevedibile. Parser completo gia' verificato/integrato, RED 38137476301 e GREEN 38137669139, locale 97 OK/classe Lua skip, revisione senza blocchi; nota parser-lua-completo.md.
+
+Sonda snapshot completata: tool standalone stdlib+parser, input assoluto esplicito/nome stato, rifiuto UNC sintattico/symlink file, regularfile/8 MiB/read bounded/firme prima-dopo. JSON solo conteggi/validita'/errori fissi; no nomi/coordinate/path raw, game_bridge/ambiente/ricerca/DLL o scritture. Sette regressioni RED locale/CI 38138031056 prima del codice; GREEN 38138252617 Ubuntu 118/1 skip Windows, 14,292 s; Windows 104/classe Lua skip, 14,549 s; mock 104/0. Locale 104 OK/classe Lua skip, 16,401 s. CLI normale/-O solofixture exit0, live_bridge_tested=false. Revisione senza blocchi, limite volume/junction recepito: localita' fisica e atomicita' OS NON certificate. Mai eseguita sui dati reali. Nota sonda-bridge-lettura.md.
+
+Prossimo passo sorgenti sicuro gia' riprodotto con stringhe: parser arrotonda 9007199254740993 a 9007199254740992, accetta - true come -1 e campi senza separatore. Prima regressioni RED, poi correzioni minime/CI/revisione. Sonda viva/mod installata/partite/chiavi restano fuori scope.
 
 ### Risultati verificati della ripresa 11.10.2026
 
@@ -78,7 +82,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Cinque passi della ripresa verificati/integrati. Prossimo sviluppo sicuro senza gioco: progettare una sonda bridge standalone di sola lettura e su percorso esplicito, verificata prima con fixture; evitare import/scansione Steam, GameBridge.__init__ (puo' creare cartella dati), send/cleanup (scritture/cancellazioni). Non eseguirla sui dati reali senza ambito concordato; bridge vivo/partite/costruzioni/mod installata restano fuori scope. Configurazione nativa manca DLL Lua 5.3/5.4 fidata AMD64: autorizzazione distinta prima di installazioni, provenienza verificata, diagnosi PE esplicita, ambiente solo processo e futura suite --require-lua che deve passare senza skip nativo. Nessuna DLL candidata reale ispezionata/installata in questa sessione. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente; wrapper resta attivo, non cliccare Gioca senza ciclo autorizzato.
+Riprendere correzioni parser numeri/separatori riprodotte sopra, su fixture soltanto e prima test RED. Sonda snapshot ora disponibile/verificata senza gioco: NON usare su dati reali senza ambito concordato, percorso e volume da verificare; evitare GameBridge.__init__/send/cleanup. Configurazione nativa ancora senza DLL Lua 5.3/5.4 fidata AMD64, installazioni prima autorizzazione distinta, futura suite --require-lua senza skip per parita' reale. TF3 chiuso/opzioni originali ripristinate nel collaudo precedente; wrapper ancora attivo, non cliccare Gioca senza ciclo autorizzato.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

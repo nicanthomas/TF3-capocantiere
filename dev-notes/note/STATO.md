@@ -115,6 +115,13 @@ prima file troncati/wrapper errati o statement successivi apparivano validi. Qua
 mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
 Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
 Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
+Sonda snapshot standalone FATTO 11.10.2026: sette regressioni fixture RED 38138031056 poi
+GREEN 38138252617 Ubuntu 118/1 skip Windows, Windows 104/classe Lua skip, mock 104/0;
+locale 104 OK/classe Lua skip. CLI normale/-O soltanto fixture, read_only=true/live_bridge_tested=false.
+Nessun import game_bridge/env/ricerche/DLL o write/mkdir/cleanup; input esplicito nome stato,
+regularfile/8MiB/firme path-fd e JSON conteggi/validita' senza dati privati. Revisione senza blocchi;
+UNC sintattico/symlink finale NON certificano volume locale/junction o atomicita' OS. Counts soli elementi,
+non entita' certificate. Nota sonda-bridge-lettura.md. Mai eseguita su file gioco/dati reali.
 
 TF3 menu reale collaudato 10.10.2026 dopo autorizzazione distinta al ciclo opzioni Steam: doppio backup privato, wrapper disattivato temporaneamente nel campo, avvio normale, screenshot/focus/mouse, Esc a scancode torna al menu (virtual-key scan=0 senza effetto), uscita dall'icona Esci senza conferma, processo terminato. Due cicli senza partite/costruzioni; impostazioni del pannello non cambiate. Opzioni ORIGINALI ripristinate con confronto esatto dopo chiusura, wrapper/file gioco/mod/salvataggi non modificati dall'agente, nessuna chiave/Taskkill. Il wrapper originale resta attivo: non avviare senza ripetere il ciclo autorizzato. Note ripristino-opzioni-steam.md e controllo-grafico-windows.md. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
