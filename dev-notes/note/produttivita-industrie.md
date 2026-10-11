@@ -9,3 +9,7 @@ CC.industryProductivity(industry_id) chiama soltanto l'API dichiarata, una volta
 Prima del codice: regressioni mock e userdata Lua sintetico in CI RED; poi implementazione minima b8 e GREEN locale isolato/CI/revisione prima del merge main. Fixture verificano false/nil/tipi errati/accesso guasto/pairs-tostring vietati, firma API, errore senza leak, mappa con API buona/assente/guasta e nessun comando. Il userdata sintetico non prova C++ TF3.
 
 Unico checkout, nessuna installazione o lettura di chiavi/salvataggi, nessun avvio gioco/bridge reale o rigenerazione/installazione mod. DLL Lua locale fidata assente: classe nativa Windows resta skip, prova nativa in CI Ubuntu. build DIVERSO resta aperto.
+
+## RED e implementazione minima
+
+RED nativo CI 38134377278 prima del codice: normalizzatore mancante nel mock e regressione userdata in errore; Ubuntu 94 test/1 errore/1 skip Windows, 14,106 s. Windows verde con classe Lua skip. Solo dopo questa prova aggiunte le due funzioni b8 e il campo productivity in read_map. Riutilizzato il reader privato pcall per campi espliciti, nessuna nuova dipendenza o comando. GREEN e revisione in attesa.
