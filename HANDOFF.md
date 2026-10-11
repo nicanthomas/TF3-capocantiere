@@ -50,7 +50,7 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 ### Passo attivo
 
-Branch lavoro/lua-obbligatoria-isolata: tre regressioni bootstrap prima del codice per --require-lua opt-in, policy setUpClass reale con loader simulato. Default skip conservato, richiesta obbligatoria assente deve fallire, JSON lua_required. Ambiente sintetico, nessuna DLL/chiave/gioco. Nota lua-obbligatoria-isolata.md. RED locale corretto 93 test/3 errori da campo JSON/argomento mancanti, 1 classe Lua skip, 16,136 s. Attendere RED CI prima del codice; non integrare prima di GREEN/revisione.
+Branch lavoro/lua-obbligatoria-isolata: tre regressioni bootstrap prima del codice per --require-lua opt-in, policy setUpClass reale con loader simulato. Default skip conservato, richiesta obbligatoria assente deve fallire, JSON lua_required. Ambiente sintetico, nessuna DLL/chiave/gioco. Nota lua-obbligatoria-isolata.md. RED locale corretto 93 test/3 errori da campo JSON/argomento mancanti, 1 classe Lua skip, 16,136 s. RED CI 38136828824 confermato Ubuntu 107/3 errori, Windows 93/3 errori; solo dopo RED aggiunto --require-lua, REQUIRE_LUA 1/0 e JSON lua_required. Locale default GREEN 93 OK/classe Lua skip, 16,212 s. Prova opt-in reale exit1 atteso: 93 test/1 errore LuaUnavailable, zero skip, 16,111 s; nessuna DLL caricata. CI GREEN/revisione in attesa prima del merge.
 
 ### Risultati verificati della ripresa 11.10.2026
 
