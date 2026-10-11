@@ -7,3 +7,7 @@ Design: reader ammette solo chiavi stringa/numeriche gia' supportate (int/float 
 Quattro regressioni prima codice: boolkey/collisione, nil/table errori tipizzati, dumps/save rifiutati prima cambio file fixture, int/string/numeric/booleanvalues preservati. Backup privato; RED/GREEN/revisione/CI e verifica main prima merge. Nessun dato reale/mod/bridge vivo/API o installazione.
 
 RED locale 127 test/7 fallimenti/2 errori/1 classe Lua skip, 16,280 s. Formati numerici/stringa e booleanvalues passano; produttivo invariato.
+
+RED CI 38140623855 confermato Ubuntu141/Windows127 con7fallimenti/2errori. Solo dopo RED guardie reader/writer minime; doc modulo corregge nome inesistente dump_userdata con dumps/save_userdata, nessuna API nuova.
+
+Locale GREEN127 OK/classeLua skip16,280s; revisione senza blocchi, CI prima merge.

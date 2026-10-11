@@ -14,7 +14,8 @@ Il gioco (app.saveUserdata) scrive file di questo tipo:
 
 e app.loadUserdata legge lo stesso formato. Questo modulo:
   - load_userdata(path)  -> converte il file in dict/list Python
-  - dump_userdata(obj)   -> produce il testo Lua equivalente da scrivere su disco
+  - dumps(obj)          -> produce il testo Lua equivalente
+  - save_userdata(path, obj) -> scrive atomicamente il testo su disco
 
 Non esegue codice Lua: e' un piccolo parser che accetta solo letterali
 (tabelle, stringhe, numeri, true/false/nil). Qualsiasi altra cosa genera un errore.
@@ -186,6 +187,8 @@ class _Parser:
             if kind == "sym" and v == "[":
                 self.take()
                 key = self.value()
+                if type(key) not in (int, float, str):
+                    raise LuaParseError("chiave non rappresentabile: serve numero o stringa")
                 self.take("]")
                 self.take("=")
                 dct[key] = self.value()
@@ -297,7 +300,7 @@ def _dump(v: Any, indent: int) -> str:
         for k, x in v.items():
             if isinstance(k, str) and _IDENT_RE.match(k) and k not in _LUA_KEYWORDS:
                 key = k
-            elif isinstance(k, (int, str)):
+            elif isinstance(k, (int, str)) and not isinstance(k, bool):
                 key = f"[{_dump(k, 0)}]"
             else:
                 raise ValueError(f"chiave non supportata: {k!r}")
