@@ -48,6 +48,10 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dialogo, impronta e due copie private integre. TF3 TERMINATO. Backup privati work/steam-launch-options-session2/original.json e recovery-copy.json nella chat; copia recupero privata negli outputs. Nessun valore sensibile pubblicato. Nessuna scrittura diretta al VDF o al wrapper.
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
+### Passo attivo della continuazione autonoma
+
+Nicolo' richiede di continuare fino ai limiti dei crediti e pubblicare prima di fermarsi; checkpoint frequenti per non dipendere dall'interruzione finale. Branch lavoro/parser-lua-completo: scoperto parser loads accetta wrapper errato/end assente/contenuto residuo. Quattro regressioni su testi fixture scritte prima del codice; RED locale 97 test/7 fallimenti (subcase inclusi), 1 classe Lua skip, 16,144 s: file malformati accettati. Attendere RED CI prima della correzione, poi GREEN/revisione prima del merge. Nessuna lettura o modifica dei dati gioco/chiave/DLL. Nota parser-lua-completo.md. Sonda bridge di sola lettura resta il passo successivo.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
