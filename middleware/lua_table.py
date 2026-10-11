@@ -89,18 +89,14 @@ def _unescape(body: str) -> str:
                 raise LuaParseError("escape hex richiede due cifre")
             escaped.append(int(digits, 16))
             i += 3
+        elif e == "z":                 # no output byte: keep pending UTF-8 run
+            i += 1
+            while i < len(body) and body[i].isspace():
+                i += 1
         else:
             flush_bytes()
-            if e in _ESCAPES:
-                out.append(_ESCAPES[e])
-                i += 1
-            elif e == "z":
-                i += 1
-                while i < len(body) and body[i].isspace():
-                    i += 1
-            else:
-                out.append(e)
-                i += 1
+            out.append(_ESCAPES.get(e, e))
+            i += 1
     flush_bytes()
     return "".join(out)
 
