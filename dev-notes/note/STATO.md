@@ -90,6 +90,13 @@ export standard 5.2 senza sottotipo intero; niente invocazione. Una regressione 
 mock 104 ok/0 falliti; locale isolato 81 OK/classe Lua skip, revisione senza blocchi.
 Nota abi-lua-versioni.md: non certifica DLL/provenienza/architettura/versione futura, nessuna Lua 5.2
 reale caricata e nessuna installazione. Runtime Windows fidato ancora assente.
+Diagnosi statica PE FATTO 11.10.2026: lua_windows_diagnosi.py stdlib, header bounded, macchine
+I386/AMD64/ARM64, flag DLL/magic/troncamenti e match macchina (non sola bitness). Nessuna ricerca,
+variabile ambiente, DLL caricata o scrittura. Nove regressioni fixture RED 38135486992,
+GREEN 38135628133 Ubuntu 104 test/1 skip Windows, Windows 90/classe Lua skip, mock 104 ok/0 falliti;
+locale isolato 90 OK/classe Lua skip e revisione senza blocchi. Prova header Python reale senza
+candidato: AMD64 64 bit, errors vuoto, runtime_loaded=false. Nota diagnosi-lua-windows.md.
+NON certifica DLL, versione/export/dipendenze/fiducia; nessuna candidata reale e nessuna installazione.
 
 TF3 menu reale collaudato 10.10.2026 dopo autorizzazione distinta al ciclo opzioni Steam: doppio backup privato, wrapper disattivato temporaneamente nel campo, avvio normale, screenshot/focus/mouse, Esc a scancode torna al menu (virtual-key scan=0 senza effetto), uscita dall'icona Esci senza conferma, processo terminato. Due cicli senza partite/costruzioni; impostazioni del pannello non cambiate. Opzioni ORIGINALI ripristinate con confronto esatto dopo chiusura, wrapper/file gioco/mod/salvataggi non modificati dall'agente, nessuna chiave/Taskkill. Il wrapper originale resta attivo: non avviare senza ripetere il ciclo autorizzato. Note ripristino-opzioni-steam.md e controllo-grafico-windows.md. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
