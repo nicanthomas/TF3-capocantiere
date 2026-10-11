@@ -11,3 +11,7 @@ Piano: nove regressioni fixture prima del codice (macchine note, mismatch anche 
 ## RED locale
 
 Nove test nuovi, 90 test di suite/22 errori (subtest inclusi) da module/funzioni mancanti, una classe Lua skip. Firma della fixture PE corretta/verificata come P E NUL NUL prima del codice produttivo. Il tool resta assente: checkpoint RED prima dell'implementazione.
+
+## RED CI e implementazione
+
+RED CI 38135486992 confermato: module/funzioni mancanti, come nel locale isolato corretto (90 test/22 errori, 1 classe Lua skip, 16,069 s). Solo dopo RED creato il tool. Parser legge 64/24/2 byte di header e usa dimensione file senza leggerne contenuto; limite diagnostico offset 1 MiB e controllo SizeOfOptionalHeader/magic. Default non legge ambiente/candidato. Errori CLI fissi senza percorso/eccezione OS raw. GREEN e revisione in attesa.
