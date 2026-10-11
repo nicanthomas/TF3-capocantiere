@@ -54,7 +54,7 @@ Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non
 
 Sonda snapshot completata: tool standalone stdlib+parser, input assoluto esplicito/nome stato, rifiuto UNC sintattico/symlink file, regularfile/8 MiB/read bounded/firme prima-dopo. JSON solo conteggi/validita'/errori fissi; no nomi/coordinate/path raw, game_bridge/ambiente/ricerca/DLL o scritture. Sette regressioni RED locale/CI 38138031056 prima del codice; GREEN 38138252617 Ubuntu 118/1 skip Windows, 14,292 s; Windows 104/classe Lua skip, 14,549 s; mock 104/0. Locale 104 OK/classe Lua skip, 16,401 s. CLI normale/-O solofixture exit0, live_bridge_tested=false. Revisione senza blocchi, limite volume/junction recepito: localita' fisica e atomicita' OS NON certificate. Mai eseguita sui dati reali. Nota sonda-bridge-lettura.md.
 
-Prossimo passo sorgenti sicuro gia' riprodotto con stringhe: parser arrotonda 9007199254740993 a 9007199254740992, accetta - true come -1 e campi senza separatore. Prima regressioni RED, poi correzioni minime/CI/revisione. Sonda viva/mod installata/partite/chiavi restano fuori scope.
+Passo attivo lavoro/parser-numeri-separatori: riproduzioni su stringhe intero >2^53 arrotondato, - true accettato come -1, campi senza separatori. Cinque regressioni prima del codice, backup privato; RED locale 109 test/11 fallimenti/3 errori, 1 classe Lua skip, 16,354 s. RED CI prima del codice poi correzioni minime, GREEN/revisione prima del merge. Nota parser-lua-numeri.md; nessun runtime Lua/chiave/dati reali.
 
 ### Risultati verificati della ripresa 11.10.2026
 
