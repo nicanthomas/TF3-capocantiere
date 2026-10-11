@@ -1,4 +1,4 @@
-# STATO DEL PROGETTO — leggere per primo (aggiornato 08.10.2026)
+# STATO DEL PROGETTO — leggere per primo (aggiornato 11.10.2026)
 
 Questo file permette a una chat nuova di ripartire senza rileggere le conversazioni precedenti. **All'avvio di QUALSIASI chat Claude o ChatGPT leggere prima `HANDOFF.md` dalla branch GitHub aggiornata**: contiene il checkpoint operativo, il prompt unico di avvio e le regole di aggiornamento continuo senza preavviso al cambio AI/chat. Poi leggere questo file per le regole vincolanti e lo stato tecnico. Questa procedura riguarda lo sviluppo e non introduce automazioni nel gioco.
 Struttura del repo (dal 09.10.2026): nella radice anche `HANDOFF.md` oltre a `mod/`, `middleware/`, `README.md`, `LICENSE`; tutto lo
@@ -97,6 +97,11 @@ GREEN 38135628133 Ubuntu 104 test/1 skip Windows, Windows 90/classe Lua skip, mo
 locale isolato 90 OK/classe Lua skip e revisione senza blocchi. Prova header Python reale senza
 candidato: AMD64 64 bit, errors vuoto, runtime_loaded=false. Nota diagnosi-lua-windows.md.
 NON certifica DLL, versione/export/dipendenze/fiducia; nessuna candidata reale e nessuna installazione.
+Descrizioni read_map/check_line_fleet e SYSTEM_PROMPT_BOZZA allineate ai campi facoltativi;
+available/errors per ramo, false/zero distinti da assenza, niente moltiplicatori/unita' o automazioni
+inventati. Schemi/conferme/routing/Lua invariati. Locale 90 OK/classe Lua skip; GREEN 38136433834
+Ubuntu 104 test/1 skip Windows, Windows 90/classe Lua skip, mock 104 ok/0 falliti; revisione statica
+senza problemi. Nota descrizioni-dati-bozza.md, nessuna chiamata al modello o alla mod reale.
 
 TF3 menu reale collaudato 10.10.2026 dopo autorizzazione distinta al ciclo opzioni Steam: doppio backup privato, wrapper disattivato temporaneamente nel campo, avvio normale, screenshot/focus/mouse, Esc a scancode torna al menu (virtual-key scan=0 senza effetto), uscita dall'icona Esci senza conferma, processo terminato. Due cicli senza partite/costruzioni; impostazioni del pannello non cambiate. Opzioni ORIGINALI ripristinate con confronto esatto dopo chiusura, wrapper/file gioco/mod/salvataggi non modificati dall'agente, nessuna chiave/Taskkill. Il wrapper originale resta attivo: non avviare senza ripetere il ciclo autorizzato. Note ripristino-opzioni-steam.md e controllo-grafico-windows.md. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
