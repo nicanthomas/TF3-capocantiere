@@ -56,6 +56,8 @@ Sonda snapshot completata: tool standalone stdlib+parser, input assoluto esplici
 
 Parser numeri/separatori completato: cinque regressioni RED locale 109/11 fallimenti/3 errori e CI 38138543778 prima del codice. Interi decimali senza float intermedio, esponenti finiti, meno separato numerico e separatori table richiesti. GREEN 38138777270 Ubuntu 123/1 skip Windows, 14,008 s; Windows 109/classe Lua skip, 14,385 s; locale 109 OK/classe Lua skip, 16,283 s. Revisione senza blocchi. Nota parser-lua-numeri.md. Nessun runtime Lua/chiave/dati reali.
 
+Passo attivo lavoro/parser-unicode: sei regressioni stringhe prima del codice su roundtrip Unicode, UTF-8 numerico misto a testo, fallback byte, limiti byte/hex, controlli e separazione sequenze. Buffer soltanto escape numerici, mai ricodificare Unicode letterale. Nota parser-lua-unicode.md, backup privato. RED locale 115 test/10 fallimenti/3 errori/1 classe Lua skip, 16,316 s, coerenti con riproduzioni e escape non validi. Parser produttivo invariato; CI RED prima correzione.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
