@@ -115,6 +115,11 @@ prima file troncati/wrapper errati o statement successivi apparivano validi. Qua
 mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
 Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
 Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
+Parser Unicode FATTO 11.10.2026: testo Unicode letterale invariato, byte escapati numerici
+ricomposti UTF-8/fallback Latin-1 solo per sequenza; range byte e hex2 cifre. Sette regressioni,
+RED 38139166979 e RED z da revisione 38139382189 prima fix; GREEN finale 38139535647 Ubuntu 130/1 skip Windows, 14,803 s; Windows 116/classe Lua skip, 14,494 s; mock 104/0,
+locale 116 OK/classe Lua skip, 16,254 s, revisione approvata. Nota parser-lua-unicode.md.
+Subset testuale Python, non API per byte arbitrari o grammatica generale; nessun dato reale.
 Parser numeri/separatori FATTO 11.10.2026: interi decimali esatti senza float intermedio, numeri
 finiti, meno separato soltanto numerico e separatori table obbligatori. Cinque regressioni RED
 38138543778 prima codice, GREEN 38138777270 Ubuntu 123/1 skip Windows, Windows 109/classe Lua
