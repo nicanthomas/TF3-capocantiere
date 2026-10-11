@@ -62,7 +62,7 @@ Parser Unicode completato: testo letterale preservato, buffer soltanto escape nu
 
 Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC privato prima bitmap; tre regressioni RED 38139758423 prima fix. Locale 119 OK/classe Lua skip, 16,280 s; GREEN 38139928172 Ubuntu 133/1 skip Windows, 14,040 s; Windows 119/classe Lua skip, 14,389 s; mock 104/0; revisione senza blocchi. Prova reale successiva SOLO screenshot Steam: cinque BMP 3456x1408, immagine ispezionata utilizzabile, conteggi GDI processo probe [0,0,0,0,0,0], focus invariato, nessun input/avvio TF3. Screenshot/JSON privati negli outputs, niente account pubblicati. Non certifica driver o recupero se le API cleanup stesse falliscono. Nota screenshot-gdi-risorse.md.
 
-Passo attivo lavoro/parser-terminatori: quattro regressioni stringhe prima codice su long newline iniziale/contenuto, escaped newline breve e formati/Unicode invariati. Nota parser-lua-terminatori.md, backup privato. RED locale 123 test/7 fallimenti/1 classe Lua skip, 16,272 s, coerenti con riproduzioni. Parser produttivo invariato; CI RED prima fix.
+Passo attivo lavoro/parser-terminatori: quattro regressioni stringhe prima codice su long newline iniziale/contenuto, escaped newline breve e formati/Unicode invariati. Nota parser-lua-terminatori.md, backup privato. RED locale 123 test/7 fallimenti/1 classe Lua skip, 16,272 s, coerenti con riproduzioni. Parser produttivo invariato; CI RED 38140208979: Ubuntu 137/7 fallimenti/1 skip Windows, 13,974 s; Windows 123/7 fallimenti/1 classe Lua skip, 14,511 s. Solo dopo RED applicata normalizzazione circoscritta; Locale GREEN 123 OK/1 classe Lua skip, 16,313 s; revisione e CI GREEN in corso.
 
 ### Risultati verificati della ripresa 11.10.2026
 

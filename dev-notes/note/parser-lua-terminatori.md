@@ -6,4 +6,4 @@ Design circoscritto: long literal normalizza CRLF/LFCR/CR a LF e rimuove soltant
 
 Quattro regressioni prima codice, backup privato; RED/GREEN/revisione e controllo main prima integrazione. Fonte primaria [Lua 5.3 convenzioni lessicali](https://www.lua.org/manual/5.3/manual.html#3.1), comportamento long literal e escape line break. Nessuna installazione, API, bridge vivo o file gioco modificato.
 
-RED locale 123 test/7 fallimenti/1 classe Lua skip, 16,272 s. Formati/Unicode preservati passano. Codice produttivo invariato, CI RED prima fix.
+RED locale 123 test/7 fallimenti/1 classe Lua skip, 16,272 s. Formati/Unicode preservati passano. Codice produttivo invariato, CI RED 38140208979: Ubuntu 137/7 fallimenti/1 skip Windows, 13,974 s; Windows 123/7 fallimenti/1 classe Lua skip, 14,511 s. Solo dopo RED applicata normalizzazione circoscritta; Locale GREEN 123 OK/1 classe Lua skip, 16,313 s; revisione e CI GREEN in corso.
