@@ -54,10 +54,21 @@ _ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "a": "\a", "b": "\b", "f": "\f",
 
 def _unescape(body: str) -> str:
     out = []
+    escaped = bytearray()
+
+    def flush_bytes():
+        if escaped:
+            try:
+                out.append(escaped.decode("utf-8"))
+            except UnicodeDecodeError:
+                out.append(escaped.decode("latin-1"))
+            escaped.clear()
+
     i = 0
     while i < len(body):
         c = body[i]
         if c != "\\":
+            flush_bytes()
             out.append(c)
             i += 1
             continue
@@ -65,29 +76,33 @@ def _unescape(body: str) -> str:
         if i >= len(body):
             break
         e = body[i]
-        if e in _ESCAPES:
-            out.append(_ESCAPES[e])
-            i += 1
-        elif e.isdigit():                     # \ddd decimale (byte)
-            m = re.match(r"\d{1,3}", body[i:])
-            out.append(chr(int(m.group(0))))
+        if "0" <= e <= "9":              # consecutive numeric byte escapes
+            m = re.match(r"[0-9]{1,3}", body[i:])
+            value = int(m.group(0))
+            if value > 255:
+                raise LuaParseError("escape decimale fuori intervallo byte")
+            escaped.append(value)
             i += len(m.group(0))
-        elif e == "x":                        # \xXX
-            out.append(chr(int(body[i + 1:i + 3], 16)))
+        elif e == "x":
+            digits = body[i + 1:i + 3]
+            if not re.fullmatch(r"[0-9a-fA-F]{2}", digits):
+                raise LuaParseError("escape hex richiede due cifre")
+            escaped.append(int(digits, 16))
             i += 3
-        elif e == "z":                        # \z salta spazi
-            i += 1
-            while i < len(body) and body[i].isspace():
-                i += 1
         else:
-            out.append(e)
-            i += 1
-    s = "".join(out)
-    # Lua lavora a byte: le stringhe UTF-8 escapate come \ddd vanno ricomposte
-    try:
-        return s.encode("latin-1").decode("utf-8")
-    except (UnicodeEncodeError, UnicodeDecodeError):
-        return s
+            flush_bytes()
+            if e in _ESCAPES:
+                out.append(_ESCAPES[e])
+                i += 1
+            elif e == "z":
+                i += 1
+                while i < len(body) and body[i].isspace():
+                    i += 1
+            else:
+                out.append(e)
+                i += 1
+    flush_bytes()
+    return "".join(out)
 
 
 def _tokenize(text: str):

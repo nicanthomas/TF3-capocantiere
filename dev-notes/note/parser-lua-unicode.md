@@ -7,3 +7,5 @@ Design: testo Unicode letterale invariato; buffer solo delle sequenze consecutiv
 Riferimento primario: [Lua 5.3, convenzioni lessicali](https://www.lua.org/manual/5.3/manual.html#3.1): escape numerici rappresentano byte; non impone UTF-8. Sei regressioni prima del codice, backup privato; checkpoint RED poi implementazione/GREEN/revisione/CI prima merge.
 
 RED locale: 115 test, 10 fallimenti/3 errori (subcase), 1 classe Lua skip, 16,316 s. Codice produttivo invariato. Nessun accesso gioco/ambiente/modello.
+
+RED CI 38139166979 confermato: Ubuntu 129 test/10 fallimenti/3 errori/1 skip Windows, 14,362 s; Windows 115/10 fallimenti/3 errori/1 classe Lua skip, 14,385 s. Solo dopo RED implementato buffer per sequenze numeriche; Locale GREEN 115 OK/1 classe Lua skip, 16,335 s; revisione/CI GREEN in corso.
