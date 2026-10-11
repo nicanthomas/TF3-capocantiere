@@ -7,3 +7,7 @@ Design: dopo validazione tipo, schema number + float non finito => errore singol
 Tre regressioni prima codice: entrambi schemi flotta reali NaN/+Inf/-Inf, array/object nested percorso esatto, finiti/interi enormi/tipi e bounds conservati. Backup privato; RED/GREEN/revisione/CI/main ricontrollato. [RFC8259 sezione6](https://www.rfc-editor.org/rfc/rfc8259#section-6) non ammette NaN/Infinity nella grammatica JSON; Python puo' comunque riceverli da input/test o estensioni parser. Nessuna chiave o chiamata Anthropic.
 
 RED locale130 test/7 fallimenti/1 classe Lua skip, 16,332 s: NaN accettato e Inf non diagnosticato come non finito, nesting NaN accettato. Validi/interi enormi/tipi/bounds passano, codice produttivo invariato.
+
+RED CI38141026312 confermato Windows/Ubuntu con7fallimenti, poi guardia minima math.isfinite solo float, return prima enum/bounds.
+
+Locale GREEN130 OK/1 classe Lua skip, 16,360 s; revisione senza blocchi. Nicolo' ha chiesto stop: soltanto pubblicazione/checkpoint e rapporto, nessun nuovo sviluppo.

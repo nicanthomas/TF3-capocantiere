@@ -50,6 +50,8 @@ Verifica sola lettura corrente: TF3 processi zero; spazio libero C: 9,62 GiB, E:
 Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dialogo, impronta e due copie private integre. TF3 TERMINATO. Backup privati work/steam-launch-options-session2/original.json e recovery-copy.json nella chat; copia recupero privata negli outputs. Nessun valore sensibile pubblicato. Nessuna scrittura diretta al VDF o al wrapper.
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
+**STOP RICHIESTO DA NICOLO' il 11.10.2026 circa 14:56 Europe/Zurich.** Nessun nuovo sviluppo dopo la richiesta. Soltanto chiusura checkpoint modifica gia' applicata, CI/pubblicazione e rapporto.
+
 ### Continuazione autonoma richiesta da Nicolo'
 
 Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non prevedibile. Parser completo gia' verificato/integrato, RED 38137476301 e GREEN 38137669139, locale 97 OK/classe Lua skip, revisione senza blocchi; nota parser-lua-completo.md.
@@ -66,7 +68,7 @@ Terminatori Windows completati: long literal e newline breve escapato normalizza
 
 Chiavi userdata completate: reader rifiuta bool/nil/table prima assegnazione, writer bool prima file temporaneo; booleani VALORI/chiavi supportate invariati. Quattro regressioni RED 38140623855 prima codice; locale 127 OK/classe Lua skip, 16,280 s; GREEN 38140784177 Ubuntu 141/1 skip Windows, 14,072 s; Windows 127/classe Lua skip, 14,236 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-chiavi.md: chiavi bool legali Lua ma non rappresentabili nel subset Python, floatkeys reader-only come prima. Doc API corretta dumps/save_userdata. Mai dati reali.
 
-Passo attivo lavoro/argomenti-finiti: tre regressioni funzioni pure prima codice su schemi flotta/nesting/nonfiniti/validi/interi enormi. Guardie previste schema number+float non finito, errore percorso fisso prima bounds, niente conversione int. Backup privato, nota argomenti-numeri-finiti.md. RED locale130/7 fallimenti/1 classe Lua skip, 16,332 s; sorgente invariato, CI RED prima fix; mai main/SDK/modello/bridge reale.
+Passo attivo lavoro/argomenti-finiti: tre regressioni funzioni pure prima codice su schemi flotta/nesting/nonfiniti/validi/interi enormi. Guardie previste schema number+float non finito, errore percorso fisso prima bounds, niente conversione int. Backup privato, nota argomenti-numeri-finiti.md. RED locale130/7 fallimenti/1 classe Lua skip, 16,332 s; sorgente invariato, CI RED 38141026312 confermato Windows/Ubuntu con7 fallimenti; solo dopo RED guardia float finito, Locale GREEN130 OK/1 classe Lua skip, 16,360 s; revisione senza blocchi, CI GREEN prima merge; mai main/SDK/modello/bridge reale.
 
 ### Risultati verificati della ripresa 11.10.2026
 
