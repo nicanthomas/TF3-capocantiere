@@ -58,6 +58,8 @@ Parser numeri/separatori completato: cinque regressioni RED locale 109/11 fallim
 
 Parser Unicode completato: testo letterale preservato, buffer soltanto escape numerici UTF-8/fallback Latin-1 per run, byte 0..255 e hex2 cifre. Rilievo revisione z risolto con settima regressione RED 38139382189 prima fix; locale finale 116 OK/classe Lua skip, 16,254 s; GREEN finale 38139535647 Ubuntu 130/1 skip Windows, 14,803 s; Windows 116/classe Lua skip, 14,494 s; mock 104/0, revisione approvata. Nota parser-lua-unicode.md: subset testuale, non API byte o grammatica Lua generale. Mai file reali.
 
+Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC privato prima bitmap; tre regressioni RED 38139758423 prima fix. Locale 119 OK/classe Lua skip, 16,280 s; GREEN 38139928172 Ubuntu 133/1 skip Windows, 14,040 s; Windows 119/classe Lua skip, 14,389 s; mock 104/0; revisione senza blocchi. Prova reale successiva SOLO screenshot Steam: cinque BMP 3456x1408, immagine ispezionata utilizzabile, conteggi GDI processo probe [0,0,0,0,0,0], focus invariato, nessun input/avvio TF3. Screenshot/JSON privati negli outputs, niente account pubblicati. Non certifica driver o recupero se le API cleanup stesse falliscono. Nota screenshot-gdi-risorse.md.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
@@ -84,7 +86,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Prossimo passo sicuro: screenshot GDI Windows. Riproduzione con backend completamente simulato: se SelectObject di ripristino fallisce, capture procede a GetDIBits e DeleteObject prima DeleteDC lascia bitmap allocata. Prima regressioni RED/pubblicazione, poi verifica ripristino e ordine cleanup; usare soltanto mock finche' CI/revisione verdi. Successiva eventuale prova screenshot Steam soltanto lettura, senza focus/input o avvio TF3. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
+Prossimo passo sicuro: terminatori Windows del parser Lua, gia' riprodotti solo su stringhe. Long string iniziale CR/CRLF e normalizzazione CRLF/CR/LFCR errate; anche backslash+CRLF conserva CRLF invece di newline Lua. Prima quattro regressioni RED/pubblicazione, poi correzione circoscritta/revisione/CI; non cambiare file/mod installata. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

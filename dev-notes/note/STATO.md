@@ -115,6 +115,12 @@ prima file troncati/wrapper errati o statement successivi apparivano validi. Qua
 mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
 Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
 Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
+Screenshot GDI FATTO 11.10.2026: restore fallito blocca lettura, DC privato rilasciato prima bitmap.
+Tre regressioni RED 38139758423, GREEN 38139928172 Ubuntu 133/1 skip Windows, Windows 119/classe
+Lua skip; locale 119 OK/classe Lua skip, 16,280 s, mock 104/0, revisione senza blocchi.
+Prova reale soltanto screenshot Steam: cinque BMP utilizzabili, GDI proprio processo 0 prima/dopo
+tutte cinque, focus invariato, zero input/avvii TF3. Artefatti privati, nota screenshot-gdi-risorse.md.
+Non certifica driver o recupero se falliscono DeleteDC/DeleteObject/ReleaseDC stessi.
 Parser Unicode FATTO 11.10.2026: testo Unicode letterale invariato, byte escapati numerici
 ricomposti UTF-8/fallback Latin-1 solo per sequenza; range byte e hex2 cifre. Sette regressioni,
 RED 38139166979 e RED z da revisione 38139382189 prima fix; GREEN finale 38139535647 Ubuntu 130/1 skip Windows, 14,803 s; Windows 116/classe Lua skip, 14,494 s; mock 104/0,
