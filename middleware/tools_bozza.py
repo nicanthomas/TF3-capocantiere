@@ -191,7 +191,10 @@ TOOLS_BOZZA = [
     {
         "name": "read_map",
         "description": ("Mappa per pianificare: citta' ordinate per grandezza (edifici), industrie con merci, griglia di quote e "
-                        "acqua (grid punti per lato), linee esistenti. Usalo prima di un piano per direttive ampie."),
+                        "acqua (grid punti per lato), linee esistenti. Usalo prima di un piano per direttive ampie. "
+                        "Le industrie possono includere productivity con booleani producing, boostFromRule e "
+                        "boostFromPersonCapacity: indicatori, non moltiplicatori. Campo assente o available=false "
+                        "significa dato non disponibile/completo, non produzione o potenziatori assenti."),
         "input_schema": {"type": "object", "properties": {"grid": {"type": "integer", "minimum": 4, "maximum": 16, "default": 10}}},
     },
     {
@@ -209,7 +212,10 @@ TOOLS_BOZZA = [
         "name": "check_line_fleet",
         "description": ("Controlla quanti veicoli servono a una linea: tempo di un giro misurato dai veicoli (serve che "
                         "abbiano gia' fatto un giro), passaggio attuale e numero di veicoli per un passaggio ogni "
-                        "`interval` secondi (default: bus 240, camion 300, treni 480). Solo lettura: propone, non compra."),
+                        "`interval` secondi (default: bus 240, camion 300, treni 480). Solo lettura: propone, non compra. "
+                        "Puo' includere cargo_quality con rami passengers/cargo separati e propri available/errors; "
+                        "controllali prima di interpretare i valori. Dato assente non significa qualita' buona o cattiva. "
+                        "averageQuality ha unita' non verificate; bad_fraction e' countBad/countTotal, non un ritardo."),
         "input_schema": {"type": "object", "properties": {
             "line_id": _ID, "interval": {"type": "number", "minimum": 60, "maximum": 3600},
             "max": {"type": "integer", "minimum": 1, "maximum": 20}}, "required": ["line_id"]},
@@ -237,6 +243,12 @@ build_rail_line2, build_rail_ring, build_cargo_rail_network, create_line_from_st
 check_network, read_map, propose_plan, check_line_fleet, adjust_line_fleet.
 Flotta: solo su richiesta dell'utente ("adegua i veicoli della linea X"): prima check_line_fleet, poi, se l'utente
 approva, adjust_line_fleet. Nessun controllo o acquisto automatico.
+Dati facoltativi: mod precedenti possono omettere productivity/cargo_quality; non dedurre valori dai campi assenti.
+Leggi available/errors anche nei singoli rami passengers/cargo: il disponibile globale non garantisce entrambi.
+false e zero espliciti sono diversi da dato assente. producing/boostFromRule/boostFromPersonCapacity sono booleani,
+non moltiplicatori: la semantica dei potenziatori non e' ancora provata in TF3. Non inventare unita', soglie o
+percentuali per averageQuality; bad_fraction e' un rapporto di conteggi, non una misura di ritardo.
+Questi indicatori non autorizzano costruzioni, acquisti o correzioni automatiche.
 Sono nuove: se una fallisce riporta l'errore esatto all'utente. Dopo una ferrovia passeggeri, se la stazione e' lontana
 dal centro, proponi connect_station_to_town per creare il nodo di scambio con il bus.
 
