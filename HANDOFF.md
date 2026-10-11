@@ -52,7 +52,7 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non prevedibile. Parser completo gia' verificato/integrato, RED 38137476301 e GREEN 38137669139, locale 97 OK/classe Lua skip, revisione senza blocchi; nota parser-lua-completo.md.
 
-Passo attivo lavoro/sonda-bridge-lettura: sette regressioni fixture prima del tool. CLI percorso assoluto locale esplicito/nome stato, file regolare/8 MiB/read bounded/cambio file, parser senza Lua; JSON solo conteggi/validita' e errori fissi, nessun nome/coordinate/percorso raw. Nessun game_bridge, ambiente, ricerca, DLL, write/mkdir/send/cleanup. RED locale 104 test/17 errori da tool assente, 1 classe Lua skip, 16,246 s. RED CI prima del codice poi GREEN/revisione. Nota sonda-bridge-lettura.md. Non provare sui dati reali.
+Passo attivo lavoro/sonda-bridge-lettura: sette regressioni fixture prima del tool. CLI percorso assoluto locale esplicito/nome stato, file regolare/8 MiB/read bounded/cambio file, parser senza Lua; JSON solo conteggi/validita' e errori fissi, nessun nome/coordinate/percorso raw. Nessun game_bridge, ambiente, ricerca, DLL, write/mkdir/send/cleanup. RED locale 104 test/17 errori da tool assente, 1 classe Lua skip, 16,246 s. RED CI 38138031056 confermato Ubuntu 118/17 errori, Windows 104/17 errori. Solo dopo RED creato tool. Locale GREEN 104 OK/classe Lua skip, 16,401 s; CLI -I -B e -O solofixture exit0, read_only=true/live_bridge_tested=false. CI GREEN/revisione in attesa. Nota sonda-bridge-lettura.md. Non provare sui dati reali.
 
 ### Risultati verificati della ripresa 11.10.2026
 
