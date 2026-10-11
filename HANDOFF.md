@@ -50,7 +50,7 @@ Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri
 
 ### Passo attivo della continuazione autonoma
 
-Nicolo' richiede di continuare fino ai limiti dei crediti e pubblicare prima di fermarsi; checkpoint frequenti per non dipendere dall'interruzione finale. Branch lavoro/parser-lua-completo: scoperto parser loads accetta wrapper errato/end assente/contenuto residuo. Quattro regressioni su testi fixture scritte prima del codice; RED locale 97 test/7 fallimenti (subcase inclusi), 1 classe Lua skip, 16,144 s: file malformati accettati. Attendere RED CI prima della correzione, poi GREEN/revisione prima del merge. Nessuna lettura o modifica dei dati gioco/chiave/DLL. Nota parser-lua-completo.md. Sonda bridge di sola lettura resta il passo successivo.
+Nicolo' richiede di continuare fino ai limiti dei crediti e pubblicare prima di fermarsi; checkpoint frequenti per non dipendere dall'interruzione finale. Branch lavoro/parser-lua-completo: scoperto parser loads accetta wrapper errato/end assente/contenuto residuo. Quattro regressioni su testi fixture scritte prima del codice; RED locale 97 test/7 fallimenti (subcase inclusi), 1 classe Lua skip, 16,144 s: file malformati accettati. RED CI 38137476301 confermato (Ubuntu 111/7 fallimenti, Windows 97/7 fallimenti). Solo dopo RED keyword esatti e consumo documento completo; Locale GREEN 97 test OK/1 classe Lua skip, 16,133 s; revisione statica senza blocchi. CI GREEN in attesa prima del merge. Nessuna lettura o modifica dei dati gioco/chiave/DLL. Nota parser-lua-completo.md. Sonda bridge di sola lettura resta il passo successivo.
 
 ### Risultati verificati della ripresa 11.10.2026
 
