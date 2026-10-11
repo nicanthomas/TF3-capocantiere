@@ -394,6 +394,90 @@ do
     SIM_ACTIONS.add_vehicles,SIM_ACTIONS.remove_vehicles=old.add,old.remove
 end
 
+-- Indicatori industria: dati dichiarati, sola lettura, nessuna semantica inventata.
+do
+    local valid={producing=false,boostFromRule=true,boostFromPersonCapacity=false,extra=function() end}
+    local out=CC.normalizeIndustryProductivity(valid)
+    check(out.available and out.producing==false and out.boostFromRule==true
+        and out.boostFromPersonCapacity==false and out.extra==nil and getmetatable(out)==nil,
+        "industria: copia soli booleani e preserva false")
+    local allFalse=CC.normalizeIndustryProductivity({producing=false,boostFromRule=false,boostFromPersonCapacity=false})
+    check(allFalse.available and #allFalse.errors==0, "industria: tre false sono dati disponibili")
+    local absent=CC.normalizeIndustryProductivity(nil)
+    check(not absent.available and #absent.errors>0, "industria: dato assente distinto da false")
+    local partial=CC.normalizeIndustryProductivity({producing=true,boostFromRule=false})
+    check(not partial.available and partial.producing==true and partial.boostFromRule==false
+        and partial.boostFromPersonCapacity==nil and #partial.errors==1, "industria: campo nil conserva gli altri")
+    local wrong=CC.normalizeIndustryProductivity({producing=1,boostFromRule="true",boostFromPersonCapacity={}})
+    check(not wrong.available and wrong.producing==nil and wrong.boostFromRule==nil
+        and wrong.boostFromPersonCapacity==nil and #wrong.errors==3, "industria: nessuna conversione dei tipi")
+    local proxy=setmetatable({}, {
+        __index=function(_,key) if key=="boostFromRule" then error("fixture-private-message") end return false end,
+        __pairs=function() error("non enumerare") end,
+        __tostring=function() error("non convertire") end
+    })
+    local guarded=CC.normalizeIndustryProductivity(proxy)
+    check(not guarded.available and guarded.producing==false and guarded.boostFromPersonCapacity==false
+        and #guarded.errors==1 and not table.concat(guarded.errors," "):find("fixture-private-message",1,true),
+        "industria: accesso guasto protetto senza enumerazione o leak")
+    local oldApi=api.engine.util.industry
+    local sent,calls=#W.sent,0
+    local entity=newEnt({INDUSTRY={}})
+    newEnt({INDUSTRY={}}) -- senza posizione: non deve attivare la nuova lettura.
+    api.engine.util.industry={getIndustryProductivityInfo=function(id,...)
+        calls=calls+1
+        assert(id==entity and select("#",...)==0,"firma industria")
+        return valid
+    end}
+    local direct=CC.industryProductivity(entity)
+    check(direct.available and calls==1 and #W.sent==sent, "industria: API una volta con un solo entity, nessun comando")
+    api.engine.util.industry={getIndustryProductivityInfo=function() error("fixture-private-message") end}
+    local failed=CC.industryProductivity(entity)
+    check(not failed.available and #failed.errors>0 and #W.sent==sent
+        and not table.concat(failed.errors," "):find("fixture-private-message",1,true),
+        "industria: API guasta non esporta eccezione")
+    api.engine.util.industry=nil
+    local missing=CC.industryProductivity(entity)
+    check(not missing.available and #missing.errors>0 and #W.sent==sent,
+        "industria: API assente non diventa falso indicatore")
+
+    local old={pos=CC.posOf,cargo=CC.industryCargo,cargoName=CC.cargoName,height=CC.heightAt,
+        water=CC.onWater,year=CC.year}
+    CC.posOf=function(id) if id==entity then return {x=20,y=30,z=0} end end
+    CC.industryCargo=function() return {1},{2} end
+    CC.cargoName=function(id) return "M"..id end
+    CC.heightAt=function() return 10 end
+    CC.onWater=function() return false end
+    CC.year=function() return 2300 end
+    calls=0
+    api.engine.util.industry={getIndustryProductivityInfo=function(id,...)
+        calls=calls+1
+        assert(id==entity and select("#",...)==0,"firma industria mappa")
+        return valid
+    end}
+    local map=SIM_ACTIONS.read_map({grid=4})
+    local ind=map.industries and map.industries[1]
+    check(map.ok and #map.industries==1 and map.grid==4 and #map.heights==4 and ind.id==entity
+        and ind.x==20 and ind.y==30 and ind.inputs[1]=="M1" and ind.outputs[1]=="M2"
+        and ind.productivity and ind.productivity.available and ind.productivity.producing==false
+        and calls==1 and #W.sent==sent, "industria: read_map aggiunge dato senza alterare mappa o comandi")
+    api.engine.util.industry={getIndustryProductivityInfo=function() error("fixture-private-message") end}
+    local badMap=SIM_ACTIONS.read_map({grid=4})
+    local bad=badMap.industries and badMap.industries[1]
+    check(badMap.ok and bad and bad.id==entity and bad.inputs[1]=="M1" and bad.productivity
+        and not bad.productivity.available and #W.sent==sent
+        and not table.concat(bad.productivity.errors," "):find("fixture-private-message",1,true),
+        "industria: API guasta non fa fallire la mappa")
+    api.engine.util.industry=nil
+    local absentMap=SIM_ACTIONS.read_map({grid=4})
+    check(absentMap.ok and absentMap.industries[1].productivity
+        and not absentMap.industries[1].productivity.available and #W.sent==sent,
+        "industria: API assente conserva read_map")
+    CC.posOf,CC.industryCargo,CC.cargoName=old.pos,old.cargo,old.cargoName
+    CC.heightAt,CC.onWater,CC.year=old.height,old.water,old.year
+    api.engine.util.industry=oldApi
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.

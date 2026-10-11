@@ -40,7 +40,7 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 
 ## CHECKPOINT OPERATIVO CORRENTE
 
-**10.10.2026, Codex locale Windows.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
+**11.10.2026, Codex locale Windows, ripresa autorizzata da continua.** Unico checkout E:\Sviluppo\TF3-capocantiere, main. Git 2.55.0.windows.5, Python 3.10.10, PowerShell funzionanti. Nessuna installazione in questa sessione. Venv stdlib e fixtures nell'area work della chat; rete, subprocess e accessi Steam bloccati durante i test Python. Pubblicazione tramite connettore GitHub con verifica del main remoto, senza PR/force-push.
 
 ### Autorizzazioni e stato TF3
 
@@ -49,6 +49,8 @@ Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dial
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
 ### Risultato del passo completato
+
+Passo attivo lavoro/produttivita-industrie: main 50949c5 invariato/checkout pulito ricontrollati; TF3 assente, nessuna nuova operazione Steam. Backup sorgenti prima delle modifiche nell'area work della chat. Piano produttivita-industrie.md e regressioni scritti PRIMA del codice: dodici mock e un userdata Lua sintetico, firma API singolo entity, booleani false/nil/tipi/accessor guasto, integrazione read_map senza comandi e senza errori globali. Attendere RED nativo CI prima di implementare CC.normalizeIndustryProductivity/industryProductivity in b8 e campo productivity per industrie posizionate. Semantica/C++ TF3 non provati; main precedente verde, nessuna mod rigenerata/installata.
 
 Tempi flotta finiti completati sui sorgenti: due regressioni Lua native e cinque mock, RED prima di ciascuna correzione. Tempo inf/somma tratta o giro traboccata diventa misura mancante e ritorno prima di proposta/apply; misure finite di altro veicolo restano utilizzabili. Accumulo da 0.0 evita wraparound intero, media/giro soltanto positivi e finiti, nessuna soglia fisica inventata. Primo RED 38050006467, rilievo revisione overflow intero poi RED dedicato 38050265270. GREEN finale 38050352916: Ubuntu 93 test/1 skip Windows, 14,223 s; Windows 80/1 classe Lua skip, 14,152 s; mock normale 92 ok/0 falliti. Locale isolato 80 OK/classe Lua skip, 15,770 s. Revisione finale senza blocchi. apply=true solo fixture add/remove intercettati, NON gioco. Nota flotta-tempi-finiti.md. build --check --bozza ancora DIVERSO/avviso, mod invariata.
 
@@ -72,9 +74,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Sessione autonoma di collaudo/sviluppo conclusa: TF3 chiuso, opzioni Steam originali ripristinate e backup privati integri. Tasti Windows, qualita' merci, limiti e tempi flotta verificati/uniti; suite finale locale 80 OK/classe Lua skip, CI Ubuntu 93/1 skip Windows, Windows 80/classe Lua skip, mock 92 ok/0 falliti. Ricontrollare main remoto prima di riprendere.
-
-Prossimo passo sicuro sui sorgenti STATO4c/5b: progettare una lettura protetta di IndustryProductivityInfo (producing, boostFromRule, boostFromPersonCapacity boolean) con mock false/nil/accessor guasto prima del codice, senza inventare moltiplicatori o automatizzare catene/produzione. Fonte e firma dichiarata nella nota qualita-merci-tipi-tf3.md; userdata C++ e semantica runtime NON provati. Per il collaudo nativo Windows manca DLL Lua fidata: proporre configurazione e ottenere autorizzazione prima di installazioni, non caricare DLL del gioco. Bridge vivo, flotta/qualita' in partita e installazione della mod aggiornata richiedono autorizzazione distinta; GameBridge.send elimina risultati. Nessuna partita o costruzione permessa. Unico checkout, niente PR/force-push.
+Passo attivo lavoro/produttivita-industrie nell'unico checkout: regressioni/piano presenti, codice b8 invariato. Controllare RED CI, poi normalizzatore esplicito protetto dei soli tre booleani dichiarati e wrapper API getIndustryProductivityInfo(industryEntity), aggiungere productivity in read_map solo per industrie con posizione. API assente/guasta non modifica ok/coordinate/merci/mappa, nessun comando. GREEN nativo CI/revisione prima del merge. Fonte e limiti nella nota qualita-merci-tipi-tf3.md, piano produttivita-industrie.md. Manca DLL Lua fidata Windows; non installare o caricare DLL del gioco senza autorizzazione. Bridge vivo e partita ancora vietati. Opzioni Steam originali ripristinate dal collaudo precedente; non avviare con wrapper attivo. Nessuna installazione, salvataggio, costruzione o mod installata autorizzata.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
