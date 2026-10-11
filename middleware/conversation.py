@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 from typing import Any
 
 CACHE = {"type": "ephemeral"}
@@ -29,6 +30,9 @@ def _check(value: Any, schema: dict, path: str, errors: list[str]) -> None:
     t = schema.get("type")
     if t and not _TYPES[t](value):
         errors.append(f"{path}: atteso {t}, ricevuto {type(value).__name__}")
+        return
+    if t == "number" and isinstance(value, float) and not math.isfinite(value):
+        errors.append(f"{path}: numero non finito")
         return
     if "enum" in schema and value not in schema["enum"]:
         errors.append(f"{path}: valore {value!r} non ammesso (ammessi: {schema['enum']})")

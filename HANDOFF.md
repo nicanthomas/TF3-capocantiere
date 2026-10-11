@@ -50,6 +50,8 @@ Verifica sola lettura corrente: TF3 processi zero; spazio libero C: 9,62 GiB, E:
 Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dialogo, impronta e due copie private integre. TF3 TERMINATO. Backup privati work/steam-launch-options-session2/original.json e recovery-copy.json nella chat; copia recupero privata negli outputs. Nessun valore sensibile pubblicato. Nessuna scrittura diretta al VDF o al wrapper.
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
+**STOP RICHIESTO DA NICOLO' il 11.10.2026 circa 14:56 Europe/Zurich.** Nessun nuovo sviluppo dopo la richiesta. Soltanto chiusura checkpoint modifica gia' applicata, CI/pubblicazione e rapporto.
+
 ### Continuazione autonoma richiesta da Nicolo'
 
 Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non prevedibile. Parser completo gia' verificato/integrato, RED 38137476301 e GREEN 38137669139, locale 97 OK/classe Lua skip, revisione senza blocchi; nota parser-lua-completo.md.
@@ -65,6 +67,8 @@ Screenshot GDI completato: restore NULL/HGDI_ERROR blocca GetDIBits, cleanup DC 
 Terminatori Windows completati: long literal e newline breve escapato normalizzano CRLF/LFCR/CR, primo newline long ignorato soltanto una volta. Quattro regressioni RED 38140208979 prima codice; locale 123 OK/classe Lua skip, 16,313 s; GREEN 38140372898 Ubuntu 137/1 skip Windows, 14,028 s; Windows 123/classe Lua skip, 14,238 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-terminatori.md: non cambia altri escape o grammatica generale. Solo stringhe sintetiche, nessun file del gioco.
 
 Chiavi userdata completate: reader rifiuta bool/nil/table prima assegnazione, writer bool prima file temporaneo; booleani VALORI/chiavi supportate invariati. Quattro regressioni RED 38140623855 prima codice; locale 127 OK/classe Lua skip, 16,280 s; GREEN 38140784177 Ubuntu 141/1 skip Windows, 14,072 s; Windows 127/classe Lua skip, 14,236 s; mock 104/0 e revisione senza blocchi. Nota parser-lua-chiavi.md: chiavi bool legali Lua ma non rappresentabili nel subset Python, floatkeys reader-only come prima. Doc API corretta dumps/save_userdata. Mai dati reali.
+
+Validazione argomenti finiti completata gia' applicata prima dello stop: tre regressioni pure RED38141026312 prima codice; number+float non finito rifiutato prima enum/bounds, niente conversione int. Locale 130 OK/1 classe Lua skip,16,360s; GREEN38141250728 Ubuntu 144/1 skip Windows,14,110s; Windows 130/classe Lua skip,14,400s; mock104/0, revisione senza blocchi. Nota argomenti-numeri-finiti.md; nessuna esecuzione main/SDK/modello/bridge. Otto passi e 37 regressioni nuove nella continuazione, tutti integrati dopo GREEN/revisione; richiesta stop rispettata, solo checkpoint/rapporto finale dopo.
 
 ### Risultati verificati della ripresa 11.10.2026
 
@@ -92,7 +96,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Prossimo passo sicuro: validazione numeri finiti in conversation.validate_args, riprodotto NaN accettato come interval anche con minimum/maximum. Prima tre regressioni pure su schemi flotta/nesting/valori finiti e interi grandi, poi guardia su float senza convertire int a float, GREEN/revisione/CI. Nessun modello/SDK/bridge da avviare. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso/volume da verificare; evitare GameBridge.__init__/send/cleanup. DLL Lua Windows fidata ancora assente: niente installazione senza autorizzazione distinta. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo.
+SESSIONE FERMATA SU RICHIESTA. Non iniziare altro lavoro senza nuova richiesta di ripresa. Alla ripresa verificare main GitHub e checkout unico, leggere le note dei passi integrati. Priorita' operativa rimane parita' Lua Windows: manca DLL 5.3/5.4 fidata AMD64, nessuna installazione senza autorizzazione distinta; candidata esplicita prima diagnosi PE, poi suite --require-lua senza skip. Bridge vivo ancora non provato; sonda snapshot soltanto fixture, non usarla sui dati reali senza ambito/percorso/volume concordati; evitare GameBridge.__init__/send/cleanup. TF3 chiuso, opzioni originali ripristinate nel collaudo precedente, wrapper attivo. Nessun nuovo avvio/input dopo stop. Report finale privato negli outputs della chat.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

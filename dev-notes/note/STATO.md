@@ -115,6 +115,11 @@ prima file troncati/wrapper errati o statement successivi apparivano validi. Qua
 mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
 Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
 Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
+Validazione numeri finiti argomenti FATTO 11.10.2026: schema number+float NaN/Inf rifiutato
+prima enum/bounds con errore fisso/percorso, interi arbitrari senza conversione float. Tre regressioni
+pure RED38141026312 prima codice, GREEN38141250728 Ubuntu 144/1 skip Windows,14,110s; Windows 130/classe Lua skip,14,400s; mock104/0; locale130 OK/classe Lua
+skip16,360s, revisione senza blocchi. Nota argomenti-numeri-finiti.md, nessun modello/bridge o schema
+modificato. Continuazione fermata su richiesta di Nicolo': soltanto checkpoint/Git/rapporto dopo stop.
 Chiavi userdata FATTO 11.10.2026: bool/nil/table rifiutati dal reader prima assegnazione, bool
 rifiutati dal writer prima temp file. Bool VALORI preservati. Quattro regressioni RED 38140623855,
 GREEN 38140784177 Ubuntu 141/1 skip Windows, 14,072 s; Windows 127/classe Lua skip, 14,236 s; mock 104/0, locale 127 OK/classe Lua skip, 16,280 s; revisione senza blocchi.
