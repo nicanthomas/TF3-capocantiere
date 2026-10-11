@@ -115,6 +115,11 @@ prima file troncati/wrapper errati o statement successivi apparivano validi. Qua
 mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
 Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
 Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
+Parser numeri/separatori FATTO 11.10.2026: interi decimali esatti senza float intermedio, numeri
+finiti, meno separato soltanto numerico e separatori table obbligatori. Cinque regressioni RED
+38138543778 prima codice, GREEN 38138777270 Ubuntu 123/1 skip Windows, Windows 109/classe Lua
+skip; locale 109 OK/classe Lua skip, mock normale 104/0, revisione senza blocchi. Nota
+parser-lua-numeri.md. Modello numerico Python distinto da Lua C++, nessun dato reale.
 Sonda snapshot standalone FATTO 11.10.2026: sette regressioni fixture RED 38138031056 poi
 GREEN 38138252617 Ubuntu 118/1 skip Windows, Windows 104/classe Lua skip, mock 104/0;
 locale 104 OK/classe Lua skip. CLI normale/-O soltanto fixture, read_only=true/live_bridge_tested=false.

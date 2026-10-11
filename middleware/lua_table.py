@@ -22,6 +22,7 @@ Non esegue codice Lua: e' un piccolo parser che accetta solo letterali
 
 from __future__ import annotations
 
+import math
 import os
 import re
 import tempfile
@@ -128,6 +129,8 @@ class _Parser:
             return self.table()
         if kind == "sym" and v == "-":             # numero negativo separato
             self.take()
+            if self.peek()[0] != "num":
+                raise LuaParseError("meno richiede un letterale numerico")
             return -self.value()
         self.take()
         if kind == "str":
@@ -138,8 +141,12 @@ class _Parser:
         if kind == "num":
             if v.lower().startswith(("0x", "-0x")):
                 return int(v, 16)
+            if re.fullmatch(r"-?\d+", v):
+                return int(v)
             f = float(v)
-            return int(f) if re.fullmatch(r"-?\d+", v) else f
+            if not math.isfinite(f):
+                raise LuaParseError("letterale numerico non finito")
+            return f
         if kind == "name":
             if v == "true":
                 return True
@@ -173,6 +180,8 @@ class _Parser:
             kind, v = self.peek()
             if kind == "sym" and v in (",", ";"):
                 self.take()
+            elif (kind, v) != ("sym", "}"):
+                raise LuaParseError("atteso separatore o chiusura della tabella")
         # Tabella solo-array -> list; chiavi intere 1..n -> list; altrimenti dict
         if not dct:
             return arr

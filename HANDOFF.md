@@ -54,7 +54,7 @@ Checkpoint frequenti e pubblicazione prima di fermarsi; interruzione crediti non
 
 Sonda snapshot completata: tool standalone stdlib+parser, input assoluto esplicito/nome stato, rifiuto UNC sintattico/symlink file, regularfile/8 MiB/read bounded/firme prima-dopo. JSON solo conteggi/validita'/errori fissi; no nomi/coordinate/path raw, game_bridge/ambiente/ricerca/DLL o scritture. Sette regressioni RED locale/CI 38138031056 prima del codice; GREEN 38138252617 Ubuntu 118/1 skip Windows, 14,292 s; Windows 104/classe Lua skip, 14,549 s; mock 104/0. Locale 104 OK/classe Lua skip, 16,401 s. CLI normale/-O solofixture exit0, live_bridge_tested=false. Revisione senza blocchi, limite volume/junction recepito: localita' fisica e atomicita' OS NON certificate. Mai eseguita sui dati reali. Nota sonda-bridge-lettura.md.
 
-Prossimo passo sorgenti sicuro gia' riprodotto con stringhe: parser arrotonda 9007199254740993 a 9007199254740992, accetta - true come -1 e campi senza separatore. Prima regressioni RED, poi correzioni minime/CI/revisione. Sonda viva/mod installata/partite/chiavi restano fuori scope.
+Parser numeri/separatori completato: cinque regressioni RED locale 109/11 fallimenti/3 errori e CI 38138543778 prima del codice. Interi decimali senza float intermedio, esponenti finiti, meno separato numerico e separatori table richiesti. GREEN 38138777270 Ubuntu 123/1 skip Windows, 14,008 s; Windows 109/classe Lua skip, 14,385 s; locale 109 OK/classe Lua skip, 16,283 s. Revisione senza blocchi. Nota parser-lua-numeri.md. Nessun runtime Lua/chiave/dati reali.
 
 ### Risultati verificati della ripresa 11.10.2026
 
@@ -82,7 +82,7 @@ Mod repo v14-bozza-399dcf74 DEV_MODE false; installata v14-bozza-32c86032 DEV_MO
 
 ### Prossima operazione precisa
 
-Riprendere correzioni parser numeri/separatori riprodotte sopra, su fixture soltanto e prima test RED. Sonda snapshot ora disponibile/verificata senza gioco: NON usare su dati reali senza ambito concordato, percorso e volume da verificare; evitare GameBridge.__init__/send/cleanup. Configurazione nativa ancora senza DLL Lua 5.3/5.4 fidata AMD64, installazioni prima autorizzazione distinta, futura suite --require-lua senza skip per parita' reale. TF3 chiuso/opzioni originali ripristinate nel collaudo precedente; wrapper ancora attivo, non cliccare Gioca senza ciclo autorizzato.
+Prossimo passo sicuro: regressioni Unicode del parser, riprodotte solo su stringhe: roundtrip U+00C3/U+00A9 alterato e UTF-8 escapato misto a Unicode non Latin-1 non ricomposto. Prima test RED e checkpoint, poi correzione circoscritta/revisione/CI. Sonda snapshot NON usare su dati reali senza ambito concordato, percorso e volume da verificare; evitare GameBridge.__init__/send/cleanup. Configurazione nativa ancora senza DLL Lua 5.3/5.4 fidata AMD64, installazioni prima autorizzazione distinta, futura suite --require-lua senza skip per parita' reale. TF3 chiuso/opzioni originali ripristinate nel collaudo precedente; wrapper ancora attivo, non cliccare Gioca senza ciclo autorizzato.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
