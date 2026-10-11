@@ -188,19 +188,22 @@ def loads(text: str) -> Any:
     """Converte il testo di un file userdata (o una tabella Lua nuda) in oggetti Python."""
     tokens = _tokenize(text)
     p = _Parser(tokens)
-    # Formato "function data() return {...} end"
+    # Accept only the declared wrapper and consume the complete document.
     if p.peek() == ("name", "function"):
-        p.take()
-        p.take()            # data
+        p.take("function")
+        p.take("data")
         p.take("(")
         p.take(")")
-        p.take()            # return
+        p.take("return")
         val = p.value()
-        p.take()            # end
-        return val
-    if p.peek() == ("name", "return"):
-        p.take()
-    return p.value()
+        p.take("end")
+    else:
+        if p.peek() == ("name", "return"):
+            p.take("return")
+        val = p.value()
+    if p.peek() != (None, None):
+        raise LuaParseError("contenuto residuo dopo il valore userdata")
+    return val
 
 
 def load_userdata(path: str) -> Any:

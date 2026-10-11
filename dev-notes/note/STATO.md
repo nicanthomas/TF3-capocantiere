@@ -109,6 +109,12 @@ Windows 93/classe Lua skip, mock 104/0; locale default 93 OK/classe Lua skip, 16
 Prova reale flag senza runtime: exit1 atteso, 93 test/1 LuaUnavailable/zero skip, 16,111 s;
 nessuna DLL caricata. Revisione senza problemi, isolamento/conferme invariati.
 Nota lua-obbligatoria-isolata.md: manca ancora runtime nativo Windows fidato, non dire parita' raggiunta.
+Parser userdata completo FATTO 11.10.2026: wrapper esatto function/data/return/end e nessun token residuo;
+prima file troncati/wrapper errati o statement successivi apparivano validi. Quattro regressioni RED
+38137476301 prima codice; GREEN 38137669139 Ubuntu 111/1 skip Windows, Windows 97/classe Lua skip,
+mock 104/0; locale 97 OK/classe Lua skip, revisione senza blocchi. Nota parser-lua-completo.md.
+Formati dichiarati/roundtrip/commenti conservati; subset, non parser Lua generale. Nessuna esecuzione
+Lua o lettura di stato reale. Avviso build DIVERSO e mod invariata.
 
 TF3 menu reale collaudato 10.10.2026 dopo autorizzazione distinta al ciclo opzioni Steam: doppio backup privato, wrapper disattivato temporaneamente nel campo, avvio normale, screenshot/focus/mouse, Esc a scancode torna al menu (virtual-key scan=0 senza effetto), uscita dall'icona Esci senza conferma, processo terminato. Due cicli senza partite/costruzioni; impostazioni del pannello non cambiate. Opzioni ORIGINALI ripristinate con confronto esatto dopo chiusura, wrapper/file gioco/mod/salvataggi non modificati dall'agente, nessuna chiave/Taskkill. Il wrapper originale resta attivo: non avviare senza ripetere il ciclo autorizzato. Note ripristino-opzioni-steam.md e controllo-grafico-windows.md. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 

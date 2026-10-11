@@ -48,6 +48,10 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 Opzioni ORIGINALI RIPRISTINATE: confronto esatto riuscito dopo chiusura del dialogo, impronta e due copie private integre. TF3 TERMINATO. Backup privati work/steam-launch-options-session2/original.json e recovery-copy.json nella chat; copia recupero privata negli outputs. Nessun valore sensibile pubblicato. Nessuna scrittura diretta al VDF o al wrapper.
 Le opzioni originali richiamano ancora avvia_con_gioco.bat e %command%: i futuri avvii senza chiave/Taskkill richiedono di ripetere la procedura temporanea autorizzata, non cliccare Gioca con il wrapper attivo.
 
+### Continuazione autonoma richiesta da Nicolo'
+
+Pubblicare checkpoint frequenti e prima di fermarsi; crediti/interruzione non prevedibili. Parser userdata completato: wrapper function/data/return/end esatti e consumo documento completo, formati dichiarati e commenti invariati. Quattro regressioni, RED 38137476301 prima del codice, GREEN 38137669139 Ubuntu 111/1 skip Windows, 14,299 s; Windows 97/classe Lua skip, 14,309 s; mock 104/0. Locale 97 OK/classe Lua skip, 16,133 s; revisione senza blocchi. Nota parser-lua-completo.md; nessun Lua eseguito o dato reale letto. Non parser Lua generale, statement terminatori/formati alternativi esclusi. Prossimo passo sonda standalone su fixture.
+
 ### Risultati verificati della ripresa 11.10.2026
 
 Cinque passi sorgenti/test completati e integrati, senza nuove operazioni Steam o TF3:
