@@ -122,10 +122,10 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 18:27: pubblicazione prova flotta e chiusura TF3
-Scritto da: ChatGPT, 12.10.2026 18:27 Europe/Zurich, ultimo commit verificato ea06e07
+Stato: IN LAVORO da 12.10 18:29: linea bus Abriola-Maretto richiesta da Nicolo'
+Scritto da: ChatGPT, 12.10.2026 18:29 Europe/Zurich, ultimo commit verificato c199d4d
 
-1. In una riga: mod/middleware aggiornati; controllo flotta reale riuscito; costruzione ancora da scegliere.
+1. In una riga: flotta reale verificata; Nicolo' ha scelto linea bus Abriola-Maretto con numero stimato.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): backup integrali verificati e impronte mod/middleware coincidenti.
    - SOLO TEST AUTOMATICI: generatore versione CRLF corretto in main c4afd72; suite e CI verdi.
@@ -133,7 +133,7 @@ Scritto da: ChatGPT, 12.10.2026 18:27 Europe/Zurich, ultimo commit verificato ea
    - PROVATO IN TF3: mod ricaricata, stato e console riportano v14-bozza-4e61dfa4.
    - PROVATO IN TF3: console/API controllo flotta Lissone; poi lettura diretta completa: giro 228 s.
    - PROVATO IN TF3: qualita' grezza disponibile, zeri e false/true preservati; nessuna unita' dedotta.
-3. Stato del PC: TF3 in pausa nella partita autorizzata, console uscita con /esci; Steam aperto.
+3. Stato del PC: TF3 e console chiusi normalmente, processi assenti verificati; Steam aperto.
    Mod v14-bozza-4e61dfa4 DEV_MODE true, una versione; middleware aggiornato incluso avviatore.
    Backup adiacenti verificati; percorsi e rapporti privati in work della chat. Opzioni Steam intatte.
    Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
@@ -146,11 +146,11 @@ Scritto da: ChatGPT, 12.10.2026 18:27 Europe/Zurich, ultimo commit verificato ea
    Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
    backup/aggiornamento, avvio/chiusura normale, partita 'capocantiere v14 prova', console/API senza leggere
    chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
-   Domanda costruzione gia' inviata: linea bus Abriola-Maretto con flotta stimata o un bus in piu' a Lissone.
-   Serve la scelta concreta di Nicolo'; conferma console mantenuta, nessuna scelta presunta.
+   Nicolo' ha scelto esplicitamente: creare linea bus Abriola-Maretto, numero bus stimato dalla mod.
+   Confermare in console soltanto questa richiesta concreta e poi collaudare.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Chiudere TF3 normalmente e verificare processo assente prima di lasciare la chat.
-   2. Alla scelta di Nicolo', nella stessa chat i permessi restano validi; ricaricare partita e prova console.
+   1. Riavviare TF3 e console, ricaricare partita autorizzata; stato fresco e nessun file azioni residuo.
+   2. Richiesta console Abriola-Maretto, nessun num_vehicles esplicito; controllare e confermare azione.
    3. Pubblicare risultato/collaudo; poi doppio binario o porto con direttiva e prove autorizzate.
 Letto da Claude il ...: ...
 
