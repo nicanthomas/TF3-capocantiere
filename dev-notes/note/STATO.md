@@ -481,3 +481,15 @@ PROVATO IN TF3: salvata con nome distinto 'capocantiere v14 Abriola-Maretto 12-1
 PROVATO SUL PC: file .sav presente (70739604 byte) e anteprima .jpg, data 18:43:30. Non ancora ricaricato.
 TF3 chiuso dal menu Torna al desktop, console con /esci; processi entrambi assenti verificati.
 Zero file capocantiere_actions residui; nessuna pulizia manuale. Opzioni Steam intatte.
+
+### 12.10.2026, 19:40 — doppio binario riprovato realmente
+
+Mod 509c3059 ricaricata. Su copia 'capocantiere test ferrovia 12-10', direttiva esplicita autorizzata:
+anello Stern-Afforte-Abriola (terzetto di perimetro minimo), double_track=true, due sensi, un treno per senso.
+PROVATO IN TF3: fallisce anello 1-2 sul secondo binario; primo binario 5484 m, 17 tratti su ponte e 39 in galleria.
+Parallelo rifiutato per collisione con strade 84886 e 90350; tracciati alternativi rifiutati per dislivelli
+vicino alla stazione o collisioni col primo binario. Tre stazioni e 98 tratti rimangono: pulizia prudente.
+Nessuna linea o treno dell'anello completati. Nessuna rimozione manuale; risposta completa in
+`dev-notes/note/prove-doppio-binario-12-10.json`. Non chiamare di nuovo sulla stessa copia contaminata.
+Correzione velocita' in main 219e678, CI 38284903888 verde; nuova mod installata con backup e hash verificati.
+PROVATO IN TF3: save bus ricaricato, 79575 e cinque bus presenti. Mod completa ancora NON finalizzata.

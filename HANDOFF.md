@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 19:23: ricarica mod corretta e prove ferrovia/porto
+Stato: IN LAVORO da 12.10 19:23: diagnosi doppio binario fallito, poi porto
 Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 219e678
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
@@ -141,8 +141,9 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    Non ripetere costruzione 79575; non applicare riduzioni flotta senza nuova direttiva.
    Auto Line Namer rinomina le linee (nota scoperte-api.md). Velocita' TF3 in landVehicle.topSpeed,
    Sonda reale eCitaro=19.444; funzione estratta falliva e dopo correzione passa. Mod corretta ricaricata: stato fresco 509c3059.
-   Giro iniziale 1002 s era STIMATO; proposta quattro bus non applicata. Movimento API ancora ignoto.
-   Non installare con gioco/console aperti; backup e confronto prima. Non leggere o mostrare chiave API.
+   Anello Stern-Afforte-Abriola FALLITO: secondo binario collide con strade; tre stazioni e 98 tratti.
+   Non ripetere su copia contaminata o rimuovere residui a mano; risultato in prove-doppio-binario-12-10.json.
+   Backup prima di installare a gioco chiuso; mai leggere/mostrare chiave API.
    Dettagli e token reali in dev-notes/note/prove-mappa-nuova.md; costo monetario non misurato.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi di questa chat: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
@@ -152,8 +153,8 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
    su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Confermare prova in console diretta: Stern-Afforte-Abriola, doppio binario, un treno per senso.
-   2. Attendere risultato senza ripetere azione; collaudo e checkpoint, poi copia separata per porto.
+   1. Salvare copia diagnostica ferrovia fallita, non sovrascrivere save iniziale o bus.
+   2. Leggere geometria collisioni parallelo; correggere cause confermate. Prova navale su copia separata.
    3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...
 
