@@ -122,37 +122,37 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 18:42: salvataggio distinto e chiusura dopo collaudo
-Scritto da: ChatGPT, 12.10.2026 18:42 Europe/Zurich, ultimo commit verificato ebfafe5
+Stato: FERMO dalle 12.10 18:45
+Scritto da: ChatGPT, 12.10.2026 18:45 Europe/Zurich, ultimo commit verificato a79b5bf
 
-1. In una riga: linea Abriola-Maretto 79575 costruita, cinque bus stimati; collaudo iniziale ok.
+1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO SUL PC (fuori dal gioco): backup integrali verificati e impronte mod/middleware coincidenti.
-   - SOLO TEST AUTOMATICI: generatore versione CRLF corretto in main c4afd72; suite e CI verdi.
-     Classe Lua Windows saltata, Lua reale provata soltanto in CI Ubuntu; revisione senza blocchi.
-   - PROVATO IN TF3: mod ricaricata, stato e console riportano v14-bozza-4e61dfa4.
-   - PROVATO IN TF3: console/API controllo flotta Lissone; poi lettura diretta completa: giro 228 s.
-   - PROVATO IN TF3: Abriola-Maretto, cinque eCitaro stimati, deposito nuovo; collaudo senza problemi.
-3. Stato del PC: TF3 e console aperti, partita autorizzata in marcia; Steam aperto.
-   Mod v14-bozza-4e61dfa4 DEV_MODE true, una versione; middleware aggiornato incluso avviatore.
-   Backup adiacenti verificati; percorsi e rapporti privati in work della chat. Opzioni Steam intatte.
-   Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
+   - PROVATO SUL PC (fuori dal gioco): backup integrali e confronto impronte mod/middleware.
+   - SOLO TEST AUTOMATICI: versione CRLF corretta in main c4afd72; suite e CI verdi, revisione senza blocchi.
+     Lua reale soltanto in CI Ubuntu; classe Lua Windows saltata, non superata.
+   - PROVATO IN TF3: mod aggiornata v14-bozza-4e61dfa4; console/API flotta Lissone, giro 228 s.
+   - PROVATO IN TF3: Abriola-Maretto 79575, cinque eCitaro stimati, due fermate e deposito funzionante.
+   - PROVATO IN TF3: giro misurato 794 s, intervallo 158 s, collaudo senza problemi; partita salvata.
+3. Stato del PC: TF3 e console chiusi normalmente, processi assenti verificati; Steam aperto.
+   Mod v14-bozza-4e61dfa4 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
+   Nuovo save 'capocantiere v14 Abriola-Maretto 12-10', file presente; non ancora ricaricato.
+   Nessun file azioni residuo. Backup e risposte grezze privati in work della chat; checkout E aggiornato.
 4. Problemi aperti e cose da NON fare
-   Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
-   Non applicare la proposta: due bus attuali, intervallo 114 s, obiettivo 240 s, suggerito un bus.
-   Vecchio collaudo pendente ha segnalato una linea inesistente; nessuna costruzione/acquisto/vendita.
-   Giro iniziale 1002 s STIMATO; giro reale 794 s, intervallo 158 s. Proposta quattro bus non applicata. Nome richiesto ignorato; velocita' fallback 22 m/s.
-   Non ripetere costruzione; linea 79575 gia' presente. Dettagli in prove-mappa-nuova.md.
+   Non ripetere costruzione 79575; non applicare riduzioni flotta senza nuova direttiva.
+   Nome effettivo Bus Passeggeri-Abr-Mar-IC-1: name richiesto ignorato; velocita' fallback 22 m/s.
+   Giro iniziale 1002 s era STIMATO; proposta quattro bus non applicata. Movimento API ancora ignoto.
+   Non installare con gioco/console aperti; backup e confronto prima. Non leggere o mostrare chiave API.
+   Dettagli e token reali in dev-notes/note/prove-mappa-nuova.md; costo monetario non misurato.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
-   backup/aggiornamento, avvio/chiusura normale, partita 'capocantiere v14 prova', console/API senza leggere
-   chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
-   Nicolo' ha scelto esplicitamente: creare linea bus Abriola-Maretto, numero bus stimato dalla mod.
-   Confermare in console soltanto questa richiesta concreta e poi collaudare.
+   Permessi di questa chat: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
+   backup/aggiornamento, avvio/chiusura normale, partita prova, console/API senza leggere chiave,
+   pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario (non usato).
+   Direttiva esplicita Nicolo': Abriola-Maretto, bus stimati dalla mod; eseguita. Nessuna domanda pendente.
+   Nuova chat: chiedere insieme gli accessi necessari; nessuna altra costruzione e' stata richiesta.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Salvare prova Abriola-Maretto con nome distinto, senza sovrascrivere la partita originale.
-   2. Verificare il salvataggio e chiudere TF3 e console normalmente; aggiornare questo checkpoint.
-   3. Pubblicare risultato; poi correggere nome/velocita' o nuove funzioni con direttiva autorizzata.
+   1. Leggere codice createLine/build_intercity_bus e initialFleet per nome ignorato/fallback velocita'.
+   2. Correggere soltanto problemi confermati, test automatici e checkpoint; poi installare con backup.
+   3. Con accessi richiesti ricaricare nuovo save e verificarne la linea; doppio binario/porto richiedono direttiva.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

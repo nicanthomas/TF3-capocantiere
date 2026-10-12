@@ -165,3 +165,10 @@ intervallo attuale 158 s, target quattro bus per 240 s, change=-1. Proposta NON 
 Stima iniziale 1002 s conservativa rispetto al giro misurato in questa prova; cinque bus rimangono.
 Qualita' passeggeri grezza: averageQuality=0.951716, countTotal=11, countBad=0, isVeryBad=false;
 nessuna unita' dedotta. Non basta a certificare comportamento su tutte le mappe o profitto.
+
+### Salvataggio e chiusura (12.10, 18:45)
+
+PROVATO IN TF3: salvata con nome distinto 'capocantiere v14 Abriola-Maretto 12-10'; menu mostra il nuovo nome.
+PROVATO SUL PC: file .sav presente (70739604 byte) e anteprima .jpg, data 18:43:30. Non ancora ricaricato.
+TF3 chiuso dal menu Torna al desktop, console con /esci; processi entrambi assenti verificati.
+Zero file capocantiere_actions residui; nessuna pulizia manuale. Opzioni Steam intatte.
