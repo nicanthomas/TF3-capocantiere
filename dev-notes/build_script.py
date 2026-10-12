@@ -141,8 +141,10 @@ def version_of(code: str, bozza: bool) -> str:
 def set_version(script: str, version: str) -> str:
     """Scrive (o aggiorna) la riga 'local CC_VERSION = ...' subito dopo 'local STATE_VERSION = ...'."""
     line = f'local CC_VERSION = "{version}"'
-    if re.search(r'^local CC_VERSION = ".*"$', script, flags=re.M):
-        return re.sub(r'^local CC_VERSION = ".*"$', line, script, count=1, flags=re.M)
+    # read() preserves CRLF: match the declaration without consuming its CR.
+    pattern = r'^local CC_VERSION = "[^"\r\n]*"(?=\r?$)'
+    if re.search(pattern, script, flags=re.M):
+        return re.sub(pattern, line, script, count=1, flags=re.M)
     m = re.search(r"^local STATE_VERSION = .*$", script, flags=re.M)
     if not m:
         raise SystemExit("riga 'local STATE_VERSION' non trovata: non so dove scrivere la versione")
@@ -184,7 +186,7 @@ def build_copy(code: str, dev: bool) -> int:
     target = os.path.join(out, os.path.relpath(SCRIPT, MOD_DIR))
     with open(target, "w", encoding="utf-8", newline="") as f:
         f.write(out_code)
-    v = re.search(r'^local CC_VERSION = "(.*)"$', out_code, flags=re.M)
+    v = re.search(r'^local CC_VERSION = "([^"\r\n]*)"(?=\r?$)', out_code, flags=re.M)
     print("Versione:", v.group(1) if v else "?", "- DEV_MODE =", want)
     print("Cartella:", out)
     if not dev:
@@ -215,7 +217,7 @@ def main() -> int:
     if old == new:
         print("Nessuna modifica: lo script e' gia' allineato")
         return 0
-    v = re.search(r'^local CC_VERSION = "(.*)"$', new, flags=re.M)
+    v = re.search(r'^local CC_VERSION = "([^"\r\n]*)"(?=\r?$)', new, flags=re.M)
     print("Versione della mod:", v.group(1) if v else "?")
     stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     shutil.copy2(SCRIPT, SCRIPT + ".bak_" + stamp)
