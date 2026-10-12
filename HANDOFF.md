@@ -122,8 +122,8 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: FERMO dalle 12.10 18:45
-Scritto da: ChatGPT, 12.10.2026 18:45 Europe/Zurich, ultimo commit verificato a79b5bf
+Stato: IN LAVORO da 12.10 19:23: completamento mod, diagnosi nome e velocita'
+Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a600ea1
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
