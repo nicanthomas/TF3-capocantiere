@@ -123,18 +123,19 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 18:02: correzione versione generata su Windows
-Scritto da: ChatGPT, 12.10.2026 18:22 Europe/Zurich, ultimo commit verificato bfa1ff5
+Scritto da: ChatGPT, 12.10.2026 18:24 Europe/Zurich, ultimo commit verificato 89c8ad5
 
 1. In una riga: versione corretta caricata; controllo flotta reale dalla console, giro ancora non misurato.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
-   - PROVATO IN TF3: console/API e controllo flotta Lissone; due bus, tempi giro ancora mancanti.
+   - PROVATO IN TF3: console/API e controllo flotta Lissone; seconda lettura diretta: manca una tratta.
+     Qualita' grezza disponibile, conteggi zero e flag false/true preservati, nessuna unita' dedotta.
    - PROVATO IN TF3: dopo correzione e nuovo backup, stato fresco e console riportano 4e61dfa4.
    - SOLO TEST AUTOMATICI: suite Windows isolata e CI corrette verdi; revisione senza blocchi.
      Classe Lua Windows saltata per runtime mancante, Lua reale in CI Ubuntu.
    - SOLO TEST AUTOMATICI: quattro regressioni; prima falliscono versione CRLF/mista e stampa, poi verdi.
    - PROVATO SUL PC (fuori dal gioco): backup/impronte verificati; CRLF non riconosciuto da set_version.
-3. Stato del PC: Steam e TF3 aperti, partita autorizzata a velocita' normale; console attiva dopo una richiesta API.
+3. Stato del PC: Steam e TF3 aperti, partita autorizzata accelerata per completare giro; console attiva dopo una richiesta API.
    Mod reinstallata v14-bozza-4e61dfa4, una sola dichiarazione, DEV_MODE true; nuovo backup verificato.
    Middleware aggiornato incluso avviatore. Correzione e test integrati in main; copia corretta generata con una sola versione.
    Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
