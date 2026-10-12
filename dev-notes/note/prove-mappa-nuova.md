@@ -118,3 +118,14 @@ Lezioni:
 - Partita salvata come "capocantiere v14 prova" e ricaricata: `modVersion = v14-bozza-32c86032`, `lastActionId = 0`.
 - id 1 (`check_network`): 4 linee controllate, 4 senza problemi. id 2: `adjust_line_fleet` (sola proposta) sulla
   linea 89994: 6 bus, giro 1193 s, propone -1; `read_map` ok. Percorso: file azioni del middleware, senza sim_eval.
+
+## 12.10.2026 — ripresa ChatGPT e console con mod aggiornata
+
+PROVATO SUL PC: backup verificati mod/middleware, aggiornamento completo e confronto delle impronte.
+PROVATO IN TF3: caricamento di capocantiere v14 prova; prima emersa versione duplicata per CRLF.
+Correzione generatore integrata in main c4afd72, quattro regressioni e CI verdi (SOLO TEST AUTOMATICI).
+PROVATO IN TF3: dopo nuovo backup/reinstallazione, stato e console confermano v14-bozza-4e61dfa4.
+Prima richiesta console reale: solo check_line_fleet su linea Lissone 74233; due bus, tempi giro non misurati.
+Nessuna costruzione, acquisto o vendita. Collaudo pendente ha anche segnalato 112827 inesistente.
+Token riportati per richiesta: due chiamate, input 6, output 544, cache letta 10904, cache scritta 11216,
+totale 22670; costo monetario non misurato. Qualita' riportata dalla console; dati grezzi da riverificare.

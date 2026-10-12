@@ -22,7 +22,8 @@ una regressione aggiuntiva ha poi dimostrato la stampa "?". Dopo: regressioni ve
 La suite Windows isolata finale ha 134 test, zero errori/fallimenti e una classe Lua saltata.
 Manca ancora un runtime Lua Windows fidato; lo skip non e' una prova nativa.
 CI 38275807791 verde su c4afd72; revisione indipendente senza blocchi e integrazione lineare in main.
-Caricamento e versione corretti in TF3 ancora da riprovare.
+PROVATO IN TF3: secondo caricamento dopo reinstallazione corretta riuscito; stato fresco e console
+riportano v14-bozza-4e61dfa4. PROVATO SUL PC: nuovo backup e tutte le impronte coincidenti, una sola dichiarazione.
 
 ## Prossima verifica reale
 Con gioco e console chiusi: nuovo backup, rigenerare --dev --bozza da main corretto,

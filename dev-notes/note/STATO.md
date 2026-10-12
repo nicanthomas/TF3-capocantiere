@@ -184,7 +184,11 @@ PROVATO IN TF3: caricata la partita autorizzata; console pronta, zero chiamate A
 399dcf74: trovate due dichiarazioni di versione dovute ai CRLF del checkout Windows. Console e gioco chiusi normalmente.
 SOLO TEST AUTOMATICI: generatore corretto con quattro regressioni; suite finale 134 test, zero errori/fallimenti,
 una classe Lua saltata, 16,195 s. CI 38275807791 verde, revisione senza blocchi, correzione c4afd72 integrata in main.
-Copia corretta generata con una sola versione 4e61dfa4, non ancora reinstallata. Dettagli in versione-mod-crlf.md.
+PROVATO SUL PC: copia corretta reinstallata con nuovo backup e confronto; una sola versione 4e61dfa4.
+PROVATO IN TF3: secondo caricamento riuscito, stato fresco e console confermano v14-bozza-4e61dfa4.
+Console reale/API: check_line_fleet su 74233 risponde, due bus ma tempi giro mancanti; nessun acquisto/vendita.
+Una richiesta usa due chiamate API e 22670 token totali riportati, incluso caching; costo monetario non misurato.
+Il collaudo pendente ha anche controllato 112827 inesistente (dato storico, nessuna costruzione). Dettagli in versione-mod-crlf.md.
 Prossimo passo: nuovo backup e reinstallazione, ricaricare partita e controllo flotta in console; poi scelta di Nicolo'.
 
 ## 2. Architettura

@@ -123,18 +123,18 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 18:02: correzione versione generata su Windows
-Scritto da: ChatGPT, 12.10.2026 18:18 Europe/Zurich, ultimo commit verificato 4187995
+Scritto da: ChatGPT, 12.10.2026 18:22 Europe/Zurich, ultimo commit verificato bfa1ff5
 
-1. In una riga: mod corretta caricata in TF3, versione 4e61dfa4 confermata; prossimo controllo flotta.
+1. In una riga: versione corretta caricata; controllo flotta reale dalla console, giro ancora non misurato.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
-   - PROVATO IN TF3: partita 'capocantiere v14 prova' caricata; console pronta, nessuna chiamata API.
+   - PROVATO IN TF3: console/API e controllo flotta Lissone; due bus, tempi giro ancora mancanti.
    - PROVATO IN TF3: dopo correzione e nuovo backup, stato fresco e console riportano 4e61dfa4.
    - SOLO TEST AUTOMATICI: suite Windows isolata e CI corrette verdi; revisione senza blocchi.
      Classe Lua Windows saltata per runtime mancante, Lua reale in CI Ubuntu.
    - SOLO TEST AUTOMATICI: quattro regressioni; prima falliscono versione CRLF/mista e stampa, poi verdi.
    - PROVATO SUL PC (fuori dal gioco): backup/impronte verificati; CRLF non riconosciuto da set_version.
-3. Stato del PC: Steam e TF3 aperti, partita 'capocantiere v14 prova' in pausa; console attiva, zero API finora.
+3. Stato del PC: Steam e TF3 aperti, partita autorizzata a velocita' normale; console attiva dopo una richiesta API.
    Mod reinstallata v14-bozza-4e61dfa4, una sola dichiarazione, DEV_MODE true; nuovo backup verificato.
    Middleware aggiornato incluso avviatore. Correzione e test integrati in main; copia corretta generata con una sola versione.
    Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
@@ -144,15 +144,15 @@ Scritto da: ChatGPT, 12.10.2026 18:18 Europe/Zurich, ultimo commit verificato 41
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
    Sintassi Lua locale e classe nativa non provate; CI/mock non equivalgono a caricamento in TF3.
    Non eseguire costruzioni diverse dalla scelta concreta di Nicolo' con conferma console.
-   set_version non riconosce righe CRLF e inserisce un'altra versione: Lua usa quella vecchia successiva.
+   Generatore corretto in main. Vecchio collaudo pendente segnala una linea inesistente; nessuna modifica.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio, log,
    backup/aggiornamento, avvio/chiusura normale e partita 'capocantiere v14 prova', console con API
    senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
    Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Riprendere la partita per la prova autorizzata; chiedere in console solo controllo flotta di Lissone.
-   2. Leggere risultato reale e token, pubblicare prova; attendere scelta concreta della costruzione.
+   1. Completare un giro e ripetere lettura flotta; conservare anche risposta diretta del bridge.
+   2. Attendere scelta concreta di Nicolo' alla domanda costruzione, gia' inviata in chat.
    3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
 Letto da Claude il ...: ...
 
