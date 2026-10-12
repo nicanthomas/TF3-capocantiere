@@ -119,42 +119,43 @@ Scritto da: Claude, 12.10.2026, ultimo commit c9855a5 (il tuo checkpoint 11.10)
 Letto da ChatGPT il 12.10.2026: si'.
 
 ## Istruzioni handoff per Claude
-
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 19:23: diagnosi doppio binario fallito, poi porto
-Scritto da: ChatGPT, 12.10.2026 20:07 Europe/Zurich, ultimo commit verificato b3a8575
-
-1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
+Stato: FERMO dalle 12.10 20:11 per richiesta esplicita di Nicolo'
+Scritto da: ChatGPT, 12.10.2026 20:11 Europe/Zurich, ultimo commit verificato abab1a2
+1. In una riga: bus concluso; doppio binario e linea navale incompleti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO SUL PC (fuori dal gioco): backup integrali e confronto impronte mod/middleware.
-   - SOLO TEST AUTOMATICI: versione CRLF corretta in main c4afd72; suite e CI verdi, revisione senza blocchi.
-     Lua reale soltanto in CI Ubuntu; classe Lua Windows saltata, non superata.
-   - PROVATO IN TF3: mod aggiornata v14-bozza-4e61dfa4; console/API flotta Lissone, giro 228 s.
-   - PROVATO IN TF3: Abriola-Maretto 79575, cinque eCitaro stimati, due fermate e deposito funzionante.
-   - PROVATO IN TF3: giro misurato 794 s, intervallo 158 s, collaudo senza problemi; partita salvata.
-3. Stato del PC: TF3 aperto, copia 'capocantiere porto GUI 12-10'; console non avviata.
-   Mod v14-bozza-509c3059 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
-   Save 'capocantiere v14 Abriola-Maretto 12-10' RICARICATO: linea 79575 e cinque bus presenti.
-   Nessun file azioni residuo. Backup e risposte grezze privati in work della chat; checkout E aggiornato.
+   - SOLO TEST AUTOMATICI: versione CRLF corretta c4afd72, test/CI verdi; Lua Windows saltata.
+   - PROVATO IN TF3: eCitaro landVehicle.topSpeed=19.444; correzione 219e678,
+     regressione reale e CI verdi, mod aggiornata con backup e confronto impronte.
+   - PROVATO IN TF3: Abriola-Maretto 79575, cinque bus stimati, giro misurato 794 s,
+     collaudo senza problemi e save ricaricato; nessuna riduzione flotta applicata.
+   - PROVATO IN TF3: anello Stern-Afforte-Abriola fallito; 3 stazioni/98 tratti.
+     Copia fallita salvata; proposte senza costruire confermano collisioni cambiando lato.
+   - PROVATO IN TF3: porto GUI 122216 salvato; mod costruisce due porti piccoli,
+     fallisce al deposito e li rimuove. Deposito GUI 122426 costruito; percorsi NON provati.
+3. Stato del PC: TF3 aperto su 'capocantiere porto GUI 12-10', console non avviata.
+   Mod v14-bozza-509c3059 DEV_MODE true; middleware aggiornato, opzioni Steam intatte.
+   Save GUI delle 20:04 contiene il porto; deposito GUI successivo NON salvato.
+   Originale, bus e copia iniziale porto preservati. Nessuna modifica sorgenti dopo 219e678.
+   Backup/risposte/sonde in work della chat; dettagli in porto-calliano-12-10.md.
 4. Problemi aperti e cose da NON fare
-   Non ripetere costruzione 79575; non applicare riduzioni flotta senza nuova direttiva.
-   Auto Line Namer rinomina le linee (nota scoperte-api.md). Velocita' TF3 in landVehicle.topSpeed,
-   Sonda reale eCitaro=19.444; funzione estratta falliva e dopo correzione passa. Mod corretta ricaricata: stato fresco 509c3059.
-   Anello Stern-Afforte-Abriola FALLITO: secondo binario collide con strade; tre stazioni e 98 tratti.
-   Non ripetere su copia contaminata o rimuovere residui a mano; risultato in prove-doppio-binario-12-10.json.
-   Backup a gioco chiuso; chiave mai letta/mostrata. Dettagli in prove-mappa-nuova.md.
+   Non dichiarare release pronta o ripetere costruzioni sulla copia ferroviaria contaminata.
+   Nessuna rimozione manuale dei residui o riduzione flotta senza direttiva.
+   Vecchio blocco porti non riprodotto qui; blocco attuale: deposito vicino a Lissone.
+   Deposito GUI: quota 2, acqua -Y; causa del rifiuto automatico NON confermata.
+   Backup/installazioni solo a gioco e console chiusi. Chiave mai letta/mostrata.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Permessi di questa chat: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
-   backup/aggiornamento, avvio/chiusura normale, partita prova, console/API senza leggere chiave,
-   pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario (non usato).
-   Direttiva esplicita Nicolo': Abriola-Maretto, bus stimati dalla mod; eseguita. Nessuna domanda pendente.
-   Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
-   su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
+   Nicolo' ha ordinato 'stop, update git': non riprendere senza nuova richiesta.
+   Permessi di questa chat: PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
+   backup/aggiornamenti, avvio/chiusura normale, partita prova, console/API, pulizia protocollo.
+   Cambio opzioni Steam con ripristino autorizzato ma non usato; permessi non validi in chat future.
+   Direttive: bus Abriola-Maretto; anello doppio e porto/linea navale su copie separate.
+   Sonda percorsi deposito non eseguita dopo lo stop. Nessuna domanda pendente.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. PROVATO IN TF3 senza costruire: paralleli -10, -5 e +5 m collidono con strade.
-   2. PROVATO IN TF3: porto passeggeri GUI 122216, una stazione; schema in porto-calliano-12-10.md.
-   3. Porti della mod costruiti, prova fallita al deposito; pulizia due costruzioni. Copiare deposito GUI.
+   1. Alla ripresa autorizzata verificare TF3 e deposito non salvato; conservare copia distinta.
+   2. Verificare percorso deposito/porto, confrontare posa automatica; correggere causa provata.
+   3. Completare collaudi nave e doppio binario; release solo con requisiti soddisfatti.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
