@@ -129,3 +129,15 @@ Prima richiesta console reale: solo check_line_fleet su linea Lissone 74233; due
 Nessuna costruzione, acquisto o vendita. Collaudo pendente ha anche segnalato 112827 inesistente.
 Token riportati per richiesta: due chiamate, input 6, output 544, cache letta 10904, cache scritta 11216,
 totale 22670; costo monetario non misurato. Qualita' riportata dalla console; dati grezzi da riverificare.
+
+### Completamento misura flotta (12.10, 18:25)
+
+PROVATO IN TF3, risposta diretta del bridge conservata privatamente: dopo avanzamento della partita,
+check_line_fleet su 74233 restituisce ok=true, giro 228 s, due bus, intervallo attuale 114 s,
+obiettivo 240 s, target un bus, change=-1 e proposta di togliere un veicolo. Non applicata.
+Qualita' grezza: available=true, errors=[]; entrambi i rami disponibili, averageQuality/countBad/countTotal=0,
+isVeryBad=false per passeggeri e true per merci. Sono dati reali di questa linea, non unita' o significati certificati.
+Queste letture dirette usano lo stesso run_game_tool del middleware, senza modello e senza costi API aggiuntivi.
+Protocollo e pulizia dei soli file capocantiere autorizzati nella sessione. Nessuna costruzione/acquisto/vendita.
+Console uscita con /esci; totale richiesta API rimasto 22670 token. TF3 rimesso in pausa.
+Costruzione iniziale/flotta stimata non ancora provate: domanda specifica inviata a Nicolo', risposta attesa.

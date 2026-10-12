@@ -122,39 +122,36 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 18:02: correzione versione generata su Windows
-Scritto da: ChatGPT, 12.10.2026 18:24 Europe/Zurich, ultimo commit verificato 89c8ad5
+Stato: IN LAVORO da 12.10 18:27: pubblicazione prova flotta e chiusura TF3
+Scritto da: ChatGPT, 12.10.2026 18:27 Europe/Zurich, ultimo commit verificato ea06e07
 
-1. In una riga: versione corretta caricata; controllo flotta reale dalla console, giro ancora non misurato.
+1. In una riga: mod/middleware aggiornati; controllo flotta reale riuscito; costruzione ancora da scegliere.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
-   - PROVATO IN TF3: console/API e controllo flotta Lissone; seconda lettura diretta: manca una tratta.
-     Qualita' grezza disponibile, conteggi zero e flag false/true preservati, nessuna unita' dedotta.
-   - PROVATO IN TF3: dopo correzione e nuovo backup, stato fresco e console riportano 4e61dfa4.
-   - SOLO TEST AUTOMATICI: suite Windows isolata e CI corrette verdi; revisione senza blocchi.
-     Classe Lua Windows saltata per runtime mancante, Lua reale in CI Ubuntu.
-   - SOLO TEST AUTOMATICI: quattro regressioni; prima falliscono versione CRLF/mista e stampa, poi verdi.
-   - PROVATO SUL PC (fuori dal gioco): backup/impronte verificati; CRLF non riconosciuto da set_version.
-3. Stato del PC: Steam e TF3 aperti, partita autorizzata accelerata per completare giro; console attiva dopo una richiesta API.
-   Mod reinstallata v14-bozza-4e61dfa4, una sola dichiarazione, DEV_MODE true; nuovo backup verificato.
-   Middleware aggiornato incluso avviatore. Correzione e test integrati in main; copia corretta generata con una sola versione.
-   Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
-   Opzioni Steam intatte, niente salvataggi o file del gioco modificati.
+   - PROVATO SUL PC (fuori dal gioco): backup integrali verificati e impronte mod/middleware coincidenti.
+   - SOLO TEST AUTOMATICI: generatore versione CRLF corretto in main c4afd72; suite e CI verdi.
+     Classe Lua Windows saltata, Lua reale provata soltanto in CI Ubuntu; revisione senza blocchi.
+   - PROVATO IN TF3: mod ricaricata, stato e console riportano v14-bozza-4e61dfa4.
+   - PROVATO IN TF3: console/API controllo flotta Lissone; poi lettura diretta completa: giro 228 s.
+   - PROVATO IN TF3: qualita' grezza disponibile, zeri e false/true preservati; nessuna unita' dedotta.
+3. Stato del PC: TF3 in pausa nella partita autorizzata, console uscita con /esci; Steam aperto.
+   Mod v14-bozza-4e61dfa4 DEV_MODE true, una versione; middleware aggiornato incluso avviatore.
+   Backup adiacenti verificati; percorsi e rapporti privati in work della chat. Opzioni Steam intatte.
    Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
 4. Problemi aperti e cose da NON fare
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
-   Sintassi Lua locale e classe nativa non provate; CI/mock non equivalgono a caricamento in TF3.
-   Non eseguire costruzioni diverse dalla scelta concreta di Nicolo' con conferma console.
-   Generatore corretto in main. Vecchio collaudo pendente segnala una linea inesistente; nessuna modifica.
+   Non applicare la proposta: due bus attuali, intervallo 114 s, obiettivo 240 s, suggerito un bus.
+   Vecchio collaudo pendente ha segnalato una linea inesistente; nessuna costruzione/acquisto/vendita.
+   Costruzione e stima flotta iniziale ancora NON provate in questa ripresa; dettagli in prove-mappa-nuova.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio, log,
-   backup/aggiornamento, avvio/chiusura normale e partita 'capocantiere v14 prova', console con API
-   senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
-   Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
+   Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
+   backup/aggiornamento, avvio/chiusura normale, partita 'capocantiere v14 prova', console/API senza leggere
+   chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
+   Domanda costruzione gia' inviata: linea bus Abriola-Maretto con flotta stimata o un bus in piu' a Lissone.
+   Serve la scelta concreta di Nicolo'; conferma console mantenuta, nessuna scelta presunta.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Completare un giro e ripetere lettura flotta; conservare anche risposta diretta del bridge.
-   2. Attendere scelta concreta di Nicolo' alla domanda costruzione, gia' inviata in chat.
-   3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
+   1. Chiudere TF3 normalmente e verificare processo assente prima di lasciare la chat.
+   2. Alla scelta di Nicolo', nella stessa chat i permessi restano validi; ricaricare partita e prova console.
+   3. Pubblicare risultato/collaudo; poi doppio binario o porto con direttiva e prove autorizzate.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

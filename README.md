@@ -41,7 +41,10 @@ Tu ──▶ middleware Python (main.py) ──▶ Claude API (tool use)
 
 Azioni della v14 (bozza: si attivano con `CAPOCANTIERE_BOZZA=1` e la mod costruita con `--bozza`), provate in gioco
 sulla build 40420 (08-09.10.2026). La v14 (`v14-bozza-32c86032`) si carica in gioco e risponde alle azioni del
-middleware (collaudo del 09.10.2026); la console con Claude non e' ancora stata provata con la v14:
+middleware (collaudo del 09.10.2026). La console con Claude e' stata provata da Claude per panoramica e linea bus;
+il 12.10.2026, con la mod aggiornata `v14-bozza-4e61dfa4`, ChatGPT ha ripetuto il controllo flotta reale.
+La misura diretta successiva ha dato un giro di 228 s sulla linea di Lissone; nessuna modifica alla flotta.
+La stima iniziale aggiornata dei veicoli resta da provare in gioco:
 
 | Tool | Cosa fa | Stato |
 |---|---|---|

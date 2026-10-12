@@ -189,7 +189,13 @@ PROVATO IN TF3: secondo caricamento riuscito, stato fresco e console confermano 
 Console reale/API: check_line_fleet su 74233 risponde, due bus ma tempi giro mancanti; nessun acquisto/vendita.
 Una richiesta usa due chiamate API e 22670 token totali riportati, incluso caching; costo monetario non misurato.
 Il collaudo pendente ha anche controllato 112827 inesistente (dato storico, nessuna costruzione). Dettagli in versione-mod-crlf.md.
-Prossimo passo: nuovo backup e reinstallazione, ricaricare partita e controllo flotta in console; poi scelta di Nicolo'.
+PROVATO IN TF3: seconda lettura diretta dal middleware ha preservato cargo_quality.available=true,
+rami passengers/cargo disponibili senza errori, averageQuality/countBad/countTotal zero,
+isVeryBad false per passeggeri e true per merci; nessuna interpretazione di unita'/percentuali.
+Lettura finale flotta 74233: ok=true, round_trip_s=228, interval_now_s=114, vehicles=2,
+interval_target=240, target=1, change=-1; solo proposta, nessuna applicazione.
+Console terminata normalmente con /esci, totale 22670 token per la sola richiesta API; letture dirette senza API.
+TF3 messo in pausa; costruzione ancora in attesa della scelta concreta di Nicolo'.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
