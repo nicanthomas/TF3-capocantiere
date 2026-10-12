@@ -123,7 +123,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 19:23: correzione velocita' modello confermata in TF3
-Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a600ea1
+Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 219e678
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -152,7 +152,7 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a6
    Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
    su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Attendere CI della branch codex/12-10-land-vehicle-speed, poi merge senza PR se verde.
+   1. Correzione 219e678 in main: CI e revisione verdi. Chiudere TF3 e installare con backup.
    2. Correggere soltanto problemi confermati, test automatici e checkpoint; poi installare con backup.
    3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...
