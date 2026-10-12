@@ -123,9 +123,9 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 18:02: correzione versione generata su Windows
-Scritto da: ChatGPT, 12.10.2026 18:12 Europe/Zurich, ultimo commit verificato c4afd72
+Scritto da: ChatGPT, 12.10.2026 18:15 Europe/Zurich, ultimo commit verificato 2f9a1cb
 
-1. In una riga: partita caricata; trovata versione duplicata nello script generato, da correggere.
+1. In una riga: generatore corretto e mod reinstallata; da riverificare versione e flotta in TF3.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
    - PROVATO IN TF3: partita 'capocantiere v14 prova' caricata; console pronta, nessuna chiamata API.
@@ -135,7 +135,7 @@ Scritto da: ChatGPT, 12.10.2026 18:12 Europe/Zurich, ultimo commit verificato c4
    - SOLO TEST AUTOMATICI: quattro regressioni; prima falliscono versione CRLF/mista e stampa, poi verdi.
    - PROVATO SUL PC (fuori dal gioco): backup/impronte verificati; CRLF non riconosciuto da set_version.
 3. Stato del PC: Steam aperto; console uscita con /esci (zero token), TF3 chiuso normalmente e processo assente.
-   Mod installata: codice aggiornato ma versione effettiva 399dcf74 per dichiarazione duplicata, DEV_MODE true.
+   Mod reinstallata v14-bozza-4e61dfa4, una sola dichiarazione, DEV_MODE true; nuovo backup verificato.
    Middleware aggiornato incluso avviatore. Correzione e test integrati in main; copia corretta generata con una sola versione.
    Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
    Opzioni Steam intatte, niente salvataggi o file del gioco modificati.
@@ -151,7 +151,7 @@ Scritto da: ChatGPT, 12.10.2026 18:12 Europe/Zurich, ultimo commit verificato c4
    senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
    Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Allineare checkout storico a main; rigenerare mod e installare con backup e confronto.
+   1. Riavviare TF3 e ricaricare la partita; leggere versione e velocita' nello stato fresco.
    2. A gioco chiuso rigenerare/reinstallare con nuovo backup; ricaricare e verificare versione nello stato.
    3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
 Letto da Claude il ...: ...
