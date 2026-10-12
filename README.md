@@ -45,7 +45,8 @@ middleware (collaudo del 09.10.2026). La console con Claude e' stata provata da 
 il 12.10.2026, con la mod aggiornata `v14-bozza-4e61dfa4`, ChatGPT ha ripetuto il controllo flotta reale.
 La misura diretta successiva ha dato un giro di 228 s sulla linea di Lissone; nessuna modifica alla flotta.
 Il 12.10 la console ha costruito Abriola-Maretto con cinque eCitaro stimati dalla mod e collaudo iniziale ok.
-Stima giro 1002 s, obiettivo 240 s; frequenza reale ancora da misurare. Dettagli in `dev-notes/note/prove-mappa-nuova.md`:
+Stima giro 1002 s, obiettivo 240 s; giro misurato 794 s, intervallo 158 s con cinque bus.
+La proposta successiva di scendere a quattro bus non e' stata applicata. Dettagli in `dev-notes/note/prove-mappa-nuova.md`:
 
 | Tool | Cosa fa | Stato |
 |---|---|---|

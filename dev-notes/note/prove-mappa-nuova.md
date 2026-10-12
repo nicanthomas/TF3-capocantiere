@@ -155,3 +155,13 @@ problems=[]; EN_ROUTE=5, movement_unknown=5, vehicles_moving=0, stats=[]. Movime
 ancora da verificare dopo avanzamento. Stato fresco conferma linea e cinque veicoli, lastActionId=2.
 Richiesta: tre chiamate API, input 8, output 540, cache letta 22041, cache scritta 11447, totale 34036 token.
 Costo monetario non misurato. Solo questa costruzione eseguita; flotta Lissone non modificata.
+
+### Collaudo dopo il giro (12.10, 18:41)
+
+PROVATO IN TF3, letture dirette senza ulteriori chiamate API: linea 79575, cinque bus, due fermate;
+check_line ok=true, problems=[], quattro EN_ROUTE e uno AT_TERMINAL. Misura velocita'/movimento
+ancora sconosciuta per i cinque bus, ma check_line_fleet ora ha tempi completi: giro 794 s,
+intervallo attuale 158 s, target quattro bus per 240 s, change=-1. Proposta NON applicata.
+Stima iniziale 1002 s conservativa rispetto al giro misurato in questa prova; cinque bus rimangono.
+Qualita' passeggeri grezza: averageQuality=0.951716, countTotal=11, countBad=0, isVeryBad=false;
+nessuna unita' dedotta. Non basta a certificare comportamento su tutte le mappe o profitto.

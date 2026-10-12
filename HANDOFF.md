@@ -122,8 +122,8 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 18:36: collaudo reale bus Abriola-Maretto
-Scritto da: ChatGPT, 12.10.2026 18:36 Europe/Zurich, ultimo commit verificato 7fa7eac
+Stato: IN LAVORO da 12.10 18:42: salvataggio distinto e chiusura dopo collaudo
+Scritto da: ChatGPT, 12.10.2026 18:42 Europe/Zurich, ultimo commit verificato ebfafe5
 
 1. In una riga: linea Abriola-Maretto 79575 costruita, cinque bus stimati; collaudo iniziale ok.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -141,7 +141,7 @@ Scritto da: ChatGPT, 12.10.2026 18:36 Europe/Zurich, ultimo commit verificato 7f
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
    Non applicare la proposta: due bus attuali, intervallo 114 s, obiettivo 240 s, suggerito un bus.
    Vecchio collaudo pendente ha segnalato una linea inesistente; nessuna costruzione/acquisto/vendita.
-   Giro 1002 s STIMATO; controllo a 18:38 ancora senza tempi misurati, cinque bus EN_ROUTE. Nome richiesto ignorato; velocita' fallback 22 m/s.
+   Giro iniziale 1002 s STIMATO; giro reale 794 s, intervallo 158 s. Proposta quattro bus non applicata. Nome richiesto ignorato; velocita' fallback 22 m/s.
    Non ripetere costruzione; linea 79575 gia' presente. Dettagli in prove-mappa-nuova.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
@@ -150,8 +150,8 @@ Scritto da: ChatGPT, 12.10.2026 18:36 Europe/Zurich, ultimo commit verificato 7f
    Nicolo' ha scelto esplicitamente: creare linea bus Abriola-Maretto, numero bus stimato dalla mod.
    Confermare in console soltanto questa richiesta concreta e poi collaudare.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Lasciare avanzare la partita e controllare 79575 senza modificare la flotta.
-   2. Verificare movimento/tempi, salvare la prova con nome distinto e chiudere normalmente.
+   1. Salvare prova Abriola-Maretto con nome distinto, senza sovrascrivere la partita originale.
+   2. Verificare il salvataggio e chiudere TF3 e console normalmente; aggiornare questo checkpoint.
    3. Pubblicare risultato; poi correggere nome/velocita' o nuove funzioni con direttiva autorizzata.
 Letto da Claude il ...: ...
 
