@@ -141,7 +141,7 @@ Scritto da: ChatGPT, 12.10.2026 18:36 Europe/Zurich, ultimo commit verificato 7f
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
    Non applicare la proposta: due bus attuali, intervallo 114 s, obiettivo 240 s, suggerito un bus.
    Vecchio collaudo pendente ha segnalato una linea inesistente; nessuna costruzione/acquisto/vendita.
-   Giro 1002 s STIMATO; movimento ancora ignoto. Nome richiesto ignorato; velocita' fallback 22 m/s.
+   Giro 1002 s STIMATO; controllo a 18:38 ancora senza tempi misurati, cinque bus EN_ROUTE. Nome richiesto ignorato; velocita' fallback 22 m/s.
    Non ripetere costruzione; linea 79575 gia' presente. Dettagli in prove-mappa-nuova.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
