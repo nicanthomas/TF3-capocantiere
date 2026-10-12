@@ -140,7 +140,7 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a6
 4. Problemi aperti e cose da NON fare
    Non ripetere costruzione 79575; non applicare riduzioni flotta senza nuova direttiva.
    Auto Line Namer rinomina le linee (nota scoperte-api.md). Velocita' TF3 in landVehicle.topSpeed,
-   sonda reale eCitaro=19.444; codice la ignora e usa 22 m/s: correzione necessaria.
+   Sonda reale eCitaro=19.444; funzione estratta falliva e dopo correzione passa. Mod installata NON corretta.
    Giro iniziale 1002 s era STIMATO; proposta quattro bus non applicata. Movimento API ancora ignoto.
    Non installare con gioco/console aperti; backup e confronto prima. Non leggere o mostrare chiave API.
    Dettagli e token reali in dev-notes/note/prove-mappa-nuova.md; costo monetario non misurato.
@@ -152,7 +152,7 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a6
    Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
    su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Regressione velocita' landVehicle e correzione; pubblicare test e checkpoint.
+   1. Attendere CI della branch codex/12-10-land-vehicle-speed, poi merge senza PR se verde.
    2. Correggere soltanto problemi confermati, test automatici e checkpoint; poi installare con backup.
    3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...

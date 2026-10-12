@@ -17,8 +17,8 @@ end
 -- Alla CREAZIONE di una linea, se Nicolo' non ha indicato il numero di veicoli, la mod stima il giro dalla distanza
 -- tra le fermate (in linea d'aria x fattore percorso), dalla velocita' massima del modello (ridotta per accelerazioni,
 -- curve e centri abitati) e dalla sosta alle fermate; poi mette i veicoli per un passaggio ogni CC.FLEET_INTERVAL.
--- Stima soltanto: dopo un giro vero `check_line_fleet` misura i tempi reali. NON VERIFICATO IN GIOCO: il campo
--- metadata.<tipo>Vehicle.topSpeed (m/s in TF2) va confermato in TF3; se manca si usa CC.FLEET_SPEED.
+-- Stima soltanto: dopo un giro vero `check_line_fleet` misura i tempi reali. VERIFICATO IN TF3 (12.10.2026):
+-- metadata.landVehicle.topSpeed = 19.444 per eCitaro; se manca si usa CC.FLEET_SPEED.
 CC.FLEET_INTERVAL = CC.FLEET_INTERVAL or { bus = 240, tram = 240, truck = 300, train = 480, waggon = 480, ship = 900, plane = 900, helicopter = 600 }
 CC.FLEET_SPEED = CC.FLEET_SPEED or { bus = 22, tram = 17, truck = 22, train = 33, waggon = 33, ship = 12, plane = 100, helicopter = 60 }   -- m/s
 CC.FLEET_DETOUR = CC.FLEET_DETOUR or { bus = 1.35, tram = 1.35, truck = 1.35, train = 1.2, waggon = 1.2, ship = 1.3, plane = 1.05, helicopter = 1.05 }
@@ -31,7 +31,7 @@ function CC.modelTopSpeed(modelId)
 	local v
 	pcall(function()
 		local md = api.res.modelRep.get(modelId).metadata
-		for _, k in ipairs({ "roadVehicle", "railVehicle", "waterVehicle", "airVehicle" }) do
+		for _, k in ipairs({ "landVehicle", "roadVehicle", "railVehicle", "waterVehicle", "airVehicle" }) do
 			local t = md[k] and md[k].topSpeed
 			if type(t) == "number" and t > 0 then v = t; return end
 		end

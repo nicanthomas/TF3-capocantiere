@@ -196,6 +196,15 @@ do
 	local n5, f5 = CC.initialFleet({ 1, 2 }, nil, "bus", 7, 6)
 	check(n5 == 6 and f5.estimated == false, "flotta: il numero chiesto vince sulla stima, nei limiti (" .. n5 .. ")")
 	check(CC.modelTopSpeed(12345) == nil, "flotta: velocita' del modello assente -> nil, senza errori")
+	local originalGet = api.res.modelRep.get
+	api.res.modelRep.get = function(id)
+		if id == 20001 then return { metadata = { landVehicle = { topSpeed = 19.444 }, roadVehicle = {} } } end
+		if id == 20002 then return { metadata = { roadVehicle = { topSpeed = 25 } } } end
+		return originalGet(id)
+	end
+	check(CC.modelTopSpeed(20001) == 19.444, "flotta: velocita' TF3 in landVehicle letta senza fallback")
+	check(CC.modelTopSpeed(20002) == 25, "flotta: metadata roadVehicle legacy ancora leggibile")
+	api.res.modelRep.get = originalGet
 end
 
 
