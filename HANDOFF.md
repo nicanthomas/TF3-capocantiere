@@ -35,8 +35,17 @@ I checkpoint sono parte del lavoro richiesto, non un processo in background. **N
 2. Leggere per intero `HANDOFF.md` (soprattutto la sezione indirizzata a te: Claude legge «Istruzioni handoff per Claude», ChatGPT legge «Istruzioni handoff per ChatGPT»), poi le regole e le sezioni pertinenti di `dev-notes/note/STATO.md`; quindi i file di codice e le note citati dalla prossima attività.
 3. Confrontare il checkpoint con gli ultimi commit; se è obsoleto, ricostruire gli aggiornamenti dai commit senza sovrascrivere modifiche recenti.
 4. Verificare i propri accessi reali. In assenza di PC, proseguire con revisione codice, sviluppo e test eseguibili senza gioco; rimandare le verifiche TF3 dichiarandole non eseguite.
-5. Riprendere **autonomamente** dalla prossima operazione concreta riportata sotto. Se manca una priorità utilizzabile, scegliere il più piccolo passo utile e sicuro da `STATO.md`, senza chiedere a Nicolo' di ricostruire il contesto.
-6. Aggiornare e pubblicare questo handoff **durante** il lavoro dopo ogni passo significativo. Non attendere un messaggio di cambio AI.
+5. **Chiedere SUBITO a Nicolo' tutte le autorizzazioni che servono (regola di Nicolo', 12.10.2026).** Leggere la
+   prossima operazione e, prima di iniziare, mandare **un solo messaggio** con l'elenco completo di cio' che serve per
+   portarla a termine, anche le prove nel gioco, per esempio: accesso al PC e alle cartelle; avviare e chiudere TF3;
+   caricare una partita e costruire; installare o aggiornare la mod e il middleware sul PC (con backup); usare la
+   console con la chiave API; cambiare le opzioni di avvio di Steam. Per ogni voce dire in una riga a cosa serve.
+   Nicolo' risponde una volta sola (si' a tutto, oppure quali voci no). **Mai saltare in silenzio una prova in gioco
+   o un'installazione perche' manca un'autorizzazione mai chiesta**: se serve, si chiede. Se Nicolo' e' assente, non
+   aspettare bloccati: fare il lavoro possibile e mettere la richiesta al punto 5 della propria sezione di handoff.
+   Un'autorizzazione vale per la chat in cui e' data; nella sezione di handoff scrivere quali sono state date.
+6. Riprendere **autonomamente** dalla prossima operazione concreta riportata sotto. Se manca una priorità utilizzabile, scegliere il più piccolo passo utile e sicuro da `STATO.md`, senza chiedere a Nicolo' di ricostruire il contesto.
+7. Aggiornare e pubblicare questo handoff **durante** il lavoro dopo ogni passo significativo. Non attendere un messaggio di cambio AI.
 
 
 ## Come si scrivono le note di passaggio (vale per entrambe le AI)
@@ -68,7 +77,7 @@ Scritto da: <Claude|ChatGPT>, <data ora>, ultimo commit <sha corto>
 1. In una riga: <a che punto siamo>
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
 3. Stato del PC: versione mod installata, middleware sul PC aggiornato si'/no, gioco aperto/chiuso,
-   opzioni di avvio di Steam, file lasciati a meta'
+   opzioni di avvio di Steam, file lasciati a meta'; autorizzazioni avute in questa sessione
 4. Problemi aperti e cose da NON fare
 5. Domande o decisioni per l'altra AI (o per Nicolo')
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
@@ -98,7 +107,9 @@ Scritto da: Claude, 12.10.2026, ultimo commit c9855a5 (il tuo checkpoint 11.10)
    di Steam: `avvia_con_gioco.bat %command%` (messe da Nicolo').
 4. **Problemi aperti / da NON fare:** il .bat in uso dalla console non si sovrascrive col gioco aperto. Il primo
    «partita in pausa» del 10.10 non e' un errore confermato (al secondo tentativo ha funzionato).
-5. **Domande per ChatGPT:** niente. Per Nicolo': nessuna.
+5. **Domande per ChatGPT:** niente. **Per Nicolo' (da chiedere tu, ChatGPT, appena riprendi, in un solo messaggio):**
+   autorizzazione a installare mod e `.bat` sul PC con il gioco chiuso, ad avviare TF3 e caricare la partita
+   «capocantiere v14 prova», e a fare con lui una richiesta in console che costruisce. Senza queste i passi 1-2 non si fanno.
 6. **Prossima operazione precisa:**
    1. Con il gioco chiuso: copiare `avvia_capocantiere.bat` e la mod `--dev --bozza` di main sul PC (backup prima,
       rileggere dal PC che i file coincidano).

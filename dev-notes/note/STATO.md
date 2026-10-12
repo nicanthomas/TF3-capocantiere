@@ -67,6 +67,10 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
      gioco che la mod risulti attiva;
    - aggiornare in questo file e in `middleware/game_bridge.py` (DEFAULT_DIR o variabile CAPOCANTIERE_DIR) i
      percorsi nuovi, poi proseguire.
+Vale per Claude e per ChatGPT (regola di Nicolo', 12.10.2026): all'inizio di ogni sessione chiedere in un solo
+messaggio TUTTE le autorizzazioni necessarie per la prossima operazione, comprese le prove in TF3 (avviare il gioco,
+caricare la partita, costruire, installare mod/middleware sul PC, usare la console). Mai saltare una prova in gioco
+perche' l'autorizzazione non e' stata chiesta. Dettagli in `HANDOFF.md`, procedura di avvio punto 5.
 Prima di qualsiasi prova, in un unico giro, cosi' Nicolo' puo' approvare tutto e poi lasciare lavorare:
 1. Controllo del computer (`request_access`): Transport Fever 3 e Steam (servono per la ripresa dopo un crash).
 2. Cartella `C:\Program Files (x86)\Steam\userdata\<steam-id>\3493540\local\capocantiere` (lettura/scrittura) e,
