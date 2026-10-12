@@ -123,7 +123,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 19:23: diagnosi doppio binario fallito, poi porto
-Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 219e678
+Scritto da: ChatGPT, 12.10.2026 19:49 Europe/Zurich, ultimo commit verificato 10a3d49
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -133,7 +133,7 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    - PROVATO IN TF3: mod aggiornata v14-bozza-4e61dfa4; console/API flotta Lissone, giro 228 s.
    - PROVATO IN TF3: Abriola-Maretto 79575, cinque eCitaro stimati, due fermate e deposito funzionante.
    - PROVATO IN TF3: giro misurato 794 s, intervallo 158 s, collaudo senza problemi; partita salvata.
-3. Stato del PC: TF3 aperto, save bus caricato; console non avviata. Steam aperto.
+3. Stato del PC: TF3 aperto, copia 'capocantiere ferrovia fallita 12-10'; console non avviata.
    Mod v14-bozza-509c3059 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
    Save 'capocantiere v14 Abriola-Maretto 12-10' RICARICATO: linea 79575 e cinque bus presenti.
    Nessun file azioni residuo. Backup e risposte grezze privati in work della chat; checkout E aggiornato.
@@ -152,8 +152,8 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
    su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Copia 'capocantiere ferrovia fallita 12-10' salvata; diagnosi parallelo in sola lettura.
-   2. Leggere geometria collisioni parallelo; correggere cause confermate. Prova navale su copia separata.
+   1. PROVATO IN TF3 senza costruire: paralleli -10, -5 e +5 m collidono con strade.
+   2. Porto: caricare copia bus, salvare copia navale; costruzione GUI per copiare schema valido.
    3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...
 
