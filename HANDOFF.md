@@ -123,17 +123,19 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 18:02: aggiornamento prima della prova TF3
-Scritto da: ChatGPT, 12.10.2026 18:02 Europe/Zurich, ultimo commit verificato 4c9624a
+Scritto da: ChatGPT, 12.10.2026 18:06 Europe/Zurich, ultimo commit verificato cf1d873
 
-1. In una riga: copia mod v14-bozza-4e61dfa4 preparata, non ancora installata.
+1. In una riga: mod v14-bozza-4e61dfa4 e middleware installati con backup verificati.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
    - PROVATO IN TF3: gioco trovato nel menu, screenshot privato ispezionato; uscita normale, processo assente.
    - SOLO TEST AUTOMATICI: suite Windows isolata verde; classe Lua saltata per runtime mancante.
    - SOLO TEST AUTOMATICI: CI main verde; copia --dev --bozza generata, sintassi locale saltata.
+   - PROVATO SUL PC (fuori dal gioco): backup e impronte verificati; mod e tutti i file middleware copiati.
 3. Stato del PC: Steam aperto, TF3 chiuso, nessuna console Python rilevata.
-   Mod/middleware installati NON ancora aggiornati; opzioni Steam intatte, file di gioco non modificati.
-   Copia preparata in dist/tfcapocantiere_1_dev del checkout storico; nessuna installazione finora.
+   Mod installata v14-bozza-4e61dfa4 DEV_MODE true, middleware aggiornato incluso avviatore.
+   Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
+   Opzioni Steam intatte, niente salvataggi o file del gioco modificati.
    Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
 4. Problemi aperti e cose da NON fare
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
@@ -146,7 +148,7 @@ Scritto da: ChatGPT, 12.10.2026 18:02 Europe/Zurich, ultimo commit verificato 4c
    senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
    Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare percorsi installati e processi, backup mod e middleware, copiare e confrontare tutti i file.
+   1. Verificare avvio sicuro, aprire TF3 e caricare la partita autorizzata.
    2. Riavviare TF3, caricare 'capocantiere v14 prova', verificare versione e risposta controllo flotta.
    3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
 Letto da Claude il ...: ...
