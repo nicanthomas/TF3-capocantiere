@@ -1,4 +1,4 @@
-# STATO DEL PROGETTO — leggere per primo (aggiornato 11.10.2026)
+# STATO DEL PROGETTO — leggere per primo (aggiornato 12.10.2026)
 
 Questo file permette a una chat nuova di ripartire senza rileggere le conversazioni precedenti. **All'avvio di QUALSIASI chat Claude o ChatGPT leggere prima `HANDOFF.md` dalla branch GitHub aggiornata**: contiene il checkpoint operativo, il prompt unico di avvio e le regole di aggiornamento continuo senza preavviso al cambio AI/chat. Poi leggere questo file per le regole vincolanti e lo stato tecnico. Questa procedura riguarda lo sviluppo e non introduce automazioni nel gioco.
 Struttura del repo (dal 09.10.2026): nella radice anche `HANDOFF.md` oltre a `mod/`, `middleware/`, `README.md`, `LICENSE`; tutto lo
@@ -160,6 +160,27 @@ non entita' certificate. Nota sonda-bridge-lettura.md. Mai eseguita su file gioc
 TF3 menu reale collaudato 10.10.2026 dopo autorizzazione distinta al ciclo opzioni Steam: doppio backup privato, wrapper disattivato temporaneamente nel campo, avvio normale, screenshot/focus/mouse, Esc a scancode torna al menu (virtual-key scan=0 senza effetto), uscita dall'icona Esci senza conferma, processo terminato. Due cicli senza partite/costruzioni; impostazioni del pannello non cambiate. Opzioni ORIGINALI ripristinate con confronto esatto dopo chiusura, wrapper/file gioco/mod/salvataggi non modificati dall'agente, nessuna chiave/Taskkill. Il wrapper originale resta attivo: non avviare senza ripetere il ciclo autorizzato. Note ripristino-opzioni-steam.md e controllo-grafico-windows.md. build --check --bozza resta DIVERSO/codice1, sintassi locale saltata, anche avviso CI; non dichiararlo verde.
 
 GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto cancellazione prima di test vivi; non chiamato sui dati reali. Anche GameBridge.__init__ puo' creare la cartella dati con os.makedirs quando il prefisso e' attivo (lettura statica 11.10.2026): una sonda senza scritture deve evitare il costruttore, non basta evitare send. UI Automation Steam senza pulsanti; processi fuori sandbox. Screenshot privati solo locali.
+
+## 1d. Ripresa autorizzata 12.10.2026 (ChatGPT)
+
+Nicolo' ha autorizzato in questa chat checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio,
+log, backup/aggiornamento, avvio/chiusura normale, partita "capocantiere v14 prova", console con API
+senza leggere o mostrare la chiave, pulizia soli file protocollo e ciclo opzioni Steam con ripristino se necessario.
+La piccola costruzione resta da scegliere con Nicolo' e confermare nella console. Non sono permessi permanenti.
+
+PROVATO IN TF3: trovato gioco nel menu principale; screenshot privato ispezionato, uscita normale
+dall'icona Esci e processo terminato verificato. Nessuna nuova prova in partita finora.
+SOLO TEST AUTOMATICI: suite Windows isolata 130 test, zero errori/fallimenti, una classe Lua saltata
+per runtime mancante; 15,013 s. CI main 4c9624a verde, run 38273975189. Lua Windows reale NON provata.
+Copia --dev --bozza generata dai sorgenti invariati di main: v14-bozza-4e61dfa4; sintassi locale saltata.
+PROVATO SUL PC (fuori dal gioco): versione precedente riletta v14-bozza-32c86032 e avviatore 435 byte.
+Con TF3 e console Python chiusi, backup integrali mod e middleware in cartelle adiacenti autorizzate,
+confronto SHA256 dei backup riuscito; installati 5 file mod e 29 file middleware tracciati da main,
+confronto SHA256 di ogni destinazione riuscito. Mod installata ora v14-bozza-4e61dfa4 DEV_MODE true.
+Nessuna cancellazione manuale, nessun salvataggio modificato; opzioni Steam intatte.
+Percorsi con identificativo Steam e rapporti backup conservati soltanto privatamente nell'area work della chat.
+La mod in mod/ resta invariata DEV_MODE false; --check storico diverso, non dichiarare allineamento raggiunto.
+Prossimo passo: avvio TF3, partita autorizzata e controllo flotta dalla console, poi costruzione scelta da Nicolo'.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
