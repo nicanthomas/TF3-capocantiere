@@ -123,7 +123,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 18:02: correzione versione generata su Windows
-Scritto da: ChatGPT, 12.10.2026 18:07 Europe/Zurich, ultimo commit verificato 84803bf
+Scritto da: ChatGPT, 12.10.2026 18:07 Europe/Zurich, ultimo commit verificato efaea55
 
 1. In una riga: partita caricata; trovata versione duplicata nello script generato, da correggere.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -131,11 +131,11 @@ Scritto da: ChatGPT, 12.10.2026 18:07 Europe/Zurich, ultimo commit verificato 84
    - PROVATO IN TF3: partita 'capocantiere v14 prova' caricata; console pronta, nessuna chiamata API.
    - PROVATO IN TF3: stato riporta 399dcf74; script installato contiene prima 4e61dfa4, poi 399dcf74.
    - SOLO TEST AUTOMATICI: suite Windows isolata verde; classe Lua saltata per runtime mancante.
-   - SOLO TEST AUTOMATICI: CI main verde; copia --dev --bozza generata, sintassi locale saltata.
+   - SOLO TEST AUTOMATICI: regressioni nuove riproducono due fallimenti del generatore su CRLF/misto.
    - PROVATO SUL PC (fuori dal gioco): backup/impronte verificati; CRLF non riconosciuto da set_version.
-3. Stato del PC: Steam aperto; console uscita con /esci; uscita normale TF3 avviata, controllare processo.
+3. Stato del PC: Steam aperto; console uscita con /esci (zero token), TF3 chiuso normalmente e processo assente.
    Mod installata: codice aggiornato ma versione effettiva 399dcf74 per dichiarazione duplicata, DEV_MODE true.
-   Middleware aggiornato incluso avviatore. Correzione in copia privata work/TF3-fix, non ancora applicata.
+   Middleware aggiornato incluso avviatore. Test in work/TF3-fix/middleware/test_build_version.py; correzione non ancora applicata.
    Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
    Opzioni Steam intatte, niente salvataggi o file del gioco modificati.
    Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
@@ -150,7 +150,7 @@ Scritto da: ChatGPT, 12.10.2026 18:07 Europe/Zurich, ultimo commit verificato 84
    senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
    Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Scrivere regressione CRLF, verificare fallimento, correggere generatore e testare; pubblicare tutto.
+   1. Correggere set_version per riconoscere CRLF conservando i terminatori; suite e CI prima di main.
    2. A gioco chiuso rigenerare/reinstallare con nuovo backup; ricaricare e verificare versione nello stato.
    3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
 Letto da Claude il ...: ...
