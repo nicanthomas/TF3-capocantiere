@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 19:23: completamento mod, diagnosi nome e velocita'
+Stato: IN LAVORO da 12.10 19:23: correzione velocita' modello confermata in TF3
 Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a600ea1
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
@@ -133,13 +133,14 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a6
    - PROVATO IN TF3: mod aggiornata v14-bozza-4e61dfa4; console/API flotta Lissone, giro 228 s.
    - PROVATO IN TF3: Abriola-Maretto 79575, cinque eCitaro stimati, due fermate e deposito funzionante.
    - PROVATO IN TF3: giro misurato 794 s, intervallo 158 s, collaudo senza problemi; partita salvata.
-3. Stato del PC: TF3 e console chiusi normalmente, processi assenti verificati; Steam aperto.
+3. Stato del PC: TF3 aperto, save bus caricato; console non avviata. Steam aperto.
    Mod v14-bozza-4e61dfa4 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
-   Nuovo save 'capocantiere v14 Abriola-Maretto 12-10', file presente; non ancora ricaricato.
+   Save 'capocantiere v14 Abriola-Maretto 12-10' RICARICATO: linea 79575 e cinque bus presenti.
    Nessun file azioni residuo. Backup e risposte grezze privati in work della chat; checkout E aggiornato.
 4. Problemi aperti e cose da NON fare
    Non ripetere costruzione 79575; non applicare riduzioni flotta senza nuova direttiva.
-   Nome effettivo Bus Passeggeri-Abr-Mar-IC-1: name richiesto ignorato; velocita' fallback 22 m/s.
+   Auto Line Namer rinomina le linee (nota scoperte-api.md). Velocita' TF3 in landVehicle.topSpeed,
+   sonda reale eCitaro=19.444; codice la ignora e usa 22 m/s: correzione necessaria.
    Giro iniziale 1002 s era STIMATO; proposta quattro bus non applicata. Movimento API ancora ignoto.
    Non installare con gioco/console aperti; backup e confronto prima. Non leggere o mostrare chiave API.
    Dettagli e token reali in dev-notes/note/prove-mappa-nuova.md; costo monetario non misurato.
@@ -148,11 +149,12 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato a6
    backup/aggiornamento, avvio/chiusura normale, partita prova, console/API senza leggere chiave,
    pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario (non usato).
    Direttiva esplicita Nicolo': Abriola-Maretto, bus stimati dalla mod; eseguita. Nessuna domanda pendente.
-   Nuova chat: chiedere insieme gli accessi necessari; nessuna altra costruzione e' stata richiesta.
+   Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
+   su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Leggere codice createLine/build_intercity_bus e initialFleet per nome ignorato/fallback velocita'.
+   1. Regressione velocita' landVehicle e correzione; pubblicare test e checkpoint.
    2. Correggere soltanto problemi confermati, test automatici e checkpoint; poi installare con backup.
-   3. Con accessi richiesti ricaricare nuovo save e verificarne la linea; doppio binario/porto richiedono direttiva.
+   3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
