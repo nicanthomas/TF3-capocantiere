@@ -143,8 +143,7 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    Sonda reale eCitaro=19.444; funzione estratta falliva e dopo correzione passa. Mod corretta ricaricata: stato fresco 509c3059.
    Anello Stern-Afforte-Abriola FALLITO: secondo binario collide con strade; tre stazioni e 98 tratti.
    Non ripetere su copia contaminata o rimuovere residui a mano; risultato in prove-doppio-binario-12-10.json.
-   Backup prima di installare a gioco chiuso; mai leggere/mostrare chiave API.
-   Dettagli e token reali in dev-notes/note/prove-mappa-nuova.md; costo monetario non misurato.
+   Backup a gioco chiuso; chiave mai letta/mostrata. Dettagli in prove-mappa-nuova.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi di questa chat: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
    backup/aggiornamento, avvio/chiusura normale, partita prova, console/API senza leggere chiave,
@@ -153,7 +152,7 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
    su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Salvare copia diagnostica ferrovia fallita, non sovrascrivere save iniziale o bus.
+   1. Copia 'capocantiere ferrovia fallita 12-10' salvata; diagnosi parallelo in sola lettura.
    2. Leggere geometria collisioni parallelo; correggere cause confermate. Prova navale su copia separata.
    3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...
