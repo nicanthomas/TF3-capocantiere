@@ -1,0 +1,26 @@
+{
+  "args": {
+    "town_ids": [
+      62685,
+      62691
+    ],
+    "kind": "harbor",
+    "name": "Prova navale Lissone-Calliano 12-10"
+  },
+  "result": {
+    "cleanup": "2 costruzioni rimosse (fermate e strade cittadine restano)",
+    "error": "nessun deposito/hangar per i veicoli",
+    "index": 1,
+    "log": [
+      "Lissone: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+      "Calliano: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+      "deposito navale: nessun punto di costa adatto: rifiutata: Collisione (2 collisioni) verifica: Collisione | rifiutata:  | rifiutata:  (2 collisioni)"
+    ],
+    "ok": false,
+    "stations": [
+      63463,
+      63832
+    ],
+    "type": "build_air_or_water_line"
+  }
+}

@@ -493,3 +493,11 @@ Nessuna linea o treno dell'anello completati. Nessuna rimozione manuale; rispost
 `dev-notes/note/prove-doppio-binario-12-10.json`. Non chiamare di nuovo sulla stessa copia contaminata.
 Correzione velocita' in main 219e678, CI 38284903888 verde; nuova mod installata con backup e hash verificati.
 PROVATO IN TF3: save bus ricaricato, 79575 e cinque bus presenti. Mod completa ancora NON finalizzata.
+
+### Prova automatica reale del 12.10, 20:06
+
+PROVATO IN TF3: build_air_or_water_line town_ids=[62685,62691], kind=harbor, numero navi omesso, conferma esplicita nel middleware. Entrambi i porti piccoli si costruiscono e generano stazioni (63463,63832). La prova fallisce poi: `nessun deposito/hangar per i veicoli`. Deposito di Lissone rifiutato nei tre punti di costa candidati (collisioni o messaggio vuoto). Nessuna linea o nave creata. Il middleware riporta pulizia di due costruzioni; porto GUI 122216 resta sulla mappa.
+
+Questo risultato supera il vecchio blocco storico dei porti; non dimostra che funzionino su ogni costa. Non e' stata modificata la mod per questo esito: versione 509c3059. Risposta grezza in `prove-navale-12-10.json`.
+
+Porto GUI salvato separatamente: `capocantiere porto GUI 12-10`, .sav 71091514 byte e .jpg 610344 byte verificati alle 20:04:04. Prossimo passo: deposito GUI per leggere quota/orientamento validi, quindi correggere soltanto cause confermate.

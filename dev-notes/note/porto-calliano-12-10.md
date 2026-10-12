@@ -15,3 +15,11 @@ Moduli letti in forma piatta (una lettura precedente perdeva i dati annidati per
 Tutti in `::/stations/water/`, variante 0. Acqua a -Y60, non agli altri tre lati. Il modello grande copiato da terzi nel codice ha piu' moduli; il modello piccolo non e' ancora confrontato. La quota differente e' una causa candidata, NON una correzione verificata: vecchie prove a quota 2 fallivano anch'esse.
 
 Anello: proposte a secco sul mondo fallito per offset -10,-5,+5 m tutte rifiutate per collisioni stradali. Sonda bloccava sendCommand; nessuna costruzione o rimozione per questa diagnosi. Non aggirare le collisioni. Il percorso del secondo binario resta da correggere.
+
+### Prova automatica reale del 12.10, 20:06
+
+PROVATO IN TF3: build_air_or_water_line town_ids=[62685,62691], kind=harbor, numero navi omesso, conferma esplicita nel middleware. Entrambi i porti piccoli si costruiscono e generano stazioni (63463,63832). La prova fallisce poi: `nessun deposito/hangar per i veicoli`. Deposito di Lissone rifiutato nei tre punti di costa candidati (collisioni o messaggio vuoto). Nessuna linea o nave creata. Il middleware riporta pulizia di due costruzioni; porto GUI 122216 resta sulla mappa.
+
+Questo risultato supera il vecchio blocco storico dei porti; non dimostra che funzionino su ogni costa. Non e' stata modificata la mod per questo esito: versione 509c3059. Risposta grezza in `prove-navale-12-10.json`.
+
+Porto GUI salvato separatamente: `capocantiere porto GUI 12-10`, .sav 71091514 byte e .jpg 610344 byte verificati alle 20:04:04. Prossimo passo: deposito GUI per leggere quota/orientamento validi, quindi correggere soltanto cause confermate.

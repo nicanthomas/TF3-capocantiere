@@ -123,7 +123,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 12.10 19:23: diagnosi doppio binario fallito, poi porto
-Scritto da: ChatGPT, 12.10.2026 20:01 Europe/Zurich, ultimo commit verificato deaaa55
+Scritto da: ChatGPT, 12.10.2026 20:07 Europe/Zurich, ultimo commit verificato b3a8575
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -133,7 +133,7 @@ Scritto da: ChatGPT, 12.10.2026 20:01 Europe/Zurich, ultimo commit verificato de
    - PROVATO IN TF3: mod aggiornata v14-bozza-4e61dfa4; console/API flotta Lissone, giro 228 s.
    - PROVATO IN TF3: Abriola-Maretto 79575, cinque eCitaro stimati, due fermate e deposito funzionante.
    - PROVATO IN TF3: giro misurato 794 s, intervallo 158 s, collaudo senza problemi; partita salvata.
-3. Stato del PC: TF3 aperto, copia 'capocantiere test porto 12-10'; console non avviata.
+3. Stato del PC: TF3 aperto, copia 'capocantiere porto GUI 12-10'; console non avviata.
    Mod v14-bozza-509c3059 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
    Save 'capocantiere v14 Abriola-Maretto 12-10' RICARICATO: linea 79575 e cinque bus presenti.
    Nessun file azioni residuo. Backup e risposte grezze privati in work della chat; checkout E aggiornato.
@@ -154,7 +154,7 @@ Scritto da: ChatGPT, 12.10.2026 20:01 Europe/Zurich, ultimo commit verificato de
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
    1. PROVATO IN TF3 senza costruire: paralleli -10, -5 e +5 m collidono con strade.
    2. PROVATO IN TF3: porto passeggeri GUI 122216, una stazione; schema in porto-calliano-12-10.md.
-   3. Salvare porto GUI, confrontare quota/moduli e provare seconda fermata/deposito/linea navale.
+   3. Porti della mod costruiti, prova fallita al deposito; pulizia due costruzioni. Copiare deposito GUI.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
