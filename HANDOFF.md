@@ -122,31 +122,33 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 17:58: preparazione aggiornamento e prova TF3
-Scritto da: ChatGPT, 12.10.2026 17:58 Europe/Zurich, ultimo commit verificato 6cc208c
+Stato: IN LAVORO da 12.10 18:02: aggiornamento prima della prova TF3
+Scritto da: ChatGPT, 12.10.2026 18:02 Europe/Zurich, ultimo commit verificato 4c9624a
 
-1. In una riga: ripresa da GitHub; priorita' aggiornare mod e avviatore, poi console reale con Nicolo'.
+1. In una riga: copia mod v14-bozza-4e61dfa4 preparata, non ancora installata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - Letti handoff, STATO e regole; verificati ultimi quattro commit di main. Sola lettura GitHub, nessun test eseguito.
-   - PROVATO SUL PC (fuori dal gioco): Python disponibile; checkout storico esiste, ma Git funziona con accesso autorizzato, pulito e fermo a c9855a5.
-   - PROVATO SUL PC (fuori dal gioco): clone nel workspace fallito per risoluzione github.com; connettore GitHub legge.
-3. Stato del PC: TF3 e Steam aperti; versione mod/middleware e opzioni Steam NON ancora riverificati.
-   Nessuna installazione, avvio, input desktop, chiave letta o azione in gioco finora.
-   Autorizzazioni: Nicolo' ha risposto 'si a tutto' alla richiesta unica del 12.10 in questa chat.
+   - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
+   - PROVATO IN TF3: gioco trovato nel menu, screenshot privato ispezionato; uscita normale, processo assente.
+   - SOLO TEST AUTOMATICI: suite Windows isolata verde; classe Lua saltata per runtime mancante.
+   - SOLO TEST AUTOMATICI: CI main verde; copia --dev --bozza generata, sintassi locale saltata.
+3. Stato del PC: Steam aperto, TF3 chiuso, nessuna console Python rilevata.
+   Mod/middleware installati NON ancora aggiornati; opzioni Steam intatte, file di gioco non modificati.
+   Copia preparata in dist/tfcapocantiere_1_dev del checkout storico; nessuna installazione finora.
+   Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
 4. Problemi aperti e cose da NON fare
-   Non ereditare i permessi precedenti; non sovrascrivere avviatore con gioco/console aperti.
-   Backup e confronto dei file installati obbligatori; test automatici distinti dalle prove TF3.
-   Bridge elimina file di protocollo: serve accordo esplicito limitato a quei file.
-   Evidenze dell'11.10 restano nei commit e nelle note; nessuna nuova verifica le sostituisce.
+   Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
+   Sintassi Lua locale e classe nativa non provate; CI/mock non equivalgono a caricamento in TF3.
+   Non eseguire costruzioni diverse dalla scelta concreta di Nicolo' con conferma console.
+   Evidenze storiche dell'11.10 nei commit e nelle note, nessuna nuova prova di partita.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Tutti i permessi richiesti concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio,
-   log, backup/aggiornamento, avvio/chiusura normale e partita 'capocantiere v14 prova', console con API
-   senza leggere la chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
+   Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio, log,
+   backup/aggiornamento, avvio/chiusura normale e partita 'capocantiere v14 prova', console con API
+   senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
    Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Allineare checkout a main, identificare finestra TF3 e percorsi; non installare a gioco aperto.
-   2. Preparare da main, eseguire test, chiudere gioco/console normalmente; backup, installare e confrontare.
-   3. Caricare la partita; controllo flotta in console con Nicolo', poi sua richiesta concreta di costruzione.
+   1. Verificare percorsi installati e processi, backup mod e middleware, copiare e confrontare tutti i file.
+   2. Riavviare TF3, caricare 'capocantiere v14 prova', verificare versione e risposta controllo flotta.
+   3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
