@@ -141,3 +141,17 @@ Queste letture dirette usano lo stesso run_game_tool del middleware, senza model
 Protocollo e pulizia dei soli file capocantiere autorizzati nella sessione. Nessuna costruzione/acquisto/vendita.
 Console uscita con /esci; totale richiesta API rimasto 22670 token. TF3 rimesso in pausa.
 Costruzione iniziale/flotta stimata non ancora provate: domanda specifica inviata a Nicolo', risposta attesa.
+
+### Bus Abriola-Maretto richiesto da Nicolo' (12.10, 18:36)
+
+PROVATO IN TF3 con console/API reale e conferma: build_intercity_bus town_ids=[62682,62688],
+num_vehicles omesso. Risposta grezza conservata privatamente, mod v14-bozza-4e61dfa4.
+Linea 79575, nome effettivo Bus Passeggeri-Abr-Mar-IC-1 (name richiesto non rispettato), due fermate:
+89790 riusata ad Abriola, 118254 costruita a Maretto. Deposito nuovo 80062; cinque eCitaro acquistati.
+Stima iniziale: fleet.estimated=true, count=5, route_m=10084, round_trip_s=1002, interval_target=240,
+top_speed_ms=22, speed_from_model=false: velocita' di fallback, non letta dal modello.
+Il giro 1002 s e' stimato, NON misurato in servizio. Collaudo incorporato e check_line successivo ok=true,
+problems=[]; EN_ROUTE=5, movement_unknown=5, vehicles_moving=0, stats=[]. Movimento/frequenza reali
+ancora da verificare dopo avanzamento. Stato fresco conferma linea e cinque veicoli, lastActionId=2.
+Richiesta: tre chiamate API, input 8, output 540, cache letta 22041, cache scritta 11447, totale 34036 token.
+Costo monetario non misurato. Solo questa costruzione eseguita; flotta Lissone non modificata.

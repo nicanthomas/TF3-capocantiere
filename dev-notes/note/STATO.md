@@ -166,7 +166,7 @@ GameBridge.send elimina risultati gia' letti: conciliare pulizia con divieto can
 Nicolo' ha autorizzato in questa chat checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio,
 log, backup/aggiornamento, avvio/chiusura normale, partita "capocantiere v14 prova", console con API
 senza leggere o mostrare la chiave, pulizia soli file protocollo e ciclo opzioni Steam con ripristino se necessario.
-La piccola costruzione resta da scegliere con Nicolo' e confermare nella console. Non sono permessi permanenti.
+Nicolo' ha scelto la linea bus Abriola-Maretto con numero stimato; costruita e collaudata il 12.10. Non sono permessi permanenti.
 
 PROVATO IN TF3: trovato gioco nel menu principale; screenshot privato ispezionato, uscita normale
 dall'icona Esci e processo terminato verificato. Nessuna nuova prova in partita finora.
@@ -450,3 +450,17 @@ Velocita': pausa (1404,648), massima (1456,648). Il salvataggio "partita vuota d
   "Unknown exception" nel comando (non crash, ma nessun segnale).
 - Piu' prove rischiose nello stesso file: non si capisce quale ha causato il crash.
 
+
+### Bus Abriola-Maretto richiesto da Nicolo' (12.10, 18:36)
+
+PROVATO IN TF3 con console/API reale e conferma: build_intercity_bus town_ids=[62682,62688],
+num_vehicles omesso. Risposta grezza conservata privatamente, mod v14-bozza-4e61dfa4.
+Linea 79575, nome effettivo Bus Passeggeri-Abr-Mar-IC-1 (name richiesto non rispettato), due fermate:
+89790 riusata ad Abriola, 118254 costruita a Maretto. Deposito nuovo 80062; cinque eCitaro acquistati.
+Stima iniziale: fleet.estimated=true, count=5, route_m=10084, round_trip_s=1002, interval_target=240,
+top_speed_ms=22, speed_from_model=false: velocita' di fallback, non letta dal modello.
+Il giro 1002 s e' stimato, NON misurato in servizio. Collaudo incorporato e check_line successivo ok=true,
+problems=[]; EN_ROUTE=5, movement_unknown=5, vehicles_moving=0, stats=[]. Movimento/frequenza reali
+ancora da verificare dopo avanzamento. Stato fresco conferma linea e cinque veicoli, lastActionId=2.
+Richiesta: tre chiamate API, input 8, output 540, cache letta 22041, cache scritta 11447, totale 34036 token.
+Costo monetario non misurato. Solo questa costruzione eseguita; flotta Lissone non modificata.

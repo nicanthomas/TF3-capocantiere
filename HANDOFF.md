@@ -122,18 +122,18 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 18:29: linea bus Abriola-Maretto richiesta da Nicolo'
-Scritto da: ChatGPT, 12.10.2026 18:29 Europe/Zurich, ultimo commit verificato c199d4d
+Stato: IN LAVORO da 12.10 18:36: collaudo reale bus Abriola-Maretto
+Scritto da: ChatGPT, 12.10.2026 18:36 Europe/Zurich, ultimo commit verificato 7fa7eac
 
-1. In una riga: flotta reale verificata; Nicolo' ha scelto linea bus Abriola-Maretto con numero stimato.
+1. In una riga: linea Abriola-Maretto 79575 costruita, cinque bus stimati; collaudo iniziale ok.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): backup integrali verificati e impronte mod/middleware coincidenti.
    - SOLO TEST AUTOMATICI: generatore versione CRLF corretto in main c4afd72; suite e CI verdi.
      Classe Lua Windows saltata, Lua reale provata soltanto in CI Ubuntu; revisione senza blocchi.
    - PROVATO IN TF3: mod ricaricata, stato e console riportano v14-bozza-4e61dfa4.
    - PROVATO IN TF3: console/API controllo flotta Lissone; poi lettura diretta completa: giro 228 s.
-   - PROVATO IN TF3: qualita' grezza disponibile, zeri e false/true preservati; nessuna unita' dedotta.
-3. Stato del PC: TF3 e console chiusi normalmente, processi assenti verificati; Steam aperto.
+   - PROVATO IN TF3: Abriola-Maretto, cinque eCitaro stimati, deposito nuovo; collaudo senza problemi.
+3. Stato del PC: TF3 e console aperti, partita autorizzata in marcia; Steam aperto.
    Mod v14-bozza-4e61dfa4 DEV_MODE true, una versione; middleware aggiornato incluso avviatore.
    Backup adiacenti verificati; percorsi e rapporti privati in work della chat. Opzioni Steam intatte.
    Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
@@ -141,7 +141,8 @@ Scritto da: ChatGPT, 12.10.2026 18:29 Europe/Zurich, ultimo commit verificato c1
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
    Non applicare la proposta: due bus attuali, intervallo 114 s, obiettivo 240 s, suggerito un bus.
    Vecchio collaudo pendente ha segnalato una linea inesistente; nessuna costruzione/acquisto/vendita.
-   Costruzione e stima flotta iniziale ancora NON provate in questa ripresa; dettagli in prove-mappa-nuova.md.
+   Giro 1002 s STIMATO; movimento ancora ignoto. Nome richiesto ignorato; velocita' fallback 22 m/s.
+   Non ripetere costruzione; linea 79575 gia' presente. Dettagli in prove-mappa-nuova.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio e log,
    backup/aggiornamento, avvio/chiusura normale, partita 'capocantiere v14 prova', console/API senza leggere
@@ -149,9 +150,9 @@ Scritto da: ChatGPT, 12.10.2026 18:29 Europe/Zurich, ultimo commit verificato c1
    Nicolo' ha scelto esplicitamente: creare linea bus Abriola-Maretto, numero bus stimato dalla mod.
    Confermare in console soltanto questa richiesta concreta e poi collaudare.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Riavviare TF3 e console, ricaricare partita autorizzata; stato fresco e nessun file azioni residuo.
-   2. Richiesta console Abriola-Maretto, nessun num_vehicles esplicito; controllare e confermare azione.
-   3. Pubblicare risultato/collaudo; poi doppio binario o porto con direttiva e prove autorizzate.
+   1. Lasciare avanzare la partita e controllare 79575 senza modificare la flotta.
+   2. Verificare movimento/tempi, salvare la prova con nome distinto e chiudere normalmente.
+   3. Pubblicare risultato; poi correggere nome/velocita' o nuove funzioni con direttiva autorizzata.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

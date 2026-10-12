@@ -44,7 +44,8 @@ sulla build 40420 (08-09.10.2026). La v14 (`v14-bozza-32c86032`) si carica in gi
 middleware (collaudo del 09.10.2026). La console con Claude e' stata provata da Claude per panoramica e linea bus;
 il 12.10.2026, con la mod aggiornata `v14-bozza-4e61dfa4`, ChatGPT ha ripetuto il controllo flotta reale.
 La misura diretta successiva ha dato un giro di 228 s sulla linea di Lissone; nessuna modifica alla flotta.
-La stima iniziale aggiornata dei veicoli resta da provare in gioco:
+Il 12.10 la console ha costruito Abriola-Maretto con cinque eCitaro stimati dalla mod e collaudo iniziale ok.
+Stima giro 1002 s, obiettivo 240 s; frequenza reale ancora da misurare. Dettagli in `dev-notes/note/prove-mappa-nuova.md`:
 
 | Tool | Cosa fa | Stato |
 |---|---|---|
