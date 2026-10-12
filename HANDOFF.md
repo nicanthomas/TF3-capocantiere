@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 19:23: correzione velocita' modello confermata in TF3
+Stato: IN LAVORO da 12.10 19:23: ricarica mod corretta e prove ferrovia/porto
 Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 219e678
 
 1. In una riga: richiesta bus Abriola-Maretto conclusa, cinque bus stimati, collaudo reale e salvataggio.
@@ -134,13 +134,13 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    - PROVATO IN TF3: Abriola-Maretto 79575, cinque eCitaro stimati, due fermate e deposito funzionante.
    - PROVATO IN TF3: giro misurato 794 s, intervallo 158 s, collaudo senza problemi; partita salvata.
 3. Stato del PC: TF3 aperto, save bus caricato; console non avviata. Steam aperto.
-   Mod v14-bozza-4e61dfa4 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
+   Mod v14-bozza-509c3059 DEV_MODE true; middleware aggiornato incluso avviatore, opzioni Steam intatte.
    Save 'capocantiere v14 Abriola-Maretto 12-10' RICARICATO: linea 79575 e cinque bus presenti.
    Nessun file azioni residuo. Backup e risposte grezze privati in work della chat; checkout E aggiornato.
 4. Problemi aperti e cose da NON fare
    Non ripetere costruzione 79575; non applicare riduzioni flotta senza nuova direttiva.
    Auto Line Namer rinomina le linee (nota scoperte-api.md). Velocita' TF3 in landVehicle.topSpeed,
-   Sonda reale eCitaro=19.444; funzione estratta falliva e dopo correzione passa. Mod installata NON corretta.
+   Sonda reale eCitaro=19.444; funzione estratta falliva e dopo correzione passa. Mod corretta installata con backup, ricarica da verificare.
    Giro iniziale 1002 s era STIMATO; proposta quattro bus non applicata. Movimento API ancora ignoto.
    Non installare con gioco/console aperti; backup e confronto prima. Non leggere o mostrare chiave API.
    Dettagli e token reali in dev-notes/note/prove-mappa-nuova.md; costo monetario non misurato.
@@ -152,8 +152,8 @@ Scritto da: ChatGPT, 12.10.2026 19:23 Europe/Zurich, ultimo commit verificato 21
    Nicolo' ha ora autorizzato anello doppio binario tra tre citta' scelte dalla mod e porto/linea navale,
    su copie separate, salvataggi distinti. Non considerare la mod finalizzata; ripresa fino al completamento.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Correzione 219e678 in main: CI e revisione verdi. Chiudere TF3 e installare con backup.
-   2. Correggere soltanto problemi confermati, test automatici e checkpoint; poi installare con backup.
+   1. Ricaricare 'capocantiere test ferrovia 12-10'; stato fresco e versione 509c3059.
+   2. Verificare lettura velocita' installata; prova anello doppio binario autorizzata e checkpoint.
    3. Prove autorizzate doppio binario e porto su copie separate, poi release soltanto se requisiti soddisfatti.
 Letto da Claude il ...: ...
 
