@@ -122,18 +122,20 @@ Letto da ChatGPT il 12.10.2026: si'.
 
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 12.10 18:02: aggiornamento prima della prova TF3
-Scritto da: ChatGPT, 12.10.2026 18:06 Europe/Zurich, ultimo commit verificato cf1d873
+Stato: IN LAVORO da 12.10 18:02: correzione versione generata su Windows
+Scritto da: ChatGPT, 12.10.2026 18:07 Europe/Zurich, ultimo commit verificato 84803bf
 
-1. In una riga: mod v14-bozza-4e61dfa4 e middleware installati con backup verificati.
+1. In una riga: partita caricata; trovata versione duplicata nello script generato, da correggere.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC (fuori dal gioco): checkout storico pulito, allineato a main tramite aggiornamento lineare.
-   - PROVATO IN TF3: gioco trovato nel menu, screenshot privato ispezionato; uscita normale, processo assente.
+   - PROVATO IN TF3: partita 'capocantiere v14 prova' caricata; console pronta, nessuna chiamata API.
+   - PROVATO IN TF3: stato riporta 399dcf74; script installato contiene prima 4e61dfa4, poi 399dcf74.
    - SOLO TEST AUTOMATICI: suite Windows isolata verde; classe Lua saltata per runtime mancante.
    - SOLO TEST AUTOMATICI: CI main verde; copia --dev --bozza generata, sintassi locale saltata.
-   - PROVATO SUL PC (fuori dal gioco): backup e impronte verificati; mod e tutti i file middleware copiati.
-3. Stato del PC: Steam aperto, TF3 chiuso, nessuna console Python rilevata.
-   Mod installata v14-bozza-4e61dfa4 DEV_MODE true, middleware aggiornato incluso avviatore.
+   - PROVATO SUL PC (fuori dal gioco): backup/impronte verificati; CRLF non riconosciuto da set_version.
+3. Stato del PC: Steam aperto; console uscita con /esci; uscita normale TF3 avviata, controllare processo.
+   Mod installata: codice aggiornato ma versione effettiva 399dcf74 per dichiarazione duplicata, DEV_MODE true.
+   Middleware aggiornato incluso avviatore. Correzione in copia privata work/TF3-fix, non ancora applicata.
    Backup adiacenti nelle cartelle autorizzate; dettagli privati in work/install-report-private.json.
    Opzioni Steam intatte, niente salvataggi o file del gioco modificati.
    Autorizzazioni: 'si a tutto' di Nicolo' in questa chat, elenco al punto 5.
@@ -141,15 +143,15 @@ Scritto da: ChatGPT, 12.10.2026 18:06 Europe/Zurich, ultimo commit verificato cf
    Non installare con gioco/console aperti; backup e confronto obbligatori. Non leggere o mostrare chiave API.
    Sintassi Lua locale e classe nativa non provate; CI/mock non equivalgono a caricamento in TF3.
    Non eseguire costruzioni diverse dalla scelta concreta di Nicolo' con conferma console.
-   Evidenze storiche dell'11.10 nei commit e nelle note, nessuna nuova prova di partita.
+   set_version non riconosce righe CRLF e inserisce un'altra versione: Lua usa quella vecchia successiva.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Permessi concessi: checkout/rete, controllo Steam/TF3, cartelle mod/middleware/scambio, log,
    backup/aggiornamento, avvio/chiusura normale e partita 'capocantiere v14 prova', console con API
    senza leggere chiave, pulizia soli file protocollo, ciclo opzioni Steam con ripristino se necessario.
    Piccola costruzione autorizzata con scelta concreta di Nicolo' e conferma console.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare avvio sicuro, aprire TF3 e caricare la partita autorizzata.
-   2. Riavviare TF3, caricare 'capocantiere v14 prova', verificare versione e risposta controllo flotta.
+   1. Scrivere regressione CRLF, verificare fallimento, correggere generatore e testare; pubblicare tutto.
+   2. A gioco chiuso rigenerare/reinstallare con nuovo backup; ricaricare e verificare versione nello stato.
    3. Con Nicolo' richiesta console di costruzione scelta da lui, collaudo e pubblicazione risultati.
 Letto da Claude il ...: ...
 
