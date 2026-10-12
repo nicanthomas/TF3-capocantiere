@@ -176,11 +176,16 @@ Copia --dev --bozza generata dai sorgenti invariati di main: v14-bozza-4e61dfa4;
 PROVATO SUL PC (fuori dal gioco): versione precedente riletta v14-bozza-32c86032 e avviatore 435 byte.
 Con TF3 e console Python chiusi, backup integrali mod e middleware in cartelle adiacenti autorizzate,
 confronto SHA256 dei backup riuscito; installati 5 file mod e 29 file middleware tracciati da main,
-confronto SHA256 di ogni destinazione riuscito. Mod installata ora v14-bozza-4e61dfa4 DEV_MODE true.
+confronto SHA256 di ogni destinazione riuscito. La prima copia installata ha codice aggiornato ma due dichiarazioni di versione: TF3 usa 399dcf74.
 Nessuna cancellazione manuale, nessun salvataggio modificato; opzioni Steam intatte.
 Percorsi con identificativo Steam e rapporti backup conservati soltanto privatamente nell'area work della chat.
 La mod in mod/ resta invariata DEV_MODE false; --check storico diverso, non dichiarare allineamento raggiunto.
-Prossimo passo: avvio TF3, partita autorizzata e controllo flotta dalla console, poi costruzione scelta da Nicolo'.
+PROVATO IN TF3: caricata la partita autorizzata; console pronta, zero chiamate API. state.lua riporta
+399dcf74: trovate due dichiarazioni di versione dovute ai CRLF del checkout Windows. Console e gioco chiusi normalmente.
+SOLO TEST AUTOMATICI: generatore corretto con quattro regressioni; suite finale 134 test, zero errori/fallimenti,
+una classe Lua saltata, 16,195 s. CI 38275807791 verde, revisione senza blocchi, correzione c4afd72 integrata in main.
+Copia corretta generata con una sola versione 4e61dfa4, non ancora reinstallata. Dettagli in versione-mod-crlf.md.
+Prossimo passo: nuovo backup e reinstallazione, ricaricare partita e controllo flotta in console; poi scelta di Nicolo'.
 
 ## 2. Architettura
 - Mod Lua `mod/tfcapocantiere_1` (versione installata nel gioco: v13) + middleware Python `middleware/` (Claude).
