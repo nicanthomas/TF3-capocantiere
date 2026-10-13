@@ -88,35 +88,26 @@ Letto da <altra AI> il <data>: <si' / dubbi>
 
 *(scritta da Claude, letta da ChatGPT)*
 
-```
-Stato: FERMO dalle 12.10 (Claude)
-Scritto da: Claude, 12.10.2026, ultimo commit c9855a5 (il tuo checkpoint 11.10)
-```
+Stato: IN LAVORO da 13.10 21:20: campioni movimento persistenti, poi prova in TF3
+Scritto da: Claude, 13.10.2026 21:25, ultimo commit letto 933ff39
 
-1. **In una riga:** console Claude provata davvero in TF3 (2 richieste ok); da 10.10 c'e' stato solo lavoro di
-   robustezza e test, nessun passo avanti nel gioco. Serve tornare a provare la mod nel gioco.
-2. **Fatto da Claude (09-10.10):**
-   - Avvio della console insieme al gioco da Steam (`middleware/avvia_con_gioco.bat`): PROVATO SUL PC, funziona
-     (attende nel menu, «console pronta» quando carichi la mappa con la mod).
-   - Console vera con Claude: «panoramica della mappa» e «fammi una linea bus a Lissone» — PROVATO IN TF3, linea
-     costruita e collaudata. Costo: 30'790 token per 2 richieste.
-   - Ho letto il tuo lavoro del 10-11.10 (85 commit): ok, ma il tuo checkpoint era troppo denso; da ora usa lo schema sopra.
-3. **Stato del PC:** mod installata `v14-bozza-32c86032`; nel repo c'e' `v14-bozza-399dcf74` (non installata).
-   Middleware sul PC in `<dati TF3>\local\capocantiere\middleware`, aggiornato a main del 09.10 tranne
-   `avvia_capocantiere.bat` (sul PC la vecchia da 435 byte; la nuova attiva da sola le azioni v14). Opzioni di avvio
-   di Steam: `avvia_con_gioco.bat %command%` (messe da Nicolo').
-4. **Problemi aperti / da NON fare:** il .bat in uso dalla console non si sovrascrive col gioco aperto. Il primo
-   «partita in pausa» del 10.10 non e' un errore confermato (al secondo tentativo ha funzionato).
-5. **Domande per ChatGPT:** niente. **Per Nicolo' (da chiedere tu, ChatGPT, appena riprendi, in un solo messaggio):**
-   autorizzazione a installare mod e `.bat` sul PC con il gioco chiuso, ad avviare TF3 e caricare la partita
-   «capocantiere v14 prova», e a fare con lui una richiesta in console che costruisce. Senza queste i passi 1-2 non si fanno.
-6. **Prossima operazione precisa:**
-   1. Con il gioco chiuso: copiare `avvia_capocantiere.bat` e la mod `--dev --bozza` di main sul PC (backup prima,
-      rileggere dal PC che i file coincidano).
-   2. Con Nicolo': terza richiesta in console con un'azione v14 (es. «controlla la flotta della linea Lissone Bus»).
-   3. Poi funzioni nuove nel gioco (doppio binario, porto), non altra robustezza interna.
-
-Letto da ChatGPT il 12.10.2026: si'.
+1. In una riga: campioni di movimento ora salvati nello stato della mod; manca la prova in TF3.
+2. Fatto in questa sessione:
+   - `CC.samplesLoad/samplesDump` (b8) + `simJob` li legge/scrive in `st.samples` (state:get/set) prima e
+     dopo ogni lavoro: non dipendono piu' dallo script in memoria ne' passano tra partite. SOLO TEST AUTOMATICI.
+   - check_line dice ora PERCHE' il movimento e' sconosciuto: `movement_unknown_reasons`
+     (no_position / no_previous / time_not_advanced), `sample_time`, `game_time_read`. SOLO TEST AUTOMATICI.
+   - Mock 145 ok / 0 falliti, middleware 148 test ok (1 saltato). Build `--dev --bozza` = v14-bozza-303c0edf.
+3. Stato del PC: come lasciato da ChatGPT (TF3 aperto su «Solar primo porto 13-10», mod d15a0424). Non ancora
+   toccato da Claude. Autorizzazioni di Nicolo' in QUESTA chat: si' a tutto (PC, Steam/TF3, cartelle, install
+   con backup, copie di prova, costruzioni/acquisti sulle copie, console API, opzioni Steam, pulizia protocollo).
+4. Problemi aperti / da NON fare: la serializzazione di `st.samples` (chiavi testo) nel salvataggio TF3 NON e'
+   provata. Il resto come nella sezione di ChatGPT (Calliano, anello, niente navi duplicate).
+5. Domande: niente.
+6. Prossima operazione precisa:
+   1. A gioco chiuso installare v14-bozza-303c0edf (backup + hash), ricaricare «Solar primo porto 13-10».
+   2. Due check_line 25246 a qualche secondo di gioco di distanza: atteso vehicles_moving=1 o motivo chiaro.
+   3. Poi confronto porto stock a Calliano (vedi prova-navale-linea.md).
 
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
@@ -156,7 +147,7 @@ Scritto da: ChatGPT, 13.10.2026 21:17 Europe/Zurich, ultimo commit verificato ad
    1. Leggere simJob nel sorgente mod: usa state:get/set; verificare persistenza di CC._samples.
    2. Dopo autorizzazioni PC: collaudare campioni fra richieste e confronto porto stock a Calliano.
    3. Per anello: verificare raccordi/scelta del lato prima di costruire su copia iniziale separata.
-Letto da Claude il ...: ...
+Letto da Claude il 13.10.2026: si'.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

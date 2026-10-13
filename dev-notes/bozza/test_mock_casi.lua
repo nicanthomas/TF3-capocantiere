@@ -737,6 +737,44 @@ do
     api.engine.util.vehicle,CC.posOf=oldApi,oldPos
 end
 
+-- Campioni movimento persistenti: sopravvivono alla perdita dello script tramite lo stato della mod.
+do
+    local old={lineVehicles=CC.lineVehicles,state=CC.vehicleState,pos=CC.vehiclePos,
+      samples=CC._samples,max=CC.SAMPLES_MAX,gt=W.comps[WORLD].GAME_TIME.gameTime}
+    local pos={x=10,y=20}
+    CC.lineVehicles=function() return {777} end
+    CC.vehicleState=function() return 'EN_ROUTE' end
+    CC.vehiclePos=function() return pos and {x=pos.x,y=pos.y} or nil end
+    CC.samplesLoad(nil)
+    W.comps[WORLD].GAME_TIME.gameTime=50000
+    local r1=CC.checkLine(L3)
+    check(r1.movement_unknown==1 and r1.movement_unknown_reasons.no_previous==1 and r1.game_time_read,
+      'campioni: primo controllo senza precedente')
+    local saved=CC.samplesDump()
+    check(type(saved['777'])=='table' and saved['777'].t==50000,'campioni: salvati con chiave testo')
+    CC._samples={}
+    CC.samplesLoad(saved)
+    pos={x=400,y=20}; W.comps[WORLD].GAME_TIME.gameTime=60000
+    local r2=CC.checkLine(L3)
+    check(r2.vehicles_moving==1 and r2.movement_unknown==0,'campioni: movimento visto dopo script ricreato')
+    local r3=CC.checkLine(L3)
+    check(r3.movement_unknown==1 and r3.movement_unknown_reasons.time_not_advanced==1,
+      'campioni: tempo fermo distinto da campione perso')
+    pos=nil; W.comps[WORLD].GAME_TIME.gameTime=70000
+    local r4=CC.checkLine(L3)
+    check(r4.movement_unknown_reasons.no_position==1,'campioni: posizione mancante distinta')
+    CC.samplesLoad({['5']={x=0/0,y=1,t=1},['6']={x=1,y=2,t='x'},abc={x=1,y=1,t=1},['7']={x=1,y=2,t=3}})
+    local n=0; for _ in pairs(CC._samples) do n=n+1 end
+    check(n==1 and CC._samples[7] and CC._samples[7].x==1,'campioni: dati salvati invalidi scartati')
+    CC.SAMPLES_MAX=2
+    CC._samples={[1]={x=0,y=0,t=1},[2]={x=0,y=0,t=3},[3]={x=0,y=0,t=2}}
+    saved=CC.samplesDump()
+    check(saved['2'] and saved['3'] and not saved['1'],'campioni: tenuti solo i piu recenti')
+    CC.lineVehicles,CC.vehicleState,CC.vehiclePos=old.lineVehicles,old.state,old.pos
+    CC._samples,CC.SAMPLES_MAX=old.samples,old.max
+    W.comps[WORLD].GAME_TIME.gameTime=old.gt
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.

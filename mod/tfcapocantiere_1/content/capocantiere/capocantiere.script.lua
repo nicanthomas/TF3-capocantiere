@@ -7064,6 +7064,8 @@ local SIMDEV = { log = {} }
 local function simJob(state, name, param)
 	local st = state:get() or {}
 	st.jobs = st.jobs or {}
+	-- campioni del collaudo movimento dallo stato della partita (CC.samplesLoad/samplesDump nella bozza b8)
+	if CC.samplesLoad then pcall(CC.samplesLoad, st.samples) end
 	local key = param and param.key or "?"
 	local rec = { name = name, time = os.time() }
 	if name == "action" then
@@ -7093,6 +7095,10 @@ local function simJob(state, name, param)
 		rec.ok = false; rec.error = "lavoro sconosciuto: " .. tostring(name)
 	end
 	st.jobs[key] = rec
+	if CC.samplesDump then
+		local okS, saved = pcall(CC.samplesDump)
+		if okS and type(saved) == "table" then st.samples = saved end
+	end
 	-- tengo solo gli ultimi 10 risultati (lo stato finisce nel salvataggio)
 	local keys = {}
 	for k, v in pairs(st.jobs) do keys[#keys + 1] = { k, v.time or 0 } end

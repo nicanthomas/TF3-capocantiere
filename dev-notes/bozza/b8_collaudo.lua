@@ -157,6 +157,45 @@ function CC.vehiclePos(v)
 	return p
 end
 
+-- Campioni persistenti (13.10): CC._samples da solo si perdeva tra due check_line (PROVATO IN TF3, causa non
+-- certificata). Il lato simulazione (simJob) li ricarica dallo stato della mod (state:get, finisce nel salvataggio
+-- della partita) prima di ogni lavoro e li riscrive dopo: cosi' non dipendono dallo script rimasto in memoria e non
+-- passano da una partita all'altra. Chiavi testo, solo numeri finiti, al massimo CC.SAMPLES_MAX veicoli recenti.
+CC.SAMPLES_MAX = 200
+
+local function sampleValid(s)
+	return type(s) == "table" and qualityFinite(s.x) and qualityFinite(s.y) and qualityFinite(s.t)
+end
+
+function CC.samplesLoad(saved)
+	local out = {}
+	if type(saved) == "table" then
+		for k, s in pairs(saved) do
+			local id = tonumber(k)
+			if id and sampleValid(s) then out[id] = { x = s.x, y = s.y, t = s.t } end
+		end
+	end
+	CC._samples = out
+	return out
+end
+
+function CC.samplesDump()
+	local list = {}
+	for id, s in pairs(CC._samples or {}) do
+		if (type(id) == "number" or tonumber(id)) and sampleValid(s) then list[#list + 1] = { id = id, s = s } end
+	end
+	table.sort(list, function(a, b)
+		if a.s.t ~= b.s.t then return a.s.t > b.s.t end
+		return tostring(a.id) < tostring(b.id)
+	end)
+	local out = {}
+	for i = 1, math.min(#list, CC.SAMPLES_MAX) do
+		local s = list[i].s
+		out[tostring(list[i].id)] = { x = s.x, y = s.y, t = s.t }
+	end
+	return out
+end
+
 -- Statistiche di una linea (passeggeri/merci trasportati, frequenza). I nomi dei campi non sono ancora noti:
 -- provo quelli del gioco precedente. DA VERIFICARE con la sonda s9; quelli che non esistono restano nil.
 function CC.lineStats(L)
@@ -273,8 +312,12 @@ function CC.checkLine(L)
 	end
 	-- veicoli: stato e movimento rispetto all'ultimo controllo
 	local states, still, moved, unknown = {}, 0, 0, 0
+	-- perche' il movimento non e' verificabile: serve a distinguere in TF3 campioni persi e tempo fermo
+	local reasons = { no_position = 0, no_previous = 0, time_not_advanced = 0 }
 	local now = 0
-	pcall(function() now = CC.comp(api.engine.util.getWorld(), CT.GAME_TIME).gameTime end)
+	local timeOk = pcall(function() now = CC.comp(api.engine.util.getWorld(), CT.GAME_TIME).gameTime end)
+	if not qualityFinite(now) then now = 0; timeOk = false end
+	CC._samples = CC._samples or {}
 	for _, v in ipairs(vs) do
 		local s = CC.vehicleState(v)
 		states[s] = (states[s] or 0) + 1
@@ -284,6 +327,9 @@ function CC.checkLine(L)
 			if (p.x - prev.x) ^ 2 + (p.y - prev.y) ^ 2 < 4 and s ~= "AT_TERMINAL" and s ~= "IN_DEPOT" then still = still + 1 else moved = moved + 1 end
 		else
 			unknown = unknown + 1
+			if not p then reasons.no_position = reasons.no_position + 1
+			elseif not prev then reasons.no_previous = reasons.no_previous + 1
+			else reasons.time_not_advanced = reasons.time_not_advanced + 1 end
 		end
 		if p then CC._samples[v] = { x = p.x, y = p.y, t = now } end
 	end
@@ -291,6 +337,9 @@ function CC.checkLine(L)
 	r.vehicles_moving = moved
 	r.vehicles_still = still
 	r.movement_unknown = unknown
+	r.movement_unknown_reasons = reasons
+	r.sample_time = now
+	r.game_time_read = timeOk and now > 0
 	if still > 0 then
 		r.problems[#r.problems + 1] = still .. " veicoli fermi dall'ultimo controllo"
 		r.suggestions[#r.suggestions + 1] = "controllare blocchi (segnali, binario unico con troppi treni, strada interrotta)"
