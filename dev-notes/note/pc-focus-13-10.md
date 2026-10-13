@@ -21,3 +21,14 @@ Riavvio normale: focus ancora trattenuto da AggiornamentiPC (verifica nome proce
 Nessun clic eseguito, nessuna mappa caricata, gioco richiuso normalmente.
 Documentazione ufficiale [risorse TF3](https://wiki.transportfever3.com/doku.php?id=modding%3Ageneral%3Aresourcetypes)
 definisce il prefisso mod_id::/ per le risorse di una mod; avvio con risorsa mod non ancora provato.
+
+## Avvio da risorsa mod riuscito, 08:02
+
+Risorsa tfcapocantiere_1::/capocantiere/boot_noop_13_10.prog.lua aggiunta solo alla mod sul PC;
+manifest _content.json salvato prima e hash backup uguali. --script ora esegue realmente il codice.
+Log filtrato mostra due contesti app=false e un contesto app disponibile (tabella);
+app.quit(false) chiude normalmente il gioco. Processo assente dopo la prova.
+Nessuna partita caricata, niente clic/tasti, nessun controllo di AggiornamentiPC.
+Le funzioni app sono oggetti richiamabili: type(app.loadGame)='table', non 'function'.
+Il codice della sonda controlla soltanto presenza, stampa e chiude; non altera il mondo.
+Non certifica ancora caricamento/salvataggio con API. File lasciato nella mod, manifest con backup.

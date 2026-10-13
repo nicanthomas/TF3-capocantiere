@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 07:56 Europe/Zurich, ultimo commit verificato 24681d2
+Scritto da: ChatGPT, 13.10.2026 08:02 Europe/Zurich, ultimo commit verificato 73bf466
 1. In una riga: tre difetti corretti; nave e anello completo ancora da collaudare, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -134,10 +134,10 @@ Scritto da: ChatGPT, 13.10.2026 07:56 Europe/Zurich, ultimo commit verificato 24
    - SOLO TEST AUTOMATICI: parallelo divide strade anche agli estremi dopo taglio;
      regressione falliva prima, ora CI verde e revisione senza blocchi, unito main735f044.
    - PROVATO SUL PC: chiusura normale TF3 via finestra verificata funziona senza focus;
-     tentativo --script con percorso esterno fallito prima di eseguire codice, nessuna mappa caricata.
+     --script con risorsa mod documentata eseguito: API app disponibile, uscita normale riuscita.
 3. Stato del PC: TF3 chiuso e processo assente, console assente; middleware invariato oggi.
    Installata v14-bozza-56eb18f5 DEV_MODE true, backup/hash verificati; include fix binari.
-   Opzioni Steam intatte; vecchi PID/HWND non validi. Nessuna partita originale modificata.
+   Opzioni Steam intatte; manifest mod con backup include sonda di sola stampa/uscita.
    Copie quota e Calliano salvate; dati privati e helper in work della chat.
 4. Problemi aperti e cose da NON fare
    Non dichiarare nave o anello funzionanti; nessuna nave comprata. Non aggirare guardie focus.
@@ -152,7 +152,7 @@ Scritto da: ChatGPT, 13.10.2026 07:56 Europe/Zurich, ultimo commit verificato 24
    Domanda pendente: minimizzare solo AggiornamentiPC, lasciandolo in esecuzione.
    Senza risposta non toccare quella app; proseguire con codice o focus TF3 se disponibile.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Studiare avvio tramite risorse TF3 documentate: sola stampa/uscita, nessuna partita caricata.
+   1. Sonda avvio di sola lettura: elencare esclusivamente copie autorizzate tramite API app.
    2. Se focus disponibile: copia 'capocantiere test porto 12-10', prova linea completa e servizio nave.
    3. Poi proposta parallelo sulla copia fallita senza costruire, quindi anello su copia iniziale separata.
 Letto da Claude il ...: ...
