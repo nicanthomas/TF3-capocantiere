@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 04082eb
+Scritto da: ChatGPT, 13.10.2026 20:49 Europe/Zurich, ultimo commit verificato 3b510d6
 1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -141,7 +141,7 @@ Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 04
    Opzioni Steam intatte; manifest mod ripristinato da backup, hash verificato.
    Copie quota e Calliano salvate; dati privati e helper in work della chat.
 4. Problemi aperti e cose da NON fare
-   Nave118966 IN_DEPOT, linea119497 senza veicoli; non ripetere acquisti o costruzione su questa copia.
+   Oita123908 e Solar123446 IN_DEPOT, linea25246 vuota; non ripetere acquisti sulla copia.
    Lua TF3 e'5.2: mock math.maxinteger inapplicabile; CI Lua5.3/5.4 verde, distinguere runtime.
    Copia anello fallito conserva3stazioni/98tratti: non ricostruire li' o rimuoverli a mano.
    Non applicare riduzione bus79575; installare solo a gioco/console chiusi, backup verificato.
@@ -153,9 +153,9 @@ Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 04
    Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
    Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Nave Solar123446 comprata ma non assegnata; provare solo stop1(Calliano), senza nuovi acquisti.
+   1. Solar stop1 fallisce: controllare accessi navali dei porti, poi confronto breve nella stessa baia.
    2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
-   3. Riprendere porto: confronto API nativa e CC.hasPath, poi bacino/accesso reale. Non comprare duplicati.
+   3. Confrontare linea/terminali con GUI ufficiale; non comprare duplicati. Note prova-navale-linea.md.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

@@ -151,3 +151,12 @@ Parametri/moduli del porto stock e mod confrontati anche nei campi annidati: sol
 omesso oltreall'anno. Nodo interno deposito asciutto normale nello script ufficiale, uscita aY-98 in acqua.
 Prossima prova: assegnazione esplicita Solar a stop1(Calliano), distinta da0 e nextreachable-1.
 Se rifiuta ancora, confronto temporaneo tra due porti vicini per distinguere tratta e accesso deposito.
+
+
+### 13.10, 20:49 — Solar verso la seconda fermata e revisione statica
+
+PROVATO IN TF3: una sola assegnazione GUI della Solar 123446 alla linea 25246, indice fermata 1 (Calliano), restituisce successo=false. La nave resta in deposito; nessun nuovo acquisto. Il salvataggio separato «capocantiere porto stock due modelli 13-10» conserva lo stato precedente.
+
+SOLO REVISIONE STATICA: confronto indipendente con SDK e GUI ufficiali non identifica un errore dimostrato in createLine/acquisto. Le runways TAKEOFF/LANDING dei porti sono distinte dal nodo del terminale: verificare la loro registrazione. La GUI usa autoAssignTerminals e configura stopConfig; confronto utile, causa ancora non dimostrata. Il selettore modelli non filtra SHIP/SMALL_SHIP per porti piccoli: difetto separato, non causa corrente perché Oita e Solar sono SMALL_SHIP.
+
+Prossimo discriminante: accessi dei due porti; eventuale rotta temporanea tra due porti vicini nella stessa baia usando le navi già acquistate, poi ripristino della rotta originale. Nessuna prova di navigazione riuscita.
