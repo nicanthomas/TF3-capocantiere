@@ -137,9 +137,16 @@ function CC.vehicleState(v)
 	return name
 end
 
--- Posizione di un veicolo: prova piu' fonti (DA VERIFICARE quale funziona: sonda s9).
+-- Getter ufficiale TF3, verificato 13.10 su nave in viaggio; ripieghi per API assente.
 function CC.vehiclePos(v)
 	local p
+	pcall(function()
+		local position = api.engine.util.vehicle.getPosition(v)
+		if qualityFinite(position.x) and qualityFinite(position.y) then
+			p = { x = position.x, y = position.y }
+		end
+	end)
+	if p then return p end
 	pcall(function() p = CC.posOf(v) end)
 	if p then return p end
 	pcall(function()
@@ -373,4 +380,5 @@ SIM_ACTIONS.read_map = function(a)
 		towns = towns, industries = inds, lines = lines }
 end
 -- ===================================================================== fine b8
+
 

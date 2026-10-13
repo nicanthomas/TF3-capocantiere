@@ -187,3 +187,12 @@ CI38451187443 verde: mock131ok/0falliti, Python Ubuntu148test/1skip, Windows ver
 PROVATO IN TF3 A SECCO: nuova guardia eseguita sui porti reali125886/120311 richiama la registrazione dell'acquisto simulata; su125886/123906(Calliano) la blocca e restituisce linea/stazioni/deposito. Tutti i comandi nativi vietati nella sonda, acquisto sostituito con registrazione, nessuna nave comprata. Linea temporaneamente aggiornata per confrontare le due rotte e poi ripristinata alla baia. Non equivale a prova completa della nuova mod installata.
 
 Il controllo movimento della mod restituisce ancora sconosciuto: CC.vehiclePos usa bounding box/MOVE_PATH ma non il getter ufficiale api.engine.util.vehicle.getPosition, già verificato nei campioni della Solar. Difetto distinto, da correggere e collaudare separatamente. Solar in movimento non prova ancora arrivo/servizio completato.
+
+
+### 13.10, 21:07 — prima fermata raggiunta e getter posizione in sviluppo
+
+PROVATO IN TF3: Solar stopIndex0→1, lastLineStopDeparture31887400→32587800, posizione esatta porto stock(-5446.50,-4947.69), velocita'0 nel campione. Primo porto raggiunto e nuova partenza registrata, non ancora intero ciclo o trasporto passeggeri. Copia distinta «capocantiere Solar primo porto 13-10», SAV73089750/JPG669508 byte verificati.
+
+b8.vehiclePos usa ora getter ufficiale api.engine.util.vehicle.getPosition prima dei vecchi ripieghi, coordinate finite obbligatorie; eccezioni/API assente mantengono fallback. Test iniziali su branch41: CI38451793697 fallisce per due nuove regressioni attese; sette casi dopo implementazione passano sotto mockLuaTF3, unico math.maxinteger preesistente resta. Revisione indipendente senza blocchi; CI implementazione in attesa, non installato.
+
+Dopo save prima fermata, sonda movimento accettata ma risultato sim_result121 non pervenuto; successiva sonda getter122 ritirata senza esecuzione. Non reinviate. Finestra TF3 risponde e mostra partita aperta, nessun kill. Diagnosi ponte in corso; non dichiarare getter nuovo provato in gioco finche' non torna il risultato.
