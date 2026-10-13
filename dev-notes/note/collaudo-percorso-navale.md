@@ -13,5 +13,7 @@ Quattro mock: native mancante con generic true, native valido, terra invariata, 
 RED CI38433730920: unica nuova regressione fallisce; Windows verde. Messaggio regressione
 intenzionale appartiene al test del runner. Mock confinato nel gioco prima/dopo: nuova regressione
 fallisce poi passa. Persistente mock math.maxinteger inapplicabile TF3Lua5.2, non test verde completo.
-CI/revisione GREEN in corso. Codice non installato, collaudo reale aggiornato non eseguito.
+CI38434059558 verde: Ubuntu148test/1skip, mock121ok/0falliti, Windowsverde.
+Locale134test senza errori/fallimenti, classeLua saltata17.187s. Revisione senza blocchi.
+Unito main207073e. Codice non installato, collaudo reale aggiornato non eseguito.
 NON risolve la geometria dei porti, l'assegnazione, i bacini o il servizio navale; segnala il problema reale.
