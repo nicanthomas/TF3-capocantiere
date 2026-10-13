@@ -64,3 +64,18 @@ Porti offrono union12, ma linea25246 vehicleInfo.transportModes e' vuoto. Questa
 NON dimostra ancora causa: il campo potrebbe essere derivato dai veicoli gia'assegnati.
 Prossima prova controllata: clone API Line della sola linea di test, aggiornare quel campo,
 leggere se conservato e riprovare nave esistente. Stop/gruppi invariati, nessun altro acquisto.
+
+## Modi derivati e posizione dei terminali
+
+PROVATO IN TF3: clone Line e LineUpdateCmd con transportModes12=true accettato, ma campo resta vuoto;
+nuova assegnazione nave esistente rifiutata. Il campo non offre una correzione al percorso.
+Lettura connessioni reali dei terminali via getTpNetData/getNodeData e util.transport.calcPosition:
+Lissone terminale(-5569.52,-5113.52,0), fondale circa-2.60; Calliano(-7476.86,-1715.66,0), circa-4.98.
+Le connessioni hanno modo12 e acqua visibile, non sono stazioni interne vuote o reti senza edge.
+Indice edge0-based -> tn.edges[index+1], come script ufficiale; i collegamenti sono su altra entita'
+rispetto al nodo terminale. Iniziale sonda cercava nel solo componente del nodo e non li vedeva.
+Lissone costa2 gia'valida a secco: origine(-5047.08,-5835.83), terreno17.32m, punto molo31.25m
+verso acqua fondale-7.88 (41.25m:-14.53). Costa3 molto piu' bassa ma molo31.25m fondale-1.60.
+Non inventare soglia navigabile: profondita' maggiore e' solo ipotesi da verificare con assegnazione.
+Prossima prova: porto Lissone costa2, mantenere porto Calliano/nave esistente/linea e vecchio porto;
+cambiare prima fermata se costruzione riesce. Nessuna demolizione o altro acquisto.
