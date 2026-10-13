@@ -112,3 +112,17 @@ Direzione acqua stock(.775671,-.631137) diversa dal raggio citta'->costa usato d
 Questa differenza suggerisce normale della costa, NON dimostra ancora causa senza servizio nave.
 Prossima prova: cambiare solo prima fermata della linea25246 a125886 e usare nave123908 esistente.
 Nuovo porto ancora non salvato; non leggere proposte applicate, componenti riletti viaAPI.
+
+## Linea con primo porto stock e acqua connessa
+
+PROVATO IN TF3: prima fermata25246 sostituita a125886, LineUpdate accettato;
+seconda resta123906. Assegnazione della sola nave123908 rifiutata, niente altri acquisti.
+Il primo porto stock non basta: nessuna prova che il problema sia solo quello di Lissone.
+Copia 'capocantiere porto stock Lissone13-10' (spazio prima13) salvata, callback/SAV72369110/JPG670742
+verificati. Contiene nuovo porto122925, vecchi porti/deposito e linea con fermata aggiornata.
+Sonda read-only intera mappa(-8192..8192), griglia64m,65536punti isOnWater:
+Lissone mod/stock, Calliano e Lissone costa3 ricadono nello stesso componente acqua(950celle).
+E' solo approssimazione acqua visibile, NON certifica corridoio navigabile o profondita' minima;
+non affermare che siano bacini separati. Nessuna modifica del terreno dalla scansione.
+Prossima verifica mirata: uscita effettiva del deposito e collegamento alla zona navigabile,
+prima di altre varianti di porto o acquisti.
