@@ -121,36 +121,40 @@ Letto da ChatGPT il 12.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 13.10 06:33: correzione quota deposito, poi doppio binario
-Scritto da: ChatGPT, 13.10.2026 07:09 Europe/Zurich, ultimo commit verificato 7fe129b
-1. In una riga: quota risolta; deposito costruibile a Calliano ma mod cerca solo a Lissone.
+Stato: IN LAVORO da 13.10 06:33: collaudo nave e diagnosi doppio binario
+Scritto da: ChatGPT, 13.10.2026 07:17 Europe/Zurich, ultimo commit verificato c8ba043
+1. In una riga: due difetti navali corretti; prova completa attende focus TF3, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO SUL PC: GitHub e checkout verificati; altra AI ferma, nessun nuovo codice remoto.
-   - PROVATO IN TF3: copia porto GUI 12-10 ricaricata, porto 122216 presente.
-   - PROVATO IN TF3: stesso punto deposito fallisce a terreno 0.0385 m, riesce a quota 2.
-     Costruzione 123741, deposito 120768; fonte ufficiale acqua+2 in water_depot.script.lua.
-   - PROVATO IN TF3: deposito 120768 raggiunge porto gruppo 115052, percorso navigabile vero.
-   - PROVATO IN TF3: nuova copia 'capocantiere deposito quota 13-10' salvata; file verificati.
-3. Stato del PC: TF3 riavviato, console non avviata; v14-bozza-4e8640b2 DEV_MODE true.
-   Middleware aggiornato, opzioni Steam intatte. Save deposito quota 06:39 e deposito Calliano 07:06 conservati; gioco appena riavviato.
-   Quota e ricerca su tutte le citta' in main; CI/revisione verdi, installate con backup verificati.
-   Originale e tutte le copie precedenti preservate; risposte private in work della chat.
+   - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
+     deposito120768 raggiunge porto115052. Save distinto deposito quota13-10 verificato.
+   - SOLO TEST AUTOMATICI: quota reale acqua+2 corretta, terra invariata, acqua assente blocca;
+     CI verde, revisione senza blocchi; Lua esterno Windows saltato, non superato.
+   - PROVATO IN TF3: prova linea con quota corretta fallisce deposito Lissone, porti rimossi;
+     stessa ricerca a Calliano riesce (103939/118853), salvata separatamente 07:06.
+   - SOLO TEST AUTOMATICI: ricerca presso tutte le citta' richieste corretta; primo successo ferma.
+     CI e Python locali verdi, revisione senza regressioni. Percorso/servizio nave ancora NON provati.
+   - PROVATO SUL PC: nuova mod4e8640b2 installata a gioco/console chiusi, backup/hash verificati.
+3. Stato del PC: TF3 aperto al menu principale, nessuna partita caricata, console assente.
+   Mod v14-bozza-4e8640b2 DEV_MODE true; middleware aggiornato, opzioni Steam intatte.
+   HWND395980/PID13772; focus trattenuto da AggiornamentiPC, clic rifiutati dalle guardie.
+   Save iniziale 'capocantiere test porto 12-10' senza residui navali: usarlo per prova completa.
+   Copie quota e Calliano salvate, originale preservato; backup/risposte privati in work della chat.
 4. Problemi aperti e cose da NON fare
-   Linea navale non creata; da integrare quota acqua reale, non hardcodare 2 per ogni mappa.
-   Anello doppio fallito: copia distinta conserva 3 stazioni/98 tratti; non ripetere li'.
-   Non rimuovere residui a mano o cambiare flotta bus 79575 senza direttiva.
-   Backup/installazioni a gioco e console chiusi. Chiave mai letta/mostrata.
-   Dettagli in deposito-navale-quota.md e porto-calliano-12-10.md; mod NON finalizzata.
+   Non dichiarare linea nave funzionante o aggirare guardie focus; nessuna nave comprata.
+   TF3 usa Lua5.2: mock math.maxinteger inapplicabile; CI Lua5.3/5.4 verde, distinguere i runtime.
+   Anello doppio fallito: copia conserva3stazioni/98tratti; non ricostruire li' o rimuoverli a mano.
+   Non applicare proposta riduzione bus79575. Backup/installazioni solo a gioco/console chiusi.
+   Dettagli deposito-navale-quota.md e ricerca-deposito-navale.md; chiave mai letta/mostrata.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Nicolo' ha richiesto autonomia fino ai crediti; nessuna domanda pendente.
-   Permessi di questa chat: PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
-   backup/aggiornamenti, avvio/chiusura normale, console/API, pulizia soli file protocollo.
-   Opzioni Steam con ripristino autorizzate ma non cambiate; permessi non validi per chat nuove.
-   Direttive: bus Abriola-Maretto, anello doppio e porto/linea nave su copie separate.
+   Nicolo' richiede autonomia fino ai crediti; permessi PC/Steam/TF3, checkout/rete,
+   mod/middleware/scambio/log, backup, avvio/chiusura, console/API e pulizia protocollo confermati.
+   Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
+   Domanda pendente: minimizzare solo finestra AggiornamentiPC, lasciandola in esecuzione.
+   Senza risposta non toccare quella app; sviluppare codice e usare dati gia' raccolti.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Fallback unito/installato: caricare copia iniziale porto e riprovare linea completa.
-   2. Test/CI/revisione e installazione con backup; riprovare linea su copia iniziale senza residui.
-   3. Riprendere geometria doppio binario; release soltanto dopo requisiti soddisfatti.
+   1. Studiare geometria parallelo nei dati privati; non modificare tracciati senza causa confermata.
+   2. Quando focus disponibile: caricare copia iniziale porto, verificare4e8640b2 e provare linea.
+   3. Collaudare percorsi/nave in servizio, poi doppio binario; release solo con requisiti soddisfatti.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

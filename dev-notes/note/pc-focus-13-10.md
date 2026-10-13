@@ -1,0 +1,7 @@
+# Focus PC durante la prova navale — 13.10.2026
+
+La mod4e8640b2 e' installata, ma la nuova prova completa non e' partita: TF3 e' al menu principale. Controller Steam/TF3 verifica HWND/PID/percorso; SetForegroundWindow e AppActivate non hanno prodotto il focus verificato, i clic sono stati rifiutati. Il processo in primo piano si chiama AggiornamentiPC. Non inviati clic/tasti a quella applicazione, non chiusa o minimizzata.
+
+Richiesta limitata a Nicolo' mediante domanda asincrona: minimizzare solo quella finestra lasciando gli aggiornamenti in esecuzione. In attesa di risposta, studio del codice/dati ferroviari gia' raccolti. Nessun tentativo di aggirare le guardie. Fonte Windows: [SetForegroundWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow), restrizioni sul cambio di primo piano.
+
+La correzione ricerca deposito e' verde in CI38349547194; Pythonlocale134test,0fallimenti/0errori,classeLua saltata17.037s. Quota e fallback verificati separatamente in TF3; questo non certifica ancora nave in servizio.

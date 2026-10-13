@@ -1,4 +1,4 @@
-# STATO DEL PROGETTO — leggere per primo (aggiornato 12.10.2026)
+# STATO DEL PROGETTO — leggere per primo (aggiornato 13.10.2026)
 
 Questo file permette a una chat nuova di ripartire senza rileggere le conversazioni precedenti. **All'avvio di QUALSIASI chat Claude o ChatGPT leggere prima `HANDOFF.md` dalla branch GitHub aggiornata**: contiene il checkpoint operativo, il prompt unico di avvio e le regole di aggiornamento continuo senza preavviso al cambio AI/chat. Poi leggere questo file per le regole vincolanti e lo stato tecnico. Questa procedura riguarda lo sviluppo e non introduce automazioni nel gioco.
 Struttura del repo (dal 09.10.2026): nella radice anche `HANDOFF.md` oltre a `mod/`, `middleware/`, `README.md`, `LICENSE`; tutto lo

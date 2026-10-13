@@ -58,7 +58,7 @@ La proposta successiva di scendere a quattro bus non e' stata applicata. Dettagl
 | `build_cargo_rail_line` | Treno merci industria -> industria (scalo vicino alla stazione integrata) | Provato (collaudo ok) |
 | `build_cargo_rail_network` | Rete merci, binari d'attesa se c'e' spazio (altrimenti 1 treno, con avviso) | Provato (collaudo ok) |
 | `build_rail_ring` | Anello ferroviario a binario unico (incrocio nelle stazioni); `double_track` ancora instabile | Binario unico provato |
-| `build_air_or_water_line` | Aerei ed elicotteri provati; navi: porto rifiutato (molo da copiare da un porto fatto a mano) | Parziale |
+| `build_air_or_water_line` | Aerei ed elicotteri provati; porti/depositi navali costruiti, linea nave ancora da collaudare | Parziale |
 | Segnali (interni) | Segnali di percorso a senso unico e a doppio senso sui binari | Provati |
 
 Ogni azione che costruisce o compra chiede conferma prima di essere inviata.
