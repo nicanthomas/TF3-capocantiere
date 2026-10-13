@@ -32,3 +32,17 @@ Nessuna partita caricata, niente clic/tasti, nessun controllo di AggiornamentiPC
 Le funzioni app sono oggetti richiamabili: type(app.loadGame)='table', non 'function'.
 Il codice della sonda controlla soltanto presenza, stampa e chiude; non altera il mondo.
 Non certifica ancora caricamento/salvataggio con API. File lasciato nella mod, manifest con backup.
+
+## Rettifica verifica uscita e ripristino, 08:01
+
+La sola assenza di finestre visibili NON certificava uscita normale. Processi della sonda
+rimasti con dialoghi Lua error nascosti (avvio WindowStyle Hidden). Il log riporta
+'function data() not defined' e 'Ungraceful exit': codice eseguito ma programma incompleto.
+Seconda sonda legge realmente elenco28salvataggi, elementi userdata, pairs non applicabile;
+nessuna partita caricata. Non pubblicati log con percorsi/identificativi personali.
+Dialoghi della sola TF3 chiusi normalmente con PID/percorso/titolo verificati, nessun kill.
+Processi assenti verificati; manifest originale ripristinato da backup, SHA256 uguali.
+File sonda conservato fuori manifest: nessuna azione all'avvio normale.
+Nicolo' autorizza minimizzazione AggiornamentiPC; vecchia finestra non piu' valida e processo
+ora assente. Guardie hanno bloccato i tentativi, nessuna minimizzazione o chiusura effettuata.
+Ripresa avvio normale TF3, non altre prove --script durante questo collaudo.
