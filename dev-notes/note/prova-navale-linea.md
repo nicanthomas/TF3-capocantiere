@@ -208,3 +208,12 @@ Rettifica diagnosi ponte: i file121_1979b665 e122_3b015ac7 trovati nella cartell
 ### 13.10, 21:11 — nuova versione installata a gioco chiuso
 
 PROVATO SUL PC: uscita normale dal menu TF3 e verifica processi gioco/Python assenti. Generata versione sviluppo bozza d15a0424 da main43, installata con backup/hash identici. Include guardia preacquisto39 e getter42. Middleware e opzioni Steam invariati. Sintassi locale Lua5.3/5.4 saltata, già coperta CI verde. Nessuna prova completa della versione installata ancora; prossimo passo ricaricare copia Solar primo porto e controllare movimento.
+
+
+### 13.10, 21:15 — versione installata ricaricata e getter reale verificato
+
+PROVATO IN TF3: copia Solar primo porto13-10 ricaricata tramite Continua, titolo verificato prima avvio. Stato fresco d15a0424/speed4; ponte torna operativo dopo chiusura normale/riavvio. Archiviate soltanto12azioni/risultati vecchi, nessun salvataggio toccato. File generato release locale per errore dal tentativo --help ripristinato a HEAD; copia sviluppo installata invariata.
+
+check_line25246 vede AT_TERMINAL, poi EN_ROUTE, una Solar e nessun problema di percorso sulla baia. Lettore CC.vehiclePos corretto restituisce(-5446.54,-4949.37) sull'API reale. Stato cambia stopIndex1 e lastDeparture32842000. Nessun acquisto/costruzione nuova.
+
+Limite ancora dimostrato: due controlli separati restano movement_unknown=1, anche con getter valido. I campioni CC._samples si perdono tra esecuzioni; la correzione getter NON conclude il collaudo movimento. Prossimo passo leggere contesto persistente delle azioni SIM prima di una modifica, evitare globali fra partite non verificati. Successo baia non risolve Calliano o anello.

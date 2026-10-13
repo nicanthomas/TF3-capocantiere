@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 21:11 Europe/Zurich, ultimo commit verificato e3eabfc
+Scritto da: ChatGPT, 13.10.2026 21:15 Europe/Zurich, ultimo commit verificato 6a29273
 1. In una riga: Solar naviga verso Lissone; tratta Calliano non percorribile, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota acqua+2 costruisce deposito nello stesso punto rifiutato a quota terreno.
@@ -135,7 +135,7 @@ Scritto da: ChatGPT, 13.10.2026 21:11 Europe/Zurich, ultimo commit verificato e3
      Solar123446 assegnata a linea25246 tra i due Lissone; due posizioni diverse, velocita'8.333m/s.
    - PROVATO SUL PC: copia 'capocantiere Solar baia Lissone 13-10' salvata, SAV/JPG presenti.
      PROVATO IN TF3: tornando a Calliano ricompare nessun percorso; ritorno alla baia riuscito.
-3. Stato del PC: TF3 e console chiusi normalmente; copia Solar primo porto13-10 salvata.
+3. Stato del PC: TF3 aperto sulla copia Solar primo porto13-10; ponte risponde dopo riavvio.
    Installata v14-bozza-d15a0424 DEV_MODE true, backup/hash verificati; include guardia e getter.
    Opzioni Steam intatte; manifest originale ripristinato; helper/dati privati in work della chat.
    Copia 'capocantiere porto stock due modelli 13-10' conserva Calliano e due navi non assegnate.
@@ -151,8 +151,8 @@ Scritto da: ChatGPT, 13.10.2026 21:11 Europe/Zurich, ultimo commit verificato e3
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
    Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Avviare TF3, caricare 'capocantiere Solar primo porto 13-10'; verificare versione e movimento.
-   2. Non reinviare sonde accettate: ponte SIM in timeout prima del riavvio, vecchi risultati non validi.
+   1. Getter installato legge posizione, ma due check_line perdono campioni: cercare contesto SIM persistente.
+   2. Solar AT_TERMINAL e poi EN_ROUTE dopo reload; Calliano non risolto. Confrontare suo porto stock.
    3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...
 

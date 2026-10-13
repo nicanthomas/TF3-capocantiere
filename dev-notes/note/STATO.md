@@ -571,3 +571,8 @@ Nessuna partita modificata da quelle sonde; non riprenderle durante i collaudi o
 ### 13.10, 20:53 — Solar in movimento, tratta Calliano ancora bloccata
 
 PROVATO IN TF3: sulla copia separata, linea25246 temporaneamente fra due porti di Lissone125886/120311 accetta Solar123446; due campioni posizione distinti e velocita'8.333m/s. Tornando a Calliano123906 ricompaiono due percorsi mancanti. Accessi navali di tutti e tre porti registrati. Nessun acquisto aggiuntivo. Arrivo/servizio completo e linea tra citta' NON ancora dimostrati. Nuova copia Solar baia Lissone13-10 salvata e SAV/JPG verificati; copia due modelli preserva tratta originale e navi non assegnate. Dettagli prova-navale-linea.md. Mod non finalizzata.
+
+
+### 13.10, 21:15 — guardia preacquisto e getter installati; campioni persi
+
+Main39/42 integrati dopo CI verde e revisione: rotta navale nativa obbligatoria prima acquisto, posizione veicoli dal getter SDK. Installata d15a0424 con backup/hash a gioco chiuso. PROVATO IN TF3: copia Solar primo porto ricaricata, nave AT_TERMINAL poi EN_ROUTE, getter legge posizione reale. Controllo ripetuto resta movement_unknown1 perché campioni non persistono fra richieste: lavoro aperto. Tratta Calliano e anello non conclusi. Note prova-navale-linea.md.
