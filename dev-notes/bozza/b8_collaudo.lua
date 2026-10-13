@@ -210,12 +210,29 @@ function CC.checkLine(L)
 	-- percorso tra fermate consecutive (anche dall'ultima alla prima: la linea gira), con la stazione e il terminale
 	-- indicati dalla fermata (VERIFICATO s14 sul salvataggio di terzi: nessun falso "nessun percorso")
 	local stops = CC.lineStops(L)
+	-- TF3: il grafo a nodi puo' collegare i porti anche quando il percorso navale
+	-- effettivo non esiste. Per le navi conservare anche il controllo nativo della linea.
+	local nativeNoPath = {}
+	local TM = api.type.enum.TransportMode
+	local waterLine = false
+	for _, mode in ipairs(modes) do
+		if mode == (TM.SHIP or 12) or mode == (TM.SMALL_SHIP or 13) then waterLine = true end
+	end
+	if waterLine then
+		pcall(function()
+			for i, states in ipairs(CC.each(api.engine.util.line.getDetailedLineProblems(L))) do
+				for _, state in ipairs(CC.each(states)) do
+					if state.noPath == true then nativeNoPath[i] = true end
+				end
+			end
+		end)
+	end
 	if #modes > 0 then
 		for i = 1, #stops do
 			local j = i % #stops + 1
 			if stops[i].stationGroup ~= stops[j].stationGroup
-				and not CC.hasPath(CC.lineStopNode(stops[i]), CC.lineStopNode(stops[j]), modes)
-				and not CC.groupPath(stops[i].stationGroup, stops[j].stationGroup, modes) then
+				and (nativeNoPath[i] or (not CC.hasPath(CC.lineStopNode(stops[i]), CC.lineStopNode(stops[j]), modes)
+				and not CC.groupPath(stops[i].stationGroup, stops[j].stationGroup, modes))) then
 				r.problems[#r.problems + 1] = "nessun percorso dalla fermata " .. i .. " (" .. (CC.nameOf(groups[i]) or "?") .. ") alla " .. j
 				r.suggestions[#r.suggestions + 1] = "collegare le due fermate (strada/binario mancante o senso unico)"
 			end
@@ -356,3 +373,4 @@ SIM_ACTIONS.read_map = function(a)
 		towns = towns, industries = inds, lines = lines }
 end
 -- ===================================================================== fine b8
+
