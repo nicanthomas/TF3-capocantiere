@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: correzione quota deposito, poi doppio binario
-Scritto da: ChatGPT, 13.10.2026 06:50 Europe/Zurich, ultimo commit verificato 84e1118
+Scritto da: ChatGPT, 13.10.2026 06:54 Europe/Zurich, ultimo commit verificato 87f7c3c
 1. In una riga: deposito navale funzionante riprodotto; linea nave e doppio binario incompleti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC: GitHub e checkout verificati; altra AI ferma, nessun nuovo codice remoto.
@@ -131,9 +131,9 @@ Scritto da: ChatGPT, 13.10.2026 06:50 Europe/Zurich, ultimo commit verificato 84
      Costruzione 123741, deposito 120768; fonte ufficiale acqua+2 in water_depot.script.lua.
    - PROVATO IN TF3: deposito 120768 raggiunge porto gruppo 115052, percorso navigabile vero.
    - PROVATO IN TF3: nuova copia 'capocantiere deposito quota 13-10' salvata; file verificati.
-3. Stato del PC: TF3 aperto, console non avviata; versione v14-bozza-509c3059 DEV_MODE true.
+3. Stato del PC: TF3 riavviato, console non avviata; v14-bozza-0200b845 DEV_MODE true.
    Middleware aggiornato, opzioni Steam intatte. Save deposito delle 06:39 conservato.
-   Quota acqua corretta in main 84e1118, CI/test/revisione verdi; non ancora installata.
+   Quota acqua corretta in main, CI/test/revisione verdi; installata con backup e impronte uguali.
    Originale e tutte le copie precedenti preservate; risposte private in work della chat.
 4. Problemi aperti e cose da NON fare
    Linea navale non creata; da integrare quota acqua reale, non hardcodare 2 per ogni mappa.
@@ -148,7 +148,7 @@ Scritto da: ChatGPT, 13.10.2026 06:50 Europe/Zurich, ultimo commit verificato 84
    Opzioni Steam con ripristino autorizzate ma non cambiate; permessi non validi per chat nuove.
    Direttive: bus Abriola-Maretto, anello doppio e porto/linea nave su copie separate.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Chiudere TF3 normalmente, generare/installare mod con backup; ricaricare copia navale.
+   1. Caricare copia iniziale 'capocantiere test porto 12-10'; verificare versione fresca, provare linea.
    2. Test/CI/revisione, installazione con backup, prova completa linea navale in copia distinta.
    3. Riprendere geometria doppio binario; release soltanto dopo requisiti soddisfatti.
 Letto da Claude il ...: ...

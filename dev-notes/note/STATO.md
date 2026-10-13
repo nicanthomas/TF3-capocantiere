@@ -517,3 +517,11 @@ fonte ufficiale deposito forza superficie acqua+2. Costruzione 123741/deposito 1
 navigabile vero verso porto gruppo 115052. Save distinto 'capocantiere deposito quota 13-10'
 verificato sul PC alle 06:39:52. Linea/nave ancora NON costruite, correzione stabile da integrare.
 Dettagli in deposito-navale-quota.md. Non hardcodare 2 su ogni mappa: serve waterLevel reale.
+
+### 13.10, 06:54 — mod navale corretta installata
+
+PROVATO SUL PC: TF3 chiuso normalmente dal menu, gioco/console assenti prima di scrivere.
+Generata --dev --bozza v14-bozza-0200b845; sintassi locale saltata per runtime Lua esterno assente,
+CI Lua verde sullo stesso codice. Backup script installato verificato SHA256, nuovo script uguale
+al generato, DEV_MODE true e una sola CC_VERSION. Middleware invariato, opzioni Steam intatte.
+TF3 riavviato; prova completa ancora da eseguire su copia iniziale porto senza GUI aggiuntivi.
