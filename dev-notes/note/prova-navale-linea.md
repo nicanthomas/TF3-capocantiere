@@ -54,3 +54,13 @@ Nessun'altra nave comprata. Quindi spostamento10m non risolve navigabilita' real
 Save distinto 'capocantiere porto acqua10 fallito13-10' (spazio prima13), callback/SAV71144267/JPG821034
 verificati. Prototipo locale, mod installata invariata. Risposta prove-navale-13-10-acqua10.json.
 Ipotesi successiva NON provata: assegnazione dalla GUI invece di SIM; solo nave gia'presente, no acquisti.
+
+## Contesto comando e modi memorizzati della linea
+
+PROVATO IN TF3: stessa nave123908 assegnata da GUI con nextreachable-1 rifiuta (callback=false),
+nessun cambiamento alla linea. Non correggere introducendo assegnazione asincrona senza una causa.
+Nave effettiva carrierWATER4, config.transportModes12=true, altri10/13assenti, IN_DEPOT.
+Porti offrono union12, ma linea25246 vehicleInfo.transportModes e' vuoto. Questa differenza
+NON dimostra ancora causa: il campo potrebbe essere derivato dai veicoli gia'assegnati.
+Prossima prova controllata: clone API Line della sola linea di test, aggiornare quel campo,
+leggere se conservato e riprovare nave esistente. Stop/gruppi invariati, nessun altro acquisto.
