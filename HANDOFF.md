@@ -121,40 +121,40 @@ Letto da ChatGPT il 12.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 13.10 06:33: collaudo nave e diagnosi doppio binario
-Scritto da: ChatGPT, 13.10.2026 07:25 Europe/Zurich, ultimo commit verificato 9011f8d
-1. In una riga: due difetti navali corretti; prova completa attende focus TF3, mod NON finalizzata.
+Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
+Scritto da: ChatGPT, 13.10.2026 07:49 Europe/Zurich, ultimo commit verificato 735f044
+1. In una riga: tre difetti corretti; nave e anello completo ancora da collaudare, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
-     deposito120768 raggiunge porto115052. Save distinto deposito quota13-10 verificato.
-   - SOLO TEST AUTOMATICI: quota reale acqua+2 corretta, terra invariata, acqua assente blocca;
-     CI verde, revisione senza blocchi; Lua esterno Windows saltato, non superato.
-   - PROVATO IN TF3: prova linea con quota corretta fallisce deposito Lissone, porti rimossi;
-     stessa ricerca a Calliano riesce (103939/118853), salvata separatamente 07:06.
-   - SOLO TEST AUTOMATICI: ricerca presso tutte le citta' richieste corretta; primo successo ferma.
-     CI e Python locali verdi, revisione senza regressioni. Percorso/servizio nave ancora NON provati.
-   - PROVATO SUL PC: nuova mod4e8640b2 installata a gioco/console chiusi, backup/hash verificati.
-3. Stato del PC: TF3 aperto al menu principale, nessuna partita caricata, console assente.
-   Mod v14-bozza-4e8640b2 DEV_MODE true; middleware aggiornato, opzioni Steam intatte.
-   HWND395980/PID13772; focus trattenuto da AggiornamentiPC, clic rifiutati dalle guardie.
-   Save iniziale 'capocantiere test porto 12-10' senza residui navali: usarlo per prova completa.
-   Copie quota e Calliano salvate, originale preservato; backup/risposte privati in work della chat.
+     deposito120768 raggiunge porto115052. Copia deposito quota13-10 salvata e verificata.
+   - SOLO TEST AUTOMATICI: quota reale acqua+2 corretta, terra invariata, acqua assente blocca.
+     CI verde; Lua esterno Windows saltato, non superato.
+   - PROVATO IN TF3: deposito Lissone fallisce, a Calliano riesce103939/118853;
+     copia separata salvata. SOLO TEST AUTOMATICI: ricerca tra tutte le citta' corretta, CI verde.
+   - SOLO TEST AUTOMATICI: parallelo divide strade anche agli estremi dopo taglio;
+     regressione falliva prima, ora CI verde e revisione senza blocchi, unito main735f044.
+   - PROVATO SUL PC: chiusura normale TF3 via finestra verificata funziona senza focus;
+     tentativo --script con percorso esterno fallito prima di eseguire codice, nessuna mappa caricata.
+3. Stato del PC: TF3 chiuso e processo assente, console assente; middleware invariato oggi.
+   Installata v14-bozza-4e8640b2 DEV_MODE true, backup/hash verificati; fix binari NON installato.
+   Opzioni Steam intatte; vecchi PID/HWND non validi. Nessuna partita originale modificata.
+   Copie quota e Calliano salvate; dati privati e helper in work della chat.
 4. Problemi aperti e cose da NON fare
-   Non dichiarare linea nave funzionante o aggirare guardie focus; nessuna nave comprata.
-   TF3 usa Lua5.2: mock math.maxinteger inapplicabile; CI Lua5.3/5.4 verde, distinguere i runtime.
-   Anello doppio fallito: copia conserva3stazioni/98tratti; non ricostruire li' o rimuoverli a mano.
-   Non applicare proposta riduzione bus79575. Backup/installazioni solo a gioco/console chiusi.
-   Dettagli deposito-navale-quota.md e ricerca-deposito-navale.md; chiave mai letta/mostrata.
+   Non dichiarare nave o anello funzionanti; nessuna nave comprata. Non aggirare guardie focus.
+   Lua TF3 e'5.2: mock math.maxinteger inapplicabile; CI Lua5.3/5.4 verde, distinguere runtime.
+   Copia anello fallito conserva3stazioni/98tratti: non ricostruire li' o rimuoverli a mano.
+   Non applicare riduzione bus79575; installare solo a gioco/console chiusi, backup verificato.
+   Note: deposito-navale-quota.md, ricerca-deposito-navale.md, parallelo-estremi-strade.md, pc-focus-13-10.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Nicolo' richiede autonomia fino ai crediti; permessi PC/Steam/TF3, checkout/rete,
-   mod/middleware/scambio/log, backup, avvio/chiusura, console/API e pulizia protocollo confermati.
+   Autonomia richiesta fino ai crediti; PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
+   backup, avvio/chiusura, console/API e pulizia protocollo autorizzati in questa chat.
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
-   Domanda pendente: minimizzare solo finestra AggiornamentiPC, lasciandola in esecuzione.
-   Senza risposta non toccare quella app; sviluppare codice e usare dati gia' raccolti.
+   Domanda pendente: minimizzare solo AggiornamentiPC, lasciandolo in esecuzione.
+   Senza risposta non toccare quella app; proseguire con codice o focus TF3 se disponibile.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Branch codex/13-10-parallelo-estremi: regressione rossa confermata, fix in CI/revisione.
-   2. Quando focus disponibile: caricare copia iniziale porto, verificare4e8640b2 e provare linea.
-   3. Collaudare percorsi/nave in servizio, poi doppio binario; release solo con requisiti soddisfatti.
+   1. Generare/installare main con backup, riaprire normalmente TF3 e verificare focus senza altre app.
+   2. Se focus disponibile: copia 'capocantiere test porto 12-10', prova linea completa e servizio nave.
+   3. Poi proposta parallelo sulla copia fallita senza costruire, quindi anello su copia iniziale separata.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

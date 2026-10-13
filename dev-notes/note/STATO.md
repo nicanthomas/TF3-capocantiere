@@ -542,3 +542,14 @@ Fix unito main7fe129b; --dev --bozza v14-bozza-4e8640b2 generata, installata a g
 con backup e SHA256 uguali. TF3 riavviato. Nuovo save 'capocantiere deposito Calliano 13-10'
 verificato07:06:53 (.sav71049690byte/.jpg583579). Copia iniziale porto preservata per nuova prova.
 Nessuna linea/nave conclusa ancora; correzione sorgenti e installazione non equivalgono a collaudo completo.
+
+### 13.10, 07:49 — estremi parallelo corretti; riavvio senza focus
+
+Fix b6_binari unito main735f044: incroci stradali divisi anche sul primo/ultimo punto dopo
+skipStart/skipEnd; nodo agganciato esistente escluso. CI38351450231 verde, mock117ok/0falliti,
+Python locale134 senza errori/fallimenti e classe Lua saltata; revisione senza blocchi.
+SOLO TEST AUTOMATICI: non installato/provato nel gioco. Nota parallelo-estremi-strade.md.
+Chiusura normale TF3 tramite WM_CLOSE alla finestra verificata provata senza focus, nessun kill.
+Prova avvio --script con percorso esterno rifiutata dal filesystem virtuale prima di eseguire
+lo script; nessuna mappa caricata. Dialogo IOError chiuso normalmente; processo gioco assente.
+Installata ancora4e8640b2. Richiesta minimizzazione AggiornamentiPC pendente, app mai modificata.

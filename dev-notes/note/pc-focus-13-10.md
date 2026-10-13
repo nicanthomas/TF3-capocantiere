@@ -5,3 +5,13 @@ La mod4e8640b2 e' installata, ma la nuova prova completa non e' partita: TF3 e' 
 Richiesta limitata a Nicolo' mediante domanda asincrona: minimizzare solo quella finestra lasciando gli aggiornamenti in esecuzione. In attesa di risposta, studio del codice/dati ferroviari gia' raccolti. Nessun tentativo di aggirare le guardie. Fonte Windows: [SetForegroundWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow), restrizioni sul cambio di primo piano.
 
 La correzione ricerca deposito e' verde in CI38349547194; Pythonlocale134test,0fallimenti/0errori,classeLua saltata17.037s. Quota e fallback verificati separatamente in TF3; questo non certifica ancora nave in servizio.
+
+## Verifica successiva 07:49
+
+Chiusura normale tramite WM_CLOSE inviata esclusivamente alla finestra TF3 con PID/percorso
+verificati; funziona senza primo piano. Non terminato forzatamente alcun processo.
+Tentativo --script con file esterno di sola stampa/uscita: rifiutato prima dell'esecuzione,
+perche' il percorso assoluto e' interpretato come risorsa del filesystem virtuale.
+Nessuna partita caricata/modificata; dialogo IOError chiuso normalmente, TF3 ora chiuso.
+Non ripetere con percorsi inventati. API app.loadGame/app.saveGame presenti nelle definizioni
+ufficiali locali; l'avvio esterno e la loro disponibilita' al menu non sono provati.
