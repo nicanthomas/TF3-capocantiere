@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 3a32d5b
+Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 04082eb
 1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -136,7 +136,7 @@ Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 3a
    - PROVATO IN TF3: versione56eb18f5 costruisce porti121162/120860 e deposito117738;
      nave118966 in deposito, linea119497 vuota; API nativa segnala nessun percorso tra porti.
      PROVATO IN TF3: collaudo installato segnala entrambi i percorsi mancanti, nessuna costruzione.
-3. Stato del PC: copia 'capocantiere porto stock Lissone13-10' salvata, nave123908 ancora in deposito.
+3. Stato del PC: copia 'capocantiere porto stock due modelli13-10' salvata; due navi in deposito.
    Installata v14-bozza-5f189de4 DEV_MODE true, backup/hash verificati; include fix collaudo.
    Opzioni Steam intatte; manifest mod ripristinato da backup, hash verificato.
    Copie quota e Calliano salvate; dati privati e helper in work della chat.
@@ -153,7 +153,7 @@ Scritto da: ChatGPT, 13.10.2026 20:30 Europe/Zurich, ultimo commit verificato 3a
    Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
    Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Confronto modello SolarShuttle disponibile dal2035, stesso deposito/linea, una sola nave di prova.
+   1. Nave Solar123446 comprata ma non assegnata; provare solo stop1(Calliano), senza nuovi acquisti.
    2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
    3. Riprendere porto: confronto API nativa e CC.hasPath, poi bacino/accesso reale. Non comprare duplicati.
 Letto da Claude il ...: ...

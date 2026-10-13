@@ -140,3 +140,14 @@ attuale e' corretto per questa partita. Nessuna prova di configurazione cargo in
 Anno simulazione ora2036: SolarShuttle2035 disponibile, modo12,20posti passeggeri; Oita2023modo12,80posti.
 Confronto successivo: stesso deposito/linea e helper acquisto, cambia solo modello aSolarShuttle,
 una nave, senza vendere o modificare Oita. E' una prova, non flotta definitiva stimata.
+
+## Confronto SolarShuttle sullo stesso deposito/linea
+
+PROVATO IN TF3: acquistata una SolarShuttle123446 con CC.buyVehicles, anno>=2035, stesso deposito123907,
+linea25246 con gruppi125886/123906. Acquisto riuscito, assegnazione stop0 fallita, nessun veicolo sulla linea.
+Oita123908 conservata; non venduto o demolito nulla. Il solo cambio modello non risolve.
+Copia distinta 'capocantiere porto stock due modelli13-10' (spazio prima13) salvata, callback e file verificati.
+Parametri/moduli del porto stock e mod confrontati anche nei campi annidati: solo name/variant, nessun campo
+omesso oltreall'anno. Nodo interno deposito asciutto normale nello script ufficiale, uscita aY-98 in acqua.
+Prossima prova: assegnazione esplicita Solar a stop1(Calliano), distinta da0 e nextreachable-1.
+Se rifiuta ancora, confronto temporaneo tra due porti vicini per distinguere tratta e accesso deposito.
