@@ -9,3 +9,12 @@ Difetto isolato: una prima città priva di spazio impedisce l'intera linea pur e
 ### Correzione e regressioni
 
 Ricerca presso le città richieste in ordine, fino al primo successo; log di ogni fallimento, nessuna costruzione presso città aggiuntive. Tre regressioni: seconda città utile, primo successo interrompe, nessun successo non crea linea. Mock con API finta confinata nel runtime TF3: due nuovi fallimenti prima, zero dopo. Unico caso preesistente math.maxinteger non applicabile a Lua5.2 resta distinto. Nessuna costruzione reale dal mock. CI ordinaria e revisione ancora da completare; fix non installato.
+
+### 13.10, 07:09 — ricerca deposito corretta e installata
+
+CI38349547194 verde Ubuntu/Windows; locale134test,0fallimenti/0errori, classeLua saltata,17.037s.
+Revisione senza regressioni concrete; percorso deposito nuovo/porti ancora da verificare realmente.
+Fix unito main7fe129b; --dev --bozza v14-bozza-4e8640b2 generata, installata a gioco/console chiusi
+con backup e SHA256 uguali. TF3 riavviato. Nuovo save 'capocantiere deposito Calliano 13-10'
+verificato07:06:53 (.sav71049690byte/.jpg583579). Copia iniziale porto preservata per nuova prova.
+Nessuna linea/nave conclusa ancora; correzione sorgenti e installazione non equivalgono a collaudo completo.

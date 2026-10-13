@@ -533,3 +533,12 @@ rollback due porti, nessuna nave/linea. La stessa funzione presso Calliano riesc
 Il codice cerca il deposito solo presso la prima città. Da provare tutte le città richieste in ordine,
 fermarsi dopo successo; nessuna modifica geometrica necessaria per questo limite.
 Dettagli ricerca-deposito-navale.md e risposta prove-navale-13-10.json. Deposito nuovo non salvato.
+
+### 13.10, 07:09 — ricerca deposito corretta e installata
+
+CI38349547194 verde Ubuntu/Windows; locale134test,0fallimenti/0errori, classeLua saltata,17.037s.
+Revisione senza regressioni concrete; percorso deposito nuovo/porti ancora da verificare realmente.
+Fix unito main7fe129b; --dev --bozza v14-bozza-4e8640b2 generata, installata a gioco/console chiusi
+con backup e SHA256 uguali. TF3 riavviato. Nuovo save 'capocantiere deposito Calliano 13-10'
+verificato07:06:53 (.sav71049690byte/.jpg583579). Copia iniziale porto preservata per nuova prova.
+Nessuna linea/nave conclusa ancora; correzione sorgenti e installazione non equivalgono a collaudo completo.

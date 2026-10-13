@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: correzione quota deposito, poi doppio binario
-Scritto da: ChatGPT, 13.10.2026 07:04 Europe/Zurich, ultimo commit verificato e9969fd
+Scritto da: ChatGPT, 13.10.2026 07:09 Europe/Zurich, ultimo commit verificato 7fe129b
 1. In una riga: quota risolta; deposito costruibile a Calliano ma mod cerca solo a Lissone.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC: GitHub e checkout verificati; altra AI ferma, nessun nuovo codice remoto.
@@ -131,9 +131,9 @@ Scritto da: ChatGPT, 13.10.2026 07:04 Europe/Zurich, ultimo commit verificato e9
      Costruzione 123741, deposito 120768; fonte ufficiale acqua+2 in water_depot.script.lua.
    - PROVATO IN TF3: deposito 120768 raggiunge porto gruppo 115052, percorso navigabile vero.
    - PROVATO IN TF3: nuova copia 'capocantiere deposito quota 13-10' salvata; file verificati.
-3. Stato del PC: TF3 riavviato, console non avviata; v14-bozza-0200b845 DEV_MODE true.
-   Middleware aggiornato, opzioni Steam intatte. Save deposito delle 06:39 conservato; copia iniziale porto caricata per nuovo test.
-   Quota acqua corretta in main, CI/test/revisione verdi; installata con backup e impronte uguali.
+3. Stato del PC: TF3 riavviato, console non avviata; v14-bozza-4e8640b2 DEV_MODE true.
+   Middleware aggiornato, opzioni Steam intatte. Save deposito quota 06:39 e deposito Calliano 07:06 conservati; gioco appena riavviato.
+   Quota e ricerca su tutte le citta' in main; CI/revisione verdi, installate con backup verificati.
    Originale e tutte le copie precedenti preservate; risposte private in work della chat.
 4. Problemi aperti e cose da NON fare
    Linea navale non creata; da integrare quota acqua reale, non hardcodare 2 per ogni mappa.
@@ -148,7 +148,7 @@ Scritto da: ChatGPT, 13.10.2026 07:04 Europe/Zurich, ultimo commit verificato e9
    Opzioni Steam con ripristino autorizzate ma non cambiate; permessi non validi per chat nuove.
    Direttive: bus Abriola-Maretto, anello doppio e porto/linea nave su copie separate.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Branch codex/13-10-deposito-citta: fallback implementato, attendere CI/revisione e unire.
+   1. Fallback unito/installato: caricare copia iniziale porto e riprovare linea completa.
    2. Test/CI/revisione e installazione con backup; riprovare linea su copia iniziale senza residui.
    3. Riprendere geometria doppio binario; release soltanto dopo requisiti soddisfatti.
 Letto da Claude il ...: ...
