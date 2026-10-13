@@ -79,3 +79,12 @@ verso acqua fondale-7.88 (41.25m:-14.53). Costa3 molto piu' bassa ma molo31.25m 
 Non inventare soglia navigabile: profondita' maggiore e' solo ipotesi da verificare con assegnazione.
 Prossima prova: porto Lissone costa2, mantenere porto Calliano/nave esistente/linea e vecchio porto;
 cambiare prima fermata se costruzione riesce. Nessuna demolizione o altro acquisto.
+
+## Costa2 profonda rifiutata
+
+PROVATO IN TF3: CC.placeTemplate harbor sul punto Lissone costa2, stessa versione/parametri,
+comando rifiutato senza messaggio; nessuna costruzione nuova restituita, linea/nave non modificate.
+La quota del terreno all'origine e'17.32m mentre porto si allinea all'acqua+2; non forzare ignoreErrors.
+Profondita' sufficiente a un punto non certifica una posizione costruibile. Serve confronto con
+anteprima ufficiale porto: harbor_modular.con configureLayerScript abilita navigableWater=true.
+Non costruire alla cieca altre varianti, leggere prima la visualizzazione del gioco.
