@@ -15,3 +15,9 @@ perche' il percorso assoluto e' interpretato come risorsa del filesystem virtual
 Nessuna partita caricata/modificata; dialogo IOError chiuso normalmente, TF3 ora chiuso.
 Non ripetere con percorsi inventati. API app.loadGame/app.saveGame presenti nelle definizioni
 ufficiali locali; l'avvio esterno e la loro disponibilita' al menu non sono provati.
+
+07:56: installata v14-bozza-56eb18f5 con backup/SHA256, contiene anche il fix ferroviario.
+Riavvio normale: focus ancora trattenuto da AggiornamentiPC (verifica nome processo soltanto).
+Nessun clic eseguito, nessuna mappa caricata, gioco richiuso normalmente.
+Documentazione ufficiale [risorse TF3](https://wiki.transportfever3.com/doku.php?id=modding%3Ageneral%3Aresourcetypes)
+definisce il prefisso mod_id::/ per le risorse di una mod; avvio con risorsa mod non ancora provato.
