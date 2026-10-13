@@ -122,8 +122,8 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 08:01 Europe/Zurich, ultimo commit verificato c72b22a
-1. In una riga: tre difetti corretti; nave e anello completo ancora da collaudare, mod NON finalizzata.
+Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 6441212
+1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
      deposito120768 raggiunge porto115052. Copia deposito quota13-10 salvata e verificata.
@@ -133,14 +133,14 @@ Scritto da: ChatGPT, 13.10.2026 08:01 Europe/Zurich, ultimo commit verificato c7
      copia separata salvata. SOLO TEST AUTOMATICI: ricerca tra tutte le citta' corretta, CI verde.
    - SOLO TEST AUTOMATICI: parallelo divide strade anche agli estremi dopo taglio;
      regressione falliva prima, ora CI verde e revisione senza blocchi, unito main735f044.
-   - PROVATO SUL PC: chiusura normale TF3 via finestra verificata funziona senza focus;
-     --script esegue risorsa mod ma manca data(): errore, NON uscita normale; dialoghi poi chiusi.
-3. Stato del PC: riavvio normale TF3 in corso, console assente; middleware invariato oggi.
+   - PROVATO IN TF3: versione56eb18f5 costruisce porti121162/120860 e deposito117738;
+     nave118966 comprata ma assegnazione linea119497 fallita; percorsi deposito veri, modo12.
+3. Stato del PC: TF3 aperto sulla copia test porto12-10, nuova prova NON ancora salvata.
    Installata v14-bozza-56eb18f5 DEV_MODE true, backup/hash verificati; include fix binari.
    Opzioni Steam intatte; manifest mod ripristinato da backup, hash verificato.
    Copie quota e Calliano salvate; dati privati e helper in work della chat.
 4. Problemi aperti e cose da NON fare
-   Non dichiarare nave o anello funzionanti; nessuna nave comprata. Non aggirare guardie focus.
+   Nave118966 IN_DEPOT, linea119497 senza veicoli; non ripetere acquisti o costruzione su questa copia.
    Lua TF3 e'5.2: mock math.maxinteger inapplicabile; CI Lua5.3/5.4 verde, distinguere runtime.
    Copia anello fallito conserva3stazioni/98tratti: non ricostruire li' o rimuoverli a mano.
    Non applicare riduzione bus79575; installare solo a gioco/console chiusi, backup verificato.
@@ -149,11 +149,11 @@ Scritto da: ChatGPT, 13.10.2026 08:01 Europe/Zurich, ultimo commit verificato c7
    Autonomia richiesta fino ai crediti; PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
    backup, avvio/chiusura, console/API e pulizia protocollo autorizzati in questa chat.
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
-   Nicolo' ha autorizzato minimizzazione AggiornamentiPC; finestra/processo ora assenti.
-   Nessuna minimizzazione effettuata: target vecchio cambiato, guardie hanno impedito l'azione.
+   Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
+   Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. TF3 riavviato normalmente: verificare nuova finestra e focus, tornare alla prova navale.
-   2. Se focus disponibile: copia 'capocantiere test porto 12-10', prova linea completa e servizio nave.
+   1. Salvare prova navale distinta, poi diagnosi assegnazione nave118966 a linea119497.
+   2. Verificare assegnazione della sola nave gia' comprata, senza nuovi acquisti.
    3. Poi proposta parallelo sulla copia fallita senza costruire, quindi anello su copia iniziale separata.
 Letto da Claude il ...: ...
 

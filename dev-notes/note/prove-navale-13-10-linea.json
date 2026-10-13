@@ -1,0 +1,57 @@
+{
+  "args": {
+    "town_ids": [
+      62685,
+      62691
+    ],
+    "kind": "harbor",
+    "name": "Prova navale Lissone-Calliano 12-10"
+  },
+  "result": {
+    "collaudo": [
+      {
+        "line_id": 119497,
+        "ok": false,
+        "problems": [
+          "nessun veicolo sulla linea",
+          "meno di 2 fermate hanno edifici, industrie o coincidenze nel bacino: la linea trasporta poco o nulla"
+        ],
+        "suggestions": [
+          "aggiungere veicoli (add_vehicles o create_line_from_stations)",
+          "spostare le fermate verso il centro o collegarle con una navetta"
+        ]
+      }
+    ],
+    "depot_id": 117738,
+    "errors": [
+      "assegnazione linea fallita per 118966"
+    ],
+    "fleet": {
+      "count": 1,
+      "estimated": true,
+      "interval_target": 900,
+      "max": 6,
+      "round_trip_s": 745,
+      "route_m": 7859,
+      "speed_from_model": true,
+      "top_speed_ms": 27.7
+    },
+    "index": 1,
+    "line_id": 119497,
+    "log": [
+      "Lissone: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+      "Calliano: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+      "deposito navale a Lissone: nessun punto di costa adatto: rifiutata: Collisione (2 collisioni) verifica: Collisione | rifiutata:  | rifiutata: "
+    ],
+    "model": "::/vehicle/ship/oita_hovercraft/oita_hovercraft.mdl",
+    "ok": false,
+    "stations": [
+      121162,
+      120860
+    ],
+    "type": "build_air_or_water_line",
+    "vehicles": [
+      118966
+    ]
+  }
+}
