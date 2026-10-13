@@ -553,3 +553,16 @@ Chiusura normale TF3 tramite WM_CLOSE alla finestra verificata provata senza foc
 Prova avvio --script con percorso esterno rifiutata dal filesystem virtuale prima di eseguire
 lo script; nessuna mappa caricata. Dialogo IOError chiuso normalmente; processo gioco assente.
 Installata ancora4e8640b2. Richiesta minimizzazione AggiornamentiPC pendente, app mai modificata.
+
+### 13.10 — prova completa navale e falso positivo percorso
+
+Installata v14-bozza-56eb18f5 (include fix estremi binari), backup/hash verificati.
+TF3 focus di nuovo disponibile; AggiornamentiPC assente, nessuna minimizzazione effettuata.
+Porti121162/120860, deposito117738 costruiti. Nave118966 comprata ma non assegnabile a linea119497:
+anche riprova stop0 e nextreachable-1 falliscono, nessun altro acquisto. Copia distinta nave fallita13-10
+salvata tramite API ufficiale, callback/SAV/JPG verificati; originale e copia iniziale intatti.
+API nativa getDetailedLineProblems segnala noPath a entrambe le fermate, mentre CC.hasPath generico
+restituisce true: non certifica navigabilita' effettiva. Mod NON finalizzata, bacini vuoti.
+Nota prova-navale-linea.md. Riavvio --script: risorsa eseguita ma manca data(), uscita non pulita;
+dialoghi TF3 chiusi normalmente, processi assenti, manifest originale ripristinato con hash verificato.
+Nessuna partita modificata da quelle sonde; non riprenderle durante i collaudi ora che focus funziona.
