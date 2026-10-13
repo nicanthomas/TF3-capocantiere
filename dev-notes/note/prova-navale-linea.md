@@ -126,3 +126,17 @@ E' solo approssimazione acqua visibile, NON certifica corridoio navigabile o pro
 non affermare che siano bacini separati. Nessuna modifica del terreno dalla scansione.
 Prossima verifica mirata: uscita effettiva del deposito e collegamento alla zona navigabile,
 prima di altre varianti di porto o acquisti.
+
+## Deposito e modello effettivo
+
+PROVATO IN TF3: deposito123907/con41986, file water_depot.con, uscita interna nodo0
+(-7141.53,-1709.89,0) sul terreno2m, poi corsia verso(-7135.79,-1723.75,0) in acqua-6.25m,
+proseguimento verso(-7088.72,-1837.38,0) in acqua-7.85m. Modi10/12.
+Il nodo interno asciutto NON dimostra deposito invalido: script ufficiale pone nodo0 a(0,40,-2),
+runway uscita/entrata aY-99/-100. Acqua-40 nel riferimento snap ruotato non basta da sola a interpretare tutto.
+Nave Oita ha80posti passeggeri; CargoRep indice0 e'passengers, il vettore capacita'Lua parte da1.
+Non confondere capacita'[1]=80 con80unita' di grain(cargo1). Lookup PASSENGERS=-1, fallback0
+attuale e' corretto per questa partita. Nessuna prova di configurazione cargo incompatibile.
+Anno simulazione ora2036: SolarShuttle2035 disponibile, modo12,20posti passeggeri; Oita2023modo12,80posti.
+Confronto successivo: stesso deposito/linea e helper acquisto, cambia solo modello aSolarShuttle,
+una nave, senza vendere o modificare Oita. E' una prova, non flotta definitiva stimata.
