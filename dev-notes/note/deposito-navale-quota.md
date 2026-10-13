@@ -11,3 +11,9 @@ PROVATO IN TF3 senza modifiche: CC.hasPath da CC.depotNodes(120768) al nodo del 
 Nuovo salvataggio distinto `capocantiere deposito quota 13-10`, alle 06:39:52 Europe/Zurich: .sav 71138234 byte, .jpg 617676 byte, presenza verificata. Nessun file esistente sovrascritto.
 
 Correzione permanente e test automatici di questa causa ancora da fare. Sonda costruzione e risposte complete conservate privatamente in work della chat; i sorgenti non sono ancora modificati.
+
+### Sorgenti e regressioni
+
+API reale TERRAIN sul mondo: waterLevel=0; makeMapFromGame(false,false,false,false).waterLevel=0 conferma. Anche harbor_modular.script.lua ufficiale usa superficie acqua+2. Fix limitato a CC.placeTemplate per kind=water: quota reale+2, blocco con messaggio fisso se acqua illeggibile/non numerica/non finita; terra resta getHeightAt.
+
+Cinque mock: acqua0, acqua10, terra7, acquaassente, acquaNaN. Prima del codice, CI38347898595 fallisce nello step Mock Lua, Windows passa. Mock con API finta confinata nel runtime TF3: quattro nuovi fallimenti prima, zero nuovi dopo; un caso preesistente math.maxinteger resta fallito (NON suite completamente verde in TF3). Nessuna costruzione reale da questo mock. Runtime Lua Windows esterno ancora assente, non dichiarare mock locale superato. Fix non ancora installato; CI verde e revisione richieste prima del merge.

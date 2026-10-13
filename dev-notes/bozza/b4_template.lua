@@ -41,7 +41,20 @@ local function unit2(x, y) local l = math.sqrt(x * x + y * y); if l < 1e-6 then 
 function CC.placeTemplate(tpl, x, y, dx, dy, name)
 	local CT = api.type.ComponentType
 	if not CC.inMap(x, y, (tpl.half or 100) + 100) then return false, "fuori dai confini della mappa" end
-	local z = CC.heightAt(x, y) or 0
+	local z
+	if tpl.kind == "water" then
+		-- TF3: porto e deposito forzano superficie acqua + 2 (snapHeightOffsetAboveWater).
+		-- Verificato 13.10: stesso deposito rifiutato a quota terreno, valido a quota acqua.
+		local okW, water = pcall(function()
+			return api.engine.getComponent(api.engine.util.getWorld(), CT.TERRAIN).waterLevel
+		end)
+		if not okW or type(water) ~= "number" or water ~= water or math.abs(water) == math.huge then
+			return false, "livello dell'acqua non disponibile: costruzione navale non inviata"
+		end
+		z = water + 2
+	else
+		z = CC.heightAt(x, y) or 0
+	end
 	local prop = api.type.SimpleProposal.new()
 	local ce = api.type.SimpleProposal.ConstructionEntity.new()
 	ce.fileName = tpl.file
@@ -376,3 +389,4 @@ SIM_ACTIONS.build_highway = function(a)
 		overpasses = info.overpasses, underpasses = info.underpasses, log = log }
 end
 -- ===================================================================== fine b4
+
