@@ -203,3 +203,8 @@ Dopo save prima fermata, sonda movimento accettata ma risultato sim_result121 no
 CI38452192810 verde anche Windows; mock138ok/0falliti, Python Ubuntu148test/1skip. Python locale134test/0errori/0fallimenti, classe Lua esterna saltata. Revisione indipendente senza blocchi. Getter unito main, non ancora installato/provato in versione completa.
 
 Rettifica diagnosi ponte: i file121_1979b665 e122_3b015ac7 trovati nella cartella hanno finishedAt del09.10 e dati di vecchie sonde, NON risposte alle nuove richieste. Non dimostrano accettazione tardiva della sonda122 attuale. La nuova richiesta di lettura termina con nessuna risposta SIM; stato GUI continua fresco. Nessuna azione costruttiva reinviata. Necessario riavvio normale dopo copia salvata; non interpretare file vecchi come risultati attuali.
+
+
+### 13.10, 21:11 — nuova versione installata a gioco chiuso
+
+PROVATO SUL PC: uscita normale dal menu TF3 e verifica processi gioco/Python assenti. Generata versione sviluppo bozza d15a0424 da main43, installata con backup/hash identici. Include guardia preacquisto39 e getter42. Middleware e opzioni Steam invariati. Sintassi locale Lua5.3/5.4 saltata, già coperta CI verde. Nessuna prova completa della versione installata ancora; prossimo passo ricaricare copia Solar primo porto e controllare movimento.

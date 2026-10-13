@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 20:59 Europe/Zurich, ultimo commit verificato c0db9d7
+Scritto da: ChatGPT, 13.10.2026 21:11 Europe/Zurich, ultimo commit verificato e3eabfc
 1. In una riga: Solar naviga verso Lissone; tratta Calliano non percorribile, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota acqua+2 costruisce deposito nello stesso punto rifiutato a quota terreno.
@@ -135,8 +135,8 @@ Scritto da: ChatGPT, 13.10.2026 20:59 Europe/Zurich, ultimo commit verificato c0
      Solar123446 assegnata a linea25246 tra i due Lissone; due posizioni diverse, velocita'8.333m/s.
    - PROVATO SUL PC: copia 'capocantiere Solar baia Lissone 13-10' salvata, SAV/JPG presenti.
      PROVATO IN TF3: tornando a Calliano ricompare nessun percorso; ritorno alla baia riuscito.
-3. Stato del PC: TF3 aperto, linea25246 fra125886/120311, Solar123446 in viaggio; Oita123908 in deposito.
-   Installata v14-bozza-5f189de4 DEV_MODE true, backup/hash verificati; middleware invariato.
+3. Stato del PC: TF3 e console chiusi normalmente; copia Solar primo porto13-10 salvata.
+   Installata v14-bozza-d15a0424 DEV_MODE true, backup/hash verificati; include guardia e getter.
    Opzioni Steam intatte; manifest originale ripristinato; helper/dati privati in work della chat.
    Copia 'capocantiere porto stock due modelli 13-10' conserva Calliano e due navi non assegnate.
 4. Problemi aperti e cose da NON fare
@@ -151,8 +151,8 @@ Scritto da: ChatGPT, 13.10.2026 20:59 Europe/Zurich, ultimo commit verificato c0
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
    Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Getter posizione e guardia uniti main, CI verdi; chiudere normalmente TF3 e installare con backup.
-   2. Solar prima fermata raggiunta e copia primo porto salvata; ripristinare ponte senza reinvii.
+   1. Avviare TF3, caricare 'capocantiere Solar primo porto 13-10'; verificare versione e movimento.
+   2. Non reinviare sonde accettate: ponte SIM in timeout prima del riavvio, vecchi risultati non validi.
    3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...
 
