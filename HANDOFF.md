@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: correzione quota deposito, poi doppio binario
-Scritto da: ChatGPT, 13.10.2026 07:00 Europe/Zurich, ultimo commit verificato c4dd49c
+Scritto da: ChatGPT, 13.10.2026 07:04 Europe/Zurich, ultimo commit verificato e9969fd
 1. In una riga: quota risolta; deposito costruibile a Calliano ma mod cerca solo a Lissone.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC: GitHub e checkout verificati; altra AI ferma, nessun nuovo codice remoto.
@@ -148,7 +148,7 @@ Scritto da: ChatGPT, 13.10.2026 07:00 Europe/Zurich, ultimo commit verificato c4
    Opzioni Steam con ripristino autorizzate ma non cambiate; permessi non validi per chat nuove.
    Direttive: bus Abriola-Maretto, anello doppio e porto/linea nave su copie separate.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Integrare ricerca deposito presso tutte le citta' della linea: Calliano riesce, Lissone no.
+   1. Branch codex/13-10-deposito-citta: fallback implementato, attendere CI/revisione e unire.
    2. Test/CI/revisione e installazione con backup; riprovare linea su copia iniziale senza residui.
    3. Riprendere geometria doppio binario; release soltanto dopo requisiti soddisfatti.
 Letto da Claude il ...: ...

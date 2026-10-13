@@ -269,8 +269,13 @@ SIM_ACTIONS.build_air_or_water_line = function(a)
 		log[#log + 1] = "deposito " .. tostring(d) .. " senza percorso verso le fermate: scartato"
 	end
 	if not depot and CC.TEMPLATES.water_depot and tpl.kind == "water" then
-		local ok, info = CC.buildTemplateNear("water_depot", a.town_ids[1], "Cantiere navale")
-		if ok then depot = info.depots[1] else log[#log + 1] = "deposito navale: " .. tostring(info) end
+		-- La costa della prima citta' puo' non avere spazio; un deposito presso un'altra
+		-- fermata serve la stessa linea. Verificato 13.10: Lissone rifiuta, Calliano riesce.
+		for _, town in ipairs(a.town_ids) do
+			local ok, info = CC.buildTemplateNear("water_depot", town, "Cantiere navale")
+			if ok then depot = info.depots[1]; break end
+			log[#log + 1] = "deposito navale a " .. tostring(CC.nameOf(town) or town) .. ": " .. tostring(info)
+		end
 	end
 	-- aerei/elicotteri: ripiego su un hangar del giocatore gia' esistente dello stesso tipo (volano ovunque)
 	if not depot and tpl.kind == "air" then

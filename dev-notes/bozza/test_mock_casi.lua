@@ -522,6 +522,35 @@ do
     api.type.ComponentType.TERRAIN,W.comps[WORLD].TERRAIN=saved.terrainType,saved.terrain
 end
 
+-- Un deposito navale puo' essere presso una qualunque delle citta' richieste.
+do
+    local oldNear,oldRoad,oldLine=CC.buildTemplateNear,CC.ensureRoadAccess,CC.createLine
+    local depotCalls,lineCalls,available
+    CC.buildTemplateNear=function(key,town)
+        if key=="harbor" then return true,{construction=town,groups={town+100},depots={}} end
+        assert(key=="water_depot","schema deposito")
+        depotCalls[#depotCalls+1]=town
+        if town==available then return true,{depots={201}} end
+        return false,"costa senza spazio"
+    end
+    CC.ensureRoadAccess=function() return true,"fixture" end
+    CC.createLine=function() lineCalls=lineCalls+1; return false,{error="fixture-stop"} end
+    local function attempt(town)
+        depotCalls,lineCalls,available={},0,town
+        return SIM_ACTIONS.build_air_or_water_line({town_ids={10,20},kind="harbor"})
+    end
+    local second=attempt(20)
+    check(second.error=="fixture-stop" and lineCalls==1 and #depotCalls==2
+        and depotCalls[1]==10 and depotCalls[2]==20,"navi: seconda citta' se deposito prima rifiutato")
+    local first=attempt(10)
+    check(first.error=="fixture-stop" and lineCalls==1 and #depotCalls==1,
+        "navi: primo deposito valido ferma ricerca")
+    local missing=attempt(nil)
+    check(not missing.ok and missing.error=="nessun deposito/hangar per i veicoli"
+        and lineCalls==0 and #depotCalls==2,"navi: nessun deposito non crea linea")
+    CC.buildTemplateNear,CC.ensureRoadAccess,CC.createLine=oldNear,oldRoad,oldLine
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
