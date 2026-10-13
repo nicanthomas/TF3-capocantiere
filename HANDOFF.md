@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato fca7e17
+Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 2de0fdd
 1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -153,7 +153,7 @@ Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato fca7e17
    Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
    Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Confrontare anteprima porto stock/overlay acqua navigabile: costa2 profonda rifiutata, nessuna entita' creata.
+   1. Anteprima stock valida a Lissone: costruire porto confronto, rileggere gruppo e spostare prima fermata25246.
    2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
    3. Riprendere porto: confronto API nativa e CC.hasPath, poi bacino/accesso reale. Non comprare duplicati.
 Letto da Claude il ...: ...

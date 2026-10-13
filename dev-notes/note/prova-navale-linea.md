@@ -88,3 +88,14 @@ La quota del terreno all'origine e'17.32m mentre porto si allinea all'acqua+2; n
 Profondita' sufficiente a un punto non certifica una posizione costruibile. Serve confronto con
 anteprima ufficiale porto: harbor_modular.con configureLayerScript abilita navigableWater=true.
 Non costruire alla cieca altre varianti, leggere prima la visualizzazione del gioco.
+
+## Anteprima ufficiale porto a Lissone
+
+PROVATO SUL PC dentro TF3, sola anteprima: costruzioni Acqua, primo porto/1terminale,
+overlay ufficiale navigableWater. Puntatore1705,405: rosso 'Posiziona sulla costa';
+puntatore1770,405: anteprima azzurra, senza errore, molo verso area colorata navigabile.
+Camera centra(-5591.62,-5135.62), distanza350, client3440x1441; frame stock-port-preview-shore2.bmp
+privato in work. Non e' ancora prova di assegnazione/servizio e non sono state create entita' da questi hover.
+Prossima prova manuale gia'nel perimetro porto/linea autorizzato: clic solo anteprima valida,
+leggere gruppo/parametri/transform e usarlo come prima fermata della linea25246 con nave123908.
+Non leggere la vecchia proposta applicata; leggere solo componenti della costruzione nuova.
