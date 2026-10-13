@@ -34,3 +34,12 @@ verificati. Risposta prove-navale-13-10-grande.json. La copia del porto piccolo 
 Confronto terminali piccolo: presenti, indice0, passeggeri ammessi; ipotesi stazione vuota esclusa.
 Ipotesi futura NON provata: shoreSites sceglie ultimo punto di terra su passi25m, porto puo' lasciare
 molo/uscita nella fascia poco profonda. Confrontare stesso schema spostato25m verso acqua su copia iniziale.
+
+## Prototipo spostamento verso acqua25m
+
+PROVATO IN TF3 su copia iniziale ricaricata: stesso schema harbor, solo shoreBack=-25 locale alla sonda.
+Tutte tre posizioni Lissone rifiutate (una collisione ciascuna, nessun messaggio descrittivo).
+Azione ok=false, created contiene zero costruzioni/linee/strade/binari/veicoli. Nessun acquisto.
+Prototipo non pubblicato nel codice, nessuna modifica alla mod installata o ai salvataggi precedenti.
+Dati in prove-navale-13-10-spostamento.json. L'ipotesi quota/profondita' non e' confermata da questa prova:
+serve ispezionare proposte e collisioni a secco prima di altre costruzioni.

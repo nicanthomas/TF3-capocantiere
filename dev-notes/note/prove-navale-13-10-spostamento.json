@@ -1,0 +1,16 @@
+{
+  "result": {
+    "created": {
+      "constructions": [],
+      "lines": [],
+      "roads": [],
+      "tracks": [],
+      "vehicles": []
+    },
+    "error": "Lissone: nessun punto di costa adatto: rifiutata:  (1 collisioni) | rifiutata:  (1 collisioni) | rifiutata:  (1 collisioni)",
+    "log": [],
+    "ok": false,
+    "stations": []
+  },
+  "shift_water_m": 25
+}
