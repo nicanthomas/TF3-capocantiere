@@ -487,7 +487,43 @@ do
     api.engine.util.industry=oldApi
 end
 
+-- Quota delle costruzioni navali: superficie acqua + 2, non altezza del terreno.
+do
+    local saved={inMap=CC.inMap,height=CC.heightAt,year=CC.year,build=CC.buildCmd,
+        vec4=api.type.Vec4f,mat4=api.type.Mat4f,ce=api.type.SimpleProposal.ConstructionEntity,
+        terrainType=api.type.ComponentType.TERRAIN,terrain=W.comps[WORLD].TERRAIN}
+    api.type.ComponentType.TERRAIN="TERRAIN"
+    api.type.Vec4f={new=function(x,y,z,w) return {x=x,y=y,z=z,w=w} end}
+    api.type.Mat4f={new=function(...) return {...} end}
+    api.type.SimpleProposal.ConstructionEntity={new=function() return {} end}
+    CC.inMap=function() return true end
+    CC.heightAt=function() return 7 end
+    CC.year=function() return 2026 end
+    local proposal,calls
+    CC.buildCmd=function(p) proposal=p; calls=calls+1; return false,"fixture" end
+    local function place(kind,level)
+        W.comps[WORLD].TERRAIN=level~=nil and {waterLevel=level} or nil
+        proposal,calls=nil,0
+        local ok,err=CC.placeTemplate({file="fixture.con",kind=kind},10,20,0,1)
+        return ok,err,proposal and proposal.constructionsToAdd[1].transf[4].z
+    end
+    local _,_,z0=place("water",0)
+    check(z0==2 and calls==1,"porto: quota acqua zero + 2, non terreno")
+    local _,_,z10=place("water",10)
+    check(z10==12 and calls==1,"porto: livello acqua non zero conservato")
+    local _,_,land=place("air",nil)
+    check(land==7 and calls==1,"costruzione a terra: quota terreno invariata")
+    local ok,err=place("water",nil)
+    check(not ok and calls==0 and tostring(err):find("acqua",1,true),"porto: acqua mancante blocca proposta")
+    place("water",0/0)
+    check(calls==0,"porto: acqua non finita blocca proposta")
+    CC.inMap,CC.heightAt,CC.year,CC.buildCmd=saved.inMap,saved.height,saved.year,saved.build
+    api.type.Vec4f,api.type.Mat4f,api.type.SimpleProposal.ConstructionEntity=saved.vec4,saved.mat4,saved.ce
+    api.type.ComponentType.TERRAIN,W.comps[WORLD].TERRAIN=saved.terrainType,saved.terrain
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
 if fails > 0 then error(string.format("Mock Lua: %d controlli falliti", fails)) end
+
