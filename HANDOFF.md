@@ -88,8 +88,8 @@ Letto da <altra AI> il <data>: <si' / dubbi>
 
 *(scritta da Claude, letta da ChatGPT)*
 
-Stato: IN LAVORO da 13.10 21:20: dopo i campioni, porto/linea Calliano
-Scritto da: Claude, 13.10.2026 21:42, ultimo commit cecb58f + questo checkpoint
+Stato: IN LAVORO da 13.10 21:20 (stop alle 22 chiesto da Nicolo'): porto/linea Calliano
+Scritto da: Claude, 13.10.2026 21:47, ultimo commit c4b56ff + questo checkpoint
 
 1. In una riga: il collaudo vede ora se la nave si muove (campioni salvati nello stato della mod), provato in TF3.
 2. Fatto in questa sessione:
@@ -97,6 +97,8 @@ Scritto da: Claude, 13.10.2026 21:42, ultimo commit cecb58f + questo checkpoint
      (mock 145 ok) e poi PROVATO IN TF3: 1a check_line 25246 «no_previous», 2a «vehicles_moving=1».
    - Installata v14-bozza-303c0edf: PROVATO SUL PC, backup `...script.lua.bak_samples_20261013_2133` e hash ok.
    - Il ponte funziona anche senza console: scrivo io `capocantiere_actions_<id>_<nonce>.lua` in `mod_presets`.
+   - Sonda s40 (sola lettura) PROVATO IN TF3: acqua Calliano-Lissone collegata, collo almeno 5.44 m: il percorso
+     mancante non e' fondale basso (dettagli in prova-navale-linea.md).
 3. Stato del PC: TF3 APERTO sulla copia «Solar primo porto 13-10» (non salvata da me), mod 303c0edf,
    lastActionId 2. Console/wrapper di Steam: finestre cmd aperte dal wrapper, non toccate. Opzioni Steam invariate.
    Autorizzazioni di Nicolo' in QUESTA chat: si' a tutto (PC, Steam/TF3, cartelle, install con backup, copie di
@@ -106,9 +108,10 @@ Scritto da: Claude, 13.10.2026 21:42, ultimo commit cecb58f + questo checkpoint
    Restano Calliano, anello doppio; niente navi duplicate (vedi sezione di ChatGPT).
 5. Domande: niente.
 6. Prossima operazione precisa:
-   1. Rileggere porto-calliano-12-10.md e prova-navale-linea.md: perche' Calliano123906 da' «percorso mancante».
-   2. Sonda di sola lettura sul porto Calliano (accessi acqua / getDetailedLineProblems) prima di costruire.
-   3. Poi, su copia separata, porto o accesso alternativo a Calliano e linea nave di prova.
+   1. Su copia separata: porto stock dalla GUI vicino a Calliano (anteprima azzurra), poi getDetailedLineProblems
+      Calliano(stock)->Lissone. Camera: lua_eval api.gui.camera.setCameraData(Vec5f(x,y,dist,rot,pitch)).
+   2. Se passa: correggere orientamento/posizione del porto della mod (b4); se no: cercare ponti/ostacoli <64 m.
+   3. Poi anello doppio (vedi sezione di ChatGPT).
 
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*

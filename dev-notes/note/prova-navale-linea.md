@@ -233,3 +233,14 @@ scrivendo direttamente i file actions_1/2 (nessuna console, nessuna API). check_
 NON provato: sopravvivenza di `st.samples` a salvataggio/ricaricamento (non serve al collaudo, che ricampiona).
 Nota: il primo caricamento dopo l'avvio da Steam si e' interrotto (log della sessione finisce a meta' caricamento,
 nessun dmp/errore Lua); al secondo tentativo, stessa mod, caricamento riuscito. Causa non nota.
+
+### 13.10, 21:44 — fondale fra Calliano e Lissone (sonda s40, sola lettura, Claude)
+
+PROVATO IN TF3 (sola lettura, sim_eval): `dev-notes/sonde/s40_fondale_calliano.lua`, griglia 64 m su tutta la mappa,
+vicini a 4, profondita' = livello acqua (0) - quota terreno. Collo di bottiglia del passaggio migliore:
+Calliano->Lissone API 5.44 m, Calliano->Lissone stock 5.44 m, Lissone API->stock 9.99 m (limite superiore della ricerca).
+Cella piu' profonda entro 200 m: Calliano 8 m, Lissone 88-100 m. Quindi l'acqua e' collegata e almeno 5 m profonda
+lungo un passaggio largo 64 m: il «percorso mancante» di Calliano NON si spiega con fondale basso o bacini separati
+(a meno di ostacoli piu' stretti di 64 m, es. ponti o costruzioni sull'acqua, non controllati).
+Prossimo discriminante: porto stock dalla GUI vicino a Calliano su copia separata, poi getDetailedLineProblems
+Calliano(stock)->Lissone. Se passa: correggere orientamento/posizione del porto della mod; se no: cercare ostacoli.
