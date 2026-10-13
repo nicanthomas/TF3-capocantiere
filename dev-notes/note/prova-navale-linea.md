@@ -178,3 +178,12 @@ Copia nuova «capocantiere Solar baia Lissone 13-10»: SAV72974555 byte/JPG65267
 Guardia in b4 dopo creazione linea, soltanto porti: API nativa deve restituire un segmento per fermata e stati noPath=false. Risposta assente, vuota/incompleta, eccezione o flag non booleano impediscono l'acquisto. Linea, stazioni e deposito restano recuperabili; nessuna demolizione automatica perché b9 conserva risultati con line_id. Aerei invariati. Non risolve corridoio Calliano, deposito o assegnazione.
 
 Test nuovi: primo commit test CI38450986113 fallisce per cinque regressioni attese, confermate nei log; non unito main. Dieci casi dopo implementazione passano nel mock isolato sotto Lua TF3; rimane unico caso preesistente math.maxinteger incompatibile5.2, non dichiarare suite verde. Python locale134 test,0errori/fallimenti,1classeLua saltata. Revisione indipendente senza blocchi; aggiunti tre casi limite richiesti. In attesa CI completa del commit implementazione, non installato.
+
+
+### 13.10, 21:01 — guardia integrata, test completi e API reale
+
+CI38451187443 verde: mock131ok/0falliti, Python Ubuntu148test/1skip, Windows verde. I tre casi limite aggiunti passano. Revisione senza blocchi. Correzione39 unita main senza PR né force-push, mod installata ancora5f189de4.
+
+PROVATO IN TF3 A SECCO: nuova guardia eseguita sui porti reali125886/120311 richiama la registrazione dell'acquisto simulata; su125886/123906(Calliano) la blocca e restituisce linea/stazioni/deposito. Tutti i comandi nativi vietati nella sonda, acquisto sostituito con registrazione, nessuna nave comprata. Linea temporaneamente aggiornata per confrontare le due rotte e poi ripristinata alla baia. Non equivale a prova completa della nuova mod installata.
+
+Il controllo movimento della mod restituisce ancora sconosciuto: CC.vehiclePos usa bounding box/MOVE_PATH ma non il getter ufficiale api.engine.util.vehicle.getPosition, già verificato nei campioni della Solar. Difetto distinto, da correggere e collaudare separatamente. Solar in movimento non prova ancora arrivo/servizio completato.

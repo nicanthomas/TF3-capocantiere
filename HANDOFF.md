@@ -151,8 +151,8 @@ Scritto da: ChatGPT, 13.10.2026 20:59 Europe/Zurich, ultimo commit verificato c0
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
    Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Attendere CI guardia percorso preacquisto su branch naval-preflight-13-10; poi unire main.
-   2. Verificare arrivo Solar; ripristinare copia due modelli, installare guardia a gioco chiuso.
+   1. Guardia preacquisto unita main, CI verde; installare a gioco/console chiusi, con backup.
+   2. Verificare arrivo Solar; poi copia due modelli. Controllo movimento mod ignora getter SDK.
    3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...
 
