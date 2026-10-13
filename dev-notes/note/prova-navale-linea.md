@@ -99,3 +99,16 @@ privato in work. Non e' ancora prova di assegnazione/servizio e non sono state c
 Prossima prova manuale gia'nel perimetro porto/linea autorizzato: clic solo anteprima valida,
 leggere gruppo/parametri/transform e usarlo come prima fermata della linea25246 con nave123908.
 Non leggere la vecchia proposta applicata; leggere solo componenti della costruzione nuova.
+
+## Porto stock costruito e parametri confrontati
+
+PROVATO IN TF3: clic singolo su anteprima valida1770,405, costruzione122925/gruppo125886,
+'Porto di Lissone'. Nessun altro veicolo comprato, vecchi porti conservati.
+Moduli e parametri smallterminals1/seed0 sono identici allo schema harbor della mod;
+anno stock2030 vs prototipo2026, stessa epoca. Non e' un errore di moduli mancanti.
+Trasformazione stock: X=(.631137,.775671), Y=(-.775671,.631137), origine(-5470.74,-4927.97,2).
+Porto mod: X=(-.707107,.707107), Y=(-.707107,-.707107), origine(-5591.62,-5135.62,2).
+Direzione acqua stock(.775671,-.631137) diversa dal raggio citta'->costa usato dalla mod(.707,.707).
+Questa differenza suggerisce normale della costa, NON dimostra ancora causa senza servizio nave.
+Prossima prova: cambiare solo prima fermata della linea25246 a125886 e usare nave123908 esistente.
+Nuovo porto ancora non salvato; non leggere proposte applicate, componenti riletti viaAPI.
