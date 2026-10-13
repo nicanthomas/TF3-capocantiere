@@ -710,6 +710,33 @@ do
     api.res.modelRep,api.engine.util.line=old.rep,old.line
 end
 
+
+-- Posizione nativa dei veicoli: il getter ufficiale funziona anche senza bounding box.
+do
+    local oldApi,oldPos=api.engine.util.vehicle,CC.posOf
+    CC.posOf=function() return nil end
+    local calls=0
+    api.engine.util.vehicle={getPosition=function(id)
+      assert(id==901);calls=calls+1;return {x=10,y=20,z=0} end}
+    local p=CC.vehiclePos(901)
+    check(p and p.x==10 and p.y==20 and calls==1,'movimento: posizione SDK senza bounding box')
+    CC.posOf=function() return {x=99,y=88} end
+    p=CC.vehiclePos(901)
+    check(p and p.x==10 and p.y==20,'movimento: getter nativo precede bounding box')
+    api.engine.util.vehicle.getPosition=function() error('fixture-private-error') end
+    p=CC.vehiclePos(901)
+    check(p and p.x==99 and p.y==88,'movimento: getter guasto conserva ripiego')
+    api.engine.util.vehicle=nil
+    p=CC.vehiclePos(901)
+    check(p and p.x==99 and p.y==88,'movimento: API assente conserva ripiego')
+    for _,bad in ipairs({{x=0/0,y=20},{x=10,y=math.huge},{x='10',y=20}}) do
+      api.engine.util.vehicle={getPosition=function() return bad end}
+      p=CC.vehiclePos(901)
+      check(p and p.x==99 and p.y==88,'movimento: coordinate native invalide non diventano campioni')
+    end
+    api.engine.util.vehicle,CC.posOf=oldApi,oldPos
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
