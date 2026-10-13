@@ -655,10 +655,60 @@ do
         old.modes,old.depot,old.catch,old.state,old.pos
 end
 
+
+-- Non acquistare navi quando TF3 non certifica il percorso della linea vuota.
+do
+    local old={near=CC.buildTemplateNear,road=CC.ensureRoadAccess,create=CC.createLine,
+      nodes=CC.groupNodes,path=CC.hasPath,loads=CC.modelLoads,fleet=CC.initialFleet,buy=CC.buyVehicles,
+      rep=api.res.modelRep,line=api.engine.util.line}
+    CC.buildTemplateNear=function(_,town) return true,{construction=town,groups={town+100},depots={201}} end
+    CC.ensureRoadAccess=function() return true,'fixture' end
+    CC.groupNodes=function() return {1} end; CC.hasPath=function() return true end
+    CC.createLine=function() return true,{line=900} end
+    CC.modelLoads=function() return 20,0 end
+    CC.initialFleet=function() return 1,{} end
+    local buys=0
+    CC.buyVehicles=function() buys=buys+1; return true,{vehicles={901},errors={}} end
+    api.res.modelRep={forEachModelWithMetadata=function(_,cb)
+      cb('vehicle/ship/fixture.mdl'); cb('vehicle/plane/fixture.mdl') end,
+      find=function() return 101 end,
+      get=function() return {metadata={availability={yearFrom=0,yearTo=0},
+        transportVehicle={engineTransportModes={11,12}}}} end}
+    local flags={{ {noPath=true} },{ {noPath=false} }}
+    local calls=0
+    api.engine.util.line={getDetailedLineProblems=function(id)
+      assert(id==900); calls=calls+1; return flags end}
+    local function attempt(kind)
+      buys=0
+      return SIM_ACTIONS.build_air_or_water_line({town_ids={10,20},kind=kind or 'harbor'})
+    end
+    local blocked=attempt()
+    check(not blocked.ok and buys==0 and blocked.line_id==900 and #blocked.stations==2,
+      'navi: percorso mancante blocca acquisto e conserva entita recuperabili')
+    flags=V({V({{noPath=false}}),V({{noPath=false}})})
+    check(attempt().ok and buys==1,'navi: linea vuota valida consente acquisto stimato')
+    flags={}
+    check(not attempt().ok and buys==0,'navi: risposta vuota non certifica percorso')
+    flags={{ {noPath=false} }}
+    check(not attempt().ok and buys==0,'navi: risposta incompleta blocca acquisto')
+    api.engine.util.line.getDetailedLineProblems=function() error('fixture-private-error') end
+    local unreadable=attempt()
+    check(not unreadable.ok and buys==0 and not tostring(unreadable.error):find('fixture-private-error',1,true),
+      'navi: errore API blocca senza messaggi privati')
+    api.engine.util.line=nil
+    check(not attempt().ok and buys==0,'navi: API assente non compra alla cieca')
+    local before=calls
+    check(attempt('airfield').ok and buys==1 and calls==before,'navi: aerei restano invariati')
+    CC.buildTemplateNear,CC.ensureRoadAccess,CC.createLine=old.near,old.road,old.create
+    CC.groupNodes,CC.hasPath,CC.modelLoads,CC.initialFleet,CC.buyVehicles=old.nodes,old.path,old.loads,old.fleet,old.buy
+    api.res.modelRep,api.engine.util.line=old.rep,old.line
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
 if fails > 0 then error(string.format("Mock Lua: %d controlli falliti", fails)) end
+
 
 
 
