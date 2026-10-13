@@ -151,7 +151,7 @@ Scritto da: ChatGPT, 13.10.2026 20:59 Europe/Zurich, ultimo commit verificato c0
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
    Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Getter posizione su branch vehicle-position-13-10: attendere CI verde; ponte in timeout dopo save.
+   1. Getter posizione e guardia uniti main, CI verdi; chiudere normalmente TF3 e installare con backup.
    2. Solar prima fermata raggiunta e copia primo porto salvata; ripristinare ponte senza reinvii.
    3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...

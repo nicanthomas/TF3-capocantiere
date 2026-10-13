@@ -196,3 +196,10 @@ PROVATO IN TF3: Solar stopIndex0→1, lastLineStopDeparture31887400→32587800, 
 b8.vehiclePos usa ora getter ufficiale api.engine.util.vehicle.getPosition prima dei vecchi ripieghi, coordinate finite obbligatorie; eccezioni/API assente mantengono fallback. Test iniziali su branch41: CI38451793697 fallisce per due nuove regressioni attese; sette casi dopo implementazione passano sotto mockLuaTF3, unico math.maxinteger preesistente resta. Revisione indipendente senza blocchi; CI implementazione in attesa, non installato.
 
 Dopo save prima fermata, sonda movimento accettata ma risultato sim_result121 non pervenuto; successiva sonda getter122 ritirata senza esecuzione. Non reinviate. Finestra TF3 risponde e mostra partita aperta, nessun kill. Diagnosi ponte in corso; non dichiarare getter nuovo provato in gioco finche' non torna il risultato.
+
+
+### 13.10, 21:10 — getter integrato; risposte vecchie distinte
+
+CI38452192810 verde anche Windows; mock138ok/0falliti, Python Ubuntu148test/1skip. Python locale134test/0errori/0fallimenti, classe Lua esterna saltata. Revisione indipendente senza blocchi. Getter unito main, non ancora installato/provato in versione completa.
+
+Rettifica diagnosi ponte: i file121_1979b665 e122_3b015ac7 trovati nella cartella hanno finishedAt del09.10 e dati di vecchie sonde, NON risposte alle nuove richieste. Non dimostrano accettazione tardiva della sonda122 attuale. La nuova richiesta di lettura termina con nessuna risposta SIM; stato GUI continua fresco. Nessuna azione costruttiva reinviata. Necessario riavvio normale dopo copia salvata; non interpretare file vecchi come risultati attuali.
