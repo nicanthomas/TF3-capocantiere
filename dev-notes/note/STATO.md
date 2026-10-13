@@ -525,3 +525,11 @@ Generata --dev --bozza v14-bozza-0200b845; sintassi locale saltata per runtime L
 CI Lua verde sullo stesso codice. Backup script installato verificato SHA256, nuovo script uguale
 al generato, DEV_MODE true e una sola CC_VERSION. Middleware invariato, opzioni Steam intatte.
 TF3 riavviato; prova completa ancora da eseguire su copia iniziale porto senza GUI aggiuntivi.
+
+### 13.10, 07:00 — secondo blocco navale isolato
+
+Con mod0200b845 la prova completa costruisce i porti ma non il deposito presso Lissone;
+rollback due porti, nessuna nave/linea. La stessa funzione presso Calliano riesce (103939/118853).
+Il codice cerca il deposito solo presso la prima città. Da provare tutte le città richieste in ordine,
+fermarsi dopo successo; nessuna modifica geometrica necessaria per questo limite.
+Dettagli ricerca-deposito-navale.md e risposta prove-navale-13-10.json. Deposito nuovo non salvato.

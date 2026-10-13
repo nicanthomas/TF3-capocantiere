@@ -122,8 +122,8 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: correzione quota deposito, poi doppio binario
-Scritto da: ChatGPT, 13.10.2026 06:54 Europe/Zurich, ultimo commit verificato 87f7c3c
-1. In una riga: deposito navale funzionante riprodotto; linea nave e doppio binario incompleti.
+Scritto da: ChatGPT, 13.10.2026 07:00 Europe/Zurich, ultimo commit verificato c4dd49c
+1. In una riga: quota risolta; deposito costruibile a Calliano ma mod cerca solo a Lissone.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO SUL PC: GitHub e checkout verificati; altra AI ferma, nessun nuovo codice remoto.
    - PROVATO IN TF3: copia porto GUI 12-10 ricaricata, porto 122216 presente.
@@ -132,7 +132,7 @@ Scritto da: ChatGPT, 13.10.2026 06:54 Europe/Zurich, ultimo commit verificato 87
    - PROVATO IN TF3: deposito 120768 raggiunge porto gruppo 115052, percorso navigabile vero.
    - PROVATO IN TF3: nuova copia 'capocantiere deposito quota 13-10' salvata; file verificati.
 3. Stato del PC: TF3 riavviato, console non avviata; v14-bozza-0200b845 DEV_MODE true.
-   Middleware aggiornato, opzioni Steam intatte. Save deposito delle 06:39 conservato.
+   Middleware aggiornato, opzioni Steam intatte. Save deposito delle 06:39 conservato; copia iniziale porto caricata per nuovo test.
    Quota acqua corretta in main, CI/test/revisione verdi; installata con backup e impronte uguali.
    Originale e tutte le copie precedenti preservate; risposte private in work della chat.
 4. Problemi aperti e cose da NON fare
@@ -148,8 +148,8 @@ Scritto da: ChatGPT, 13.10.2026 06:54 Europe/Zurich, ultimo commit verificato 87
    Opzioni Steam con ripristino autorizzate ma non cambiate; permessi non validi per chat nuove.
    Direttive: bus Abriola-Maretto, anello doppio e porto/linea nave su copie separate.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Caricare copia iniziale 'capocantiere test porto 12-10'; verificare versione fresca, provare linea.
-   2. Test/CI/revisione, installazione con backup, prova completa linea navale in copia distinta.
+   1. Integrare ricerca deposito presso tutte le citta' della linea: Calliano riesce, Lissone no.
+   2. Test/CI/revisione e installazione con backup; riprovare linea su copia iniziale senza residui.
    3. Riprendere geometria doppio binario; release soltanto dopo requisiti soddisfatti.
 Letto da Claude il ...: ...
 
