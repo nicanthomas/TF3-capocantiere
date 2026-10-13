@@ -171,3 +171,10 @@ Sulla linea25246, seconda fermata sostituita temporaneamente con120311, prima125
 Movimento reale: campioni x=-6232.97,y=-2135.70 e x=-5882.99,y=-2389.01, entrambi velocita'8.33329m/s. Non ancora dimostrato arrivo o servizio completato. Questo esclude un blocco generale di assegnazione, schema linea o uscita deposito nel caso corrente; rimane il corridoio verso Calliano e/o accesso di quel porto.
 
 Copia nuova «capocantiere Solar baia Lissone 13-10»: SAV72974555 byte/JPG652670 byte verificati. Copia precedente «capocantiere porto stock due modelli 13-10» conserva la tratta originale con due navi in deposito. Prima sonda movimento chiamava un namespace inesistente ed e' fallita senza modifiche; corretta usando getter ufficiali api.engine.util.vehicle.getPosition/getSpeed. Nessuna pretesa di tratta interurbana riuscita.
+
+
+### 13.10, 20:59 — guardia prima dell'acquisto, sviluppo su branch
+
+Guardia in b4 dopo creazione linea, soltanto porti: API nativa deve restituire un segmento per fermata e stati noPath=false. Risposta assente, vuota/incompleta, eccezione o flag non booleano impediscono l'acquisto. Linea, stazioni e deposito restano recuperabili; nessuna demolizione automatica perché b9 conserva risultati con line_id. Aerei invariati. Non risolve corridoio Calliano, deposito o assegnazione.
+
+Test nuovi: primo commit test CI38450986113 fallisce per cinque regressioni attese, confermate nei log; non unito main. Dieci casi dopo implementazione passano nel mock isolato sotto Lua TF3; rimane unico caso preesistente math.maxinteger incompatibile5.2, non dichiarare suite verde. Python locale134 test,0errori/fallimenti,1classeLua saltata. Revisione indipendente senza blocchi; aggiunti tre casi limite richiesti. In attesa CI completa del commit implementazione, non installato.

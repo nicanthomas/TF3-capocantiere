@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 20:53 Europe/Zurich, ultimo commit verificato c0db9d7
+Scritto da: ChatGPT, 13.10.2026 20:59 Europe/Zurich, ultimo commit verificato c0db9d7
 1. In una riga: Solar naviga verso Lissone; tratta Calliano non percorribile, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota acqua+2 costruisce deposito nello stesso punto rifiutato a quota terreno.
@@ -151,8 +151,8 @@ Scritto da: ChatGPT, 13.10.2026 20:53 Europe/Zurich, ultimo commit verificato c0
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
    Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare arrivo Solar nella baia; poi ricaricare 'capocantiere porto stock due modelli 13-10'.
-   2. Confrontare accesso Calliano e corridoio navigabile; aggiungere guardia percorso prima acquisto.
+   1. Attendere CI guardia percorso preacquisto su branch naval-preflight-13-10; poi unire main.
+   2. Verificare arrivo Solar; ripristinare copia due modelli, installare guardia a gioco chiuso.
    3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...
 

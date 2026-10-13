@@ -295,6 +295,27 @@ SIM_ACTIONS.build_air_or_water_line = function(a)
 	if not depot then return { ok = false, error = "nessun deposito/hangar per i veicoli", stations = groups, log = log } end
 	local okL, li = CC.createLine(a.name or ("Linea " .. a.kind), groups)
 	if not okL then return { ok = false, error = li.error, stations = groups, log = log } end
+	-- TF3 puo' collegare i nodi dei porti senza trovare una rotta navigabile.
+	-- Verificato 13.10 anche prima dell'acquisto: due porti vicini passano,
+	-- la tratta verso Calliano no. Non lasciare altre navi inutilizzabili nel deposito.
+	if tpl.kind == "water" then
+		local okRoute, valid = pcall(function()
+			local segments = CC.each(api.engine.util.line.getDetailedLineProblems(li.line))
+			if #segments ~= #groups then return false end
+			for _, segment in ipairs(segments) do
+				local states = CC.each(segment)
+				if #states == 0 then return false end
+				for _, state in ipairs(states) do
+					if state.noPath ~= false then return false end
+				end
+			end
+			return true
+		end)
+		if not okRoute or not valid then
+			return { ok = false, error = "percorso navale non disponibile o non verificabile: nessuna nave acquistata",
+				line_id = li.line, stations = groups, depot_id = depot, vehicles = {}, log = log }
+		end
+	end
 	-- VERIFICATO (sonda s4 + prova p20 sul salvataggio di terzi): gli aerei hanno modo 9 (grandi, solo aeroporto) o
 	-- 11 (piccoli: campo d'aviazione e aeroporto). Sul campo d'aviazione un aereo di modo 9 non puo' essere assegnato.
 	local TMe = api.type.enum.TransportMode
@@ -394,4 +415,5 @@ SIM_ACTIONS.build_highway = function(a)
 		overpasses = info.overpasses, underpasses = info.underpasses, log = log }
 end
 -- ===================================================================== fine b4
+
 

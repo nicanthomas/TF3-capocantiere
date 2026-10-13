@@ -691,6 +691,12 @@ do
     check(not attempt().ok and buys==0,'navi: risposta vuota non certifica percorso')
     flags={{ {noPath=false} }}
     check(not attempt().ok and buys==0,'navi: risposta incompleta blocca acquisto')
+    flags={{},{ {noPath=false} }}
+    check(not attempt().ok and buys==0,'navi: segmento vuoto blocca acquisto')
+    flags={{ {} },{ {noPath=false} }}
+    check(not attempt().ok and buys==0,'navi: flag assente non certifica percorso')
+    flags={{ {noPath=0} },{ {noPath=false} }}
+    check(not attempt().ok and buys==0,'navi: flag non booleano blocca acquisto')
     api.engine.util.line.getDetailedLineProblems=function() error('fixture-private-error') end
     local unreadable=attempt()
     check(not unreadable.ok and buys==0 and not tostring(unreadable.error):find('fixture-private-error',1,true),
