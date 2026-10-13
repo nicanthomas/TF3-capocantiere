@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 6e8a736
+Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 0c643b9
 1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -131,11 +131,11 @@ Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 6e8a736
      CI verde; Lua esterno Windows saltato, non superato.
    - PROVATO IN TF3: deposito Lissone fallisce, a Calliano riesce103939/118853;
      copia separata salvata. SOLO TEST AUTOMATICI: ricerca tra tutte le citta' corretta, CI verde.
-   - SOLO TEST AUTOMATICI: parallelo divide strade anche agli estremi dopo taglio;
-     regressione falliva prima, ora CI verde e revisione senza blocchi, unito main735f044.
+   - PROVATO IN TF3 A SECCO: fix estremi elimina collisione+5m, proposta88segmenti valida;
+     lati-5/-10 ancora collidono con altre strade. Nessun comando costruttivo inviato.
    - PROVATO IN TF3: versione56eb18f5 costruisce porti121162/120860 e deposito117738;
      nave118966 in deposito, linea119497 vuota; API nativa segnala nessun percorso tra porti.
-3. Stato del PC: TF3 aperto sulla copia test porto12-10, salvata copia 'capocantiere nave fallita13-10', originali invariati.
+3. Stato del PC: TF3 aperto su ferrovia fallita12-10, solo proposte a secco; niente modifiche.
    Installata v14-bozza-56eb18f5 DEV_MODE true, backup/hash verificati; include fix binari.
    Opzioni Steam intatte; manifest mod ripristinato da backup, hash verificato.
    Copie quota e Calliano salvate; dati privati e helper in work della chat.
@@ -152,8 +152,8 @@ Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 6e8a736
    Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
    Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Caricare copia ferrovia fallita12-10 e riprovare parallelo con proposta a secco, senza costruire.
-   2. Se proposta valida, collaudare anello completo su copia iniziale ferrovia separata.
+   1. Analizzare lato scelto nel doppio binario: produzione sceglie-5 ancora bloccato, +5 valido solo a secco.
+   2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
    3. Riprendere porto: confronto API nativa e CC.hasPath, poi bacino/accesso reale. Non comprare duplicati.
 Letto da Claude il ...: ...
 

@@ -1,0 +1,72 @@
+{
+  "prova": "proposte a secco TF3, nessun comando inviato",
+  "source": "735f044",
+  "mod": "v14-bozza-56eb18f5",
+  "save": "capocantiere ferrovia fallita 12-10",
+  "attempts": [
+    {
+      "offset": -10,
+      "edge_count": 88,
+      "errors": {
+        "coll": [
+          90508,
+          84889,
+          90508,
+          84886,
+          84886,
+          84886,
+          90508,
+          84889,
+          90508,
+          84886,
+          84886,
+          84886,
+          84892,
+          84892,
+          84889,
+          84890,
+          90508,
+          84889,
+          84886
+        ],
+        "critical": false,
+        "msg": [
+          "Collisione"
+        ]
+      }
+    },
+    {
+      "offset": -5,
+      "edge_count": 88,
+      "errors": {
+        "coll": [
+          84886,
+          84886,
+          84886,
+          84886,
+          84886,
+          84886,
+          84892,
+          84890,
+          84890,
+          84889,
+          84890,
+          84886
+        ],
+        "critical": false,
+        "msg": [
+          "Collisione"
+        ]
+      }
+    },
+    {
+      "offset": 5,
+      "edge_count": 88,
+      "errors": {
+        "coll": [],
+        "critical": false,
+        "msg": []
+      }
+    }
+  ]
+}
