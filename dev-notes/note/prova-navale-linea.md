@@ -217,3 +217,19 @@ PROVATO IN TF3: copia Solar primo porto13-10 ricaricata tramite Continua, titolo
 check_line25246 vede AT_TERMINAL, poi EN_ROUTE, una Solar e nessun problema di percorso sulla baia. Lettore CC.vehiclePos corretto restituisce(-5446.54,-4949.37) sull'API reale. Stato cambia stopIndex1 e lastDeparture32842000. Nessun acquisto/costruzione nuova.
 
 Limite ancora dimostrato: due controlli separati restano movement_unknown=1, anche con getter valido. I campioni CC._samples si perdono tra esecuzioni; la correzione getter NON conclude il collaudo movimento. Prossimo passo leggere contesto persistente delle azioni SIM prima di una modifica, evitare globali fra partite non verificati. Successo baia non risolve Calliano o anello.
+
+
+### 13.10, 21:40 — campioni movimento persistenti (Claude)
+
+Commit 47: `CC.samplesLoad/samplesDump` (b8) e `simJob` salvano i campioni in `st.samples` (state:get/set) prima e dopo
+ogni lavoro SIM; check_line riporta `movement_unknown_reasons`, `sample_time`, `game_time_read`.
+PROVATO SUL PC: TF3 chiuso dal menu (Esci > Torna al desktop), script mod sostituito con v14-bozza-303c0edf,
+backup `capocantiere.script.lua.bak_samples_20261013_2133` (copia byte per byte della d15a0424, SHA256 verificato),
+installato riletto dal PC con SHA256 uguale alla build. Solo lo script cambiato; il resto della mod invariato.
+PROVATO IN TF3: copia «capocantiere Solar primo porto 13-10» ricaricata, state.lua riporta 303c0edf. Ponte usato
+scrivendo direttamente i file actions_1/2 (nessuna console, nessuna API). check_line 25246:
+1) movement_unknown=1, motivo no_previous, game_time_read=true, sample_time 33192400;
+2) dopo 80000 ms di gioco: vehicles_moving=1, movement_unknown=0, EN_ROUTE=1. Collaudo movimento risolto su questa linea.
+NON provato: sopravvivenza di `st.samples` a salvataggio/ricaricamento (non serve al collaudo, che ricampiona).
+Nota: il primo caricamento dopo l'avvio da Steam si e' interrotto (log della sessione finisce a meta' caricamento,
+nessun dmp/errore Lua); al secondo tentativo, stessa mod, caricamento riuscito. Causa non nota.

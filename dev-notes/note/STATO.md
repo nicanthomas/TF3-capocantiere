@@ -576,3 +576,8 @@ PROVATO IN TF3: sulla copia separata, linea25246 temporaneamente fra due porti d
 ### 13.10, 21:15 — guardia preacquisto e getter installati; campioni persi
 
 Main39/42 integrati dopo CI verde e revisione: rotta navale nativa obbligatoria prima acquisto, posizione veicoli dal getter SDK. Installata d15a0424 con backup/hash a gioco chiuso. PROVATO IN TF3: copia Solar primo porto ricaricata, nave AT_TERMINAL poi EN_ROUTE, getter legge posizione reale. Controllo ripetuto resta movement_unknown1 perché campioni non persistono fra richieste: lavoro aperto. Tratta Calliano e anello non conclusi. Note prova-navale-linea.md.
+
+### 13.10, 21:40 — campioni movimento persistenti PROVATI IN TF3 (Claude)
+
+Commit 47 (st.samples via state:get/set + motivi movement_unknown). Installata v14-bozza-303c0edf con backup/hash.
+PROVATO IN TF3 su copia Solar primo porto: 1a check_line no_previous, 2a vehicles_moving=1. Dettagli prova-navale-linea.md.

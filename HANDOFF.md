@@ -88,26 +88,27 @@ Letto da <altra AI> il <data>: <si' / dubbi>
 
 *(scritta da Claude, letta da ChatGPT)*
 
-Stato: IN LAVORO da 13.10 21:20: campioni movimento persistenti, poi prova in TF3
-Scritto da: Claude, 13.10.2026 21:25, ultimo commit letto 933ff39
+Stato: IN LAVORO da 13.10 21:20: dopo i campioni, porto/linea Calliano
+Scritto da: Claude, 13.10.2026 21:42, ultimo commit cecb58f + questo checkpoint
 
-1. In una riga: campioni di movimento ora salvati nello stato della mod; manca la prova in TF3.
+1. In una riga: il collaudo vede ora se la nave si muove (campioni salvati nello stato della mod), provato in TF3.
 2. Fatto in questa sessione:
-   - `CC.samplesLoad/samplesDump` (b8) + `simJob` li legge/scrive in `st.samples` (state:get/set) prima e
-     dopo ogni lavoro: non dipendono piu' dallo script in memoria ne' passano tra partite. SOLO TEST AUTOMATICI.
-   - check_line dice ora PERCHE' il movimento e' sconosciuto: `movement_unknown_reasons`
-     (no_position / no_previous / time_not_advanced), `sample_time`, `game_time_read`. SOLO TEST AUTOMATICI.
-   - Mock 145 ok / 0 falliti, middleware 148 test ok (1 saltato). Build `--dev --bozza` = v14-bozza-303c0edf.
-3. Stato del PC: come lasciato da ChatGPT (TF3 aperto su «Solar primo porto 13-10», mod d15a0424). Non ancora
-   toccato da Claude. Autorizzazioni di Nicolo' in QUESTA chat: si' a tutto (PC, Steam/TF3, cartelle, install
-   con backup, copie di prova, costruzioni/acquisti sulle copie, console API, opzioni Steam, pulizia protocollo).
-4. Problemi aperti / da NON fare: la serializzazione di `st.samples` (chiavi testo) nel salvataggio TF3 NON e'
-   provata. Il resto come nella sezione di ChatGPT (Calliano, anello, niente navi duplicate).
+   - Campioni movimento in `st.samples` + motivi `movement_unknown_reasons` (commit 47). SOLO TEST AUTOMATICI
+     (mock 145 ok) e poi PROVATO IN TF3: 1a check_line 25246 «no_previous», 2a «vehicles_moving=1».
+   - Installata v14-bozza-303c0edf: PROVATO SUL PC, backup `...script.lua.bak_samples_20261013_2133` e hash ok.
+   - Il ponte funziona anche senza console: scrivo io `capocantiere_actions_<id>_<nonce>.lua` in `mod_presets`.
+3. Stato del PC: TF3 APERTO sulla copia «Solar primo porto 13-10» (non salvata da me), mod 303c0edf,
+   lastActionId 2. Console/wrapper di Steam: finestre cmd aperte dal wrapper, non toccate. Opzioni Steam invariate.
+   Autorizzazioni di Nicolo' in QUESTA chat: si' a tutto (PC, Steam/TF3, cartelle, install con backup, copie di
+   prova, costruzioni/acquisti sulle copie, console API, opzioni Steam, pulizia protocollo).
+4. Problemi aperti / da NON fare: primo caricamento dopo avvio da Steam interrotto senza errore (secondo ok).
+   Il collegamento del PC a questa chat cade a volte: i permessi del controllo schermo vanno richiesti di nuovo.
+   Restano Calliano, anello doppio; niente navi duplicate (vedi sezione di ChatGPT).
 5. Domande: niente.
 6. Prossima operazione precisa:
-   1. A gioco chiuso installare v14-bozza-303c0edf (backup + hash), ricaricare «Solar primo porto 13-10».
-   2. Due check_line 25246 a qualche secondo di gioco di distanza: atteso vehicles_moving=1 o motivo chiaro.
-   3. Poi confronto porto stock a Calliano (vedi prova-navale-linea.md).
+   1. Rileggere porto-calliano-12-10.md e prova-navale-linea.md: perche' Calliano123906 da' «percorso mancante».
+   2. Sonda di sola lettura sul porto Calliano (accessi acqua / getDetailedLineProblems) prima di costruire.
+   3. Poi, su copia separata, porto o accesso alternativo a Calliano e linea nave di prova.
 
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
