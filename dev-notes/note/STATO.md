@@ -509,3 +509,11 @@ PROVATO IN TF3 prima dello stop: deposito navale costruito dalla GUI, costruzion
 TF3 lasciato aperto sulla copia `capocantiere porto GUI 12-10`: il salvataggio verificato delle 20:04 precede questo deposito. Il deposito GUI e le variazioni successive NON sono salvati. Il porto GUI era stato salvato; originale e copie precedenti preservati. Nessuna modifica sorgenti dopo la correzione velocita' 219e678.
 
 La sonda di percorso deposito/porto non e' stata eseguita: l'ordine `stop, update git` e' arrivato prima dell'avvio ed il controllo automatico ha respinto l'azione. Non aggirato. Nessuna conclusione sulla raggiungibilita' del deposito. Alla ripresa verificare prima lo stato reale del PC e conservare una nuova copia se ancora disponibile; poi diagnosi deposito e collaudo navi. Doppio binario ancora incompleto. Mod NON finalizzata.
+
+### 13.10.2026 — causa quota deposito confermata in TF3
+
+Stesso punto valido GUI: CC.placeTemplate rifiutato con terreno=0.0385056, riuscito con quota=2;
+fonte ufficiale deposito forza superficie acqua+2. Costruzione 123741/deposito 120768, percorso
+navigabile vero verso porto gruppo 115052. Save distinto 'capocantiere deposito quota 13-10'
+verificato sul PC alle 06:39:52. Linea/nave ancora NON costruite, correzione stabile da integrare.
+Dettagli in deposito-navale-quota.md. Non hardcodare 2 su ogni mappa: serve waterLevel reale.
