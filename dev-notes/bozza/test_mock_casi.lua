@@ -551,8 +551,74 @@ do
     CC.buildTemplateNear,CC.ensureRoadAccess,CC.createLine=oldNear,oldRoad,oldLine
 end
 
+-- Gli estremi accorciati del parallelo possono essere passaggi a livello.
+do
+    local old={comp=CC.comp,send=CC.send,nodeSegments=api.engine.system.streetSystem.getNodeSegments,
+        nodeType=api.type.NodeAndEntity,edgeType=api.type.SegmentAndEntity}
+    api.type.NodeAndEntity={new=function() return {comp={}} end}
+    api.type.SegmentAndEntity={new=function() return {comp={}} end}
+    local function vec(x,y) return {x=x,y=y,z=0} end
+    local nodes,edges={},{}
+    for i=1,7 do nodes[i]=newEnt({BASE_NODE={position=vec((i-1)*60,0)}}) end
+    for i=1,6 do
+        edges[i]=newEnt({BASE_EDGE={node0=nodes[i],node1=nodes[i+1],
+            position0=vec((i-1)*60,0),position1=vec(i*60,0),tangent0=vec(60,0),tangent1=vec(60,0),
+            roadTemplate="::/infrastructure/track/standard/standard.street_template",type=0,typeIndex=-1,
+            distance=5,laneConfigs={},roadStyle=0}})
+    end
+    local roads={}
+    local function roadAt(index)
+        local far=newEnt({BASE_NODE={position=vec((index-1)*60,40)}})
+        local road=newEnt({BASE_EDGE_STREET={},BASE_EDGE={node0=nodes[index],node1=far,
+            position0=vec((index-1)*60,0),position1=vec((index-1)*60,40),tangent0=vec(0,40),tangent1=vec(0,40),
+            roadTemplate="::/infrastructure/street/country/fixture.street_template",type=0,typeIndex=-1}})
+        roads[nodes[index]]=road
+        return road
+    end
+    local roadStart,roadEnd=roadAt(2),roadAt(6)
+    -- Il componente nativo restituisce copie; non lasciare che i due mezzi segmenti condividano una tabella.
+    CC.comp=function(entity,kind)
+        local data=old.comp(entity,kind)
+        if data and kind==api.type.ComponentType.BASE_EDGE then
+            local copy={}; for k,v in pairs(data) do copy[k]=v end; return copy
+        end
+        return data
+    end
+    api.engine.system.streetSystem.getNodeSegments=function(node)
+        return roads[node] and {roads[node]} or {}
+    end
+    local proposal
+    CC.send=function(cmd) proposal=cmd.prop; return false,{},{} end
+    CC.parallelTrack(edges,nodes[1],-5,nil,nil,{skipStart=60,skipEnd=60})
+    local street=proposal and proposal.streetProposal
+    check(street and #CC.each(street.edgesToRemove)==2,
+        "parallelo: strade agli estremi accorciati spezzate nella stessa proposta")
+    local sharedStart,sharedEnd=0,0
+    if street then
+        local first,last=street.edgesToAdd[1].comp.node0,street.edgesToAdd[4].comp.node1
+        for _,edge in ipairs(street.edgesToAdd) do
+            if edge.type==0 then
+                if edge.comp.node0==first or edge.comp.node1==first then sharedStart=sharedStart+1 end
+                if edge.comp.node0==last or edge.comp.node1==last then sharedEnd=sharedEnd+1 end
+            end
+        end
+    end
+    check(sharedStart==2 and sharedEnd==2,"parallelo: strada e binario condividono i nodi agli estremi")
+    roads={}; roadAt(1); roadAt(7)
+    local snapStart=newEnt({BASE_NODE={position=vec(0,5)}})
+    local snapEnd=newEnt({BASE_NODE={position=vec(360,5)}})
+    proposal=nil
+    CC.parallelTrack(edges,nodes[1],-5,snapStart,snapEnd)
+    check(proposal and #CC.each(proposal.streetProposal.edgesToRemove)==0,
+        "parallelo: estremi agganciati non rispezzano strade")
+    CC.comp,CC.send=old.comp,old.send
+    api.engine.system.streetSystem.getNodeSegments=old.nodeSegments
+    api.type.NodeAndEntity,api.type.SegmentAndEntity=old.nodeType,old.edgeType
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
 if fails > 0 then error(string.format("Mock Lua: %d controlli falliti", fails)) end
+
 
