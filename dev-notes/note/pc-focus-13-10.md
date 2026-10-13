@@ -46,3 +46,13 @@ File sonda conservato fuori manifest: nessuna azione all'avvio normale.
 Nicolo' autorizza minimizzazione AggiornamentiPC; vecchia finestra non piu' valida e processo
 ora assente. Guardie hanno bloccato i tentativi, nessuna minimizzazione o chiusura effettuata.
 Ripresa avvio normale TF3, non altre prove --script durante questo collaudo.
+
+## Caricamento/salvataggio da API confermati in gioco
+
+app.saveGame gia' provato sulla copia nave fallita13-10, callback e SAV/JPG verificati.
+app.loadGame ora PROVATO IN TF3: scelta univoca di 'capocantiere test porto12-10'
+(nome esatto con spazio prima12), dati SaveGameInfo copiati in api.type.SavegameId.new().
+Campi path/saveGameName/saveGameNamespace come nello script ufficiale savegame_react_util.tl:869.
+Senza setWaitForStartReadyGame il caricamento avvia direttamente la simulazione: stato recente,
+mod5f189de4, speed4, scena copia iniziale senza porti della prova fallita. Nessun clic necessario.
+Non usare mai nomi generici o ultimi salvataggi per automazioni: copia richiesta deve essere univoca.

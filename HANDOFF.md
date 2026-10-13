@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 06cbb2c
+Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 10e5c01
 1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -136,7 +136,7 @@ Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 06cbb2c
    - PROVATO IN TF3: versione56eb18f5 costruisce porti121162/120860 e deposito117738;
      nave118966 in deposito, linea119497 vuota; API nativa segnala nessun percorso tra porti.
      PROVATO IN TF3: collaudo installato segnala entrambi i percorsi mancanti, nessuna costruzione.
-3. Stato del PC: TF3 aperto su nave fallita13-10; solo controlli, nave resta in deposito.
+3. Stato del PC: caricata copia iniziale test porto12-10 con API app, senza residui della prova fallita.
    Installata v14-bozza-5f189de4 DEV_MODE true, backup/hash verificati; include fix collaudo.
    Opzioni Steam intatte; manifest mod ripristinato da backup, hash verificato.
    Copie quota e Calliano salvate; dati privati e helper in work della chat.
@@ -153,7 +153,7 @@ Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 06cbb2c
    Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
    Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Diagnosi geometria porti di sola lettura; dati confermano SHIP10/SMALL_SHIP12, correggere fixture.
+   1. Provare stessa linea Lissone-Calliano con harbor_large su copia iniziale: cambia solo schema porti.
    2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
    3. Riprendere porto: confronto API nativa e CC.hasPath, poi bacino/accesso reale. Non comprare duplicati.
 Letto da Claude il ...: ...
