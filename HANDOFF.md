@@ -152,7 +152,7 @@ Scritto da: ChatGPT, 13.10.2026, ultimo commit verificato 0c643b9
    Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
    Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Analizzare lato scelto nel doppio binario: produzione sceglie-5 ancora bloccato, +5 valido solo a secco.
+   1. Branch codex/13-10-collaudo-navale: regressione sul percorso nativo, prima di correggere b8.
    2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
    3. Riprendere porto: confronto API nativa e CC.hasPath, poi bacino/accesso reale. Non comprare duplicati.
 Letto da Claude il ...: ...

@@ -616,9 +616,49 @@ do
     api.type.NodeAndEntity,api.type.SegmentAndEntity=old.nodeType,old.edgeType
 end
 
+
+-- TF3: i percorsi generici a nodi possono passare mentre i porti non sono navigabili.
+do
+    local old={line=api.engine.util.line,modes=CC.lineModes,depot=CC.depotForLine,
+        catch=CC.groupCatchables,state=CC.vehicleState,pos=CC.vehiclePos}
+    local modes={12}
+    CC.lineModes=function() return modes end
+    CC.depotForLine=function() return 123 end
+    CC.groupCatchables=function() return 1 end
+    CC.vehicleState=function() return 'AT_TERMINAL' end
+    CC.vehiclePos=function() return nil end
+    local calls=0
+    local flags=V({V({{noPath=true}}),V({{noPath=true}})})
+    api.engine.util.line={getDetailedLineProblems=function(id)
+        assert(id==L3,'collaudo nativo: id linea'); calls=calls+1; return flags
+    end}
+    local function routeProblems(result)
+        local n=0
+        for _,problem in ipairs(result.problems) do
+            if problem:find('nessun percorso',1,true) then n=n+1 end
+        end
+        return n
+    end
+    local r=CC.checkLine(L3)
+    check(r.ok==false and routeProblems(r)==2,
+        'collaudo navi: percorso nativo mancante prevale sul percorso generico')
+    flags={{ {noPath=false} },{ {noPath=false} }}
+    check(routeProblems(CC.checkLine(L3))==0,'collaudo navi: percorsi nativi validi senza falsi allarmi')
+    flags={{ {noPath=true} },{ {noPath=true} }}; modes={1}
+    local before=calls
+    check(routeProblems(CC.checkLine(L3))==0 and calls==before,
+        'collaudo navi: controllo nativo non cambia le linee terrestri')
+    modes={13}; api.engine.util.line.getDetailedLineProblems=function() error('API indisponibile') end
+    check(routeProblems(CC.checkLine(L3))==0,'collaudo navi: API non leggibile conserva il controllo generico')
+    api.engine.util.line=old.line
+    CC.lineModes,CC.depotForLine,CC.groupCatchables,CC.vehicleState,CC.vehiclePos=
+        old.modes,old.depot,old.catch,old.state,old.pos
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.
 if fails > 0 then error(string.format("Mock Lua: %d controlli falliti", fails)) end
+
 
 
