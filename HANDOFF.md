@@ -121,8 +121,8 @@ Letto da ChatGPT il 12.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: FERMO dalle 12.10 20:11 per richiesta esplicita di Nicolo'
-Scritto da: ChatGPT, 12.10.2026 20:11 Europe/Zurich, ultimo commit verificato abab1a2
+Stato: IN LAVORO da 13.10 06:33: deposito navale, poi doppio binario
+Scritto da: ChatGPT, 13.10.2026 06:33 Europe/Zurich, ultimo commit verificato bef3664
 1. In una riga: bus concluso; doppio binario e linea navale incompleti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - SOLO TEST AUTOMATICI: versione CRLF corretta c4afd72, test/CI verdi; Lua Windows saltata.
@@ -134,7 +134,7 @@ Scritto da: ChatGPT, 12.10.2026 20:11 Europe/Zurich, ultimo commit verificato ab
      Copia fallita salvata; proposte senza costruire confermano collisioni cambiando lato.
    - PROVATO IN TF3: porto GUI 122216 salvato; mod costruisce due porti piccoli,
      fallisce al deposito e li rimuove. Deposito GUI 122426 costruito; percorsi NON provati.
-3. Stato del PC: TF3 aperto su 'capocantiere porto GUI 12-10', console non avviata.
+3. Stato del PC: TF3 e console chiusi verificati alla ripresa; Steam aperto.
    Mod v14-bozza-509c3059 DEV_MODE true; middleware aggiornato, opzioni Steam intatte.
    Save GUI delle 20:04 contiene il porto; deposito GUI successivo NON salvato.
    Originale, bus e copia iniziale porto preservati. Nessuna modifica sorgenti dopo 219e678.
@@ -146,14 +146,14 @@ Scritto da: ChatGPT, 12.10.2026 20:11 Europe/Zurich, ultimo commit verificato ab
    Deposito GUI: quota 2, acqua -Y; causa del rifiuto automatico NON confermata.
    Backup/installazioni solo a gioco e console chiusi. Chiave mai letta/mostrata.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Nicolo' ha ordinato 'stop, update git': non riprendere senza nuova richiesta.
+   Nicolo' ha chiesto di riprendere in autonomia fino ai crediti; permessi di questa chat confermati.
    Permessi di questa chat: PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
    backup/aggiornamenti, avvio/chiusura normale, partita prova, console/API, pulizia protocollo.
    Cambio opzioni Steam con ripristino autorizzato ma non usato; permessi non validi in chat future.
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea navale su copie separate.
    Sonda percorsi deposito non eseguita dopo lo stop. Nessuna domanda pendente.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Alla ripresa autorizzata verificare TF3 e deposito non salvato; conservare copia distinta.
+   1. Avviare TF3, caricare 'capocantiere porto GUI 12-10', ricostruire deposito e salvare.
    2. Verificare percorso deposito/porto, confrontare posa automatica; correggere causa provata.
    3. Completare collaudi nave e doppio binario; release solo con requisiti soddisfatti.
 Letto da Claude il ...: ...
