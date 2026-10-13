@@ -122,7 +122,7 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e diagnosi doppio binario
-Scritto da: ChatGPT, 13.10.2026 07:17 Europe/Zurich, ultimo commit verificato c8ba043
+Scritto da: ChatGPT, 13.10.2026 07:25 Europe/Zurich, ultimo commit verificato 9011f8d
 1. In una riga: due difetti navali corretti; prova completa attende focus TF3, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
@@ -152,7 +152,7 @@ Scritto da: ChatGPT, 13.10.2026 07:17 Europe/Zurich, ultimo commit verificato c8
    Domanda pendente: minimizzare solo finestra AggiornamentiPC, lasciandola in esecuzione.
    Senza risposta non toccare quella app; sviluppare codice e usare dati gia' raccolti.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Studiare geometria parallelo nei dati privati; non modificare tracciati senza causa confermata.
+   1. Branch codex/13-10-parallelo-estremi: regressione rossa confermata, fix in CI/revisione.
    2. Quando focus disponibile: caricare copia iniziale porto, verificare4e8640b2 e provare linea.
    3. Collaudare percorsi/nave in servizio, poi doppio binario; release solo con requisiti soddisfatti.
 Letto da Claude il ...: ...

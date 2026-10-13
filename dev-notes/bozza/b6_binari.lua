@@ -410,7 +410,9 @@ function CC.parallelTrack(edges, startNode, offset, snapStart, snapEnd, opts)
 		-- (VERIFICATO p35: senza, "Collisione" con la strada). Si spezza la strada nel punto giusto.
 		local crossNode
 		CC._parDiag = CC._parDiag or {}
-		if not snap and i > 1 and i < #nodes then
+		-- Dopo skipStart/skipEnd anche il primo e l'ultimo nodo possono essere incroci
+		-- stradali del binario originale. Escludere soltanto gli estremi gia' agganciati.
+		if not snap then
 			local rux, ruy = rx * offset, ry * offset
 			local rl = math.sqrt(rux * rux + ruy * ruy)
 			for _, rs in ipairs(CC.each(api.engine.system.streetSystem.getNodeSegments(nodes[i]))) do
@@ -847,3 +849,4 @@ SIM_ACTIONS.build_rail_ring = function(a)
 	return r
 end
 -- ===================================================================== fine b6
+
