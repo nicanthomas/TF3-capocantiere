@@ -43,3 +43,14 @@ Azione ok=false, created contiene zero costruzioni/linee/strade/binari/veicoli. 
 Prototipo non pubblicato nel codice, nessuna modifica alla mod installata o ai salvataggi precedenti.
 Dati in prove-navale-13-10-spostamento.json. L'ipotesi quota/profondita' non e' confermata da questa prova:
 serve ispezionare proposte e collisioni a secco prima di altre costruzioni.
+
+## Proposte a secco e spostamento10m
+
+PROVATO IN TF3 A SECCO: posizioni+10m senza collisioni a Lissone e sulla prima costa Calliano.
++25m collide con entita' basse4451/4793/4325, tipo non identificato; non affermare siano fondale.
+Nessun comando inviato dalla sonda a secco. Prototipo+10m reale sulla copia iniziale senza residui:
+porti120311/123906, deposito123907, linea25246, nave123908; assegnazione fallisce ancora.
+Nessun'altra nave comprata. Quindi spostamento10m non risolve navigabilita' reale.
+Save distinto 'capocantiere porto acqua10 fallito13-10' (spazio prima13), callback/SAV71144267/JPG821034
+verificati. Prototipo locale, mod installata invariata. Risposta prove-navale-13-10-acqua10.json.
+Ipotesi successiva NON provata: assegnazione dalla GUI invece di SIM; solo nave gia'presente, no acquisti.

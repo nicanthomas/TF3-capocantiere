@@ -1,0 +1,79 @@
+[
+  {
+    "index": 1,
+    "job": {
+      "name": "eval",
+      "ok": true,
+      "time": 1791912216,
+      "value": {
+        "result": {
+          "collaudo": [
+            {
+              "line_id": 25246,
+              "ok": false,
+              "problems": [
+                "nessun veicolo sulla linea",
+                "nessun percorso dalla fermata 1 (Lissone harbor) alla 2",
+                "nessun percorso dalla fermata 2 (Calliano harbor) alla 1",
+                "meno di 2 fermate hanno edifici, industrie o coincidenze nel bacino: la linea trasporta poco o nulla"
+              ],
+              "suggestions": [
+                "aggiungere veicoli (add_vehicles o create_line_from_stations)",
+                "collegare le due fermate (strada/binario mancante o senso unico)",
+                "collegare le due fermate (strada/binario mancante o senso unico)",
+                "spostare le fermate verso il centro o collegarle con una navetta"
+              ]
+            }
+          ],
+          "created": {
+            "constructions": [
+              122989,
+              115262,
+              41986
+            ],
+            "lines": [
+              25246
+            ],
+            "roads": [],
+            "tracks": [],
+            "vehicles": [
+              123908
+            ]
+          },
+          "depot_id": 123907,
+          "errors": [
+            "assegnazione linea fallita per 123908"
+          ],
+          "fleet": {
+            "count": 1,
+            "estimated": true,
+            "interval_target": 900,
+            "max": 6,
+            "round_trip_s": 744,
+            "route_m": 7841,
+            "speed_from_model": true,
+            "top_speed_ms": 27.7
+          },
+          "line_id": 25246,
+          "log": [
+            "Lissone: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+            "Calliano: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+            "deposito navale a Lissone: nessun punto di costa adatto: rifiutata: Collisione (2 collisioni) verifica: Collisione | rifiutata:  | rifiutata: "
+          ],
+          "model": "::/vehicle/ship/oita_hovercraft/oita_hovercraft.mdl",
+          "ok": false,
+          "stations": [
+            120311,
+            123906
+          ],
+          "vehicles": [
+            123908
+          ]
+        },
+        "shift_water_m": 10
+      }
+    },
+    "ok": true,
+    "type": "sim_result"
+  }
+]
