@@ -122,40 +122,38 @@ Letto da ChatGPT il 12.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 20:49 Europe/Zurich, ultimo commit verificato 3b510d6
-1. In una riga: porto/deposito costruiti, nave comprata ma assegnazione fallita; mod NON finalizzata.
+Scritto da: ChatGPT, 13.10.2026 20:53 Europe/Zurich, ultimo commit verificato c0db9d7
+1. In una riga: Solar naviga verso Lissone; tratta Calliano non percorribile, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO IN TF3: quota terreno rifiuta deposito, acqua+2 lo costruisce nello stesso punto;
-     deposito120768 raggiunge porto115052. Copia deposito quota13-10 salvata e verificata.
-   - SOLO TEST AUTOMATICI: quota reale acqua+2 corretta, terra invariata, acqua assente blocca.
-     CI verde; Lua esterno Windows saltato, non superato.
-   - PROVATO IN TF3: deposito Lissone fallisce, a Calliano riesce103939/118853;
-     copia separata salvata. SOLO TEST AUTOMATICI: ricerca tra tutte le citta' corretta, CI verde.
+   - PROVATO IN TF3: quota acqua+2 costruisce deposito nello stesso punto rifiutato a quota terreno.
+     SOLO TEST AUTOMATICI: fix quota e ricerca deposito tra citta' verdi; copie separate salvate.
    - PROVATO IN TF3 A SECCO: fix estremi elimina collisione+5m, proposta88segmenti valida;
-     lati-5/-10 ancora collidono con altre strade. Nessun comando costruttivo inviato.
-   - PROVATO IN TF3: versione56eb18f5 costruisce porti121162/120860 e deposito117738;
-     nave118966 in deposito, linea119497 vuota; API nativa segnala nessun percorso tra porti.
-     PROVATO IN TF3: collaudo installato segnala entrambi i percorsi mancanti, nessuna costruzione.
-3. Stato del PC: copia 'capocantiere porto stock due modelli13-10' salvata; due navi in deposito.
-   Installata v14-bozza-5f189de4 DEV_MODE true, backup/hash verificati; include fix collaudo.
-   Opzioni Steam intatte; manifest mod ripristinato da backup, hash verificato.
-   Copie quota e Calliano salvate; dati privati e helper in work della chat.
+     lati-5/-10 collidono con altre strade. Nessun comando costruttivo inviato.
+   - PROVATO IN TF3: collaudo nativo installato segnala entrambe le tratte Calliano mancanti;
+     percorso generico non certifica navigabilita'. SOLO TEST AUTOMATICI: fix collaudo verde.
+   - PROVATO IN TF3: porti stock125886, API120311 e Calliano123906 hanno accessi navali registrati.
+     Solar123446 assegnata a linea25246 tra i due Lissone; due posizioni diverse, velocita'8.333m/s.
+   - PROVATO SUL PC: copia 'capocantiere Solar baia Lissone 13-10' salvata, SAV/JPG presenti.
+     PROVATO IN TF3: tornando a Calliano ricompare nessun percorso; ritorno alla baia riuscito.
+3. Stato del PC: TF3 aperto, linea25246 fra125886/120311, Solar123446 in viaggio; Oita123908 in deposito.
+   Installata v14-bozza-5f189de4 DEV_MODE true, backup/hash verificati; middleware invariato.
+   Opzioni Steam intatte; manifest originale ripristinato; helper/dati privati in work della chat.
+   Copia 'capocantiere porto stock due modelli 13-10' conserva Calliano e due navi non assegnate.
 4. Problemi aperti e cose da NON fare
-   Oita123908 e Solar123446 IN_DEPOT, linea25246 vuota; non ripetere acquisti sulla copia.
-   Lua TF3 e'5.2: mock math.maxinteger inapplicabile; CI Lua5.3/5.4 verde, distinguere runtime.
+   Nessuna navigazione tra citta' ancora riuscita; non comprare navi duplicate.
+   Lua Windows esterno saltato; CI Lua5.3/5.4 verde, mock TF3 5.2 ha caso math.maxinteger inapplicabile.
    Copia anello fallito conserva3stazioni/98tratti: non ricostruire li' o rimuoverli a mano.
    Non applicare riduzione bus79575; installare solo a gioco/console chiusi, backup verificato.
-   Note: deposito-navale-quota.md, ricerca-deposito-navale.md, parallelo-estremi-strade.md, pc-focus-13-10.md.
+   Note: prova-navale-linea.md, collaudo-percorso-navale.md, parallelo-estremi-strade.md, pc-focus-13-10.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Autonomia richiesta fino ai crediti; PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
+   Autonomia fino ai crediti; PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
    backup, avvio/chiusura, console/API e pulizia protocollo autorizzati in questa chat.
    Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
-   Minimizzazione AggiornamentiPC autorizzata; app ora assente, nessuna minimizzazione eseguita.
-   Focus TF3 disponibile e verificato; nessun altro permesso attualmente necessario.
+   Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Solar stop1 fallisce: controllare accessi navali dei porti, poi confronto breve nella stessa baia.
-   2. Prima di costruire verificare raccordi/scelta geometrica; poi copia iniziale ferrovia separata.
-   3. Confrontare linea/terminali con GUI ufficiale; non comprare duplicati. Note prova-navale-linea.md.
+   1. Verificare arrivo Solar nella baia; poi ricaricare 'capocantiere porto stock due modelli 13-10'.
+   2. Confrontare accesso Calliano e corridoio navigabile; aggiungere guardia percorso prima acquisto.
+   3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

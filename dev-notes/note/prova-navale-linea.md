@@ -160,3 +160,14 @@ PROVATO IN TF3: una sola assegnazione GUI della Solar 123446 alla linea 25246, i
 SOLO REVISIONE STATICA: confronto indipendente con SDK e GUI ufficiali non identifica un errore dimostrato in createLine/acquisto. Le runways TAKEOFF/LANDING dei porti sono distinte dal nodo del terminale: verificare la loro registrazione. La GUI usa autoAssignTerminals e configura stopConfig; confronto utile, causa ancora non dimostrata. Il selettore modelli non filtra SHIP/SMALL_SHIP per porti piccoli: difetto separato, non causa corrente perché Oita e Solar sono SMALL_SHIP.
 
 Prossimo discriminante: accessi dei due porti; eventuale rotta temporanea tra due porti vicini nella stessa baia usando le navi già acquistate, poi ripristino della rotta originale. Nessuna prova di navigazione riuscita.
+
+
+### 13.10, 20:53 — prima nave realmente in movimento; discriminante nella baia
+
+PROVATO IN TF3: accessi TAKEOFF/LANDING registrati per porto stock Lissone125886, porto API Lissone120311 e Calliano123906. Tutti i punti esaminati risultano sull'acqua (quota terreno circa -5.75, -2.60 e -4.98 rispettivamente). La prima lettura privata erroneamente trattava i valori della mappa come stazioni singole; nel gioco sono liste. Nessuna assenza di accessi dimostrata.
+
+Sulla linea25246, seconda fermata sostituita temporaneamente con120311, prima125886 invariata: il controllo nativo non segnala percorsi mancanti. Assegnazione Solar123446 stop0 accettata: EN_ROUTE. Ripristinando123906(Calliano) ricompaiono due percorsi mancanti. Tornando120311, controllo senza problemi e Solar in viaggio. Nessun acquisto o costruzione supplementare.
+
+Movimento reale: campioni x=-6232.97,y=-2135.70 e x=-5882.99,y=-2389.01, entrambi velocita'8.33329m/s. Non ancora dimostrato arrivo o servizio completato. Questo esclude un blocco generale di assegnazione, schema linea o uscita deposito nel caso corrente; rimane il corridoio verso Calliano e/o accesso di quel porto.
+
+Copia nuova «capocantiere Solar baia Lissone 13-10»: SAV72974555 byte/JPG652670 byte verificati. Copia precedente «capocantiere porto stock due modelli 13-10» conserva la tratta originale con due navi in deposito. Prima sonda movimento chiamava un namespace inesistente ed e' fallita senza modifiche; corretta usando getter ufficiali api.engine.util.vehicle.getPosition/getSpeed. Nessuna pretesa di tratta interurbana riuscita.
