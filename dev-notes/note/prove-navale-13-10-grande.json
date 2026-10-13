@@ -1,0 +1,62 @@
+{
+  "args": {
+    "town_ids": [
+      62685,
+      62691
+    ],
+    "kind": "harbor_large",
+    "name": "Prova porto grande Lissone-Calliano 13-10"
+  },
+  "result": {
+    "collaudo": [
+      {
+        "line_id": 121536,
+        "ok": false,
+        "problems": [
+          "nessun veicolo sulla linea",
+          "nessun percorso dalla fermata 1 (Lissone harbor_large) alla 2",
+          "nessun percorso dalla fermata 2 (Calliano harbor_large) alla 1",
+          "meno di 2 fermate hanno edifici, industrie o coincidenze nel bacino: la linea trasporta poco o nulla"
+        ],
+        "suggestions": [
+          "aggiungere veicoli (add_vehicles o create_line_from_stations)",
+          "collegare le due fermate (strada/binario mancante o senso unico)",
+          "collegare le due fermate (strada/binario mancante o senso unico)",
+          "spostare le fermate verso il centro o collegarle con una navetta"
+        ]
+      }
+    ],
+    "depot_id": 12439,
+    "errors": [
+      "assegnazione linea fallita per 116136",
+      "assegnazione linea fallita per 103887"
+    ],
+    "fleet": {
+      "count": 2,
+      "estimated": true,
+      "interval_target": 900,
+      "max": 6,
+      "round_trip_s": 911,
+      "route_m": 10160,
+      "speed_from_model": true,
+      "top_speed_ms": 27.7
+    },
+    "index": 1,
+    "line_id": 121536,
+    "log": [
+      "Lissone: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)",
+      "Calliano: costruito; strada d'accesso: nessun accesso stradale libero (gia' collegata o non serve)"
+    ],
+    "model": "::/vehicle/ship/oita_hovercraft/oita_hovercraft.mdl",
+    "ok": false,
+    "stations": [
+      113926,
+      102599
+    ],
+    "type": "build_air_or_water_line",
+    "vehicles": [
+      116136,
+      103887
+    ]
+  }
+}

@@ -22,3 +22,15 @@ incompatibleStop=false, duplicateStop=false. getFailedPathReason restituisce Unk
 CC.groupPath tra gruppi nei due sensi e deposito verso entrambi restituiscono true con modo12.
 Quindi il percorso generico a nodi NON certifica la navigabilita' reale dei porti.
 Nessuna correzione al codice finche' causa non isolata. Bacino delle due fermate ancora vuoto.
+
+## Confronto porto grande, prova separata
+
+PROVATO IN TF3 v14-bozza-5f189de4: copia iniziale ricaricata da API app.
+Stessi town_ids, solo kind=harbor_large: gruppi113926/102599 e deposito12439, linea121536.
+Navi116136/103887 comprate (flotta stimata2), entrambe assegnazioni fallite; noPath nativo nelle due direzioni.
+Quindi scegliere porto grande NON risolve. Nessun altro acquisto/assegnazione dopo questo fallimento.
+Copia 'capocantiere porto grande fallito13-10' salvata con spazio prima13, callback/SAV71064085/JPG642246
+verificati. Risposta prove-navale-13-10-grande.json. La copia del porto piccolo resta separata e intatta.
+Confronto terminali piccolo: presenti, indice0, passeggeri ammessi; ipotesi stazione vuota esclusa.
+Ipotesi futura NON provata: shoreSites sceglie ultimo punto di terra su passi25m, porto puo' lasciare
+molo/uscita nella fascia poco profonda. Confrontare stesso schema spostato25m verso acqua su copia iniziale.
