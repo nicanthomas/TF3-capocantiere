@@ -121,39 +121,41 @@ Letto da ChatGPT il 12.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 13.10 06:33: collaudo nave e doppio binario
-Scritto da: ChatGPT, 13.10.2026 21:15 Europe/Zurich, ultimo commit verificato 6a29273
-1. In una riga: Solar naviga verso Lissone; tratta Calliano non percorribile, mod NON finalizzata.
+Stato: FERMO dalle 13.10 21:17: stop esplicito di Nicolo'
+Scritto da: ChatGPT, 13.10.2026 21:17 Europe/Zurich, ultimo commit verificato ad8579a
+1. In una riga: Solar naviga nella baia e raggiunge un porto; Calliano/anello irrisolti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO IN TF3: quota acqua+2 costruisce deposito nello stesso punto rifiutato a quota terreno.
-     SOLO TEST AUTOMATICI: fix quota e ricerca deposito tra citta' verdi; copie separate salvate.
-   - PROVATO IN TF3 A SECCO: fix estremi elimina collisione+5m, proposta88segmenti valida;
-     lati-5/-10 collidono con altre strade. Nessun comando costruttivo inviato.
-   - PROVATO IN TF3: collaudo nativo installato segnala entrambe le tratte Calliano mancanti;
-     percorso generico non certifica navigabilita'. SOLO TEST AUTOMATICI: fix collaudo verde.
-   - PROVATO IN TF3: porti stock125886, API120311 e Calliano123906 hanno accessi navali registrati.
-     Solar123446 assegnata a linea25246 tra i due Lissone; due posizioni diverse, velocita'8.333m/s.
-   - PROVATO SUL PC: copia 'capocantiere Solar baia Lissone 13-10' salvata, SAV/JPG presenti.
-     PROVATO IN TF3: tornando a Calliano ricompare nessun percorso; ritorno alla baia riuscito.
-3. Stato del PC: TF3 aperto sulla copia Solar primo porto13-10; ponte risponde dopo riavvio.
-   Installata v14-bozza-d15a0424 DEV_MODE true, backup/hash verificati; include guardia e getter.
-   Opzioni Steam intatte; manifest originale ripristinato; helper/dati privati in work della chat.
-   Copia 'capocantiere porto stock due modelli 13-10' conserva Calliano e due navi non assegnate.
+   - PROVATO IN TF3: deposito a quota acqua+2 e ricerca tra citta' funzionano su copie distinte.
+     SOLO TEST AUTOMATICI: correzioni quota/ricerca verdi; terra invariata.
+   - PROVATO IN TF3 A SECCO: estremi parallelo corretti, +5m proposta88segmenti valida;
+     -5/-10 collidono. Nessuna nuova costruzione ferroviaria inviata.
+   - PROVATO IN TF3: Calliano ha due percorsi nativi mancanti; controllo generico da solo inganna.
+     Porti stock125886/API120311 nella baia consentono linea25246 e Solar123446 in viaggio.
+   - PROVATO IN TF3: Solar raggiunge porto, AT_TERMINAL poi EN_ROUTE dopo ricaricamento.
+     Copie Solar baia e Solar primo porto13-10 salvate, SAV/JPG verificati; originale intatto.
+   - SOLO TEST AUTOMATICI: guardia preacquisto e getter posizione integrati dopo CI verde/revisione.
+     PROVATO IN TF3: guardia a secco discrimina due rotte; getter legge posizione reale.
+3. Stato del PC: TF3 lasciato aperto sulla copia 'capocantiere Solar primo porto 13-10'.
+   Installata v14-bozza-d15a0424 DEV_MODE true, backup/hash verificati; console Python chiusa.
+   Middleware/opzioni Steam invariati; manifest originale ripristinato; ponte risponde dopo riavvio.
+   Linea25246 fra125886/120311, Solar123446 assegnata; Oita123908 in deposito.
+   Helper privati in work della chat; copie locali sporche contengono codice gia' pubblicato.
 4. Problemi aperti e cose da NON fare
-   Nessuna navigazione tra citta' ancora riuscita; non comprare navi duplicate.
-   Lua Windows esterno saltato; CI Lua5.3/5.4 verde, mock TF3 5.2 ha caso math.maxinteger inapplicabile.
-   Copia anello fallito conserva3stazioni/98tratti: non ricostruire li' o rimuoverli a mano.
-   Non applicare riduzione bus79575; installare solo a gioco/console chiusi, backup verificato.
+   Due check_line separati perdono campioni: movement_unknown1 anche con getter valido.
+   Non risolti porto/accesso Calliano, servizio interurbano, anello doppio e bacini insufficienti.
+   Non comprare navi duplicate; copia anello fallito conserva3stazioni/98tratti: non ricostruire li'.
+   Non applicare riduzione bus79575; installare solo a gioco/console chiusi, con backup.
+   Non usare risposte vecchie del ponte come prove; Lua esterno Windows saltato, CI verde.
    Note: prova-navale-linea.md, collaudo-percorso-navale.md, parallelo-estremi-strade.md, pc-focus-13-10.md.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Autonomia fino ai crediti; PC/Steam/TF3, checkout/rete, mod/middleware/scambio/log,
-   backup, avvio/chiusura, console/API e pulizia protocollo autorizzati in questa chat.
-   Direttive: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
-   Minimizzazione AggiornamentiPC autorizzata; app assente, nessuna minimizzazione eseguita.
+   Stop richiesto ora. Accessi PC/Steam/TF3, installazioni con backup, console/API e copie test
+   autorizzati in QUESTA chat; nuova chat chiede subito autorizzazioni necessarie, senza presumere PC.
+   Direttive gia' scelte: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
+   AggiornamentiPC scomparsa, mai minimizzata o chiusa; autorizzazione acquisita ma non usata.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Getter installato legge posizione, ma due check_line perdono campioni: cercare contesto SIM persistente.
-   2. Solar AT_TERMINAL e poi EN_ROUTE dopo reload; Calliano non risolto. Confrontare suo porto stock.
-   3. Per anello: verificare raccordi/scelta geometrica prima di costruire su copia iniziale separata.
+   1. Leggere simJob nel sorgente mod: usa state:get/set; verificare persistenza di CC._samples.
+   2. Dopo autorizzazioni PC: collaudare campioni fra richieste e confronto porto stock a Calliano.
+   3. Per anello: verificare raccordi/scelta del lato prima di costruire su copia iniziale separata.
 Letto da Claude il ...: ...
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
