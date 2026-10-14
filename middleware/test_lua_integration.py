@@ -212,3 +212,85 @@ class LuaIntegrationTests(unittest.TestCase):
                 and getmetatable(out)==nil and #out.errors==0,
                 "indicatori userdata non copiati esplicitamente o false perso")
         """)
+
+
+    def coast_probe_check(self, setup, assertion):
+        source = (DEV / "sonde/s41_normale_costa.lua").read_text(encoding="utf-8")
+        # Execute the actual standalone probe under Lua; terrain is synthetic,
+        # every command, filesystem write and process launch is forbidden.
+        pre = """
+            local forbidden = function() error("sonda non in sola lettura") end
+            api = {engine={util={}}, type={Vec2f={new=function(x,y)
+                return {x=x,y=y} end}}, cmd=setmetatable({}, {__index=function()
+                return forbidden end})}
+            io, os = nil, nil
+        """
+        lua_runtime.run(pre + setup + "\nlocal out=(function()\n" + source
+                        + "\nend)()\n" + assertion, library=self.library,
+                        name="normale-costa-sonda")
+
+    def test_coast_probe_failed_reads_are_not_dry_land(self):
+        self.coast_probe_check("""
+            api.engine.terrain={isOnWater=function() error('fixture-private-error') end}
+        """, """
+            local r=out.lissone_stock_origine.r100
+            assert(r.available == false and r.read_errors == 144 and r.read_count == 0
+                and r.wet_fraction == nil and r.nx == nil and r.ny == nil,
+                "letture fallite appaiono come terreno asciutto")
+        """)
+
+    def test_coast_probe_missing_api_returns_diagnostic(self):
+        self.coast_probe_check("", """
+            local r=out.lissone_stock_origine.r100
+            assert(r.available == false and r.error == 'terrain_api_unavailable'
+                and r.nx == nil and r.wet_fraction == nil,
+                "API mancante non segnalata")
+        """)
+
+    def test_coast_probe_partial_reads_do_not_report_normal(self):
+        self.coast_probe_check("""
+            local calls=0
+            api.engine.terrain={isOnWater=function(p)
+                calls=calls+1
+                if calls%2==0 then return nil end
+                return p.x > -5470.74
+            end}
+        """, """
+            local r=out.lissone_stock_origine.r100
+            assert(r.available == false and r.read_errors == 72 and r.read_count == 72
+                and r.nx == nil and r.ny == nil and r.wet_fraction == nil,
+                "campionamento incompleto inventa una normale")
+        """)
+
+    def test_coast_probe_boolean_dry_samples_remain_valid(self):
+        self.coast_probe_check("""
+            api.engine.util.terrain={isOnWater=function() return false end}
+        """, """
+            local r=out.lissone_stock_origine.r100
+            assert(r.available == true and r.read_count == 144 and r.read_errors == 0
+                and r.wet_fraction == 0 and r.nx == nil and r.ny == nil,
+                "terreno asciutto confuso con letture mancanti")
+        """)
+
+    def test_coast_probe_valid_half_plane_preserves_direction(self):
+        self.coast_probe_check("""
+            api.engine.terrain={isOnWater=function(p)
+                return .775671*(p.x+5470.74)-.631137*(p.y+4927.97)>0
+            end}
+        """, """
+            local r=out.lissone_stock_origine.r100
+            assert(r.available == true and r.read_count == 144 and r.read_errors == 0
+                and math.abs(r.nx-.775671)<.05 and math.abs(r.ny+.631137)<.05
+                and math.abs(r.wet_fraction-.5)<.02,
+                "letture valide cambiano il verso della costa")
+        """)
+
+    def test_coast_probe_non_boolean_water_is_not_accepted(self):
+        self.coast_probe_check("""
+            api.engine.terrain={isOnWater=function() return 1 end}
+        """, """
+            local r=out.lissone_stock_origine.r100
+            assert(r.available == false and r.read_errors == 144
+                and r.wet_fraction == nil and r.nx == nil,
+                "risposta non booleana accettata come campione")
+        """)

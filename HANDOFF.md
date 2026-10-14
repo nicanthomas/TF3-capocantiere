@@ -116,14 +116,16 @@ Letto da ChatGPT il 14.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 14.10 18:11: revisione navale e test senza PC
-Scritto da: ChatGPT, 14.10.2026 14.10 18:11, ultimo commit verificato 603e13f
+Stato: IN LAVORO da 14.10 18:11: regressioni s41 prima della correzione
+Scritto da: ChatGPT, 14.10.2026 14.10 18:11, ultimo commit verificato 57679bc
 
 1. In una riga: ripresa da main51; Calliano/anello aperti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
    - SOLO TEST AUTOMATICI: letti handoff, regole STATO e ultimi sei commit; Claude risulta FERMO.
    - SOLO TEST AUTOMATICI: Linux, Lua5.4 disponibile; middleware verde (148 test, solo Windows saltato).
    - SOLO TEST AUTOMATICI: mock completo verde (150 controlli); nessuna prova TF3 nuova.
+   - SOLO TEST AUTOMATICI: sei nuove regressioni s41 falliscono sul codice attuale (letture/API).
+     Test pubblicati solo su branch chatgpt/s41-letture; main resta verde.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restano tutte le restrizioni STATO (chiave vietata).
@@ -133,7 +135,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:11, ultimo commit verificato 603e13f
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti: manca tecnicamente il collegamento PC, non l'autorizzazione in questa chat.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Revisionare s41 e b4 con fixture Lua locali, senza modificare la geometria per ipotesi.
+   1. Correggere s41: segnalare letture incomplete/API assente, senza normale o frazione inventata.
+      Poi eseguire tutti i test e unire in main con handoff; geometria b4 invariata.
    2. Con PC e permessi della nuova chat: s41 sola lettura, poi collaudo su copia separata come main51.
    3. Tenere guardia preacquisto attiva e verificare ogni esito reale prima di dichiarare riuscita.
 Letto da Claude il 14.10.2026: non ancora.
