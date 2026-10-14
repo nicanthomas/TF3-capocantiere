@@ -648,8 +648,10 @@ do
     local before=calls
     check(routeProblems(CC.checkLine(L3))==0 and calls==before,
         'collaudo navi: controllo nativo non cambia le linee terrestri')
-    modes={13}; api.engine.util.line.getDetailedLineProblems=function() error('API indisponibile') end
-    check(routeProblems(CC.checkLine(L3))==0,'collaudo navi: API non leggibile conserva il controllo generico')
+    modes={12}; api.engine.util.line.getDetailedLineProblems=function() error('API indisponibile') end
+    local unreadable=CC.checkLine(L3)
+    check(not unreadable.ok and not unreadable.native_route.available and routeProblems(unreadable)==0,
+        'collaudo navi: API non leggibile non certifica la linea e non inventa percorso mancante')
     api.engine.util.line=old.line
     CC.lineModes,CC.depotForLine,CC.groupCatchables,CC.vehicleState,CC.vehiclePos=
         old.modes,old.depot,old.catch,old.state,old.pos

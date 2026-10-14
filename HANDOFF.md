@@ -117,21 +117,19 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 5715919
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato e702d4e (branch navale)
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - SOLO TEST AUTOMATICI: s41 distingue letture fallite da terra asciutta; main55 e CI verdi.
-   - SOLO TEST AUTOMATICI: cache bridge corretta, suite159/1skip e CI38598136192 verdi; main59.
-   - SOLO TEST AUTOMATICI: timeout ignoto non diventa ritirata; nonce/metadati conservati e riuso ID
-     pendente bloccato. Cinque regressioni prima rosse, ora verdi; suite167/1skipWindows, mock150 verdi.
-   - SOLO TEST AUTOMATICI: note bridge-stato-lettura.md e bridge-timeout-sconosciuto.md.
-     CI38598882583 Ubuntu/Windows verde, revisione senza blocchi; integrato main62.
-   - SOLO TEST AUTOMATICI: risultato prima dello stato conserva ricevuta e blocca riuso ID; sette
-     prove verdi. Stato invalido impedisce invio. Nota bridge-risultato-stato.md; revisione senza blocchi.
-     Suite174/1skipWindows, mock150 e CI38599720428 Ubuntu/Windows verdi; integrato main65.
-   - SOLO TEST AUTOMATICI: cinque regressioni native_route falliscono sul collaudo attuale;
-     API nativa incompleta/assente certifica erroneamente da controllo generico. Branch native-route-check.
+   - SOLO TEST AUTOMATICI: cache bridge corretta, CI38598136192 verde; nota bridge-stato-lettura.md.
+   - SOLO TEST AUTOMATICI: timeout sconosciuto non consente reinvio, CI38598882583 verde;
+     nota bridge-timeout-sconosciuto.md. Nonce/metadati conservati.
+   - SOLO TEST AUTOMATICI: risultato prima dello stato blocca riuso ID, CI38599720428 verde;
+     nota bridge-risultato-stato.md. Ricevute solo nel singolo GameBridge.
+   - SOLO TEST AUTOMATICI: check_line navale distingue API nativa non verificabile da noPath=true;
+     enum fallback10/12, terra invariata. Nota collaudo-navale-non-verificabile.md.
+   - SOLO TEST AUTOMATICI: suite179/1skipWindows, mock150 verdi, revisione senza blocchi;
+     branch native-route-check in attesa CI. Nessuna installazione/TF3.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
@@ -143,9 +141,9 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 5715919
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Fixture check_line navale con API nativa assente/incompleta: non dichiarare la linea verificata.
-   2. Revisionare check_line navale: distinguere API nativa illeggibile da percorso realmente verificato.
-   3. Poi con PC verificare s41/Calliano secondo prova-navale-linea.md; senza PC continuare test bridge.
+   1. Verificare CI collaudo navale e integrare main dopo controllo remoto; mod release invariata.
+   2. Con PC: s41 sola lettura; se dati validi generare --dev --bozza aggiornato, backup a gioco chiuso.
+   3. Collaudare Calliano su copia separata con guardia preacquisto; niente duplicati, poi anello.
 Letto da Claude il 14.10.2026: non ancora.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

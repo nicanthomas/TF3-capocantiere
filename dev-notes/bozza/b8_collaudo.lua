@@ -262,16 +262,29 @@ function CC.checkLine(L)
 	local TM = api.type.enum.TransportMode
 	local waterLine = false
 	for _, mode in ipairs(modes) do
-		if mode == (TM.SHIP or 12) or mode == (TM.SMALL_SHIP or 13) then waterLine = true end
+		-- Fallback PROVATI IN TF3 13.10: SHIP=10, SMALL_SHIP=12; modo13 non certificato navale.
+		if mode == (TM.SHIP or 10) or mode == (TM.SMALL_SHIP or 12) then waterLine = true end
 	end
 	if waterLine then
-		pcall(function()
-			for i, states in ipairs(CC.each(api.engine.util.line.getDetailedLineProblems(L))) do
-				for _, state in ipairs(CC.each(states)) do
+		local okNative, complete = pcall(function()
+			local segments = CC.each(api.engine.util.line.getDetailedLineProblems(L))
+			local valid = #segments == #stops and #stops > 0
+			for i, segment in ipairs(segments) do
+				local states = CC.each(segment)
+				if #states == 0 then valid = false end
+				for _, state in ipairs(states) do
+					if type(state.noPath) ~= "boolean" then valid = false end
 					if state.noPath == true then nativeNoPath[i] = true end
 				end
 			end
+			return valid
 		end)
+		r.native_route = { available = okNative and complete == true }
+		if not r.native_route.available then
+			r.native_route.error = "percorso navale nativo non verificabile"
+			r.problems[#r.problems + 1] = r.native_route.error
+			r.suggestions[#r.suggestions + 1] = "verificare i dati del percorso navale prima di dichiarare la linea funzionante"
+		end
 	end
 	if #modes > 0 then
 		for i = 1, #stops do

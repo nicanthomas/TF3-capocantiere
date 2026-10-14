@@ -180,7 +180,9 @@ TOOLS_BOZZA = [
     {
         "name": "check_line",
         "description": ("Collaudo di una linea: percorso tra le fermate, veicoli presenti e in movimento, deposito, bacino delle "
-                        "fermate, statistiche se disponibili. Restituisce problemi e suggerimenti. Non costruisce nulla."),
+                        "fermate, statistiche se disponibili. Restituisce problemi e suggerimenti. Per le navi native_route.available "
+                        "indica letture native complete, non l'assenza di problemi: available=false rende il collaudo non riuscito "
+                        "senza provare un percorso mancante. Non costruisce nulla."),
         "input_schema": {"type": "object", "properties": {"line_id": _ID}, "required": ["line_id"]},
     },
     {
