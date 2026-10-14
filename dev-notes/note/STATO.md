@@ -651,3 +651,13 @@ fallback enum10/12 allineati a prove13.10, terra invariata. Cinque regressioni, 
 mock150 e CI38600520515 Ubuntu/Windows verdi; revisione senza blocchi.
 Build dev0b20c9f6 generata/sintassi Lua5.4 valida, mod release invariata, NON installata.
 Nessuna nuova prova PC/TF3. Nota collaudo-navale-non-verificabile.md.
+
+
+### 14.10 — collaudo: soste previste distinte dal movimento (ChatGPT)
+
+SOLO TEST AUTOMATICI: AT_TERMINAL/IN_DEPOT senza spostamento non incrementano
+vehicles_moving; nuovo vehicles_waiting. Soglia2m, unknown/campioni e blocchi in
+viaggio invariati, tutti-in-deposito resta problema. Quattro regressioni, suite183/1skipWindows,
+mock150 e CI38601254902 Ubuntu/Windows verdi, revisione senza blocchi.
+Build devdb0a682b generata/sintassi Lua5.4 valida, release invariata, NON installata.
+Nessuna prova PC/TF3. Nota collaudo-soste-movimento.md. Calliano/anello non risolti.

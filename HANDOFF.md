@@ -116,34 +116,36 @@ Letto da ChatGPT il 14.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 6f7b068 (branch movimento)
+Stato: FERMO dalle 14.10 18:51: cinque correzioni verificate e pubblicate
+Scritto da: ChatGPT, 14.10.2026 14.10 18:51, ultimo commit verificato 670c5c8 + questo checkpoint
 
-1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
+1. In una riga: bridge e collaudo corretti senza PC; Calliano/anello aperti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - SOLO TEST AUTOMATICI: cache bridge/timeout/ricevute corretti, CI Ubuntu/Windows verdi;
-     note bridge-stato-lettura.md, bridge-timeout-sconosciuto.md, bridge-risultato-stato.md.
-   - SOLO TEST AUTOMATICI: native_route.available distingue dati incompleti da noPath; fallback10/12.
-     CI38600520515 verde, nota collaudo-navale-non-verificabile.md.
-   - SOLO TEST AUTOMATICI: AT_TERMINAL/IN_DEPOT fermo non conta piu' movimento; vehicles_waiting.
-     Quattro regressioni prima rosse, ora verdi; nota collaudo-soste-movimento.md.
-   - SOLO TEST AUTOMATICI: suite183/1skipWindows e mock150 verdi; revisione senza blocchi.
-     Branch movement-waiting in attesa CI; mod release/installata invariate.
-   - SOLO TEST AUTOMATICI: build dev0b20c9f6 precedente questa correzione; non installarla come ultima.
-3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
+   - SOLO TEST AUTOMATICI: cache bridge aggiornata solo su lettura riuscita; bridge-stato-lettura.md.
+   - SOLO TEST AUTOMATICI: timeout ignoto non diventa ritirata, nonce/metadati preservati;
+     bridge-timeout-sconosciuto.md. Nessun reinvio cieco di ID pendenti.
+   - SOLO TEST AUTOMATICI: risultati letti non liberano ID prima dello stato; bridge-risultato-stato.md.
+     Ricevute solo in memoria del GameBridge; stato invalido blocca invio, nessun salto ID.
+   - SOLO TEST AUTOMATICI: collaudo navale non certifica API incompleta, fallback10/12;
+     collaudo-navale-non-verificabile.md. Terra invariata; native_route.available = letture complete.
+   - SOLO TEST AUTOMATICI: sosta terminale/deposito distinta da movimento (vehicles_waiting);
+     collaudo-soste-movimento.md. Suite183/1skipWindows, mock150, CI38601254902 e revisione verdi.
+3. Stato del PC: NON osservabile dalla sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
-   Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
-   Autorizzazione di questa chat non trasferibile a una nuova chat.
+   Build dev db0a682b generata e sintassi Lua5.4 valida; NON installata. Release mod invariata.
+   Nicolo' ha dato «accesso a tutto» in QUESTA chat; restrizioni STATO conservate, chiave vietata.
+   Nuova chat verifica accessi e chiede permessi necessari; l'autorizzazione non si trasferisce.
 4. Problemi aperti e cose da NON fare
-   Calliano senza percorso nativo; normale costa ancora ipotesi, anello doppio incompleto.
-   Non presumere PC raggiungibile o TF3 chiuso; niente navi duplicate né installazioni a gioco aperto.
-   s41 available=true significa letture complete, NON rotta navale o orientamento certificati.
+   Normale costa ancora ipotesi; Calliano senza percorso nativo, anello doppio incompleto.
+   Non presumere TF3 chiuso/PC raggiungibile; niente navi duplicate, installazione solo a gioco chiuso.
+   Non riavviare un bridge con richieste irrisolte senza riconciliare stato/azioni/risultati effettivi.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
+   Niente permessi pendenti qui. Manca il collegamento tecnico PC; prove TF3 NON eseguite.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare CI conteggio movimento e integrare main dopo controllo remoto; generare nuova build dev.
-   2. Con PC: s41 sola lettura, poi installazione bozza aggiornata a gioco chiuso con backup.
-   3. Misurare due campioni durante sosta/viaggio; Calliano su copia separata, guardia preacquisto attiva.
+   1. Leggere le cinque note e controllare nuovo main/accessi; build attuale db0a682b, non 7b47b5f9.
+   2. Con PC autorizzato: s41 sola lettura, backup/installazione bozza e middleware aggiornati a gioco chiuso.
+   3. Due campioni sosta/viaggio e Calliano su copia separata secondo prova-navale-linea.md;
+      guardia preacquisto attiva. Poi riprendere anello senza riusare copia contaminata.
 Letto da Claude il 14.10.2026: non ancora.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

@@ -182,3 +182,17 @@ locale154test/1skipWindows e mock150 verdi; revisione senza blocchi.
 Nessuna nuova prova TF3, nessun file PC/mod installata modificato. Non risolve
 Calliano o anello. Dettagli sonda-normale-letture.md; prossima prova reale in
 prova-navale-linea.md, con s41 disponibile solo se tutte le letture sono valide.
+
+
+### 14.10 — cinque correzioni dopo ripresa autonoma ChatGPT, solo test
+
+SOLO TEST AUTOMATICI: cache bridge non restituisce stato obsoleto dopo parsing fallito;
+timeout ignoto conserva nonce e blocca reinvio; ricevute risultati impediscono riuso ID
+prima della conferma stato. Collaudo navale non certifica API incompleta; soste misurate
+al terminale/deposito non sono movimento. Note bridge-stato-lettura.md,
+bridge-timeout-sconosciuto.md, bridge-risultato-stato.md,
+collaudo-navale-non-verificabile.md e collaudo-soste-movimento.md.
+Suite183/1skipWindows, mock150, CI Ubuntu/Windows e revisioni verdi.
+Build devdb0a682b generata, sintassi Lua5.4 valida, NON installata; release invariata.
+Nessun accesso PC disponibile, nessuna nuova prova TF3, installazione o salvataggio.
+Calliano e anello restano aperti. Con PC: s41 e collaudo su copie separate, con backup.

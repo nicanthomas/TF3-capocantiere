@@ -23,3 +23,10 @@ Suite locale183test/1skipWindows e mock150 verdi; revisione senza blocchi.
 NON cambia il servizio navale o ferroviario, non certifica il trasporto di
 passeggeri/merci; mod release e installazione PC restano invariate. Per provare
 in TF3 servono build bozza aggiornata, copie di test e autorizzazioni della chat.
+
+
+CI38601254902 Ubuntu/Windows verde sul commit70 670c5c8; cinque file remoti
+identici ai locali. Nuova build dev --bozza v14-bozza-db0a682b, sintassi Lua5.4
+valida e DEV_MODE true una sola volta; release confrontata con Git e invariata.
+SHA25629e34e4e506a12bd03472b99995dd5b4b01bdefefc6002c9e649a336574ab1b4.
+Build NON installata/provata TF3. db0a682b sostituisce 0b20c9f6 come build sorgenti aggiornata.
