@@ -29,14 +29,14 @@ class BridgeStateTests(unittest.TestCase):
         before = self.bridge.state()
         stamp = self.bridge._state_mtime
         self.truncate_state()
-        with patch.object(game_bridge.time, "sleep"), self.assertRaises(lua_table.LuaParseError):
+        with patch.object(game_bridge.time, "sleep"), self.assertRaisesRegex(RuntimeError, "state.lua non leggibile"):
             self.bridge.state()
         self.assertIs(self.bridge._state, before)
         self.assertEqual(self.bridge._state_mtime, stamp)
 
     def test_first_failed_read_raises_instead_of_returning_none(self):
         self.truncate_state()
-        with patch.object(game_bridge.time, "sleep"), self.assertRaises(lua_table.LuaParseError):
+        with patch.object(game_bridge.time, "sleep"), self.assertRaisesRegex(RuntimeError, "state.lua non leggibile"):
             self.bridge.state()
         self.assertIsNone(self.bridge._state)
         self.assertEqual(self.bridge._state_mtime, 0)
@@ -47,7 +47,7 @@ class BridgeStateTests(unittest.TestCase):
         with patch.object(game_bridge.time, "sleep"):
             try:
                 self.bridge.state()
-            except lua_table.LuaParseError:
+            except RuntimeError:
                 pass
         lua_table.save_userdata(str(self.path), {"lastActionId": 6})
         os.utime(self.path, (stamp, stamp))
@@ -56,7 +56,7 @@ class BridgeStateTests(unittest.TestCase):
     def test_send_does_not_publish_using_cached_id_after_failed_refresh(self):
         self.bridge.state()
         self.truncate_state()
-        with patch.object(game_bridge.time, "sleep"), self.assertRaises(lua_table.LuaParseError):
+        with patch.object(game_bridge.time, "sleep"), self.assertRaisesRegex(RuntimeError, "state.lua non leggibile"):
             self.bridge.send([{"type": "ping"}], timeout=0)
         self.assertEqual(list(self.folder.glob("capocantiere_actions_*.lua")), [])
         self.assertFalse((self.folder / "capocantiere_vecchi").exists())

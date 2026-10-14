@@ -99,13 +99,17 @@ class GameBridge:
             raise RuntimeError("state.lua non esiste ancora: apri una partita con la mod Capo Cantiere attiva.")
         mtime = os.path.getmtime(p)
         if self._state is None or (refresh and mtime != self._state_mtime):
-            for _ in range(3):                      # il gioco potrebbe star scrivendo proprio ora
+            for attempt in range(3):                # il gioco potrebbe star scrivendo proprio ora
                 try:
-                    self._state = lua_table.load_userdata(p)
+                    state = lua_table.load_userdata(p)
+                    # Cache e impronta si pubblicano insieme, solo dopo una lettura valida.
+                    self._state, self._state_mtime = state, mtime
                     break
                 except lua_table.LuaParseError:
+                    if attempt == 2:
+                        # RuntimeError come gli altri errori di stato; niente testo grezzo del file.
+                        raise RuntimeError("state.lua non leggibile dopo 3 tentativi") from None
                     time.sleep(0.3)
-            self._state_mtime = mtime
         return self._state
 
     def state_age_seconds(self) -> float:
