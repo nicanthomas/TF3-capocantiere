@@ -324,7 +324,7 @@ function CC.checkLine(L)
 		r.suggestions[#r.suggestions + 1] = "spostare le fermate verso il centro o collegarle con una navetta"
 	end
 	-- veicoli: stato e movimento rispetto all'ultimo controllo
-	local states, still, moved, unknown = {}, 0, 0, 0
+	local states, still, moved, unknown, waiting = {}, 0, 0, 0, 0
 	-- perche' il movimento non e' verificabile: serve a distinguere in TF3 campioni persi e tempo fermo
 	local reasons = { no_position = 0, no_previous = 0, time_not_advanced = 0 }
 	local now = 0
@@ -337,7 +337,13 @@ function CC.checkLine(L)
 		local p = CC.vehiclePos(v)
 		local prev = CC._samples[v]
 		if p and prev and now > prev.t then
-			if (p.x - prev.x) ^ 2 + (p.y - prev.y) ^ 2 < 4 and s ~= "AT_TERMINAL" and s ~= "IN_DEPOT" then still = still + 1 else moved = moved + 1 end
+			if (p.x - prev.x) ^ 2 + (p.y - prev.y) ^ 2 >= 4 then
+				moved = moved + 1
+			elseif s == "AT_TERMINAL" or s == "IN_DEPOT" then
+				waiting = waiting + 1   -- sosta prevista, non prova movimento tra i campioni
+			else
+				still = still + 1
+			end
 		else
 			unknown = unknown + 1
 			if not p then reasons.no_position = reasons.no_position + 1
@@ -349,6 +355,7 @@ function CC.checkLine(L)
 	r.vehicle_states = states
 	r.vehicles_moving = moved
 	r.vehicles_still = still
+	r.vehicles_waiting = waiting
 	r.movement_unknown = unknown
 	r.movement_unknown_reasons = reasons
 	r.sample_time = now
