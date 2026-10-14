@@ -71,3 +71,63 @@ class BridgeStateTests(unittest.TestCase):
             state = self.bridge.state()
         self.assertEqual(state["lastActionId"], 6)
         self.assertEqual(self.bridge._state_mtime, stamp)
+
+    def timeout_with_broken_state(self):
+        real_save = lua_table.save_userdata
+        def send_then_truncate(path, value):
+            real_save(path, value)
+            if Path(path).name.startswith("capocantiere_actions_"):
+                self.truncate_state()
+        with patch.object(game_bridge.time, "sleep"), \
+                patch.object(lua_table, "save_userdata", side_effect=send_then_truncate):
+            with self.assertRaises(game_bridge.GameTimeout) as caught:
+                self.bridge.send([{"type": "ping"}], timeout=0)
+        return caught.exception
+
+    def test_timeout_unreadable_state_is_unknown_not_safe_to_retry(self):
+        error = self.timeout_with_broken_state()
+        self.assertEqual(error.status, "sconosciuta")
+        self.assertIn("NON ripeterla", str(error))
+        self.assertEqual(error.req_id, 6)
+        self.assertIn(6, self.bridge.late)
+        self.assertEqual(list(self.folder.glob("capocantiere_actions_*.lua")), [])
+
+    def test_unreadable_recheck_after_withdrawal_is_not_safe_to_retry(self):
+        real_withdraw = self.bridge._withdraw
+        def withdraw_then_truncate(req_id, nonce=None):
+            result = real_withdraw(req_id, nonce)
+            if nonce is not None:
+                self.truncate_state()
+            return result
+        with patch.object(game_bridge.time, "sleep"), \
+                patch.object(self.bridge, "_withdraw", side_effect=withdraw_then_truncate):
+            with self.assertRaises(game_bridge.GameTimeout) as caught:
+                self.bridge.send([{"type": "ping"}], timeout=0)
+        self.assertEqual(caught.exception.status, "sconosciuta")
+        self.assertIn(6, self.bridge.late)
+
+    def test_unknown_pending_request_blocks_same_id_reuse(self):
+        self.bridge.late[6] = "abcd"
+        with patch.object(game_bridge.time, "sleep"), \
+                self.assertRaises(game_bridge.GameTimeout) as caught:
+            self.bridge.send([{"type": "ping"}], timeout=0)
+        self.assertEqual(caught.exception.status, "sconosciuta")
+        self.assertEqual(self.bridge.late, {6: "abcd"})
+        self.assertEqual(list(self.folder.glob("capocantiere_actions_*.lua")), [])
+        self.assertFalse((self.folder / "capocantiere_vecchi").exists())
+
+    def test_unknown_request_keeps_late_result_correlation(self):
+        import main
+        with patch.dict(main.LATE_INFO, {}, clear=True), \
+                patch.object(self.bridge, "send", side_effect=game_bridge.GameTimeout(
+                    "Esito sconosciuto; NON ripeterla", 6, "sconosciuta")):
+            result = main.run_game_tool("check_line", {"line_id": 7}, self.bridge)
+            self.assertEqual(result["request_status"], "sconosciuta")
+            self.assertEqual(main.LATE_INFO[6], ("check_line", {"line_id": 7}))
+
+    def test_acceptance_missing_or_invalid_id_is_unknown(self):
+        for value in (None, True, -1, 5.5, "6"):
+            with self.subTest(value=value):
+                lua_table.save_userdata(str(self.path), {"lastActionId": value})
+                self.bridge._state = None
+                self.assertIsNone(self.bridge._accepted(6))
