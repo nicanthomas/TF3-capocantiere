@@ -31,3 +31,5 @@ Non prova atomicita' o tempi reali del gioco, ne' identifica univocamente la
 partita. Se lo stato si azzera il blocco e' intenzionale, non un invito al reinvio.
 
 Suite completa finale locale174test/1skipWindows e mock150 verdi; nessuna prova TF3.
+
+CI38599720428 verde Ubuntu/Windows sul commit64 a884369; file remoti identici, revisione approvata.

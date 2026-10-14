@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 007c016 (branch risultato)
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato a884369 + questo checkpoint
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -129,6 +129,7 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 007c016 (b
      CI38598882583 Ubuntu/Windows verde, revisione senza blocchi; integrato main62.
    - SOLO TEST AUTOMATICI: risultato prima dello stato conserva ricevuta e blocca riuso ID; sette
      prove verdi. Stato invalido impedisce invio. Nota bridge-risultato-stato.md; revisione senza blocchi.
+     Suite174/1skipWindows, mock150 e CI38599720428 Ubuntu/Windows verdi; integrato con questo checkpoint.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
@@ -140,7 +141,7 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 007c016 (b
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare suite/CI correzione risultato/stato e integrare in main dopo controllo remoto.
+   1. Fixture check_line navale con API nativa assente/incompleta: non dichiarare la linea verificata.
    2. Revisionare check_line navale: distinguere API nativa illeggibile da percorso realmente verificato.
    3. Poi con PC verificare s41/Calliano secondo prova-navale-linea.md; senza PC continuare test bridge.
 Letto da Claude il 14.10.2026: non ancora.

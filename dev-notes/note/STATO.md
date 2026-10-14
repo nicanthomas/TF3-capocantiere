@@ -632,3 +632,12 @@ sconosciuta conserva nonce e correlazione risultati tardivi. Bloccato riuso ID p
 metadati originali preservati. Otto nuove prove, suite167/1skipWindows, mock150 e
 CI38598882583 Ubuntu/Windows verdi; revisione senza blocchi. Nessun PC/TF3/installazione.
 Nota bridge-timeout-sconosciuto.md. Prossimo: risultato raccolto con stato ancora indietro.
+
+
+### 14.10 — bridge: ricevute prima dello stato, nessun riuso ID (ChatGPT)
+
+SOLO TEST AUTOMATICI: ID/nonce dei risultati letti restano in memoria finche' lo
+stato li conferma. Nessun salto ID; stato invalido o azzerato blocca nuovi invii.
+Sette nuove prove, suite174/1skipWindows, mock150 e CI38599720428 Ubuntu/Windows
+verdi; revisione senza blocchi. Nessuna installazione/PC/TF3. Nota bridge-risultato-stato.md.
+Le ricevute non sopravvivono a un nuovo GameBridge: riconciliare prima richieste irrisolte.
