@@ -36,11 +36,12 @@ WITHDRAW_RECHECK = 2.0      # s: dopo aver ritirato una richiesta, ricontrollo c
 
 
 class GameTimeout(TimeoutError):
-    """Tempo scaduto. status = "ritirata" (mai eseguita, si puo' riprovare) o "accettata" (non ripetere)."""
+    """Esito ritirata, accettata o sconosciuta. Solo ritirata consente di riprovare."""
 
-    def __init__(self, message: str, req_id: int, status: str):
+    def __init__(self, message: str, req_id: int, status: str, *, request_sent: bool = True):
         super().__init__(message)
         self.req_id, self.status = req_id, status
+        self.request_sent = request_sent
 
 
 def prefix_for(folder: str) -> str:
@@ -132,9 +133,15 @@ class GameBridge:
             (si puo' riprovare senza rischio di doppioni);
           - "accettata": la mod l'ha gia' presa (lastActionId >= id): l'azione e' stata eseguita o e' in corso
             nel lato simulazione. NON va ripetuta; il risultato, se arriva, si legge con take_late_results().
+          - "sconosciuta": stato non leggibile o richiesta precedente irrisolta. NON ripetere.
         """
         self._collect_late()
         req_id = self._next_id()
+        if req_id in self.late:
+            raise GameTimeout(
+                f"Esito della richiesta {req_id} ancora sconosciuto. NON ripeterla: "
+                "attendere il risultato o verificare lo stato del gioco prima di altre azioni.",
+                req_id, "sconosciuta", request_sent=False)
         self._withdraw(req_id)                      # un file vecchio con lo stesso id verrebbe scelto al posto di questo
         nonce = secrets.token_hex(4)
         ap = self._path(f"actions_{req_id}_{nonce}")
@@ -149,9 +156,11 @@ class GameBridge:
                 self._cleanup(req_id)
                 return res
         # tempo scaduto: provo a ritirare la richiesta se la mod non l'ha ancora presa
-        if not self._accepted(req_id) and self._withdraw(req_id, nonce):
+        accepted = self._accepted(req_id)
+        if accepted is not True and self._withdraw(req_id, nonce):
             time.sleep(WITHDRAW_RECHECK)            # la mod potrebbe averla letta proprio mentre la spostavo
-            if not self._accepted(req_id):
+            accepted = self._accepted(req_id)
+            if accepted is False:
                 raise GameTimeout(
                     f"Nessuna risposta dal gioco in {timeout:.0f} s (richiesta {req_id}): richiesta RITIRATA, "
                     "non e' stata eseguita. La partita e' aperta (non in pausa nel menu) e la mod e' attiva?",
@@ -161,6 +170,11 @@ class GameBridge:
             self._cleanup(req_id)
             return res
         self.late[req_id] = nonce
+        if accepted is not True:
+            raise GameTimeout(
+                f"Esito della richiesta {req_id} sconosciuto: state.lua non conferma l'accettazione. "
+                "NON ripeterla: verificare lo stato del gioco e attendere eventuali risultati tardivi.",
+                req_id, "sconosciuta")
         raise GameTimeout(
             f"La mod ha accettato la richiesta {req_id} ma il risultato non e' arrivato in {timeout:.0f} s. "
             "NON ripeterla: potrebbe essere ancora in corso. Controlla lo stato del gioco prima di altre azioni.",
@@ -178,12 +192,16 @@ class GameBridge:
             return out if isinstance(out, list) else list(out.values())
         return None
 
-    def _accepted(self, req_id: int) -> bool:
-        """La mod segna l'id come eseguito (lastActionId) appena prende il file azioni."""
+    def _accepted(self, req_id: int) -> bool | None:
+        """True/False solo con ID valido; None non prova che la mod non abbia preso il file."""
         try:
-            return int(self.state().get("lastActionId") or 0) >= req_id
+            state = self.state()
+            last = state.get("lastActionId") if isinstance(state, dict) else None
+            if type(last) is not int or last < 0:
+                return None
+            return last >= req_id
         except (RuntimeError, OSError, ValueError, lua_table.LuaParseError):
-            return False
+            return None
 
     def _withdraw(self, req_id: int, nonce: str | None = None) -> list[str]:
         """Sposta in 'vecchi' i file actions_<req_id>_* (o solo quello col nonce dato). Non cancella nulla."""

@@ -131,3 +131,30 @@ class BridgeStateTests(unittest.TestCase):
                 lua_table.save_userdata(str(self.path), {"lastActionId": value})
                 self.bridge._state = None
                 self.assertIsNone(self.bridge._accepted(6))
+
+    def test_pending_guard_does_not_replace_original_tool_metadata(self):
+        import main
+        original = ("build_bus_line", {"town_id": 101})
+        self.bridge.late[6] = "abcd"
+        with patch.dict(main.LATE_INFO, {6: original}, clear=True):
+            result = main.run_game_tool("check_line", {"line_id": 7}, self.bridge)
+            self.assertEqual(result["request_status"], "sconosciuta")
+            self.assertEqual(main.LATE_INFO[6], original)
+        self.assertEqual(self.bridge.late, {6: "abcd"})
+        self.assertEqual(list(self.folder.glob("capocantiere_actions_*.lua")), [])
+
+    def test_unknown_timeout_delivers_late_result_once(self):
+        self.timeout_with_broken_state()
+        nonce = self.bridge.late[6]
+        result_path = self.folder / f"capocantiere_results_6_{nonce}.lua"
+        lua_table.save_userdata(str(result_path), {
+            "id": 6, "nonce": nonce, "results": [{"ok": True, "type": "ping"}]})
+        self.assertEqual(self.bridge.take_late_results(), {6: [{"ok": True, "type": "ping"}]})
+        self.assertEqual(self.bridge.take_late_results(), {})
+
+    def test_acceptance_valid_ids_preserve_true_and_false(self):
+        for last, expected in ((0, False), (5, False), (6, True), (7, True)):
+            with self.subTest(last=last):
+                lua_table.save_userdata(str(self.path), {"lastActionId": last})
+                self.bridge._state = None
+                self.assertIs(self.bridge._accepted(6), expected)

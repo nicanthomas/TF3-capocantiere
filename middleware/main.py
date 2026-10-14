@@ -174,8 +174,8 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
     except TimeoutError as e:
         result = {"ok": False, "error": str(e)}
         if isinstance(e, GameTimeout):
-            result["request_status"] = e.status        # "ritirata" = mai eseguita; "accettata" = non ripetere
-            if e.status == "accettata" and not entry:
+            result["request_status"] = e.status        # solo "ritirata" consente di riprovare
+            if e.status in ("accettata", "sconosciuta") and e.request_sent and not entry:
                 LATE_INFO[e.req_id] = (name, dict(args))
         _log(bridge, name, args, result, time.time() - t0)
         return result

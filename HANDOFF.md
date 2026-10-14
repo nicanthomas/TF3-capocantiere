@@ -117,22 +117,16 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato de6b11e
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 3338122 (branch timeout)
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - SOLO TEST AUTOMATICI: ripresa da main603e13f, letti handoff/regole/ultimi commit; Claude era FERMO.
-   - SOLO TEST AUTOMATICI: s41 senza normale/frazione se API/letture non disponibili; sei regressioni
-     prima fallivano, ora passano. Nota dev-notes/note/sonda-normale-letture.md.
-   - SOLO TEST AUTOMATICI: locale Linux/Lua5.4, suite154test/1skipWindows e mock150 verdi.
-     CI38596708540 verde Ubuntu/Windows sul commit54; revisione indipendente senza blocchi.
-   - SOLO TEST AUTOMATICI: main55 e relativa CI38597031937 verdi, checkout pulito.
-   - SOLO TEST AUTOMATICI: cache bridge riprodotta con state.lua troncato; cinque regressioni: quattro
-     prima fallivano, ora tutte verdi. Nota bridge-stato-lettura.md; revisione senza blocchi.
-     CI38598136192 verde Ubuntu/Windows, correzione integrata in main con questo checkpoint.
-   - SOLO TEST AUTOMATICI: suite159test/1skipWindows e mock150 verdi; PC sempre non disponibile.
-   - SOLO TEST AUTOMATICI: cinque nuove regressioni timeout falliscono (8 subtest/1errore);
-     API illeggibile diventa ritirata e nonce pendente viene perso. Branch chatgpt/bridge-timeout.
+   - SOLO TEST AUTOMATICI: s41 distingue letture fallite da terra asciutta; main55 e CI verdi.
+   - SOLO TEST AUTOMATICI: cache bridge corretta, suite159/1skip e CI38598136192 verdi; main59.
+   - SOLO TEST AUTOMATICI: timeout ignoto non diventa ritirata; nonce/metadati conservati e riuso ID
+     pendente bloccato. Cinque regressioni prima rosse, ora verdi; suite167/1skipWindows, mock150 verdi.
+   - SOLO TEST AUTOMATICI: note bridge-stato-lettura.md e bridge-timeout-sconosciuto.md.
+     Branch chatgpt/bridge-timeout in revisione/CI, nessuna installazione o prova TF3.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
@@ -144,9 +138,9 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato de6b11e
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Fixture timeout: state.lua illeggibile dopo invio o dopo ritiro; non deve diventare «ritirata».
-   2. Distinguere accettazione ignota e conservare correlazione ai risultati tardivi; niente reinvio cieco.
-   3. Verificare timeout con stato illeggibile: non dichiarare sicura una ripetizione senza prova.
+   1. Verificare revisione/CI correzione timeout e unire main dopo controllo remoto.
+   2. Fixture risultato tardivo raccolto mentre lastActionId resta indietro: non riusare ID gia' concluso.
+   3. Poi con PC verificare s41/Calliano secondo prova-navale-linea.md; senza PC continuare test bridge.
 Letto da Claude il 14.10.2026: non ancora.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
