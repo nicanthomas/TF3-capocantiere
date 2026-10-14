@@ -88,7 +88,7 @@ Letto da <altra AI> il <data>: <si' / dubbi>
 
 *(scritta da Claude, letta da ChatGPT)*
 
-Stato: IN LAVORO da 13.10 21:20 (stop alle 22 chiesto da Nicolo'): porto/linea Calliano
+Stato: FERMO dalle 13.10 21:52 (stop di Nicolo')
 Scritto da: Claude, 13.10.2026 21:47, ultimo commit c4b56ff + questo checkpoint
 
 1. In una riga: il collaudo vede ora se la nave si muove (campioni salvati nello stato della mod), provato in TF3.
@@ -99,8 +99,9 @@ Scritto da: Claude, 13.10.2026 21:47, ultimo commit c4b56ff + questo checkpoint
    - Il ponte funziona anche senza console: scrivo io `capocantiere_actions_<id>_<nonce>.lua` in `mod_presets`.
    - Sonda s40 (sola lettura) PROVATO IN TF3: acqua Calliano-Lissone collegata, collo almeno 5.44 m: il percorso
      mancante non e' fondale basso (dettagli in prova-navale-linea.md).
-3. Stato del PC: TF3 APERTO sulla copia «Solar primo porto 13-10» (non salvata da me), mod 303c0edf,
-   lastActionId 2. Console/wrapper di Steam: finestre cmd aperte dal wrapper, non toccate. Opzioni Steam invariate.
+3. Stato del PC: TF3 CHIUSO (Esci > Torna al desktop, nessun salvataggio nuovo), mod 303c0edf installata.
+   Steam mostra ancora «Arresto»: le finestre cmd/console del wrapper sono rimaste aperte (accesso al terminale
+   rifiutato, non chiuse da me). Opzioni Steam invariate. File actions/results 1-4 lasciati in mod_presets.
    Autorizzazioni di Nicolo' in QUESTA chat: si' a tutto (PC, Steam/TF3, cartelle, install con backup, copie di
    prova, costruzioni/acquisti sulle copie, console API, opzioni Steam, pulizia protocollo).
 4. Problemi aperti / da NON fare: primo caricamento dopo avvio da Steam interrotto senza errore (secondo ok).
