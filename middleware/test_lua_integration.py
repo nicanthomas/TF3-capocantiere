@@ -294,3 +294,87 @@ class LuaIntegrationTests(unittest.TestCase):
                 and r.wet_fraction == nil and r.nx == nil,
                 "risposta non booleana accettata come campione")
         """)
+
+    def native_route_check(self, assertion):
+        self.fleet_check("""
+            CC.comp=function(id, kind)
+                if kind == api.type.ComponentType.LINE then return {} end
+                if kind == api.type.ComponentType.GAME_TIME then return {gameTime=5000} end
+            end
+            CC.lineModes=function() return {12} end
+            CC.lineVehicles=function() return {901} end
+            CC.lineGroups=function() return {101,102} end
+            CC.lineStops=function() return {{stationGroup=101},{stationGroup=102}} end
+            CC.lineStopNode=function() return 1 end
+            CC.hasPath=function() return true end
+            CC.groupPath=function() return true end
+            CC.depotForLine=function() return 201 end
+            CC.groupCatchables=function() return 1 end
+            CC.groupLineCounts=function() return {} end
+            CC.vehicleState=function() return 'AT_TERMINAL' end
+            CC.vehiclePos=function() return nil end
+            CC.lineStats=function() return {} end
+        """ + assertion)
+
+    def test_native_route_unavailable_does_not_certify_water_line(self):
+        self.native_route_check("""
+            api.engine.util.line=nil
+            local r=CC.checkLine(900)
+            assert(not r.ok and r.native_route.available==false
+                and r.problems[1]=='percorso navale nativo non verificabile',
+                'API assente certifica linea navale dal solo percorso generico')
+        """)
+
+    def test_native_route_incomplete_or_invalid_flags_are_unverified(self):
+        self.native_route_check("""
+            local cases={{}, {{ {noPath=false} }}, {{},{ {noPath=false} }},
+                {{ {} },{ {noPath=false} }}, {{ {noPath=0} },{ {noPath=false} }}}
+            for _,flags in ipairs(cases) do
+                api.engine.util.line={getDetailedLineProblems=function() return flags end}
+                local r=CC.checkLine(900)
+                assert(not r.ok and r.native_route.available==false,
+                    'risposta nativa incompleta o invalida certifica il percorso')
+            end
+        """)
+
+    def test_native_route_valid_flags_preserve_success_and_real_missing_path(self):
+        self.native_route_check("""
+            local flags={{ {noPath=false} },{ {noPath=false} }}
+            api.engine.util.line={getDetailedLineProblems=function() return flags end}
+            local r=CC.checkLine(900)
+            assert(r.ok and r.native_route.available==true, 'percorso completo valido non riconosciuto')
+            flags[1][1].noPath=true
+            r=CC.checkLine(900)
+            assert(not r.ok and r.native_route.available==true
+                and r.problems[1]:find('nessun percorso',1,true),
+                'percorso realmente mancante confuso con dato illeggibile')
+        """)
+
+    def test_native_route_read_error_is_fixed_and_ground_line_unchanged(self):
+        self.native_route_check("""
+            local calls=0
+            api.engine.util.line={getDetailedLineProblems=function()
+                calls=calls+1; error('fixture-private-error') end}
+            local r=CC.checkLine(900)
+            assert(not r.ok and r.native_route.available==false
+                and r.native_route.error=='percorso navale nativo non verificabile',
+                'errore nativo nascosto o riportato grezzo')
+            CC.lineModes=function() return {1} end
+            r=CC.checkLine(900)
+            assert(r.ok and r.native_route==nil and calls==1, 'linea terrestre alterata')
+        """)
+
+    def test_native_route_fallback_matches_verified_ship_enums(self):
+        self.native_route_check("""
+            api.type.enum.TransportMode.SHIP=nil
+            api.type.enum.TransportMode.SMALL_SHIP=nil
+            api.engine.util.line={getDetailedLineProblems=function()
+                return {{ {noPath=true} },{ {noPath=true} }} end}
+            for _,mode in ipairs({10,12}) do
+                CC.lineModes=function() return {mode} end
+                local r=CC.checkLine(900)
+                assert(not r.ok and r.native_route.available==true, 'modo navale provato non riconosciuto')
+            end
+            CC.lineModes=function() return {13} end
+            assert(CC.checkLine(900).native_route==nil, 'modo13 dichiarato navale senza prova')
+        """)

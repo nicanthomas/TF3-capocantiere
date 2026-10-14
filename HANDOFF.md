@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato a884369 + questo checkpoint
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 5715919
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -129,7 +129,9 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato a884369 + 
      CI38598882583 Ubuntu/Windows verde, revisione senza blocchi; integrato main62.
    - SOLO TEST AUTOMATICI: risultato prima dello stato conserva ricevuta e blocca riuso ID; sette
      prove verdi. Stato invalido impedisce invio. Nota bridge-risultato-stato.md; revisione senza blocchi.
-     Suite174/1skipWindows, mock150 e CI38599720428 Ubuntu/Windows verdi; integrato con questo checkpoint.
+     Suite174/1skipWindows, mock150 e CI38599720428 Ubuntu/Windows verdi; integrato main65.
+   - SOLO TEST AUTOMATICI: cinque regressioni native_route falliscono sul collaudo attuale;
+     API nativa incompleta/assente certifica erroneamente da controllo generico. Branch native-route-check.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
