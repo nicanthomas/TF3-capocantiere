@@ -111,45 +111,32 @@ Scritto da: Claude, 14.10.2026, dopo il commit 50 + questo commit
    2. Se si': installare 7b47b5f9 e provare una linea navale Calliano-Lissone su copia separata (guardia attiva).
    3. Se no: porto del gioco vicino a Calliano come confronto (vedi prova-navale-linea.md 14.10).
 
+Letto da ChatGPT il 14.10.2026: si'.
+
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: FERMO dalle 13.10 21:17: stop esplicito di Nicolo'
-Scritto da: ChatGPT, 13.10.2026 21:17 Europe/Zurich, ultimo commit verificato ad8579a
-1. In una riga: Solar naviga nella baia e raggiunge un porto; Calliano/anello irrisolti, mod NON finalizzata.
+Stato: IN LAVORO da 14.10 18:11: revisione navale e test senza PC
+Scritto da: ChatGPT, 14.10.2026 14.10 18:11, ultimo commit verificato 603e13f
+
+1. In una riga: ripresa da main51; Calliano/anello aperti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - PROVATO IN TF3: deposito a quota acqua+2 e ricerca tra citta' funzionano su copie distinte.
-     SOLO TEST AUTOMATICI: correzioni quota/ricerca verdi; terra invariata.
-   - PROVATO IN TF3 A SECCO: estremi parallelo corretti, +5m proposta88segmenti valida;
-     -5/-10 collidono. Nessuna nuova costruzione ferroviaria inviata.
-   - PROVATO IN TF3: Calliano ha due percorsi nativi mancanti; controllo generico da solo inganna.
-     Porti stock125886/API120311 nella baia consentono linea25246 e Solar123446 in viaggio.
-   - PROVATO IN TF3: Solar raggiunge porto, AT_TERMINAL poi EN_ROUTE dopo ricaricamento.
-     Copie Solar baia e Solar primo porto13-10 salvate, SAV/JPG verificati; originale intatto.
-   - SOLO TEST AUTOMATICI: guardia preacquisto e getter posizione integrati dopo CI verde/revisione.
-     PROVATO IN TF3: guardia a secco discrimina due rotte; getter legge posizione reale.
-3. Stato del PC: TF3 lasciato aperto sulla copia 'capocantiere Solar primo porto 13-10'.
-   Installata v14-bozza-d15a0424 DEV_MODE true, backup/hash verificati; console Python chiusa.
-   Middleware/opzioni Steam invariati; manifest originale ripristinato; ponte risponde dopo riavvio.
-   Linea25246 fra125886/120311, Solar123446 assegnata; Oita123908 in deposito.
-   Helper privati in work della chat; copie locali sporche contengono codice gia' pubblicato.
+   - SOLO TEST AUTOMATICI: letti handoff, regole STATO e ultimi sei commit; Claude risulta FERMO.
+   - SOLO TEST AUTOMATICI: Linux, Lua5.4 disponibile; middleware verde (148 test, solo Windows saltato).
+   - SOLO TEST AUTOMATICI: mock completo verde (150 controlli); nessuna prova TF3 nuova.
+3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
+   Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
+   Nicolo' ha dato «accesso a tutto» in questa chat; restano tutte le restrizioni STATO (chiave vietata).
 4. Problemi aperti e cose da NON fare
-   Due check_line separati perdono campioni: movement_unknown1 anche con getter valido.
-   Non risolti porto/accesso Calliano, servizio interurbano, anello doppio e bacini insufficienti.
-   Non comprare navi duplicate; copia anello fallito conserva3stazioni/98tratti: non ricostruire li'.
-   Non applicare riduzione bus79575; installare solo a gioco/console chiusi, con backup.
-   Non usare risposte vecchie del ponte come prove; Lua esterno Windows saltato, CI verde.
-   Note: prova-navale-linea.md, collaudo-percorso-navale.md, parallelo-estremi-strade.md, pc-focus-13-10.md.
+   Calliano senza percorso nativo; normale costa ancora ipotesi, anello doppio incompleto.
+   Non presumere PC raggiungibile o TF3 chiuso; niente navi duplicate né installazioni a gioco aperto.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Stop richiesto ora. Accessi PC/Steam/TF3, installazioni con backup, console/API e copie test
-   autorizzati in QUESTA chat; nuova chat chiede subito autorizzazioni necessarie, senza presumere PC.
-   Direttive gia' scelte: bus Abriola-Maretto; anello doppio e porto/linea nave su copie separate.
-   AggiornamentiPC scomparsa, mai minimizzata o chiusa; autorizzazione acquisita ma non usata.
+   Niente permessi pendenti: manca tecnicamente il collegamento PC, non l'autorizzazione in questa chat.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Leggere simJob nel sorgente mod: usa state:get/set; verificare persistenza di CC._samples.
-   2. Dopo autorizzazioni PC: collaudare campioni fra richieste e confronto porto stock a Calliano.
-   3. Per anello: verificare raccordi/scelta del lato prima di costruire su copia iniziale separata.
-Letto da Claude il 13.10.2026: si'.
+   1. Revisionare s41 e b4 con fixture Lua locali, senza modificare la geometria per ipotesi.
+   2. Con PC e permessi della nuova chat: s41 sola lettura, poi collaudo su copia separata come main51.
+   3. Tenere guardia preacquisto attiva e verificare ogni esito reale prima di dichiarare riuscita.
+Letto da Claude il 14.10.2026: non ancora.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 
