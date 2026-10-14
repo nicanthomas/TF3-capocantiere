@@ -601,3 +601,13 @@ Nicolo' il 14.10 mattina ha trovato TF3 e Steam aperti e la sessione Claude anco
 rimasta in attesa dalle 21:52 alle 06:04). Regola di chiusura aggiunta alla sezione 1 (LAVORO DA SOLO, punto 5).
 SOLO TEST AUTOMATICI: i porti ora guardano la normale della costa (`CC.coastNormal`, b4) invece del raggio
 citta'->costa; mock 150 ok. NON provato in TF3; sonda s41 pronta per verificarlo. Dettagli prova-navale-linea.md.
+
+
+### 14.10 — sonda normale costa: errori distinti da terreno asciutto (ChatGPT)
+
+SOLO TEST AUTOMATICI Linux/Lua5.4: s41 riporta disponibilita', letture valide/errori;
+non produce normale/frazione con campioni incompleti. Sei regressioni fallivano prima,
+ora passano. Suite locale154test/1skipWindows e mock150 verdi; build --check DIVERSO
+preesistente. Nessuna nuova prova TF3, mod NON rigenerata/installata.
+Accesso a tutto autorizzato in questa chat, ma collegamento PC tecnicamente assente.
+Calliano e anello restano aperti; nota sonda-normale-letture.md e prova-navale-linea.md.
