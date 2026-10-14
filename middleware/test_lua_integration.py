@@ -378,3 +378,51 @@ class LuaIntegrationTests(unittest.TestCase):
             CC.lineModes=function() return {13} end
             assert(CC.checkLine(900).native_route==nil, 'modo13 dichiarato navale senza prova')
         """)
+
+    def movement_check(self, assertion):
+        self.native_route_check("""
+            CC.lineModes=function() return {1} end
+            CC._samples={[901]={x=10,y=20,t=4000}}
+            CC.vehiclePos=function() return {x=10,y=20} end
+        """ + assertion)
+
+    def test_stationary_terminal_or_depot_is_waiting_not_moving(self):
+        self.movement_check("""
+            for _,state in ipairs({'AT_TERMINAL','IN_DEPOT'}) do
+                CC._samples={[901]={x=10,y=20,t=4000}}
+                CC.vehicleState=function() return state end
+                local r=CC.checkLine(900)
+                assert(r.vehicles_moving==0 and r.vehicles_still==0 and r.vehicles_waiting==1
+                    and r.movement_unknown==0, 'sosta senza spostamento certificata come movimento')
+                assert(r.ok==(state=='AT_TERMINAL'), 'deposito o terminale perdono il collaudo corretto')
+            end
+        """)
+
+    def test_stationary_en_route_remains_a_problem(self):
+        self.movement_check("""
+            CC.vehicleState=function() return 'EN_ROUTE' end
+            local r=CC.checkLine(900)
+            assert(not r.ok and r.vehicles_moving==0 and r.vehicles_still==1
+                and r.vehicles_waiting==0 and r.movement_unknown==0,
+                'veicolo in viaggio bloccato diventato sosta attesa')
+        """)
+
+    def test_real_displacement_remains_movement_even_on_terminal_arrival(self):
+        self.movement_check("""
+            CC.vehiclePos=function() return {x=20,y=20} end
+            local r=CC.checkLine(900)
+            assert(r.ok and r.vehicles_moving==1 and r.vehicles_still==0
+                and r.vehicles_waiting==0 and r.movement_unknown==0,
+                'spostamento misurato perso per stato terminale')
+        """)
+
+    def test_missing_or_same_time_sample_is_still_unknown(self):
+        self.movement_check("""
+            CC._samples={}
+            local r=CC.checkLine(900)
+            assert(r.vehicles_moving==0 and r.vehicles_waiting==0 and r.movement_unknown==1
+                and r.movement_unknown_reasons.no_previous==1, 'primo campione inventa sosta o movimento')
+            r=CC.checkLine(900)
+            assert(r.vehicles_moving==0 and r.vehicles_waiting==0 and r.movement_unknown==1
+                and r.movement_unknown_reasons.time_not_advanced==1, 'tempo fermo inventa movimento')
+        """)

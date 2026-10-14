@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 3efbddb + questo checkpoint
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato c41e0c4
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -131,6 +131,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 3efbddb + 
    - SOLO TEST AUTOMATICI: suite179/1skipWindows, mock150 verdi, revisione senza blocchi;
      CI38600520515 Ubuntu/Windows verde. Build dev0b20c9f6 generata, sintassi Lua5.4 valida.
      Mod release invariata, build NON installata. Nessuna prova TF3.
+   - SOLO TEST AUTOMATICI: quattro regressioni conteggio sosta/movimento rosse; il ramo attuale
+     conta AT_TERMINAL/IN_DEPOT fermo come movimento. Branch chatgpt/movement-waiting.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
