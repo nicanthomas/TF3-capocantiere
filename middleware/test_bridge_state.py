@@ -158,3 +158,64 @@ class BridgeStateTests(unittest.TestCase):
                 lua_table.save_userdata(str(self.path), {"lastActionId": last})
                 self.bridge._state = None
                 self.assertIs(self.bridge._accepted(6), expected)
+
+    def write_late_result(self):
+        self.bridge.late[6] = "abcd"
+        lua_table.save_userdata(str(self.folder / "capocantiere_results_6_abcd.lua"), {
+            "id": 6, "nonce": "abcd", "results": [{"ok": True}]})
+
+    def assert_send_blocked_without_writes(self):
+        before = sorted(p.name for p in self.folder.iterdir())
+        with patch.object(game_bridge.time, "sleep"), self.assertRaises(game_bridge.GameTimeout) as caught:
+            self.bridge.send([{"type": "ping"}], timeout=0)
+        self.assertEqual(caught.exception.status, "sconosciuta")
+        self.assertFalse(caught.exception.request_sent)
+        self.assertEqual(sorted(p.name for p in self.folder.iterdir()), before)
+
+    def test_collected_late_result_blocks_id_reuse_until_state_catches_up(self):
+        self.write_late_result()
+        self.assert_send_blocked_without_writes()
+        self.assertEqual(self.bridge.take_late_results(), {6: [{"ok": True}]})
+
+    def test_delivered_late_result_still_blocks_id_reuse(self):
+        self.write_late_result()
+        self.assertEqual(self.bridge.take_late_results(), {6: [{"ok": True}]})
+        self.assert_send_blocked_without_writes()
+
+    def test_state_catches_up_and_next_request_uses_seven(self):
+        self.write_late_result()
+        self.bridge.take_late_results()
+        lua_table.save_userdata(str(self.path), {"lastActionId": 6})
+        self.bridge._state = None
+        self.assertEqual(self.bridge._next_id(), 7)
+
+    def test_state_reset_does_not_silently_skip_unconfirmed_result(self):
+        self.write_late_result()
+        self.bridge.take_late_results()
+        lua_table.save_userdata(str(self.path), {"lastActionId": 0})
+        self.bridge._state = None
+        self.assert_send_blocked_without_writes()
+
+    def test_success_result_without_state_ack_blocks_following_request(self):
+        real_save = lua_table.save_userdata
+        def send_and_reply(path, value):
+            real_save(path, value)
+            if Path(path).name.startswith("capocantiere_actions_"):
+                result = dict(value, results=[{"ok": True}])
+                result.pop("actions")
+                reply_path = str(path).replace("capocantiere_actions_", "capocantiere_results_")
+                real_save(reply_path, result)
+        with patch.object(lua_table, "save_userdata", side_effect=send_and_reply), \
+                patch.object(self.bridge, "_wait_state_id"), patch.object(game_bridge.time, "sleep"):
+            self.assertEqual(self.bridge.send([{"type": "ping"}], timeout=1), [{"ok": True}])
+        self.assert_send_blocked_without_writes()
+
+    def test_invalid_state_id_cannot_publish_actions(self):
+        for state in ({}, {"lastActionId": True}, {"lastActionId": -1},
+                      {"lastActionId": 5.5}, {"lastActionId": "6"}, [1, 2]):
+            with self.subTest(state=state):
+                lua_table.save_userdata(str(self.path), state)
+                self.bridge._state = None
+                with patch.object(game_bridge.time, "sleep"), self.assertRaises(RuntimeError):
+                    self.bridge.send([{"type": "ping"}], timeout=0)
+                self.assertEqual(list(self.folder.glob("capocantiere_actions_*.lua")), [])

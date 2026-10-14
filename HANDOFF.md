@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 8c15c59 + questo checkpoint
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato d86593a
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -126,7 +126,9 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 8c15c59 + 
    - SOLO TEST AUTOMATICI: timeout ignoto non diventa ritirata; nonce/metadati conservati e riuso ID
      pendente bloccato. Cinque regressioni prima rosse, ora verdi; suite167/1skipWindows, mock150 verdi.
    - SOLO TEST AUTOMATICI: note bridge-stato-lettura.md e bridge-timeout-sconosciuto.md.
-     CI38598882583 Ubuntu/Windows verde, revisione senza blocchi; integrato main con questo checkpoint.
+     CI38598882583 Ubuntu/Windows verde, revisione senza blocchi; integrato main62.
+   - SOLO TEST AUTOMATICI: sei nuove prove risultato/stato, quattro fallimenti e sei errori sui subtest;
+     stato in ritardo permette riuso ID. Test su chatgpt/bridge-result-state, main ancora verde.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
