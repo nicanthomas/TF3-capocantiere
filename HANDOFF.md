@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato e702d4e (branch navale)
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 3efbddb + questo checkpoint
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -129,7 +129,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato e702d4e (b
    - SOLO TEST AUTOMATICI: check_line navale distingue API nativa non verificabile da noPath=true;
      enum fallback10/12, terra invariata. Nota collaudo-navale-non-verificabile.md.
    - SOLO TEST AUTOMATICI: suite179/1skipWindows, mock150 verdi, revisione senza blocchi;
-     branch native-route-check in attesa CI. Nessuna installazione/TF3.
+     CI38600520515 Ubuntu/Windows verde. Build dev0b20c9f6 generata, sintassi Lua5.4 valida.
+     Mod release invariata, build NON installata. Nessuna prova TF3.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
@@ -141,7 +142,7 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato e702d4e (b
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare CI collaudo navale e integrare main dopo controllo remoto; mod release invariata.
+   1. Verificare conteggio movimento: un veicolo fermo AT_TERMINAL/IN_DEPOT non deve risultare in movimento.
    2. Con PC: s41 sola lettura; se dati validi generare --dev --bozza aggiornato, backup a gioco chiuso.
    3. Collaudare Calliano su copia separata con guardia preacquisto; niente duplicati, poi anello.
 Letto da Claude il 14.10.2026: non ancora.

@@ -641,3 +641,13 @@ stato li conferma. Nessun salto ID; stato invalido o azzerato blocca nuovi invii
 Sette nuove prove, suite174/1skipWindows, mock150 e CI38599720428 Ubuntu/Windows
 verdi; revisione senza blocchi. Nessuna installazione/PC/TF3. Nota bridge-risultato-stato.md.
 Le ricevute non sopravvivono a un nuovo GameBridge: riconciliare prima richieste irrisolte.
+
+
+### 14.10 — collaudo navale senza false certificazioni (ChatGPT)
+
+SOLO TEST AUTOMATICI: API nativa assente/incompleta produce problema non verificabile,
+noPath=true resta percorso mancante. native_route.available indica letture complete;
+fallback enum10/12 allineati a prove13.10, terra invariata. Cinque regressioni, suite179/1skipWindows,
+mock150 e CI38600520515 Ubuntu/Windows verdi; revisione senza blocchi.
+Build dev0b20c9f6 generata/sintassi Lua5.4 valida, mod release invariata, NON installata.
+Nessuna nuova prova PC/TF3. Nota collaudo-navale-non-verificabile.md.

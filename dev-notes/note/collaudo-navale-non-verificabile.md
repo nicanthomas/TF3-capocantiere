@@ -32,3 +32,10 @@ NON risolve geometria Calliano, bacini, assegnazione o doppio binario.
 Mod pubblicata/installata non rigenerata. Con PC occorre generare la bozza
 sviluppo dai sorgenti aggiornati e provarla con backup a gioco chiuso.
 I numeri versione303c0edf/7b47b5f9 sono storici: la nuova build avra' altro hash.
+
+
+CI38600520515 verde Ubuntu/Windows sul commit67 3efbddb; sei file pubblicati
+confrontati byte per byte col checkout. Build sviluppo --dev --bozza generata:
+v14-bozza-0b20c9f6, sintassi Lua5.4 valida, DEV_MODE true una sola volta.
+SHA256 script28627799aad2922fa3ff6512c8f8872a86ef7e3281ab03bccfc47052578116ca.
+Mod release confrontata con Git e invariata. Build NON installata o provata TF3.
