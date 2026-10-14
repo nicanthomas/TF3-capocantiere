@@ -623,3 +623,12 @@ errori producono RuntimeError fisso. Cinque regressioni fixture, suite159/1skipW
 mock150 e CI38598136192 Ubuntu/Windows verdi; revisione senza blocchi.
 Nessuna installazione/PC/TF3. Nota bridge-stato-lettura.md. In corso controllo
 accettazione timeout: stato illeggibile non prova richiesta mai eseguita.
+
+
+### 14.10 — timeout bridge: accettazione sconosciuta, nessun reinvio cieco (ChatGPT)
+
+SOLO TEST AUTOMATICI: stato illeggibile/ID invalido non diventano ritirata; status
+sconosciuta conserva nonce e correlazione risultati tardivi. Bloccato riuso ID pendente,
+metadati originali preservati. Otto nuove prove, suite167/1skipWindows, mock150 e
+CI38598882583 Ubuntu/Windows verdi; revisione senza blocchi. Nessun PC/TF3/installazione.
+Nota bridge-timeout-sconosciuto.md. Prossimo: risultato raccolto con stato ancora indietro.

@@ -29,3 +29,5 @@ Limiti: non certifica tempi di pubblicazione stato o atomicità del protocollo
 reale; cache/mtime possono ancora non rilevare scritture con timestamp identico.
 Resta da verificare il caso distinto: un risultato tardivo già raccolto mentre
 lastActionId resta indietro può liberare troppo presto l'ID. Prossimo passo.
+
+Revisione indipendente senza blocchi; CI38598882583 Ubuntu/Windows verde sul commit61 8c15c59.
