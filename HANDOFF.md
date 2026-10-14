@@ -88,31 +88,28 @@ Letto da <altra AI> il <data>: <si' / dubbi>
 
 *(scritta da Claude, letta da ChatGPT)*
 
-Stato: FERMO dalle 13.10 21:52 (stop di Nicolo')
-Scritto da: Claude, 13.10.2026 21:47, ultimo commit c4b56ff + questo checkpoint
+Stato: FERMO dalle 14.10 (lavoro senza PC concluso)
+Scritto da: Claude, 14.10.2026, dopo il commit 50 + questo commit
 
-1. In una riga: il collaudo vede ora se la nave si muove (campioni salvati nello stato della mod), provato in TF3.
-2. Fatto in questa sessione:
-   - Campioni movimento in `st.samples` + motivi `movement_unknown_reasons` (commit 47). SOLO TEST AUTOMATICI
-     (mock 145 ok) e poi PROVATO IN TF3: 1a check_line 25246 «no_previous», 2a «vehicles_moving=1».
-   - Installata v14-bozza-303c0edf: PROVATO SUL PC, backup `...script.lua.bak_samples_20261013_2133` e hash ok.
-   - Il ponte funziona anche senza console: scrivo io `capocantiere_actions_<id>_<nonce>.lua` in `mod_presets`.
-   - Sonda s40 (sola lettura) PROVATO IN TF3: acqua Calliano-Lissone collegata, collo almeno 5.44 m: il percorso
-     mancante non e' fondale basso (dettagli in prova-navale-linea.md).
-3. Stato del PC: TF3 CHIUSO (Esci > Torna al desktop, nessun salvataggio nuovo), mod 303c0edf installata.
-   Steam mostra ancora «Arresto»: le finestre cmd/console del wrapper sono rimaste aperte (accesso al terminale
-   rifiutato, non chiuse da me). Opzioni Steam invariate. File actions/results 1-4 lasciati in mod_presets.
-   Autorizzazioni di Nicolo' in QUESTA chat: si' a tutto (PC, Steam/TF3, cartelle, install con backup, copie di
-   prova, costruzioni/acquisti sulle copie, console API, opzioni Steam, pulizia protocollo).
-4. Problemi aperti / da NON fare: primo caricamento dopo avvio da Steam interrotto senza errore (secondo ok).
-   Il collegamento del PC a questa chat cade a volte: i permessi del controllo schermo vanno richiesti di nuovo.
-   Restano Calliano, anello doppio; niente navi duplicate (vedi sezione di ChatGPT).
-5. Domande: niente.
+1. In una riga: collaudo movimento provato in TF3; porti orientati sulla costa scritti ma NON provati in TF3.
+2. Fatto (13-14.10):
+   - Campioni movimento salvati nello stato della mod: PROVATO IN TF3 (2a check_line 25246 vehicles_moving=1).
+   - Sonda s40 fondale Calliano-Lissone, collo 5.44 m: PROVATO IN TF3 (sola lettura). Non e' il fondale.
+   - Porti sulla normale della costa (`CC.coastNormal`, b4): SOLO TEST AUTOMATICI (mock 150 ok). Sonda s41 pronta.
+   - RETTIFICA: il commit 50 e la versione precedente di questa sezione dicevano «TF3 CHIUSO»: falso, non verificato.
+3. Stato del PC (ultimo noto, 14.10 mattina, da Nicolo'): TF3 e Steam erano APERTI; la sessione Claude e' rimasta
+   attiva tutta la notte su una richiesta di permesso. Mod installata v14-bozza-303c0edf (backup
+   `capocantiere.script.lua.bak_samples_20261013_2133`). Build 7b47b5f9 NON installata. File actions/results 1-4
+   in mod_presets. Nessun salvataggio nuovo fatto da Claude. Autorizzazioni del 13.10 NON valgono piu'.
+4. Problemi aperti / da NON fare: Calliano senza percorso nativo (causa non trovata); anello doppio non fatto.
+   Chiusura: seguire STATO.md sezione 1, punto 5 (verificare che TF3 sia chiuso e Steam su «GIOCA»).
+   Niente navi duplicate; installare solo a gioco chiuso con backup.
+5. Domande per Nicolo' (all'avvio, un solo messaggio): accesso PC/cartelle, chiudere/avviare TF3, installare
+   7b47b5f9 con backup, caricare una copia, costruire su copia separata un porto/linea navale a Calliano.
 6. Prossima operazione precisa:
-   1. Su copia separata: porto stock dalla GUI vicino a Calliano (anteprima azzurra), poi getDetailedLineProblems
-      Calliano(stock)->Lissone. Camera: lua_eval api.gui.camera.setCameraData(Vec5f(x,y,dist,rot,pitch)).
-   2. Se passa: correggere orientamento/posizione del porto della mod (b4); se no: cercare ponti/ostacoli <64 m.
-   3. Poi anello doppio (vedi sezione di ChatGPT).
+   1. Con PC: sonda s41 in sola lettura (normale a Lissone stock ~(.776,-.631)?).
+   2. Se si': installare 7b47b5f9 e provare una linea navale Calliano-Lissone su copia separata (guardia attiva).
+   3. Se no: porto del gioco vicino a Calliano come confronto (vedi prova-navale-linea.md 14.10).
 
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*

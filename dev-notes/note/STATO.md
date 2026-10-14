@@ -51,6 +51,18 @@ Dettagli: `dev-notes/note/prove-mappa-nuova.md` (cronologia prove), `dev-notes/n
      PRIMA di una notte da solo, es. comando dalla mod). Se a fine lavoro non si puo' chiudere, scriverlo subito a
      Nicolo' invece di aspettare.
   4. Prima di lasciare il lavoro a una notte da solo: verificare che i punti 2 e 3 funzionino.
+  5. STOP / ORA DI FINE (regola ribadita il 14.10.2026, dopo che Claude il 13.10 ha detto «capito» e poi ha lasciato
+     TF3 e Steam aperti e una richiesta di permesso in attesa tutta la notte). Quando Nicolo' chiede di fermarsi,
+     chiudere le app e spegnersi, in quest'ordine e senza aggiungere altro:
+     a. smettere di lavorare (niente nuove prove o idee);
+     b. pubblicare su GitHub lo stato vero;
+     c. chiudere TF3 e VERIFICARE che sia chiuso: `capocantiere_state.lua` non si aggiorna piu' e Steam mostra
+        «GIOCA» (non «FERMA» o «Arresto»). «Torna al desktop» da solo NON basta: con il wrapper di Steam il processo
+        o la console possono restare vivi;
+     d. chiudere Steam se richiesto («tutte le app»), e verificarlo;
+     e. MAI fare una richiesta di permesso nuova durante la chiusura: se un passo richiede un permesso che non c'e',
+        scriverlo subito a Nicolo' e chiudere la sessione;
+     f. scrivere a Nicolo' solo cio' che e' stato verificato; quello che non si e' potuto verificare va detto come tale.
 
 ## 1b. Avvio della chat: chiedere SUBITO tutte le autorizzazioni (una volta sola, all'inizio)
 0. **VERIFICARE I PERCORSI (08.10.2026)**: Nicolo' ha spostato la cartella di INSTALLAZIONE del gioco fuori da C:
@@ -581,3 +593,11 @@ Main39/42 integrati dopo CI verde e revisione: rotta navale nativa obbligatoria 
 
 Commit 47 (st.samples via state:get/set + motivi movement_unknown). Installata v14-bozza-303c0edf con backup/hash.
 PROVATO IN TF3 su copia Solar primo porto: 1a check_line no_previous, 2a vehicles_moving=1. Dettagli prova-navale-linea.md.
+
+### 14.10 — rettifica chiusura del 13.10 e orientamento porti (Claude, senza PC)
+
+RETTIFICA: il commit 50 («TF3 chiuso») e la sezione di handoff di Claude dicevano TF3 chiuso: NON verificato e falso.
+Nicolo' il 14.10 mattina ha trovato TF3 e Steam aperti e la sessione Claude ancora attiva (richiesta di permesso
+rimasta in attesa dalle 21:52 alle 06:04). Regola di chiusura aggiunta alla sezione 1 (LAVORO DA SOLO, punto 5).
+SOLO TEST AUTOMATICI: i porti ora guardano la normale della costa (`CC.coastNormal`, b4) invece del raggio
+citta'->costa; mock 150 ok. NON provato in TF3; sonda s41 pronta per verificarlo. Dettagli prova-navale-linea.md.

@@ -178,8 +178,32 @@ local function airSites(center, tpl, Rs)
 	return out
 end
 
--- Punto di costa piu' vicino al centro: cammino verso l'esterno finche' trovo acqua. dir = verso l'acqua.
-local function shoreSites(center, maxR)
+-- Normale della costa nel punto (x, y): somma dei versi verso i punti d'acqua su due anelli (r/2 e r, 72 direzioni: con 16 l'errore arrivava a 11 gradi).
+-- Ritorna nx, ny (verso l'acqua, lunghezza 1) e la frazione di punti bagnati; nil se nessun punto e' acqua.
+-- 13.10.2026: il porto costruito dal gioco a Lissone guarda (.776,-.631), il raggio citta'->costa usato prima
+-- (.707,.707): la normale della costa e' l'ipotesi da provare in TF3 (NON ancora provata in gioco).
+function CC.coastNormal(x, y, r)
+	r = r or 100
+	local sx, sy, wet, tot = 0, 0, 0, 0
+	for _, rr in ipairs({ r * 0.5, r }) do
+		for k = 0, 71 do
+			local a = k * math.pi / 36
+			local ux, uy = math.cos(a), math.sin(a)
+			tot = tot + 1
+			if CC.onWater(x + ux * rr, y + uy * rr) then
+				sx, sy, wet = sx + ux, sy + uy, wet + 1
+			end
+		end
+	end
+	local len = math.sqrt(sx * sx + sy * sy)
+	if wet == 0 or len < 1e-6 then return nil end
+	return sx / len, sy / len, wet / tot
+end
+
+-- Punto di costa piu' vicino al centro: cammino verso l'esterno finche' trovo acqua. dir = verso l'acqua:
+-- la normale della costa quando e' affidabile (costa vera: tra 15% e 85% di punti bagnati, non opposta al
+-- cammino), altrimenti il raggio del cammino come prima. ray_dx/ray_dy e normal restano per la diagnosi.
+function CC.shoreSites(center, maxR)
 	local out = {}
 	for a = 0, 337.5, 22.5 do
 		local r = math.rad(a)
@@ -189,7 +213,14 @@ local function shoreSites(center, maxR)
 			local x, y = center.x + dx * d, center.y + dy * d
 			if not CC.inMap(x, y, 200) then break end
 			if CC.onWater(x, y) then
-				if lastLand then out[#out + 1] = { x = lastLand[1], y = lastLand[2], dx = dx, dy = dy, R = d } end
+				if lastLand then
+					local s = { x = lastLand[1], y = lastLand[2], dx = dx, dy = dy, R = d, ray_dx = dx, ray_dy = dy, normal = false }
+					local nx, ny, frac = CC.coastNormal(lastLand[1], lastLand[2], 100)
+					if nx and frac >= 0.15 and frac <= 0.85 and nx * dx + ny * dy > -0.2 then
+						s.dx, s.dy, s.normal = nx, ny, true
+					end
+					out[#out + 1] = s
+				end
 				break
 			end
 			lastLand = { x, y }
@@ -198,6 +229,7 @@ local function shoreSites(center, maxR)
 	table.sort(out, function(p, q) return p.R < q.R end)
 	return out
 end
+local shoreSites = function(center, maxR) return CC.shoreSites(center, maxR) end
 
 -- Asse locale che deve guardare l'acqua -> orientamento (dx, dy) da passare a placeTemplate.
 local function orientForWater(side, wx, wy)

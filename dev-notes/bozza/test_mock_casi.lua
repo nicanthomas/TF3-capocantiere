@@ -775,6 +775,27 @@ do
     W.comps[WORLD].GAME_TIME.gameTime=old.gt
 end
 
+-- Porti: orientamento sulla normale della costa (come il porto del gioco a Lissone), non sul raggio citta'->costa.
+do
+    local old={water=CC.onWater,inMap=CC.inMap}
+    local nx0,ny0=0.775671,-0.631137
+    CC.inMap=function() return true end
+    CC.onWater=function(x,y) return nx0*x+ny0*y>300 end
+    local c=CC.shoreSites({x=0,y=0},2000)
+    local best=c[1]
+    check(best and best.normal and math.abs(best.dx-nx0)<0.05 and math.abs(best.dy-ny0)<0.05,
+      'porti: direzione = normale della costa')
+    local ray=false
+    for _,s in ipairs(c) do if s.normal and (math.abs(s.ray_dx-s.dx)>0.05 or math.abs(s.ray_dy-s.dy)>0.05) then ray=true end end
+    check(ray,'porti: il raggio del cammino resta per la diagnosi')
+    check(CC.coastNormal(4000,-3000,100)==nil,'porti: tutto acqua -> nessuna direzione di costa')
+    check(CC.coastNormal(-500,500,100)==nil,'porti: nessuna acqua -> nessuna normale')
+    CC.onWater=function(x,y) return x>100 and math.abs(y)<5 end   -- canale sottile: normale poco affidabile
+    c=CC.shoreSites({x=0,y=0},2000)
+    check(c[1] and not c[1].normal and c[1].dx==1 and c[1].dy==0,'porti: costa incerta conserva il raggio')
+    CC.onWater,CC.inMap=old.water,old.inMap
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.

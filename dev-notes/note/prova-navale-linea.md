@@ -244,3 +244,18 @@ lungo un passaggio largo 64 m: il «percorso mancante» di Calliano NON si spieg
 (a meno di ostacoli piu' stretti di 64 m, es. ponti o costruzioni sull'acqua, non controllati).
 Prossimo discriminante: porto stock dalla GUI vicino a Calliano su copia separata, poi getDetailedLineProblems
 Calliano(stock)->Lissone. Se passa: correggere orientamento/posizione del porto della mod; se no: cercare ostacoli.
+
+### 14.10 — porti orientati sulla normale della costa (Claude, SOLO TEST AUTOMATICI)
+
+Ipotesi da ChatGPT 13.10: il porto del gioco a Lissone guarda l'acqua in (.776,-.631), il porto della mod nel verso del
+raggio citta'->costa (.707,.707). Modifica in b4: `CC.coastNormal(x, y, r)` somma i versi verso i punti d'acqua su due
+anelli (r/2 e r, 72 direzioni) e `CC.shoreSites` usa questa normale quando la costa e' chiara (15-85% di punti
+bagnati, non opposta al cammino), altrimenti il raggio come prima. Ogni sito conserva ray_dx/ray_dy e `normal`.
+Cinque controlli nel mock (costa diritta come Lissone: errore < 3 gradi; tutto acqua/nessuna acqua: nessuna
+normale; canale sottile: resta il raggio). Mock 150 ok, middleware ok. Build sviluppo v14-bozza-7b47b5f9, NON
+installata. NON provato in TF3 e NON dimostrato che risolva Calliano (il porto della mod 120311 orientato col
+raggio funziona nella baia).
+Prossimo in TF3: 1) sonda s41 (sola lettura): la normale a Lissone stock deve tornare ~(.776,-.631);
+2) se si', installare 7b47b5f9 e, su copia separata, nuova linea navale Calliano-Lissone con la guardia
+preacquisto (nessuna nave comprata se il percorso nativo manca); 3) se no, porto del gioco a Calliano come confronto.
+
