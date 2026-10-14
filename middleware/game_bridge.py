@@ -87,6 +87,8 @@ class GameBridge:
         self._state_mtime = 0.0
         self.late: dict[int, str] = {}              # richieste accettate senza risultato: id -> nonce
         self.late_results: dict[int, list[dict]] = {}
+        # Un risultato prova l'esecuzione, ma non autorizza a saltare ID se state.lua e' indietro.
+        self._pending_sync: dict[int, str] = {}
 
     # ------------------------------------------------------------------ percorsi
     def _path(self, name: str) -> str:
@@ -123,7 +125,19 @@ class GameBridge:
         La mod riscrive state.lua subito dopo ogni richiesta, quindi il valore e' sempre fresco;
         dopo il caricamento di un altro salvataggio riparte dal valore salvato nella partita."""
         st = self.state()
-        return int(st.get("lastActionId") or 0) + 1
+        last = st.get("lastActionId") if isinstance(st, dict) else None
+        if type(last) is not int or last < 0:
+            raise RuntimeError("state.lua senza lastActionId intero non negativo: nessuna richiesta inviata")
+        for req_id in list(self._pending_sync):
+            if last >= req_id:
+                del self._pending_sync[req_id]
+        if self._pending_sync:
+            req_id = min(self._pending_sync)
+            raise GameTimeout(
+                f"Risultato della richiesta {req_id} ricevuto, ma state.lua non conferma ancora l'ID. "
+                "NON ripeterla: nessuna nuova richiesta inviata finche' lo stato non e' coerente.",
+                req_id, "sconosciuta", request_sent=False)
+        return last + 1
 
     def send(self, actions: list[dict], timeout: float = 30.0) -> list[dict]:
         """Scrive actions_<id>.lua e aspetta results_<id>.lua. Ritorna la lista dei risultati.
@@ -152,6 +166,7 @@ class GameBridge:
             time.sleep(0.5)
             res = self._read_result(rp, req_id, nonce)
             if res is not None:
+                self._pending_sync[req_id] = nonce
                 self._wait_state_id(req_id)
                 self._cleanup(req_id)
                 return res
@@ -167,6 +182,7 @@ class GameBridge:
                     req_id, "ritirata")
         res = self._read_result(rp, req_id, nonce)  # arrivata proprio ora?
         if res is not None:
+            self._pending_sync[req_id] = nonce
             self._cleanup(req_id)
             return res
         self.late[req_id] = nonce
@@ -229,6 +245,7 @@ class GameBridge:
         for req_id, nonce in list(self.late.items()):
             res = self._read_result(self._path(f"results_{req_id}_{nonce}"), req_id, nonce)
             if res is not None:
+                self._pending_sync[req_id] = nonce
                 self.late_results[req_id] = res
                 del self.late[req_id]
 

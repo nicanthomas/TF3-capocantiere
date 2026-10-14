@@ -188,6 +188,13 @@ class BridgeStateTests(unittest.TestCase):
         lua_table.save_userdata(str(self.path), {"lastActionId": 6})
         self.bridge._state = None
         self.assertEqual(self.bridge._next_id(), 7)
+        with patch.object(game_bridge.time, "sleep"), self.assertRaises(game_bridge.GameTimeout) as caught:
+            self.bridge.send([{"type": "ping"}], timeout=0)
+        self.assertEqual(caught.exception.req_id, 7)
+        self.assertEqual(caught.exception.status, "ritirata")
+        archived = list((self.folder / "capocantiere_vecchi").glob("capocantiere_actions_7_*.lua"))
+        self.assertEqual(len(archived), 1)
+        self.assertEqual(lua_table.load_userdata(str(archived[0]))["id"], 7)
 
     def test_state_reset_does_not_silently_skip_unconfirmed_result(self):
         self.write_late_result()
@@ -219,3 +226,15 @@ class BridgeStateTests(unittest.TestCase):
                 with patch.object(game_bridge.time, "sleep"), self.assertRaises(RuntimeError):
                     self.bridge.send([{"type": "ping"}], timeout=0)
                 self.assertEqual(list(self.folder.glob("capocantiere_actions_*.lua")), [])
+
+    def test_result_on_final_timeout_read_also_blocks_id_reuse(self):
+        def accepted_then_reply(_):
+            action_path = next(self.folder.glob("capocantiere_actions_6_*.lua"))
+            action = lua_table.load_userdata(str(action_path))
+            reply = {"id": 6, "nonce": action["nonce"], "results": [{"ok": True}]}
+            result_path = str(action_path).replace("capocantiere_actions_", "capocantiere_results_")
+            lua_table.save_userdata(result_path, reply)
+            return True
+        with patch.object(self.bridge, "_accepted", side_effect=accepted_then_reply):
+            self.assertEqual(self.bridge.send([{"type": "ping"}], timeout=0), [{"ok": True}])
+        self.assert_send_blocked_without_writes()

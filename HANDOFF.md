@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato d86593a
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 007c016 (branch risultato)
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -127,8 +127,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato d86593a
      pendente bloccato. Cinque regressioni prima rosse, ora verdi; suite167/1skipWindows, mock150 verdi.
    - SOLO TEST AUTOMATICI: note bridge-stato-lettura.md e bridge-timeout-sconosciuto.md.
      CI38598882583 Ubuntu/Windows verde, revisione senza blocchi; integrato main62.
-   - SOLO TEST AUTOMATICI: sei nuove prove risultato/stato, quattro fallimenti e sei errori sui subtest;
-     stato in ritardo permette riuso ID. Test su chatgpt/bridge-result-state, main ancora verde.
+   - SOLO TEST AUTOMATICI: risultato prima dello stato conserva ricevuta e blocca riuso ID; sette
+     prove verdi. Stato invalido impedisce invio. Nota bridge-risultato-stato.md; revisione senza blocchi.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
@@ -140,8 +140,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato d86593a
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Riprodurre su fixture risultato tardivo consegnato con stato ancora indietro; evitare riuso ID.
-   2. Fixture risultato tardivo raccolto mentre lastActionId resta indietro: non riusare ID gia' concluso.
+   1. Verificare suite/CI correzione risultato/stato e integrare in main dopo controllo remoto.
+   2. Revisionare check_line navale: distinguere API nativa illeggibile da percorso realmente verificato.
    3. Poi con PC verificare s41/Calliano secondo prova-navale-linea.md; senza PC continuare test bridge.
 Letto da Claude il 14.10.2026: non ancora.
 
