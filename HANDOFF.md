@@ -116,30 +116,32 @@ Letto da ChatGPT il 14.10.2026: si'.
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
 
-Stato: IN LAVORO da 14.10 18:11: correzione diagnostica s41, revisione e CI
-Scritto da: ChatGPT, 14.10.2026 14.10 18:11, ultimo commit verificato 83a0528 (branch lavoro)
+Stato: FERMO dalle 14.10 18:18: passo senza PC concluso
+Scritto da: ChatGPT, 14.10.2026 14.10 18:18, ultimo commit verificato ff9d77b + questo checkpoint
 
-1. In una riga: ripresa da main51; Calliano/anello aperti, mod NON finalizzata.
+1. In una riga: s41 distingue dati mancanti da terra asciutta; Calliano/anello aperti, mod NON finalizzata.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
-   - SOLO TEST AUTOMATICI: letti handoff, regole STATO e ultimi sei commit; Claude risulta FERMO.
-   - SOLO TEST AUTOMATICI: Linux/Lua5.4, middleware verde (154 test, solo Windows saltato).
-   - SOLO TEST AUTOMATICI: mock completo verde (150 controlli); nessuna prova TF3 nuova.
-   - SOLO TEST AUTOMATICI: sei regressioni s41 prima fallivano, ora passano; errori distinti da terra asciutta.
-     Nota dev-notes/note/sonda-normale-letture.md; nessun cambiamento geometria b4.
+   - SOLO TEST AUTOMATICI: ripresa da main603e13f, letti handoff/regole/ultimi commit; Claude era FERMO.
+   - SOLO TEST AUTOMATICI: s41 senza normale/frazione se API/letture non disponibili; sei regressioni
+     prima fallivano, ora passano. Nota dev-notes/note/sonda-normale-letture.md.
+   - SOLO TEST AUTOMATICI: locale Linux/Lua5.4, suite154test/1skipWindows e mock150 verdi.
+     CI38596708540 verde Ubuntu/Windows sul commit54; revisione indipendente senza blocchi.
    - SOLO TEST AUTOMATICI: build --check DIVERSO preesistente; mod non rigenerata/installata.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
-   Nicolo' ha dato «accesso a tutto» in questa chat; restano tutte le restrizioni STATO (chiave vietata).
+   Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
+   Autorizzazione di questa chat non trasferibile a una nuova chat.
 4. Problemi aperti e cose da NON fare
    Calliano senza percorso nativo; normale costa ancora ipotesi, anello doppio incompleto.
    Non presumere PC raggiungibile o TF3 chiuso; niente navi duplicate né installazioni a gioco aperto.
+   s41 available=true significa letture complete, NON rotta navale o orientamento certificati.
 5. Domande o decisioni per l'altra AI (o per Nicolo')
-   Niente permessi pendenti: manca tecnicamente il collegamento PC, non l'autorizzazione in questa chat.
+   Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare revisione e CI del commit54 su chatgpt/s41-letture; poi unire in main senza PR.
-      Prima controllare che main remoto sia ancora57679bc; non sovrascrivere altre modifiche.
-   2. Con PC e permessi della nuova chat: s41 sola lettura, poi collaudo su copia separata come main51.
-   3. Tenere guardia preacquisto attiva e verificare ogni esito reale prima di dichiarare riuscita.
+   1. Leggere sonda-normale-letture.md e s41 aggiornati; verificare nuovo main e accessi effettivi.
+   2. Con PC e autorizzazioni: s41 sola lettura; se available=false diagnosticare letture, non costa.
+   3. Se dati validi: confronto Lissone stock, poi prova Calliano su copia separata secondo
+      prova-navale-linea.md; guardia preacquisto attiva. Normale b4 e mod pubblicata invariate da ChatGPT.
 Letto da Claude il 14.10.2026: non ancora.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)

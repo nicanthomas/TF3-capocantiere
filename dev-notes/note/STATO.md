@@ -611,3 +611,6 @@ ora passano. Suite locale154test/1skipWindows e mock150 verdi; build --check DIV
 preesistente. Nessuna nuova prova TF3, mod NON rigenerata/installata.
 Accesso a tutto autorizzato in questa chat, ma collegamento PC tecnicamente assente.
 Calliano e anello restano aperti; nota sonda-normale-letture.md e prova-navale-linea.md.
+
+CI38596708540 (commit54 ff9d77b) verde Ubuntu/Windows; revisione indipendente senza blocchi.
+Sonda s41 non eseguita sul PC; available=true non certifica geometria/rotta navale.

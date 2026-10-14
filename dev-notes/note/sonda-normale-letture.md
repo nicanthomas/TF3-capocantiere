@@ -44,3 +44,13 @@ Se available=false per uno dei punti/raggi, fermare l'interpretazione della
 normale e diagnosticare la lettura. Solo con dati completi confrontare il
 verso al porto stock di Lissone, quindi seguire prova-navale-linea.md su una
 copia separata. Non modificare il posizionamento per deduzioni dal mock.
+
+
+## Pubblicazione e revisione
+
+Correzione commit54 `ff9d77b`, dopo test commit53 `83a0528` su branch di lavoro.
+CI [38596708540](https://github.com/nicanthomas/TF3-capocantiere/actions/runs/38596708540)
+completata verde per Ubuntu e Windows. Revisione indipendente senza errori concreti
+né regressioni. Prima dell'integrazione verificato main ancora57679bc; file della
+branch pubblicata confrontati byte per byte con il checkout locale (tutti uguali).
+Handoff e STATO aggiornati insieme; nessuna PR e nessun force-push.

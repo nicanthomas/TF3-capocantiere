@@ -172,3 +172,13 @@ PROVATO IN TF3: salvata con nome distinto 'capocantiere v14 Abriola-Maretto 12-1
 PROVATO SUL PC: file .sav presente (70739604 byte) e anteprima .jpg, data 18:43:30. Non ancora ricaricato.
 TF3 chiuso dal menu Torna al desktop, console con /esci; processi entrambi assenti verificati.
 Zero file capocantiere_actions residui; nessuna pulizia manuale. Opzioni Steam intatte.
+
+
+### 14.10.2026 — preparazione collaudo costa, senza accesso PC (ChatGPT)
+
+SOLO TEST AUTOMATICI: s41 ora distingue letture mancanti da terra asciutta;
+sei regressioni prima fallivano, ora verdi. CI38596708540 Ubuntu/Windows verde,
+locale154test/1skipWindows e mock150 verdi; revisione senza blocchi.
+Nessuna nuova prova TF3, nessun file PC/mod installata modificato. Non risolve
+Calliano o anello. Dettagli sonda-normale-letture.md; prossima prova reale in
+prova-navale-linea.md, con s41 disponibile solo se tutte le letture sono valide.
