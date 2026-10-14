@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato bc74b9d
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 1603779
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -127,7 +127,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato bc74b9d
    - SOLO TEST AUTOMATICI: locale Linux/Lua5.4, suite154test/1skipWindows e mock150 verdi.
      CI38596708540 verde Ubuntu/Windows sul commit54; revisione indipendente senza blocchi.
    - SOLO TEST AUTOMATICI: main55 e relativa CI38597031937 verdi, checkout pulito.
-   - SOLO TEST AUTOMATICI: revisione statica bridge trova cache obsoleta dopo parsing fallito; da riprodurre.
+   - SOLO TEST AUTOMATICI: cache bridge riprodotta con state.lua troncato; cinque regressioni: quattro
+     falliscono, recupero transitorio gia' passa. Branch chatgpt/bridge-state, main invariato.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
    Nicolo' ha dato «accesso a tutto» in questa chat; restrizioni STATO conservate (chiave vietata).
@@ -139,7 +140,7 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato bc74b9d
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Fixture state.lua troncato: verificare che state() sollevi errore e non aggiorni cache/mtime.
+   1. Correggere state(): pubblicare cache e mtime solo dopo parsing riuscito; dopo tre errori sollevare.
    2. Correggere cache solo dopo riproduzione; test/revisione/CI e pubblicazione con handoff.
    3. Verificare timeout con stato illeggibile: non dichiarare sicura una ripetizione senza prova.
 Letto da Claude il 14.10.2026: non ancora.
