@@ -20,3 +20,5 @@ Non certifica snapshot atomico del file scritto dal gioco, timestamp invariato
 per scritture diverse, API native o comportamento TF3. Non modifica la mod.
 Prossimo difetto da verificare: _accepted converte errori di lettura in False;
 nel timeout questo puo' dichiarare ritirata una richiesta dall'esito ignoto.
+
+CI38598136192 verde Ubuntu/Windows sul commit58 76af8cc; file remoti uguali ai locali.

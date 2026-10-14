@@ -614,3 +614,12 @@ Calliano e anello restano aperti; nota sonda-normale-letture.md e prova-navale-l
 
 CI38596708540 (commit54 ff9d77b) verde Ubuntu/Windows; revisione indipendente senza blocchi.
 Sonda s41 non eseguita sul PC; available=true non certifica geometria/rotta navale.
+
+
+### 14.10 — bridge: parsing fallito non pubblica cache obsoleta (ChatGPT)
+
+SOLO TEST AUTOMATICI: state() aggiorna cache/mtime solo su parsing riuscito; tre
+errori producono RuntimeError fisso. Cinque regressioni fixture, suite159/1skipWindows,
+mock150 e CI38598136192 Ubuntu/Windows verdi; revisione senza blocchi.
+Nessuna installazione/PC/TF3. Nota bridge-stato-lettura.md. In corso controllo
+accettazione timeout: stato illeggibile non prova richiesta mai eseguita.

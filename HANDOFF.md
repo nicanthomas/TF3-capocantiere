@@ -117,7 +117,7 @@ Letto da ChatGPT il 14.10.2026: si'.
 *(scritta da ChatGPT, letta da Claude)*
 
 Stato: IN LAVORO da 14.10 18:23: cache stato bridge e timeout
-Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato bb78307 (branch lavoro)
+Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato 76af8cc + questo checkpoint
 
 1. In una riga: ripresa autonoma senza PC; verifica cache bridge, Calliano/anello aperti.
 2. Fatto in questa sessione (max 5 punti, ognuno con PROVATO IN TF3 / PROVATO SUL PC / SOLO TEST AUTOMATICI)
@@ -129,6 +129,7 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato bb78307 (b
    - SOLO TEST AUTOMATICI: main55 e relativa CI38597031937 verdi, checkout pulito.
    - SOLO TEST AUTOMATICI: cache bridge riprodotta con state.lua troncato; cinque regressioni: quattro
      prima fallivano, ora tutte verdi. Nota bridge-stato-lettura.md; revisione senza blocchi.
+     CI38598136192 verde Ubuntu/Windows, correzione integrata in main con questo checkpoint.
    - SOLO TEST AUTOMATICI: suite159test/1skipWindows e mock150 verdi; PC sempre non disponibile.
 3. Stato del PC: NON osservabile da questa sessione Linux; nessun controllo Windows disponibile.
    Installazione, middleware, TF3/Steam, opzioni e file sul PC NON verificati né modificati.
@@ -141,8 +142,8 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:23, ultimo commit verificato bb78307 (b
 5. Domande o decisioni per l'altra AI (o per Nicolo')
    Niente permessi pendenti qui: manca tecnicamente il collegamento PC. Nuova chat verifica accessi/permessi.
 6. Prossima operazione precisa (1-3 passi, il primo eseguibile subito)
-   1. Verificare CI correzione cache su branch chatgpt/bridge-state e unire main dopo controllo remoto.
-   2. Correggere cache solo dopo riproduzione; test/revisione/CI e pubblicazione con handoff.
+   1. Fixture timeout: state.lua illeggibile dopo invio o dopo ritiro; non deve diventare «ritirata».
+   2. Distinguere accettazione ignota e conservare correlazione ai risultati tardivi; niente reinvio cieco.
    3. Verificare timeout con stato illeggibile: non dichiarare sicura una ripetizione senza prova.
 Letto da Claude il 14.10.2026: non ancora.
 
