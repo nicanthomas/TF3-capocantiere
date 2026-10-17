@@ -145,6 +145,13 @@ Verificate in gioco durante lo sviluppo. Dove c'e' scritto **CRASH** il gioco si
 - Diramazione (2 binari dallo stesso estremo) subito fuori dalla gola di una stazione: "Collisione" / "Costruzione
   non consentita"; in aperta campagna funziona.
 
+## Cambiare un segnale esistente (VERIFICATO 17.10.2026, set_signals_one_way)
+- `api.cmd` (62 funzioni) non ha comandi per i segnali: la tendina "Senso unico" del gioco passa da una proposta.
+- Funziona: proposta con `edgesToRemove = { binario }`, `edgesToAdd = { copia }` con objects = altri oggetti +
+  `{ -400000000, 2 }`, `edgeObjectsToRemove = { vecchio segnale }`, `edgeObjectsToAdd = { stesso modello .con, param,
+  left = not edgePr[2], oneWay nuovo }`. Risultato: SIGNAL_LIST.type cambia (0 <-> 1), verso e param uguali, un solo
+  oggetto sul binario; il binario prende un id nuovo. Mappa di prova: 508 segnali, 398 gia' a senso unico.
+
 ## Funzioni di api.engine.util (build 40420, sonda del 09.10.2026)
 - `line`: calcLineStationThroughput, getDetailedLineProblems, getFailedPathReason, getLineCapacityUsages,
   getLineIssues, getLineProblems, getLineStationProblems, getLineTransportModesUnion, getLinesIssues,

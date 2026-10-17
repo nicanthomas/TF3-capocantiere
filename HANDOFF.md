@@ -94,29 +94,25 @@ Scritto da: Claude, 17.10.2026, ultimo commit b6e6a4c (tuo checkpoint 14.10) + q
 ```
 
 1. **In una riga:** nuova funzione richiesta da Nicolo': cambiare i segnali gia' costruiti da senso unico a doppio
-   senso e viceversa. Scritta e testata solo con test automatici; va provata in TF3.
+   senso e viceversa. PROVATA IN TF3 su un segnale (andata e ritorno).
 2. **Fatto da Claude (17.10):**
-   - Mod (bozza `b6_binari.lua`): `CC.findSignals` (segnali in un raggio o su tutta la mappa),
-     `CC.setSignalOneWay` e azione `set_signals_one_way` (`one_way`, `near_id`, `radius`, `max`, `apply`).
-     Metodo: binario tolto e rimesso uguale, vecchio segnale tolto (`edgeObjectsToRemove`, se il comando lo
-     rifiuta riprova senza) e segnale nuovo con stesso modello/posizione/verso e `oneWay` cambiato.
-     Fuori dal registro di "annulla" (`NO_TX` in b9): i binari rifatti non devono essere tolti. SOLO TEST AUTOMATICI
-     (mock 159 ok).
-   - Console (`tools_bozza.py`, `main.py`): `check_signals` (solo conteggio) e `set_signals_one_way` (con
-     conferma). Test middleware 183 ok. SOLO TEST AUTOMATICI.
-3. **Stato del PC:** non visto da Claude. Mod `mod/` NON rigenerata (`build --check --bozza` resta DIVERSO, come da
-   tuo checkpoint). Nicolo' ha fatto una prova della console ("trasforma tutti i segnali in sensi unici"): la console
-   ha risposto che non c'era lo strumento, nessuna azione inviata.
-4. **Problemi aperti / da NON fare:** non dire che funziona in TF3 finche' non provata. La finestra del segnale in TF3
-   ha una tendina "Senso unico" (screenshot di Nicolo'): esiste quindi un comando del gioco per cambiarlo; se una
-   sonda trova un `api.cmd.make...` per i segnali (cercare "ignal" tra le funzioni di `api.cmd`) e' piu' semplice e
-   sicuro che rifare il binario.
-5. **Domande / per Nicolo':** prova in gioco su una COPIA della partita, a gioco con build `--dev --bozza` nuova.
+   - Mod (bozza `b6_binari.lua`): `CC.findSignals`, `CC.setSignalOneWay`, azione `set_signals_one_way` (`one_way`,
+     `near_id`, `radius`, `max`, `apply`). Fuori dal registro di "annulla" (`NO_TX` in b9). Mock 159 ok.
+   - Console (`tools_bozza.py`, `main.py`): `check_signals` (solo conteggio) e `set_signals_one_way` (con conferma).
+     Test middleware 183 ok. Console con Claude NON provata (comandi mandati direttamente alla mod).
+   - PROVATO IN TF3: conteggio su tutta la mappa (508 segnali, 398 a senso unico), poi 1 segnale doppio senso -> senso
+     unico -> doppio senso: stesso verso e posizione, un solo segnale sul binario. `api.cmd` non ha comandi per i
+     segnali (sonda): il metodo con la proposta e' quello giusto. Dettagli in `scoperte-api.md`.
+3. **Stato del PC:** installata `v14-bozza-9750173e` (DEV_MODE true, build `--dev --bozza` di main 207841e), backup
+   `capocantiere.script.lua.bak_claude_20261017_303c0edf`, hash riletti. TF3 aperto sulla partita "prova segnali"
+   (copia salvata da Claude della "partita nuova" di Nicolo'), messa in pausa. lastActionId = 9 in questa partita.
+   Attenzione: `computer_open_application("Transportfever3")` avvia un SECONDO TF3; per tornare al gioco cliccarci.
+4. **Problemi aperti / da NON fare:** il senso unico su binario singolo blocca i treni del verso opposto (la console
+   lo avvisa). `mod/` del repo NON rigenerata (build --check DIVERSO come prima).
+5. **Domande / per Nicolo':** niente.
 6. **Prossima operazione precisa:**
-   1. Con il PC: sonda sola lettura delle funzioni `api.cmd` con "ignal"/"EdgeObject" nel nome.
-   2. Build `--dev --bozza`, installazione a gioco chiuso (backup), copia della partita, `check_signals` e poi
-      `set_signals_one_way` su 1-2 segnali (`max` piccolo); verificare nella finestra del segnale "Senso unico".
-   3. Poi i tuoi passi del 14.10 (navi Calliano, anello doppio).
+   1. Prova dalla console con Claude: "quanti segnali a doppio senso ci sono vicino a X" e poi conversione di pochi.
+   2. Poi i tuoi passi del 14.10 (navi Calliano, anello doppio).
 
 Letto da ChatGPT il ...:
 

@@ -269,8 +269,9 @@ end
 -- Richiesta di Nicolo' (17.10.2026): trasformare i segnali gia' costruiti da senso unico a doppio senso e viceversa.
 -- Nel gioco e' la tendina "Senso unico" della finestra del segnale. Da script: stesso metodo dei segnali nuovi
 -- (binario tolto e rimesso uguale) con il vecchio segnale tolto e uno nuovo identico (modello, posizione, verso)
--- ma con oneWay cambiato. NON ANCORA PROVATO IN TF3: in particolare edgeObjectsToRemove (se il comando lo rifiuta
--- si riprova senza, togliendo il segnale solo dalla lista objects del binario rifatto).
+-- ma con oneWay cambiato. VERIFICATO IN TF3 (17.10.2026, build 40420, partita "prova segnali"): segnale a doppio
+-- senso -> senso unico -> di nuovo doppio senso, stesso verso e posizione, un solo oggetto sul binario; il comando
+-- accetta edgeObjectsToRemove (il ripiego senza non e' servito). Nessun comando api.cmd dedicato ai segnali (s51).
 -- I binari rifatti cambiano id: per questo l'azione NON entra nel registro di "annulla" (b9, NO_TX), che altrimenti
 -- toglierebbe i binari. Per tornare indietro si rifa' l'azione al contrario.
 
