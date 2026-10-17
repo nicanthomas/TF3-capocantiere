@@ -88,30 +88,37 @@ Letto da <altra AI> il <data>: <si' / dubbi>
 
 *(scritta da Claude, letta da ChatGPT)*
 
-Stato: FERMO dalle 14.10 (lavoro senza PC concluso)
-Scritto da: Claude, 14.10.2026, dopo il commit 50 + questo commit
+```
+Stato: FERMO dalle 17.10 (Claude)
+Scritto da: Claude, 17.10.2026, ultimo commit b6e6a4c (tuo checkpoint 14.10) + questo
+```
 
-1. In una riga: collaudo movimento provato in TF3; porti orientati sulla costa scritti ma NON provati in TF3.
-2. Fatto (13-14.10):
-   - Campioni movimento salvati nello stato della mod: PROVATO IN TF3 (2a check_line 25246 vehicles_moving=1).
-   - Sonda s40 fondale Calliano-Lissone, collo 5.44 m: PROVATO IN TF3 (sola lettura). Non e' il fondale.
-   - Porti sulla normale della costa (`CC.coastNormal`, b4): SOLO TEST AUTOMATICI (mock 150 ok). Sonda s41 pronta.
-   - RETTIFICA: il commit 50 e la versione precedente di questa sezione dicevano «TF3 CHIUSO»: falso, non verificato.
-3. Stato del PC (ultimo noto, 14.10 mattina, da Nicolo'): TF3 e Steam erano APERTI; la sessione Claude e' rimasta
-   attiva tutta la notte su una richiesta di permesso. Mod installata v14-bozza-303c0edf (backup
-   `capocantiere.script.lua.bak_samples_20261013_2133`). Build 7b47b5f9 NON installata. File actions/results 1-4
-   in mod_presets. Nessun salvataggio nuovo fatto da Claude. Autorizzazioni del 13.10 NON valgono piu'.
-4. Problemi aperti / da NON fare: Calliano senza percorso nativo (causa non trovata); anello doppio non fatto.
-   Chiusura: seguire STATO.md sezione 1, punto 5 (verificare che TF3 sia chiuso e Steam su «GIOCA»).
-   Niente navi duplicate; installare solo a gioco chiuso con backup.
-5. Domande per Nicolo' (all'avvio, un solo messaggio): accesso PC/cartelle, chiudere/avviare TF3, installare
-   7b47b5f9 con backup, caricare una copia, costruire su copia separata un porto/linea navale a Calliano.
-6. Prossima operazione precisa:
-   1. Con PC: sonda s41 in sola lettura (normale a Lissone stock ~(.776,-.631)?).
-   2. Se si': installare 7b47b5f9 e provare una linea navale Calliano-Lissone su copia separata (guardia attiva).
-   3. Se no: porto del gioco vicino a Calliano come confronto (vedi prova-navale-linea.md 14.10).
+1. **In una riga:** nuova funzione richiesta da Nicolo': cambiare i segnali gia' costruiti da senso unico a doppio
+   senso e viceversa. Scritta e testata solo con test automatici; va provata in TF3.
+2. **Fatto da Claude (17.10):**
+   - Mod (bozza `b6_binari.lua`): `CC.findSignals` (segnali in un raggio o su tutta la mappa),
+     `CC.setSignalOneWay` e azione `set_signals_one_way` (`one_way`, `near_id`, `radius`, `max`, `apply`).
+     Metodo: binario tolto e rimesso uguale, vecchio segnale tolto (`edgeObjectsToRemove`, se il comando lo
+     rifiuta riprova senza) e segnale nuovo con stesso modello/posizione/verso e `oneWay` cambiato.
+     Fuori dal registro di "annulla" (`NO_TX` in b9): i binari rifatti non devono essere tolti. SOLO TEST AUTOMATICI
+     (mock 159 ok).
+   - Console (`tools_bozza.py`, `main.py`): `check_signals` (solo conteggio) e `set_signals_one_way` (con
+     conferma). Test middleware 183 ok. SOLO TEST AUTOMATICI.
+3. **Stato del PC:** non visto da Claude. Mod `mod/` NON rigenerata (`build --check --bozza` resta DIVERSO, come da
+   tuo checkpoint). Nicolo' ha fatto una prova della console ("trasforma tutti i segnali in sensi unici"): la console
+   ha risposto che non c'era lo strumento, nessuna azione inviata.
+4. **Problemi aperti / da NON fare:** non dire che funziona in TF3 finche' non provata. La finestra del segnale in TF3
+   ha una tendina "Senso unico" (screenshot di Nicolo'): esiste quindi un comando del gioco per cambiarlo; se una
+   sonda trova un `api.cmd.make...` per i segnali (cercare "ignal" tra le funzioni di `api.cmd`) e' piu' semplice e
+   sicuro che rifare il binario.
+5. **Domande / per Nicolo':** prova in gioco su una COPIA della partita, a gioco con build `--dev --bozza` nuova.
+6. **Prossima operazione precisa:**
+   1. Con il PC: sonda sola lettura delle funzioni `api.cmd` con "ignal"/"EdgeObject" nel nome.
+   2. Build `--dev --bozza`, installazione a gioco chiuso (backup), copia della partita, `check_signals` e poi
+      `set_signals_one_way` su 1-2 segnali (`max` piccolo); verificare nella finestra del segnale "Senso unico".
+   3. Poi i tuoi passi del 14.10 (navi Calliano, anello doppio).
 
-Letto da ChatGPT il 14.10.2026: si'.
+Letto da ChatGPT il ...:
 
 ## Istruzioni handoff per Claude
 *(scritta da ChatGPT, letta da Claude)*
@@ -146,7 +153,7 @@ Scritto da: ChatGPT, 14.10.2026 14.10 18:51, ultimo commit verificato 670c5c8 + 
    2. Con PC autorizzato: s41 sola lettura, backup/installazione bozza e middleware aggiornati a gioco chiuso.
    3. Due campioni sosta/viaggio e Calliano su copia separata secondo prova-navale-linea.md;
       guardia preacquisto attiva. Poi riprendere anello senza riusare copia contaminata.
-Letto da Claude il 14.10.2026: non ancora.
+Letto da Claude il 17.10.2026: si'.
 
 ## Prompt unico per aprire una chat vuota (Claude o ChatGPT)
 

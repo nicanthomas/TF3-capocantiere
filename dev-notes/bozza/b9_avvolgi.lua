@@ -6,7 +6,8 @@
 --     (le fermate e i binari del tram restano: sono pezzi di strade cittadine);
 --   - collaudo subito dopo la costruzione: per ogni linea creata, CC.checkLine (b8) -> result.collaudo;
 --   - avviso se la partita risulta in pausa.
-local NO_TX = { undo = true, check_line = true, check_network = true, read_map = true }
+-- set_signals_one_way: i binari rifatti non vanno nel registro di "annulla" (li toglierebbe).
+local NO_TX = { undo = true, check_line = true, check_network = true, read_map = true, set_signals_one_way = true }
 local CLEANUP_ON_FAIL = { build_tram_line = true, build_bus_line = true, connect_industry_to_city = true,
 	build_intercity_bus = true, connect_station_to_town = true, build_air_or_water_line = true }
 -- argomenti delle azioni gia' esistenti (gli stessi degli schemi di middleware/tools.py)

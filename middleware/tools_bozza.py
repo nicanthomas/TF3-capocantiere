@@ -12,11 +12,11 @@ SPENDING_TOOLS_BOZZA = {
     "delete_line", "extend_line", "build_cargo_rail_line", "build_air_or_water_line", "build_highway",
     "undo_last_action",
     "build_depot", "build_rail_line2", "build_rail_ring", "build_cargo_rail_network", "create_line_from_stations",
-    "build_rail_station", "adjust_line_fleet",
+    "build_rail_station", "adjust_line_fleet", "set_signals_one_way",
 }
 
 # Tool della bozza che leggono soltanto (nessuna conferma): vanno comunque al gioco.
-READ_TOOLS_BOZZA = {"check_line", "check_network", "read_map", "check_line_fleet"}
+READ_TOOLS_BOZZA = {"check_line", "check_network", "read_map", "check_line_fleet", "check_signals"}
 
 # Tool gestiti dal middleware senza il gioco.
 LOCAL_TOOLS_BOZZA = {"propose_plan"}
@@ -232,6 +232,26 @@ TOOLS_BOZZA = [
             "max": {"type": "integer", "minimum": 1, "maximum": 20}, "force": {"type": "boolean"}}, "required": ["line_id"]},
     },
     {
+        "name": "check_signals",
+        "description": ("Conta i segnali ferroviari gia' costruiti in una zona (near_id = citta' o stazione, raggio "
+                        "`radius` m, default 2000) o su tutta la mappa (senza near_id): quanti sono gia' a senso unico "
+                        "(one_way=true) o a doppio senso (false) e quanti andrebbero cambiati. Solo lettura."),
+        "input_schema": {"type": "object", "properties": {
+            "one_way": {"type": "boolean"}, "near_id": _ID, "radius": {"type": "number", "minimum": 50, "maximum": 20000},
+            "max": {"type": "integer", "minimum": 1, "maximum": 500}}, "required": ["one_way"]},
+    },
+    {
+        "name": "set_signals_one_way",
+        "description": ("Trasforma i segnali ferroviari gia' costruiti: one_way=true -> a senso unico, false -> a doppio "
+                        "senso, nella zona (near_id + radius) o su tutta la mappa. Stesso segnale, stessa posizione e verso. "
+                        "Prima usa check_signals e dillo all'utente. Avvisa: a senso unico su un binario unico i treni "
+                        "nel verso opposto si bloccano. Non entra in 'annulla': per tornare indietro rifarla al contrario. "
+                        "Chiede conferma."),
+        "input_schema": {"type": "object", "properties": {
+            "one_way": {"type": "boolean"}, "near_id": _ID, "radius": {"type": "number", "minimum": 50, "maximum": 20000},
+            "max": {"type": "integer", "minimum": 1, "maximum": 500}}, "required": ["one_way"]},
+    },
+    {
         "name": "undo_last_action",
         "description": ("Annulla l'ultima azione che ha costruito qualcosa: vende i veicoli, cancella le linee, toglie "
                         "stazioni, depositi e binari creati. Le strade cittadine modificate restano. Chiede conferma."),
@@ -243,7 +263,9 @@ SYSTEM_PROMPT_BOZZA = """
 Azioni in prova (bozza): build_intercity_bus, connect_station_to_town, add_vehicles, remove_vehicles, replace_vehicles,
 delete_line, extend_line, build_cargo_rail_line, build_air_or_water_line, build_highway, undo_last_action, build_depot,
 build_rail_line2, build_rail_ring, build_cargo_rail_network, create_line_from_stations, build_rail_station, check_line,
-check_network, read_map, propose_plan, check_line_fleet, adjust_line_fleet.
+check_network, read_map, propose_plan, check_line_fleet, adjust_line_fleet, check_signals, set_signals_one_way.
+Segnali gia' costruiti ("metti i segnali a senso unico / a doppio senso"): prima check_signals, riferisci quanti
+sono, poi set_signals_one_way se l'utente conferma. A senso unico solo dove c'e' il doppio binario.
 Flotta: solo su richiesta dell'utente ("adegua i veicoli della linea X"): prima check_line_fleet, poi, se l'utente
 approva, adjust_line_fleet. Nessun controllo o acquisto automatico.
 Dati facoltativi: mod precedenti possono omettere productivity/cargo_quality; non dedurre valori dai campi assenti.
@@ -321,6 +343,9 @@ def describe_bozza(name: str, args: dict, n) -> str | None:
     if name == "adjust_line_fleet":
         return (f"Adeguare i veicoli della linea {n(args['line_id'])} (passaggio ogni {args.get('interval', 'standard')} s"
                 + (", anche treni" if args.get("force") else "") + ")")
+    if name == "set_signals_one_way":
+        where = (f"entro {args.get('radius', 2000)} m da {n(args['near_id'])}" if args.get("near_id") else "su tutta la mappa")
+        return f"Segnali ferroviari {where}: tutti " + ("a SENSO UNICO" if args["one_way"] else "a DOPPIO SENSO")
     if name == "build_rail_station":
         return f"Stazione {args.get('kind', 'passengers')} vicino a {n(args['near_id'])}" + (
             " collegata al binario piu' vicino" if args.get("connect", True) else "")

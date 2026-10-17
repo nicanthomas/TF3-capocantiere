@@ -265,6 +265,169 @@ function CC.addSignals(edges, opts)
 	return CC.placeSignals(items)
 end
 
+-- ---------------------------------------------------------------- segnali esistenti: senso unico <-> doppio senso
+-- Richiesta di Nicolo' (17.10.2026): trasformare i segnali gia' costruiti da senso unico a doppio senso e viceversa.
+-- Nel gioco e' la tendina "Senso unico" della finestra del segnale. Da script: stesso metodo dei segnali nuovi
+-- (binario tolto e rimesso uguale) con il vecchio segnale tolto e uno nuovo identico (modello, posizione, verso)
+-- ma con oneWay cambiato. NON ANCORA PROVATO IN TF3: in particolare edgeObjectsToRemove (se il comando lo rifiuta
+-- si riprova senza, togliendo il segnale solo dalla lista objects del binario rifatto).
+-- I binari rifatti cambiano id: per questo l'azione NON entra nel registro di "annulla" (b9, NO_TX), che altrimenti
+-- toglierebbe i binari. Per tornare indietro si rifa' l'azione al contrario.
+
+-- costruzione (.con) del segnale a partire dal modello (.mdl) che si vede in partita
+local function signalConFor(sigEntity)
+	local name
+	pcall(function()
+		local mil = CC.comp(sigEntity, api.type.ComponentType.MODEL_INSTANCE_LIST)
+		local fi = mil and mil.fatInstances and mil.fatInstances[1]
+		if fi and fi.modelId then name = api.res.modelRep.getName(fi.modelId) end
+	end)
+	if type(name) == "string" and name:find("%.mdl$") then
+		local con = name:gsub("%.mdl$", ".con")
+		if con:sub(1, 3) ~= "::/" then con = "::/" .. con:gsub("^/+", "") end
+		local id = -1
+		pcall(function() id = api.res.constructionRep.find(con) end)
+		if id and id >= 0 then return con end
+	end
+	return CC.signalModel()
+end
+
+-- Segnali sui binari. center = {x, y} e radius in m, oppure tutta la mappa (cerchi da 1450 m ogni 2000 m:
+-- getEntitiesWithComponent(BASE_EDGE) e' vietato). Ritorna una lista di
+-- { edge, signal, oneWay, forward (true = vale da node0 a node1), param, x, y }.
+function CC.findSignals(center, radius, limit)
+	local CT = api.type.ComponentType
+	local circles = {}
+	if center then
+		circles[1] = { center.x, center.y, radius or 2000 }
+	else
+		local b = CC.mapBox()
+		for gx = b.minX + 1000, b.maxX, 2000 do
+			for gy = b.minY + 1000, b.maxY, 2000 do circles[#circles + 1] = { gx, gy, 1450 } end
+		end
+	end
+	local out, seen = {}, {}
+	for _, c in ipairs(circles) do
+		local okF, lst = pcall(function()
+			return CC.each(api.engine.util.octree.findEntitiesInCircle(api.type.Vec2f.new(c[1], c[2]), c[3], CT.BASE_EDGE))
+		end)
+		for _, e in ipairs(okF and lst or {}) do
+			if not seen[e] then
+				seen[e] = true
+				local be = CC.comp(e, CT.BASE_EDGE)
+				for _, o in ipairs((be and be.objects) or {}) do
+					if o[2] == api.type.enum.EdgeObjectType.SIGNAL then
+						local sl = CC.comp(o[1], CT.SIGNAL_LIST)
+						local sg = sl and sl.signals and sl.signals[1]
+						if sg then
+							local eo = CC.comp(o[1], CT.EDGE_OBJECT)
+							local x = (be.position0.x + be.position1.x) / 2
+							local y = (be.position0.y + be.position1.y) / 2
+							local inside = not center or ((x - center.x) ^ 2 + (y - center.y) ^ 2 <= (radius or 2000) ^ 2)
+							if inside then
+								out[#out + 1] = { edge = e, signal = o[1], oneWay = sg.type == 1,
+									forward = not (sg.edgePr and sg.edgePr[2] == false), param = (eo and eo.param) or 0.5, x = x, y = y }
+								if limit and #out >= limit then return out, true end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return out, false
+end
+
+-- Rifa' il segnale `it` (da CC.findSignals) con oneWay = `oneWay`. Ritorna ok, errore.
+local function remakeSignal(it, oneWay, withRemove)
+	local CT = api.type.ComponentType
+	local be = CC.comp(it.edge, CT.BASE_EDGE)
+	if not be then return false, "binario " .. tostring(it.edge) .. " non trovato" end
+	if CC.inConstruction(it.edge) then return false, "binario dentro una stazione (non modificabile da qui)" end
+	local model = signalConFor(it.signal)
+	if not model then return false, "costruzione del segnale non trovata" end
+	local list = {}
+	for _, o in ipairs(be.objects or {}) do
+		if o[1] ~= it.signal then list[#list + 1] = { o[1], o[2] } end
+	end
+	list[#list + 1] = { -400000000, api.type.enum.EdgeObjectType.SIGNAL }
+	local sg = api.type.SegmentAndEntity.new()
+	sg.entity = -1; sg.type = 1; sg.comp = be
+	local po = CC.comp(it.edge, CT.PLAYER_OWNED)
+	if po then sg.playerOwned = po end
+	sg.comp.objects = list
+	local o = api.type.SimpleStreetProposal.EdgeObject.new()
+	o.edgeEntity = -1; o.param = it.param or 0.5; o.oneWay = oneWay == true; o.left = not it.forward
+	o.model = model; o.playerEntity = api.engine.util.getPlayer()
+	local prop = api.type.SimpleProposal.new()
+	prop.streetProposal.edgesToRemove = { it.edge }
+	prop.streetProposal.edgesToAdd = { sg }
+	prop.streetProposal.edgeObjectsToAdd = { o }
+	if withRemove then
+		local okR = pcall(function() prop.streetProposal.edgeObjectsToRemove = { it.signal } end)
+		if not okR then return false, "edgeObjectsToRemove non disponibile" end
+	end
+	local ok, ents = sendStreetObjects(prop)
+	if not ok then return false, type(ents) == "string" and ents or "comando rifiutato" end
+	return true
+end
+
+function CC.setSignalOneWay(it, oneWay)
+	local ok, err = remakeSignal(it, oneWay, true)
+	if ok then return true, "con edgeObjectsToRemove" end
+	local ok2, err2 = remakeSignal(it, oneWay, false)
+	if ok2 then return true, "senza edgeObjectsToRemove" end
+	return false, tostring(err) .. " / " .. tostring(err2)
+end
+
+-- Azione: segnali a senso unico (one_way = true) o a doppio senso (false), in un raggio attorno a near_id
+-- (citta', stazione...) o su tutta la mappa. apply = false (default): conta soltanto, nessun comando.
+SIM_ACTIONS.set_signals_one_way = function(a)
+	CC.need(a, { one_way = "bool", near_id = "id?", radius = "num?", max = "int?", apply = "bool?" })
+	local radius = a.radius or 2000
+	if radius < 50 or radius > 20000 then error("argomento radius: tra 50 e 20000 m", 0) end
+	local maxN = a.max or 200
+	if maxN < 1 or maxN > 500 then error("argomento max: tra 1 e 500", 0) end
+	local center
+	if a.near_id then
+		center = CC.posOf(a.near_id)
+		if not center then error("posizione di " .. tostring(a.near_id) .. " non trovata", 0) end
+	end
+	local all, cut = CC.findSignals(center, center and radius or nil, nil)
+	local todo, already = {}, 0
+	for _, it in ipairs(all) do
+		if it.oneWay == (a.one_way == true) then already = already + 1 else todo[#todo + 1] = it end
+	end
+	local r = { ok = true, one_way = a.one_way == true, found = #all, already = already, to_change = #todo,
+		area = center and string.format("raggio %d m attorno a %d", radius, a.near_id) or "tutta la mappa",
+		apply = a.apply == true }
+	if a.one_way == true then
+		r.warning = "Su un binario unico, con i segnali a senso unico i treni nel verso opposto restano bloccati: " ..
+			"usarli solo sul doppio binario."
+	end
+	if #todo > maxN then
+		r.ok = false
+		r.error = #todo .. " segnali da cambiare, piu' del massimo " .. maxN .. ": restringere la zona o alzare max"
+		return r
+	end
+	if a.apply ~= true or #todo == 0 then return r end
+	local changed, errs, how = 0, {}, nil
+	for _, it in ipairs(todo) do
+		local ok, info = CC.setSignalOneWay(it, a.one_way == true)
+		if ok then changed = changed + 1; how = how or info else errs[#errs + 1] = info end
+	end
+	r.changed = changed
+	r.failed = #errs
+	r.method = how
+	if #errs > 0 then
+		r.errors = {}
+		for i = 1, math.min(5, #errs) do r.errors[i] = errs[i] end
+	end
+	r.ok = changed > 0 or #todo == 0
+	if not r.ok then r.error = "nessun segnale cambiato: " .. tostring(errs[1]) end
+	return r
+end
+
 -- ---------------------------------------------------------------- collegamento di due estremi
 -- Come in build_rail_line: forme di curva diverse, deviazione, ripiego dall'alta velocita' allo standard.
 function CC.linkTwoEnds(ea, eb, log, label)

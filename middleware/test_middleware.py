@@ -402,12 +402,18 @@ class TestBozzaTools(unittest.TestCase):
             "build_rail_station": {"near_id": 5, "kind": "cargo"},
             "check_line": {"line_id": 1}, "check_network": {}, "read_map": {"grid": 8},
             "propose_plan": {"steps": [{"description": "ferrovia A-B", "action": "build_rail_line2"}]},
+            "check_signals": {"one_way": True, "near_id": 3}, "set_signals_one_way": {"one_way": False},
         }
         for t in TOOLS_BOZZA:
             self.assertEqual(validate_args(t, samples[t["name"]]), [], t["name"])
             if t["name"] in SPENDING_TOOLS_BOZZA:
                 self.assertTrue(describe_bozza(t["name"], samples[t["name"]], lambda i: f"#{i}"), t["name"])
         self.assertTrue(validate_args(next(t for t in TOOLS_BOZZA if t["name"] == "build_rail_ring"), {"town_ids": [1, 2]}))
+        sig = next(t for t in TOOLS_BOZZA if t["name"] == "set_signals_one_way")
+        self.assertTrue(validate_args(sig, {}))                                  # one_way obbligatorio
+        self.assertTrue(validate_args(sig, {"one_way": True, "radius": 10}))     # raggio troppo piccolo
+        self.assertIn("SENSO UNICO", describe_bozza("set_signals_one_way", {"one_way": True, "near_id": 4}, lambda i: f"#{i}"))
+        self.assertIn("tutta la mappa", describe_bozza("set_signals_one_way", {"one_way": False}, lambda i: f"#{i}"))
         self.assertTrue(validate_args(next(t for t in TOOLS_BOZZA if t["name"] == "build_depot"), {"kind": "aereo"}))
         self.assertTrue(validate_args(next(t for t in TOOLS_BOZZA if t["name"] == "build_air_or_water_line"),
                                       {"town_ids": [1, 2], "kind": "razzo"}))

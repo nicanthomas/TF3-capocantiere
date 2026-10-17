@@ -798,6 +798,62 @@ do
     CC.onWater,CC.inMap=old.water,old.inMap
 end
 
+-- Segnali esistenti: senso unico <-> doppio senso (set_signals_one_way, 17.10.2026). Solo logica: comando finto.
+do
+    local CT=api.type.ComponentType
+    for _,n in ipairs({'SIGNAL_LIST','EDGE_OBJECT','MODEL_INSTANCE_LIST'}) do CT[n]=CT[n] or n end
+    api.type.enum.EdgeObjectType.SIGNAL=2
+    local oldSAE, oldSSP, oldOct, oldCon, oldName = api.type.SegmentAndEntity, api.type.SimpleStreetProposal,
+        api.engine.util.octree.findEntitiesInCircle, api.res.constructionRep, api.res.modelRep.getName
+    api.type.SegmentAndEntity={new=function() return {} end}
+    api.type.SimpleStreetProposal={EdgeObject={new=function() return {} end}}
+    api.res.constructionRep={find=function(n) if n=='::/infrastructure/signal/signal_path_c.con' then return 5 end return -1 end}
+    api.res.modelRep.getName=function(id) if id==77 then return 'infrastructure/signal/signal_path_c.mdl' end return 'x.mdl' end
+    local function track(x, oneWay, forward)
+        local e=newEnt({BASE_EDGE={roadTemplate='::/infrastructure/track/standard/standard.street_template', node0=1, node1=2,
+            position0={x=x,y=0,z=0}, position1={x=x+100,y=0,z=0}, objects={}}, PLAYER_OWNED={player=7}})
+        local sgn=newEnt({SIGNAL_LIST={signals={{type=oneWay and 1 or 0, edgePr={e, forward}}}}, EDGE_OBJECT={param=0.3},
+            MODEL_INSTANCE_LIST={fatInstances={{modelId=77}}}})
+        W.comps[e].BASE_EDGE.objects={{sgn,2}}
+        return e,sgn
+    end
+    local e1=track(0,false,true); local e2=track(500,true,false); local e3=track(5000,false,true)
+    api.engine.util.octree.findEntitiesInCircle=function(p,r,t) return V({e1,e2,e3}) end
+    CC._mapBox={minX=-1000,maxX=1000,minY=-1000,maxY=1000}
+    local town=newEnt({TOWN={}}); CC.posOf=(function(old) return function(e) if e==town then return {x=0,y=0} end return old(e) end end)(CC.posOf)
+    -- conteggio senza comandi
+    local n0=#W.sent
+    local r=SIM_ACTIONS.set_signals_one_way({one_way=true, near_id=town, radius=1000})
+    check(r.ok and r.found==2 and r.already==1 and r.to_change==1 and r.apply==false and #W.sent==n0,
+        'segnali: apply=false conta nel raggio senza comandi')
+    check(r.warning and r.warning:find('binario unico'),'segnali: avviso senso unico su binario unico')
+    -- applicazione: un comando, stesso modello/posizione/verso, oneWay cambiato, vecchio segnale tolto
+    r=SIM_ACTIONS.set_signals_one_way({one_way=true, near_id=town, radius=1000, apply=true})
+    local cmd=W.sent[#W.sent]
+    local sp=cmd and cmd.prop and cmd.prop.streetProposal
+    local o=sp and sp.edgeObjectsToAdd and sp.edgeObjectsToAdd[1]
+    check(r.ok and r.changed==1 and #W.sent==n0+1,'segnali: un comando per il segnale da cambiare')
+    check(o and o.oneWay==true and o.param==0.3 and o.left==false and o.model=='::/infrastructure/signal/signal_path_c.con',
+        'segnali: modello, posizione e verso conservati, oneWay cambiato')
+    check(sp and sp.edgesToRemove[1]==e1 and sp.edgeObjectsToRemove and #sp.edgesToAdd[1].comp.objects==1
+        and sp.edgesToAdd[1].comp.objects[1][1]==-400000000,'segnali: vecchio segnale tolto, binario rifatto')
+    -- verso opposto: left = true
+    W.comps[e2]=W.comps[e2]
+    r=SIM_ACTIONS.set_signals_one_way({one_way=false, near_id=town, radius=1000, apply=true})
+    o=W.sent[#W.sent].prop.streetProposal.edgeObjectsToAdd[1]
+    check(r.ok and r.changed==1 and o.oneWay==false and o.left==true,'segnali: doppio senso e verso node1->node0')
+    -- limiti e argomenti
+    local okA=pcall(SIM_ACTIONS.set_signals_one_way,{one_way=true, radius=10})
+    check(not okA,'segnali: raggio fuori limiti rifiutato')
+    okA=pcall(SIM_ACTIONS.set_signals_one_way,{})
+    check(not okA,'segnali: one_way obbligatorio')
+    -- nessun registro di annulla (i binari rifatti non vanno tolti)
+    check(r.created==nil,'segnali: azione fuori dal registro di annulla')
+    api.type.SegmentAndEntity, api.type.SimpleStreetProposal = oldSAE, oldSSP
+    api.engine.util.octree.findEntitiesInCircle, api.res.constructionRep, api.res.modelRep.getName = oldOct, oldCon, oldName
+    CC._mapBox=nil
+end
+
 print(string.format("RISULTATO: %d ok, %d falliti", passes, fails))
 
 -- Un mock fallito deve rendere rossa la CI, non soltanto stampare un avviso.

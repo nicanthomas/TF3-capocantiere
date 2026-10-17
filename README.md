@@ -60,6 +60,7 @@ La proposta successiva di scendere a quattro bus non e' stata applicata. Dettagl
 | `build_rail_ring` | Anello ferroviario a binario unico (incrocio nelle stazioni); `double_track` ancora instabile | Binario unico provato |
 | `build_air_or_water_line` | Aerei ed elicotteri provati; porti/depositi navali costruiti, linea nave ancora da collaudare | Parziale |
 | Segnali (interni) | Segnali di percorso a senso unico e a doppio senso sui binari | Provati |
+| `check_signals`, `set_signals_one_way` | Segnali gia' costruiti: da senso unico a doppio senso e viceversa (zona o tutta la mappa) | Scritto 17.10.2026, solo test automatici |
 
 Ogni azione che costruisce o compra chiede conferma prima di essere inviata.
 

@@ -166,6 +166,11 @@ def run_game_tool(name: str, args: dict, bridge: GameBridge) -> dict:
             action["apply"] = False
         elif name == "adjust_line_fleet":
             action["apply"] = True
+        elif name == "check_signals":                  # stessa azione della mod, solo conteggio
+            action["type"] = "set_signals_one_way"
+            action["apply"] = False
+        elif name == "set_signals_one_way":
+            action["apply"] = True
     if name not in READ_TOOLS:
         print("  (in costruzione: puo' richiedere fino a qualche minuto...)")
     t0 = time.time()
